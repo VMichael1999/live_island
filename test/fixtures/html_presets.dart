@@ -23,6 +23,7 @@ class HtmlPreset {
           .where((e) => e.isNotEmpty)
           .toList();
   bool get androidOk => raw['androidOk'] as bool;
+  String get app => raw['app'] as String;
 }
 
 class HtmlFixtures {
@@ -74,12 +75,13 @@ class HtmlFixtures {
     };
   }
 
-  LiveIcon? _sym(Object? name) {
+  LiveIcon? _sym(Object? name, {bool accent = false}) {
     if (name == null || name == 'none') return null;
     final sfName = sf[name as String] ?? name;
     return LiveIcon.symbol(
       sfName,
       android: 'assets/live/${name.toLowerCase()}.png',
+      accent: accent,
     );
   }
 
@@ -106,14 +108,16 @@ class HtmlFixtures {
     final mainImg = r['mainImg'] as Map<String, dynamic>?;
     final avatarImg = r['avatarImg'] as Map<String, dynamic>?;
     final trackerImg = r['trackerImg'] as Map<String, dynamic>?;
+    final ring = p.pShow && p.pType == 'ring';
     final icon = _sym(r['icon'])!;
+    final accentIcon = _sym(r['icon'], accent: true)!;
 
     final LiveVisual lead =
         showAvatar
             ? (avatarImg != null
                 ? _image(avatarImg, 'foto.jpg', shape: LiveShape.circle)
                 : LiveAvatar(r['avatarText'] as String))
-            : (mainImg != null ? _image(mainImg, 'icono.png') : icon);
+            : (mainImg != null ? _image(mainImg, 'icono.png') : accentIcon);
 
     final highlight =
         p.isCountdown
@@ -145,7 +149,7 @@ class HtmlFixtures {
           endIcon: end,
         );
       } else if (p.pType == 'ring') {
-        progress = LiveProgress.ring(value: bind('progreso'));
+        progress = null; // el anillo va a la derecha (trailing), no abajo
       } else {
         progress = LiveProgress.bar(
           value: bind('progreso'),
@@ -187,28 +191,52 @@ class HtmlFixtures {
               ? LiveImage.asset('assets/live/logo_silueta.png')
               : null,
       compactLeading: lead,
-      compactTrailing: highlight,
+      compactTrailing: LiveText.from(
+        highlight,
+        size: 15,
+        weight: 600,
+        accent: true,
+      ),
       minimal:
-          p.pShow && p.pType == 'ring'
-              ? LiveProgress.ring(value: bind('progreso'), child: icon)
-              : icon,
+          ring
+              ? LiveProgress.ring(
+                value: bind('progreso'),
+                child:
+                    showAvatar
+                        ? null
+                        : (mainImg != null
+                            ? _image(mainImg, 'icono.png')
+                            : accentIcon),
+              )
+              : lead,
       expanded: LiveExpanded(
         leading:
             (showAvatar || mainImg != null)
                 ? lead
-                : LiveBox(child: icon, size: 46, radius: 14, tint: 0.22),
+                : LiveBox(child: accentIcon, size: 46, radius: 14, tint: 0.22),
         center: LiveColumn([
-          LiveText(bind('titulo'), weight: 600),
-          LiveText(bind('subtitulo'), muted: true),
+          LiveText(bind('titulo'), size: 15, weight: 600, lines: 2),
+          LiveText(bind('subtitulo'), size: 13, muted: true),
         ]),
-        trailing: LiveColumn([
-          LiveText.from(highlight, size: 22, weight: 700, accent: true),
-          LiveText(bind('nombre'), muted: true),
-        ], align: LiveAlign.end),
+        trailing:
+            ring
+                ? LiveProgress.ring(value: bind('progreso'), size: 46)
+                : LiveColumn([
+                  LiveText.from(highlight, size: 22, weight: 700, accent: true),
+                  LiveText(bind('nombre'), size: 12, muted: true),
+                ], align: LiveAlign.end),
         bottom: LiveColumn([
           if (progress != null) progress,
+          if (ring)
+            LiveRow([
+              const LiveSpacer(),
+              LiveText.from(highlight, size: 12, muted: true),
+              const LiveText.literal('·', size: 12, muted: true),
+              LiveText(bind('nombre'), size: 12, muted: true),
+              const LiveSpacer(),
+            ], gap: 4),
           if (buttons.isNotEmpty) LiveRow(buttons),
-        ]),
+        ], gap: 12),
       ),
       lockScreen: const LiveLockScreen.sameAsExpanded(),
       android: LiveAndroid(
