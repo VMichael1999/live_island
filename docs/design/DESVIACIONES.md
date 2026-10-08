@@ -80,4 +80,15 @@ Verificado en un emulador Android 17 (API 37, Pixel 10 Pro XL) con Taxi y Courie
 | Por debajo de Android 16 | — | Notificación en curso con barra estándar, sin chip ni puntos | Sin verificar en emulador (solo hay imagen de API 37) |
 | Promoción | — | Se pide con el extra `android.requestPromotedOngoing` | `Notification.Builder#setRequestPromotedOngoing` existe desde el SDK 36.1 y solo escribe ese extra; así el plugin compila con el SDK 36 |
 | Permisos | — | `POST_NOTIFICATIONS` (13+, se pide con `LiveIsland.requestPermission()`) y `POST_PROMOTED_NOTIFICATIONS` (normal, se concede al instalar) | El usuario además puede quitar la promoción en Ajustes (`LiveIsland.openPromotionSettings()`) |
-| Entrega de los botones a Dart | — | Los botones envían su `id` por un `EventChannel` (`live_island/actions`) | El callback de Dart (`LiveIsland.onAction`) llega en la Fase 5 |
+| Entrega de los botones a Dart | — | `LiveIsland.onAction`; con la app cerrada la acción queda en una cola en disco y se entrega al reabrir | Android no arranca Flutter desde un `BroadcastReceiver`; no hay motor sin proceso de la app |
+
+## Interacción y push (Fase 5)
+
+| Tema | Comportamiento | Motivo |
+| --- | --- | --- |
+| Botones en iOS | Solo la tarjeta de bloqueo (iOS 17+, `LiveActivityIntent`). Antes de iOS 17 se dibujan sin acción. La isla expandida no tiene botones | Decisión de Michael (fase 3) |
+| Acciones con la app cerrada | Se guardan (App Group en iOS, disco en Android) y se entregan a Dart al empezar a escuchar `onAction`. No se arranca un motor de Flutter sin interfaz | Evita un motor en segundo plano; la lógica de la app corre al abrirla |
+| Id de botón | Es el de `LiveButton(id:)`, no identifica la actividad | Con varias actividades hay que usar ids distintos |
+| Push en Android | `LiveIsland.handlePush` o `LiveIslandPush.handle` desde tu `FirebaseMessagingService`; formato en `docs/push.md` | El plugin no depende de Firebase |
+| Iniciar por push | Solo con un diseño registrado (`registerLayout`) | Un push no lleva el diseño |
+| `staleAfter` | Se envía pero Android lo ignora | Android no tiene equivalente |
