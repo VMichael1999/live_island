@@ -560,7 +560,7 @@ function expandedHTML(s,dl){
   return '<div class="island expanded" role="img" aria-label="Dynamic Island expandida">'+
     '<div class="ex-top">'+iconBox+'<div style="min-width:0"><div class="ex-title">'+esc(s.title)+'</div><div class="ex-sub">'+esc(s.subtitle)+'</div></div>'+
     '<div class="ex-trail">'+(ringSide||'<div class="big" style="color:'+s.accent+'">'+esc(hl(s,dl))+'</div><div class="small">'+esc(s.name)+'</div>')+'</div></div>'+
-    (s.pType!=='ring'?progress(s,'dark'):'<div class="small" style="text-align:center">'+esc(hl(s,dl))+' · '+esc(s.name)+'</div>')+iosActions(s,'dark')+'</div>';
+    (s.pType!=='ring'?progress(s,'dark'):'<div class="small" style="text-align:center">'+esc(hl(s,dl))+' · '+esc(s.name)+'</div>')+'</div>'; /* sin botones: tocar la isla abre la app */
 }
 function lockCardHTML(s,dl){
   const surf=s.lockBg;
