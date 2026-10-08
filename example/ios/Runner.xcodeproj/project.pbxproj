@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		02F97FB5C24C97D7E65361E7 /* LiveIslandWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6660EB184DF868A85D5604EB /* LiveIslandWidget.swift */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
+		24AE55999D3775955A583678 /* LiveIslandAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086133F6E28F85D5107D2528 /* LiveIslandAction.swift */; };
 		298FB4C929D3B7A55FF44137 /* LiveIslandExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F337E6DD74EBD62BD57F803C /* LiveIslandExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
@@ -72,6 +73,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		086133F6E28F85D5107D2528 /* LiveIslandAction.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveIslandAction.swift; sourceTree = "<group>"; };
 		0F5B12158D6CA415F0BE49F9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 			children = (
 				BCEC11047255E4F5646B6D3C /* LiveIslandAttributes.swift */,
 				7703F916CCB02EBACE6F48EB /* LiveStorage.swift */,
+				086133F6E28F85D5107D2528 /* LiveIslandAction.swift */,
 			);
 			name = Shared;
 			path = Shared;
@@ -530,6 +533,7 @@
 				4B17D1A0282AEC2AAE87DD9A /* LiveStyle.swift in Sources */,
 				4663479E686D0D8BF18AFE9D /* LiveIslandBundle.swift in Sources */,
 				02F97FB5C24C97D7E65361E7 /* LiveIslandWidget.swift in Sources */,
+				24AE55999D3775955A583678 /* LiveIslandAction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

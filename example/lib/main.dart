@@ -1,6 +1,6 @@
-import 'dart:io' show Platform;
+import 'dart:async';
+import 'dart:convert';
 
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:live_island/live_island.dart';
 
@@ -35,19 +35,99 @@ class _DemoScreenState extends State<DemoScreen> {
   LiveActivity? _activity;
   String _status = 'Sin actividad';
 
+  final List<StreamSubscription<Object?>> _subs = [];
+  final List<String> _tokens = [];
+
   @override
   void initState() {
     super.initState();
-    // Solo en debug: `SIMCTL_CHILD_LIVE_ISLAND_AUTOSTART=taxi xcrun simctl launch …`
-    // inicia el caso sin tocar la pantalla (útil para capturas).
-    final auto =
-        kDebugMode ? Platform.environment['LIVE_ISLAND_AUTOSTART'] : null;
-    if (auto != null) {
-      _demo = demos.firstWhere((d) => d.id == auto, orElse: () => demos.first);
-      _state = _demo.state();
-      WidgetsBinding.instance.addPostFrameCallback((_) => _start());
+    // Un botón de la actividad (pantalla de bloqueo o notificación) llega aquí,
+    // también si la app estaba cerrada.
+    _subs.add(LiveIsland.onAction(_onAction));
+    // Tokens de push de iOS (para enviarlos a tu servidor).
+    _subs.add(
+      LiveIsland.pushTokens.listen((t) {
+        if (mounted) setState(() => _tokens.add('$t'));
+      }),
+    );
+    // Actividades iniciadas por un push.
+    _subs.add(
+      LiveIsland.startedByPush.listen((a) {
+        if (mounted) {
+          setState(() {
+            _activity = a;
+            _status = 'Iniciada por push (${a.id.substring(0, 8)}…)';
+          });
+        }
+      }),
+    );
+    // Recupera la actividad que siguió viva tras cerrar la app.
+    LiveIsland.activeActivities().then((list) {
+      if (mounted && list.isNotEmpty && _activity == null) {
+        setState(() {
+          _activity = list.last;
+          _status = 'Recuperada (${list.last.id.substring(0, 8)}…)';
+        });
+      }
+    });
+    // Los diseños con nombre permiten iniciar actividades desde un push.
+    for (final d in demos) {
+      LiveIsland.registerLayout(d.id, d.layout).catchError((_) {});
     }
   }
+
+  @override
+  void dispose() {
+    for (final s in _subs) {
+      s.cancel();
+    }
+    super.dispose();
+  }
+
+  /// Qué hace cada botón de los ejemplos. El id es el de `LiveButton(id: ...)`.
+  Future<void> _onAction(String id) async {
+    // Con la app cerrada la actividad sigue viva: se recupera antes de actuar.
+    final a = _activity ?? (await LiveIsland.activeActivities()).lastOrNull;
+    if (a == null) return;
+    _activity = a;
+    final cambios = switch (id) {
+      'mas_15_min' => <String, Object?>{
+        'llegaA': DateTime.now().add(const Duration(minutes: 60)),
+      },
+      'llamar' => <String, Object?>{
+        'progreso': (((_state['progreso'] as num?) ?? 0) + 0.1).clamp(0.0, 1.0),
+      },
+      _ => <String, Object?>{'subtitulo': 'Tocaste "$id"'},
+    };
+    if (id == 'terminar') {
+      await a.end(dismiss: LiveDismiss.immediate);
+      if (mounted) {
+        setState(() {
+          _activity = null;
+          _status = 'Terminada desde un botón';
+        });
+      }
+      return;
+    }
+    await a.update(cambios);
+    if (mounted) {
+      setState(() {
+        _state = {..._state, ...cambios};
+        _status = 'Botón "$id" → ${cambios.keys.join(', ')}';
+      });
+    }
+  }
+
+  /// Simula un mensaje de FCM (Android): lo que haría tu servidor.
+  Future<void> _simulatePush(Map<String, Object?> payload) =>
+      _run('Push', () async {
+        final id = await LiveIsland.handlePush({
+          'live_island': jsonEncode(payload),
+        });
+        if (mounted && id != null) {
+          setState(() => _status = 'Push aplicado a ${id.substring(0, 8)}…');
+        }
+      });
 
   void _pick(Demo d) => setState(() {
     _demo = d;
@@ -136,6 +216,53 @@ class _DemoScreenState extends State<DemoScreen> {
           ),
           const SizedBox(height: 8),
           Text(_status),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: [
+              OutlinedButton(
+                onPressed:
+                    () => _simulatePush({
+                      'event': 'start',
+                      'template': _demo.id,
+                      'state': {
+                        for (final e in _demo.state().entries)
+                          e.key:
+                              e.value is DateTime
+                                  ? (e.value! as DateTime)
+                                      .toUtc()
+                                      .toIso8601String()
+                                  : e.value,
+                      },
+                    }),
+                child: const Text('Push: iniciar'),
+              ),
+              OutlinedButton(
+                onPressed:
+                    _activity == null
+                        ? null
+                        : () => _simulatePush({
+                          'event': 'update',
+                          'id': _activity!.id,
+                          'state': {'progreso': 0.9},
+                        }),
+                child: const Text('Push: progreso 90 %'),
+              ),
+              OutlinedButton(
+                onPressed:
+                    _activity == null
+                        ? null
+                        : () => _simulatePush({
+                          'event': 'end',
+                          'id': _activity!.id,
+                          'dismiss': 'immediate',
+                        }),
+                child: const Text('Push: terminar'),
+              ),
+            ],
+          ),
+          for (final t in _tokens)
+            Text(t, style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 16),
           LiveIslandPreview(
             layout: _demo.layout,

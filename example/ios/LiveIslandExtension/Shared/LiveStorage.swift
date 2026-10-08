@@ -3,6 +3,9 @@ import Foundation
 /// Dónde guarda la app el diseño y las imágenes para que la extensión los lea.
 /// `<App Group>/live_island/<layoutId>/layout.json` y `<id>.png`.
 enum LiveStorage {
+    /// Los diseños con nombre (`registerLayout`) se guardan como `tpl_<nombre>` y no se borran.
+    static let templatePrefix = "tpl_"
+
     /// Nombre del App Group, escrito por `dart run live_island:setup` en el
     /// Info.plist de la app y de la extensión (`LiveIslandAppGroup`).
     static var appGroup: String? {
@@ -31,7 +34,7 @@ enum LiveStorage {
                 .appendingPathComponent("live_island", isDirectory: true),
               let items = try? FileManager.default.contentsOfDirectory(atPath: root.path)
         else { return }
-        for name in items where !keep.contains(name) {
+        for name in items where !keep.contains(name) && !name.hasPrefix(templatePrefix) {
             try? FileManager.default.removeItem(at: root.appendingPathComponent(name))
         }
     }

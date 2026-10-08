@@ -298,12 +298,21 @@ enum LiveRenderer {
     private static func button(label: String, icon ic: LNode?, id: String?, _ c: LiveCtx) -> AnyView {
         let (bg, fg) = c.style.button(c.buttonIndex(id))
         let glyph: AnyView? = ic.flatMap { $0.t == "icon" ? icon($0, c, size: 15, color: fg) : ($0.t == "image" ? image($0, c, size: 15) : nil) }
-        return AnyView(HStack(spacing: 6) {
+        let pill = HStack(spacing: 6) {
             if let g = glyph { g }
             Text(label).font(.system(size: 13, weight: .semibold)).foregroundColor(fg).lineLimit(1)
         }
         .padding(.horizontal, 12).padding(.vertical, 7)
-        .background(Capsule().fill(bg)))
+        .background(Capsule().fill(bg))
+
+        // iOS 17+: el botón ejecuta un App Intent y llega a Dart sin abrir la app.
+        // Antes de iOS 17 se dibuja igual, pero sin acción.
+        #if canImport(AppIntents)
+        if #available(iOS 17.0, *), let id = id, !id.isEmpty {
+            return AnyView(Button(intent: LiveIslandActionIntent(buttonId: id)) { pill }.buttonStyle(.plain))
+        }
+        #endif
+        return AnyView(pill)
     }
 }
 
