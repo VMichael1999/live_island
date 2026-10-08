@@ -84,16 +84,50 @@ class LiveStore(private val context: Context) {
 
     // --- imágenes -----------------------------------------------------------
 
-    private fun fileFor(id: String, key: String) = File(dir(id), "img_" + key.replace(Regex("[^A-Za-z0-9]"), "_") + ".png")
+    private fun fileIn(d: File, key: String) = File(d, "img_" + key.replace(Regex("[^A-Za-z0-9]"), "_") + ".png")
+
+    private fun fileFor(id: String, key: String) = fileIn(dir(id), key)
+
+    // --- plantillas: diseños con nombre, para actividades que empiezan por push ---
+
+    private val templates get() = File(context.filesDir, "live_island_templates")
+
+    private fun templateDir(name: String) = File(templates, name.replace(Regex("[^A-Za-z0-9_-]"), "_"))
+
+    /** Guarda (o reemplaza) la plantilla [name] con su diseño. */
+    fun createTemplate(name: String, layout: JSONObject) {
+        val d = templateDir(name)
+        d.deleteRecursively()
+        d.mkdirs()
+        File(d, "layout.json").writeText(layout.toString())
+    }
+
+    fun saveTemplateImage(name: String, key: String, data: ByteArray, maxW: Int, maxH: Int) =
+        writeImage(fileIn(templateDir(name), key), data, maxW, maxH)
+
+    fun hasTemplate(name: String) = File(templateDir(name), "layout.json").exists()
+
+    /** Crea la actividad [id] copiando el diseño y las imágenes de la plantilla [name]. */
+    fun instantiate(name: String, id: String, notificationId: Int, state: LiveState, deepLink: String?): Boolean {
+        val src = templateDir(name)
+        if (!File(src, "layout.json").exists()) return false
+        val layout = JSONObject(File(src, "layout.json").readText())
+        create(id, notificationId, layout, state, deepLink)
+        src.listFiles { f -> f.name.startsWith("img_") }?.forEach { it.copyTo(File(dir(id), it.name), overwrite = true) }
+        return true
+    }
 
     /** Reduce [data] para que quepa en [maxW] × [maxH] sin deformarla ni agrandarla y la guarda. */
-    fun saveImage(id: String, key: String, data: ByteArray, maxW: Int, maxH: Int) {
+    fun saveImage(id: String, key: String, data: ByteArray, maxW: Int, maxH: Int) =
+        writeImage(fileFor(id, key), data, maxW, maxH)
+
+    private fun writeImage(file: File, data: ByteArray, maxW: Int, maxH: Int) {
         val src = BitmapFactory.decodeByteArray(data, 0, data.size) ?: return
         val k = min(1.0, min(maxW.toDouble() / src.width, maxH.toDouble() / src.height))
         val w = max(1, (src.width * k).roundToInt())
         val h = max(1, (src.height * k).roundToInt())
         val out = if (w == src.width && h == src.height) src else Bitmap.createScaledBitmap(src, w, h, true)
-        fileFor(id, key).outputStream().use { out.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        file.outputStream().use { out.compress(Bitmap.CompressFormat.PNG, 100, it) }
     }
 
     /** Bitmap de una imagen o ícono del diseño, o de un avatar con iniciales. */
