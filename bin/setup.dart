@@ -34,14 +34,20 @@ Future<void> main(List<String> args) async {
   final iosDir = Directory('$project/ios');
   if (!File('$project/pubspec.yaml').existsSync() ||
       !Directory('${iosDir.path}/Runner.xcodeproj').existsSync()) {
-    stderr.writeln('Ejecuta este comando en la raíz de una app Flutter con carpeta ios/.');
+    stderr.writeln(
+      'Ejecuta este comando en la raíz de una app Flutter con carpeta ios/.',
+    );
     exitCode = 66;
     return;
   }
 
-  final uri = await Isolate.resolvePackageUri(Uri.parse('package:live_island/live_island.dart'));
+  final uri = await Isolate.resolvePackageUri(
+    Uri.parse('package:live_island/live_island.dart'),
+  );
   if (uri == null) {
-    stderr.writeln('No se encontró el paquete live_island. ¿Está en tu pubspec.yaml?');
+    stderr.writeln(
+      'No se encontró el paquete live_island. ¿Está en tu pubspec.yaml?',
+    );
     exitCode = 66;
     return;
   }
@@ -63,8 +69,10 @@ Future<void> main(List<String> args) async {
   stdout.write(result.stdout);
   if (result.exitCode != 0) {
     stderr.write(result.stderr);
-    stderr.writeln('\nNo se pudo configurar iOS. Necesitas Ruby y la gema xcodeproj '
-        '(viene con CocoaPods: `sudo gem install cocoapods`).');
+    stderr.writeln(
+      '\nNo se pudo configurar iOS. Necesitas Ruby y la gema xcodeproj '
+      '(viene con CocoaPods: `sudo gem install cocoapods`).',
+    );
     exitCode = result.exitCode;
     return;
   }
