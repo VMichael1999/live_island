@@ -38,19 +38,32 @@ class LiveActivity {
 abstract final class LiveIsland {
   static LiveIslandPlatform _platform = MethodChannelLiveIslandPlatform();
   static LiveImageReader _imageReader = defaultImageReader;
+  static LiveAssetReader _assetReader = defaultAssetReader;
 
   /// Reemplaza la plataforma (para pruebas). Con `null` vuelve a la real.
   static void debugOverride({
     LiveIslandPlatform? platform,
     LiveImageReader? imageReader,
+    LiveAssetReader? assetReader,
   }) {
     _platform = platform ?? MethodChannelLiveIslandPlatform();
     _imageReader = imageReader ?? defaultImageReader;
+    _assetReader = assetReader ?? defaultAssetReader;
   }
 
   /// ¿Puede la app mostrar actividades ahora? En iOS es
   /// `ActivityAuthorizationInfo.areActivitiesEnabled`.
   static Future<bool> areEnabled() => _platform.areEnabled();
+
+  /// Pide el permiso de notificaciones (Android 13 o superior). Llámalo antes
+  /// de [start]; si el usuario lo rechaza, [start] lanza `disabled`. En iOS
+  /// no hace nada.
+  static Future<bool> requestPermission() => _platform.requestPermission();
+
+  /// Abre los ajustes donde el usuario permite que la app publique Live
+  /// Updates (Android 16 o superior). Devuelve `false` si no existen.
+  static Future<bool> openPromotionSettings() =>
+      _platform.openPromotionSettings();
 
   /// Inicia una actividad con su [layout] (que viaja una sola vez) y su
   /// estado inicial [state].
@@ -74,7 +87,12 @@ abstract final class LiveIsland {
     if (blocking.isNotEmpty) {
       throw StateError(blocking.first.message);
     }
-    final images = await loadLayoutImages(layout, reader: _imageReader);
+    final images = await loadLayoutImages(
+      layout,
+      reader: _imageReader,
+      androidIcons: _platform.needsAndroidIcons,
+      assetReader: _assetReader,
+    );
     final id = await _platform.start(
       layoutJson: jsonEncode(layout.toJson()),
       stateJson: jsonEncode(normalized),
