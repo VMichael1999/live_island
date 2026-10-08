@@ -60,3 +60,24 @@ Verificado en el simulador de iPhone 17 Pro (iOS 26.5) con los casos Taxi, Deliv
 | Fondo de la tarjeta de bloqueo `system` | Oscuro translúcido | Lo pone el sistema (claro u oscuro según el modo) | `activityBackgroundTint(nil)` |
 | Permiso | — | La primera vez iOS pregunta "¿Permitir actividades de <app>?" en la pantalla de bloqueo | Lo muestra el sistema; no se puede evitar |
 | Destino mínimo de la app | — | Xcode 27 solo compila para iOS 15.0 o superior; el plugin pide 15.0 | `live_island.podspec` |
+
+## Android real frente al HTML (Fase 4)
+
+Verificado en un emulador Android 17 (API 37, Pixel 10 Pro XL) con Taxi y Courier: `dumpsys notification` marca ambos como `PROMOTED_ONGOING` con `ProgressStyle`, el chip aparece en la barra de estado y el tracker avanza con el valor de progreso (90/200 → 150/200 en el Taxi).
+
+| Tema | HTML | Android | Motivo |
+| --- | --- | --- | --- |
+| Etiquetas de etapas bajo la barra | Texto bajo cada punto | No existen | `ProgressStyle` solo tiene tramos y puntos. La etapa actual va en `setSubText` ("Asignado", "En camino"…) |
+| Chip con cuenta regresiva | "6 min" | Cuenta regresiva en vivo `05:43` | Es el cronómetro del sistema (`setWhen` + `setUsesChronometer` + `setChronometerCountDown`); un texto fijo quedaría desactualizado |
+| Chip de texto | ≤7 caracteres completo, 8–12 recortado, más solo ícono | Igual | `LiveSpec.chipFor`, mismo criterio que `check()` |
+| Tracker con círculo de acento | Círculo de 26 pt con ícono | El ícono se dibuja tal cual | `setProgressTrackerIcon` no admite fondo. `LiveTracker.background` solo se aplica en iOS |
+| Anillo | Anillo | Barra de `ProgressStyle` | No existe en Android (ya lo avisa `check()`) |
+| Íconos de la barra y de los botones | SF Symbols / Lucide | PNG indicado en `LiveIcon.symbol(android: ...)` | Android no tiene SF Symbols; el PNG viaja desde Dart. Sin `android:` el ícono se omite |
+| Ícono de los botones | Se dibuja junto al texto | Android lo ignora en este estilo | Lo decide el sistema |
+| Ícono pequeño | Silueta del logo | `androidSmallIcon`, si no el alfa del `appLogo`, si no el ícono de la app | Android lo pinta en un solo color; un logo opaco se ve como cuadro (`check()` lo avisa) |
+| `staleAfter` y `relevance` | — | Se ignoran | Android no tiene equivalente |
+| `LiveMetric` | — | No se traduce | `MetricStyle` es de API 37 y aún no está en un SDK estable de compilación |
+| Por debajo de Android 16 | — | Notificación en curso con barra estándar, sin chip ni puntos | Sin verificar en emulador (solo hay imagen de API 37) |
+| Promoción | — | Se pide con el extra `android.requestPromotedOngoing` | `Notification.Builder#setRequestPromotedOngoing` existe desde el SDK 36.1 y solo escribe ese extra; así el plugin compila con el SDK 36 |
+| Permisos | — | `POST_NOTIFICATIONS` (13+, se pide con `LiveIsland.requestPermission()`) y `POST_PROMOTED_NOTIFICATIONS` (normal, se concede al instalar) | El usuario además puede quitar la promoción en Ajustes (`LiveIsland.openPromotionSettings()`) |
+| Entrega de los botones a Dart | — | Los botones envían su `id` por un `EventChannel` (`live_island/actions`) | El callback de Dart (`LiveIsland.onAction`) llega en la Fase 5 |
