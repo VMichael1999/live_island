@@ -24,6 +24,41 @@ class LiveImagePayload {
   };
 }
 
+/// Un token de push de iOS (ActivityKit).
+class LivePushToken {
+  const LivePushToken({required this.token, this.activityId});
+
+  /// Token en hexadecimal, listo para enviarlo al servidor.
+  final String token;
+
+  /// Actividad a la que pertenece. `null` = token de push-to-start (iOS 17.2),
+  /// que sirve para iniciar actividades desde el servidor.
+  final String? activityId;
+
+  bool get isPushToStart => activityId == null;
+
+  @override
+  String toString() =>
+      'LivePushToken(${activityId ?? 'push-to-start'}: $token)';
+}
+
+/// Eventos que la plataforma envía sobre push.
+sealed class LivePushEvent {
+  const LivePushEvent();
+}
+
+/// Llegó un token nuevo (de una actividad o de push-to-start).
+class LivePushTokenEvent extends LivePushEvent {
+  const LivePushTokenEvent(this.token);
+  final LivePushToken token;
+}
+
+/// Una actividad empezó por push (iOS push-to-start, Android `handlePush`).
+class LivePushStartedEvent extends LivePushEvent {
+  const LivePushStartedEvent(this.activityId);
+  final String activityId;
+}
+
 /// Cómo se descarta una actividad al terminar.
 class LiveDismiss {
   const LiveDismiss._(this.type, this.after);
@@ -63,6 +98,29 @@ abstract class LiveIslandPlatform {
   /// Android: notificaciones permitidas y, en Android 16+, promovidas.)
   Future<bool> areEnabled();
 
+  /// Ids de las actividades que siguen vivas (también las iniciadas antes de
+  /// que la app se cerrara o por un push).
+  Future<List<String>> activeActivities();
+
+  /// Id de cada botón que el usuario toca en la actividad. Las acciones que
+  /// llegaron con la app cerrada se entregan al empezar a escuchar.
+  Stream<String> get actions;
+
+  /// Tokens de push y actividades iniciadas por push.
+  Stream<LivePushEvent> get pushEvents;
+
+  /// Guarda un diseño con nombre en el dispositivo. Hace falta para iniciar
+  /// actividades desde un push, que no puede llevar el diseño.
+  Future<void> registerLayout({
+    required String name,
+    required String layoutJson,
+    required List<LiveImagePayload> images,
+  });
+
+  /// Procesa los datos de un push de FCM (Android). Devuelve el id de la
+  /// actividad afectada. En iOS no hace nada: APNs llega directo a ActivityKit.
+  Future<String?> handlePush(Map<String, Object?> data);
+
   /// Pide el permiso de notificaciones (Android 13+). En iOS no hace nada y
   /// devuelve si las actividades están activas.
   Future<bool> requestPermission();
@@ -79,6 +137,7 @@ abstract class LiveIslandPlatform {
     String? deepLink,
     Duration? staleAfter,
     double relevance = 0,
+    bool requestPushToken = false,
   });
 
   Future<void> update(String id, String stateJson, {Duration? staleAfter});
@@ -96,6 +155,8 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
     : _channel = channel ?? const MethodChannel('live_island');
 
   final MethodChannel _channel;
+  static const _actionsChannel = EventChannel('live_island/actions');
+  static const _pushChannel = EventChannel('live_island/push');
 
   Future<T?> _call<T>(String method, [Map<String, Object?>? args]) async {
     try {
@@ -109,6 +170,45 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
       );
     }
   }
+
+  @override
+  Future<List<String>> activeActivities() async =>
+      (await _call<List<Object?>>('activeActivities') ?? const [])
+          .cast<String>();
+
+  @override
+  Stream<String> get actions =>
+      _actionsChannel.receiveBroadcastStream().map((e) => e as String);
+
+  @override
+  Stream<LivePushEvent> get pushEvents =>
+      _pushChannel.receiveBroadcastStream().map((e) {
+        final m = Map<String, Object?>.from(e as Map);
+        return switch (m['type']) {
+          'started' => LivePushStartedEvent(m['activityId']! as String),
+          _ => LivePushTokenEvent(
+            LivePushToken(
+              token: m['token']! as String,
+              activityId: m['activityId'] as String?,
+            ),
+          ),
+        };
+      });
+
+  @override
+  Future<void> registerLayout({
+    required String name,
+    required String layoutJson,
+    required List<LiveImagePayload> images,
+  }) => _call<void>('registerLayout', {
+    'name': name,
+    'layout': layoutJson,
+    'images': [for (final i in images) i.toMap()],
+  });
+
+  @override
+  Future<String?> handlePush(Map<String, Object?> data) =>
+      _call<String>('handlePush', {'data': data});
 
   @override
   bool get needsAndroidIcons => defaultTargetPlatform == TargetPlatform.android;
@@ -132,6 +232,7 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
     String? deepLink,
     Duration? staleAfter,
     double relevance = 0,
+    bool requestPushToken = false,
   }) async {
     final id = await _call<String>('start', {
       'layout': layoutJson,
@@ -143,6 +244,7 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
               ? null
               : staleAfter!.inMilliseconds / 1000,
       'relevance': relevance,
+      'requestPushToken': requestPushToken,
     });
     if (id == null) {
       throw const LiveIslandException(

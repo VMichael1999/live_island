@@ -17,6 +17,10 @@ export 'src/platform/live_island_platform.dart'
     show
         LiveDismiss,
         LiveImagePayload,
+        LivePushEvent,
+        LivePushStartedEvent,
+        LivePushToken,
+        LivePushTokenEvent,
         LiveIslandException,
         LiveIslandPlatform,
         MethodChannelLiveIslandPlatform;

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'core/check.dart';
@@ -22,6 +23,13 @@ class LiveActivity {
         jsonEncode(LiveState.normalize(state)),
         staleAfter: staleAfter,
       );
+
+  /// Tokens de push de esta actividad (iOS; empiezan a llegar poco después
+  /// de [LiveIsland.start] con `requestPushToken: true`). Envíalos a tu
+  /// servidor para actualizarla o terminarla por APNs.
+  Stream<String> get pushTokens => _platform.pushEvents
+      .where((e) => e is LivePushTokenEvent && e.token.activityId == id)
+      .map((e) => (e as LivePushTokenEvent).token.token);
 
   /// Termina la actividad. Con [state] deja un último estado visible.
   Future<void> end({
@@ -65,6 +73,63 @@ abstract final class LiveIsland {
   static Future<bool> openPromotionSettings() =>
       _platform.openPromotionSettings();
 
+  /// Las actividades que siguen vivas, por ejemplo tras reabrir la app o
+  /// cuando una acción llegó con la app cerrada, para poder actualizarlas.
+  static Future<List<LiveActivity>> activeActivities() async => [
+    for (final id in await _platform.activeActivities())
+      LiveActivity._(id, _platform),
+  ];
+
+  /// Cada vez que el usuario toca un botón de una actividad llega aquí su
+  /// `id` (el de `LiveButton(id: ...)`). Las acciones que ocurrieron con la
+  /// app cerrada se entregan al empezar a escuchar.
+  static Stream<String> get actions => _platform.actions;
+
+  /// Atajo de [actions]: llama a [callback] con el id de cada botón tocado.
+  /// Cancela la suscripción devuelta cuando ya no la necesites.
+  static StreamSubscription<String> onAction(
+    void Function(String id) callback,
+  ) => _platform.actions.listen(callback);
+
+  /// Tokens de push de iOS: los de cada actividad (con `requestPushToken`) y
+  /// el de push-to-start (iOS 17.2), que no tiene `activityId`.
+  static Stream<LivePushToken> get pushTokens => _platform.pushEvents
+      .where((e) => e is LivePushTokenEvent)
+      .map((e) => (e as LivePushTokenEvent).token);
+
+  /// Actividades que empezaron por un push (push-to-start en iOS; [handlePush]
+  /// con `event: start` en Android).
+  static Stream<LiveActivity> get startedByPush => _platform.pushEvents
+      .where((e) => e is LivePushStartedEvent)
+      .map(
+        (e) =>
+            LiveActivity._((e as LivePushStartedEvent).activityId, _platform),
+      );
+
+  /// Guarda [layout] en el dispositivo con el nombre [name]. Una actividad
+  /// iniciada desde un push usa ese diseño por su nombre, porque un push no
+  /// puede llevar el diseño. Vuelve a llamarlo si el diseño cambia.
+  static Future<void> registerLayout(String name, LiveLayout layout) async {
+    final images = await loadLayoutImages(
+      layout,
+      reader: _imageReader,
+      androidIcons: _platform.needsAndroidIcons,
+      assetReader: _assetReader,
+    );
+    await _platform.registerLayout(
+      name: name,
+      layoutJson: jsonEncode(layout.toJson()),
+      images: images,
+    );
+  }
+
+  /// Procesa los datos de un mensaje de FCM (Android) para iniciar, actualizar
+  /// o terminar una actividad; ver `docs/push.md`. Llámalo desde tu handler de
+  /// `firebase_messaging`. Devuelve el id de la actividad afectada. En iOS no
+  /// hace nada: APNs llega directo a ActivityKit.
+  static Future<String?> handlePush(Map<String, Object?> data) =>
+      _platform.handlePush(data);
+
   /// Inicia una actividad con su [layout] (que viaja una sola vez) y su
   /// estado inicial [state].
   ///
@@ -78,6 +143,7 @@ abstract final class LiveIsland {
     String? deepLink,
     Duration? staleAfter,
     double relevance = 0,
+    bool requestPushToken = false,
   }) async {
     final normalized = LiveState.normalize(state);
     final report = check(layout, normalized, androidPromotable: true);
@@ -100,6 +166,7 @@ abstract final class LiveIsland {
       deepLink: deepLink,
       staleAfter: staleAfter,
       relevance: relevance,
+      requestPushToken: requestPushToken,
     );
     return LiveActivity._(id, _platform);
   }

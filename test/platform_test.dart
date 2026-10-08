@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
@@ -15,6 +16,38 @@ class _Call {
 class _FakePlatform implements LiveIslandPlatform {
   final calls = <_Call>[];
   bool enabled = true;
+  final actionsController = StreamController<String>.broadcast();
+  final pushController = StreamController<LivePushEvent>.broadcast();
+
+  List<String> active = ['a1', 'a2'];
+
+  @override
+  Future<List<String>> activeActivities() async => active;
+
+  @override
+  Stream<String> get actions => actionsController.stream;
+
+  @override
+  Stream<LivePushEvent> get pushEvents => pushController.stream;
+
+  @override
+  Future<void> registerLayout({
+    required String name,
+    required String layoutJson,
+    required List<LiveImagePayload> images,
+  }) async => calls.add(
+    _Call('registerLayout', {
+      'name': name,
+      'layout': layoutJson,
+      'images': images,
+    }),
+  );
+
+  @override
+  Future<String?> handlePush(Map<String, Object?> data) async {
+    calls.add(_Call('handlePush', {'data': data}));
+    return 'pushed-1';
+  }
 
   @override
   bool needsAndroidIcons = false;
@@ -36,9 +69,11 @@ class _FakePlatform implements LiveIslandPlatform {
     String? deepLink,
     Duration? staleAfter,
     double relevance = 0,
+    bool requestPushToken = false,
   }) async {
     calls.add(
       _Call('start', {
+        'requestPushToken': requestPushToken,
         'layout': layoutJson,
         'state': stateJson,
         'images': images,
@@ -242,6 +277,109 @@ void main() {
     expect(await LiveIsland.areEnabled(), isTrue);
     platform.enabled = false;
     expect(await LiveIsland.areEnabled(), isFalse);
+  });
+
+  group('interacción y push', () {
+    test('onAction entrega el id de cada botón tocado', () async {
+      final ids = <String>[];
+      final sub = LiveIsland.onAction(ids.add);
+      platform.actionsController
+        ..add('llamar')
+        ..add('mas_15_min');
+      await Future<void>.delayed(Duration.zero);
+      expect(ids, ['llamar', 'mas_15_min']);
+      await sub.cancel();
+      platform.actionsController.add('ignorada');
+      await Future<void>.delayed(Duration.zero);
+      expect(ids, hasLength(2));
+    });
+
+    test('pushTokens separa los de actividad del de push-to-start', () async {
+      final tokens = <LivePushToken>[];
+      final sub = LiveIsland.pushTokens.listen(tokens.add);
+      platform.pushController
+        ..add(
+          const LivePushTokenEvent(
+            LivePushToken(token: 'aa', activityId: 'a1'),
+          ),
+        )
+        ..add(const LivePushTokenEvent(LivePushToken(token: 'bb')))
+        ..add(const LivePushStartedEvent('a2'));
+      await Future<void>.delayed(Duration.zero);
+      expect(tokens.map((t) => t.token), ['aa', 'bb']);
+      expect(tokens.map((t) => t.isPushToStart), [false, true]);
+      await sub.cancel();
+    });
+
+    test('LiveActivity.pushTokens solo trae los de su actividad', () async {
+      final act = await LiveIsland.start(
+        layout: _plain,
+        state: {'a': 1},
+        requestPushToken: true,
+      );
+      expect(platform.calls.single.args['requestPushToken'], isTrue);
+      final got = <String>[];
+      final sub = act.pushTokens.listen(got.add);
+      platform.pushController
+        ..add(
+          const LivePushTokenEvent(
+            LivePushToken(token: 'otro', activityId: 'x'),
+          ),
+        )
+        ..add(
+          const LivePushTokenEvent(
+            LivePushToken(token: 'mio', activityId: 'activity-1'),
+          ),
+        );
+      await Future<void>.delayed(Duration.zero);
+      expect(got, ['mio']);
+      await sub.cancel();
+    });
+
+    test('startedByPush entrega la actividad iniciada por push', () async {
+      final started = <LiveActivity>[];
+      final sub = LiveIsland.startedByPush.listen(started.add);
+      platform.pushController.add(const LivePushStartedEvent('push-9'));
+      await Future<void>.delayed(Duration.zero);
+      expect(started.single.id, 'push-9');
+      await started.single.update({'progreso': 0.5});
+      expect(platform.calls.last.name, 'update');
+      expect(platform.calls.last.args['id'], 'push-9');
+      await sub.cancel();
+    });
+
+    test(
+      'registerLayout guarda el diseño con su nombre y sus imágenes',
+      () async {
+        final p = fx.presets.firstWhere((p) => p.id == 'taxi');
+        await LiveIsland.registerLayout('taxi', fx.layoutOf(p));
+        final c = platform.calls.single;
+        expect(c.name, 'registerLayout');
+        expect(c.args['name'], 'taxi');
+        expect((jsonDecode(c.args['layout']! as String) as Map)['v'], 1);
+        expect((c.args['images']! as List), isNotEmpty);
+      },
+    );
+
+    test(
+      'activeActivities devuelve las que siguen vivas, listas para actualizar',
+      () async {
+        final list = await LiveIsland.activeActivities();
+        expect(list.map((a) => a.id), ['a1', 'a2']);
+        await list.last.update({'progreso': 1});
+        expect(platform.calls.last.args['id'], 'a2');
+      },
+    );
+
+    test('handlePush pasa los datos a la plataforma', () async {
+      final id = await LiveIsland.handlePush({
+        'live_island': '{"event":"update"}',
+      });
+      expect(id, 'pushed-1');
+      expect(platform.calls.single.args['data'], {
+        'live_island': '{"event":"update"}',
+      });
+    });
   });
 
   group('MethodChannelLiveIslandPlatform', () {
