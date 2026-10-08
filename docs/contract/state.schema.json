@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pub.dev/packages/live_island/contract/state.schema.json",
+  "title": "live_island state (estado)",
+  "description": "Los datos de la actividad. Es lo único que viaja en cada update() y en cada push. Las claves las elige el desarrollador y se enlazan desde el layout con 'bind'. Máximo 4 096 bytes serializado (límite de ActivityKit).",
+  "type": "object",
+  "maxProperties": 64,
+  "propertyNames": { "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" },
+  "additionalProperties": {
+    "description": "Tipos simples. Fechas: string ISO 8601 en UTC con 'Z' (ej. 2026-10-04T15:06:00Z). Progreso: número entre 0 y 1.",
+    "oneOf": [
+      { "type": "string" },
+      { "type": "number" },
+      { "type": "boolean" },
+      { "type": "null" }
+    ]
+  },
+  "examples": [
+    {
+      "titulo": "Tu conductor está en camino",
+      "subtitulo": "Toyota Yaris gris · ABC-123",
+      "nombre": "Carlos M.",
+      "llegaA": "2026-10-04T15:06:00Z",
+      "progreso": 0.45
+    }
+  ]
+}

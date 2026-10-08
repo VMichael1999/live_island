@@ -1,0 +1,63 @@
+{
+  "v": 1,
+  "theme": { "accent": "#1F6FEB", "background": "system" },
+  "appLogo": { "t": "image", "img": "logo", "fit": "cover", "shape": "rounded" },
+  "androidSmallIcon": { "t": "image", "img": "logo_silueta" },
+  "images": {
+    "logo": { "file": "logo.png", "w": 120, "h": 120 },
+    "logo_silueta": { "file": "logo_silueta.png", "w": 96, "h": 96 },
+    "auto": { "file": "auto.png", "w": 216, "h": 97 }
+  },
+  "regions": {
+    "compactLeading": { "t": "avatar", "text": "CM" },
+    "compactTrailing": { "t": "countdown", "bind": "llegaA", "size": 15, "w": 600, "accent": true },
+    "minimal": { "t": "avatar", "text": "CM" },
+    "expanded": {
+      "leading": { "t": "avatar", "text": "CM", "size": 46 },
+      "center": {
+        "t": "col",
+        "c": [
+          { "t": "text", "bind": "titulo", "size": 15, "w": 600, "lines": 2 },
+          { "t": "text", "bind": "subtitulo", "size": 13, "muted": true }
+        ]
+      },
+      "trailing": {
+        "t": "col",
+        "align": "end",
+        "c": [
+          { "t": "countdown", "bind": "llegaA", "size": 22, "w": 700, "accent": true },
+          { "t": "text", "bind": "nombre", "size": 12, "muted": true }
+        ]
+      },
+      "bottom": {
+        "t": "col",
+        "gap": 12,
+        "c": [
+          {
+            "t": "segments",
+            "bind": "progreso",
+            "labels": ["Asignado", "En camino", "Llegó"],
+            "points": true,
+            "tracker": { "visual": { "t": "image", "img": "auto", "fit": "contain" }, "height": 24, "background": "none" },
+            "end": { "t": "icon", "sf": "mappin", "android": "assets/live/mappin.png" }
+          },
+          {
+            "t": "row",
+            "gap": 8,
+            "c": [
+              { "t": "button", "id": "llamar", "label": "Llamar", "icon": { "t": "icon", "sf": "phone.fill", "android": "assets/live/phone.png" } },
+              { "t": "button", "id": "compartir", "label": "Compartir", "icon": { "t": "icon", "sf": "square.and.arrow.up", "android": "assets/live/share2.png" } }
+            ]
+          }
+        ]
+      }
+    },
+    "lockScreen": { "same": "expanded" }
+  },
+  "android": {
+    "title": { "bind": "titulo" },
+    "text": { "fmt": "{subtitulo} · {nombre}" },
+    "chip": { "t": "countdown", "bind": "llegaA" },
+    "colorized": false
+  }
+}

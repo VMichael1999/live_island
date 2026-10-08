@@ -1,0 +1,363 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pub.dev/packages/live_island/contract/layout.schema.json",
+  "title": "live_island layout (diseño)",
+  "description": "El diseño de una actividad. Viaja UNA vez, en LiveIsland.start(). En iOS se guarda como String JSON en los atributos estáticos de la actividad; en Android, en memoria del servicio. Nunca contiene datos que cambian: esos viven en el estado (state.schema.json) y se enlazan con 'bind'.",
+  "type": "object",
+  "required": ["v", "theme", "regions"],
+  "additionalProperties": false,
+  "properties": {
+    "v": { "const": 1, "description": "Versión del contrato." },
+    "theme": { "$ref": "#/$defs/theme" },
+    "appLogo": { "$ref": "#/$defs/visual", "description": "Pantalla de bloqueo (ícono de app de 40 pt) e ícono grande de Android. Ver docs/PROMPT.md §5.1." },
+    "androidSmallIcon": { "$ref": "#/$defs/visual", "description": "Silueta de un solo color para la barra de estado, el chip y el encabezado de Android." },
+    "images": {
+      "type": "object",
+      "description": "Manifiesto de imágenes ya reducidas por el plugin. La clave es el id usado en {t:'image', img:'<id>'}. El plugin escribe los archivos en el App Group (iOS) o los guarda en memoria (Android).",
+      "additionalProperties": { "$ref": "#/$defs/imageMeta" }
+    },
+    "regions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "compactLeading": { "$ref": "#/$defs/node" },
+        "compactTrailing": { "$ref": "#/$defs/node" },
+        "minimal": { "$ref": "#/$defs/node" },
+        "expanded": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "leading": { "$ref": "#/$defs/node" },
+            "center": { "$ref": "#/$defs/node" },
+            "trailing": { "$ref": "#/$defs/node" },
+            "bottom": { "$ref": "#/$defs/node" }
+          }
+        },
+        "lockScreen": {
+          "description": "O bien {same:'expanded'} (LiveLockScreen.sameAsExpanded) o un nodo propio.",
+          "oneOf": [
+            { "type": "object", "required": ["same"], "additionalProperties": false, "properties": { "same": { "const": "expanded" } } },
+            { "$ref": "#/$defs/node" }
+          ]
+        }
+      }
+    },
+    "android": { "$ref": "#/$defs/android" }
+  },
+  "$defs": {
+    "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$", "description": "#RRGGBB o #RRGGBBAA." },
+
+    "theme": {
+      "type": "object",
+      "required": ["accent"],
+      "additionalProperties": false,
+      "properties": {
+        "accent": { "$ref": "#/$defs/color" },
+        "background": { "enum": ["system", "light", "accent"], "default": "system", "description": "Fondo de la tarjeta de bloqueo. system = oscuro translúcido; light = claro translúcido; accent = color sólido con texto blanco y primer botón invertido." }
+      }
+    },
+
+    "imageMeta": {
+      "type": "object",
+      "required": ["file", "w", "h"],
+      "additionalProperties": false,
+      "properties": {
+        "file": { "type": "string", "description": "Nombre del archivo ya reducido (png/jpg)." },
+        "w": { "type": "integer", "minimum": 1 },
+        "h": { "type": "integer", "minimum": 1, "description": "w y h permiten respetar la proporción sin decodificar la imagen." }
+      }
+    },
+
+    "binding": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Nombre de un campo del estado. Lo elige el desarrollador."
+    },
+
+    "condition": {
+      "type": "object",
+      "required": ["bind"],
+      "minProperties": 2,
+      "maxProperties": 2,
+      "additionalProperties": false,
+      "description": "bind + exactamente un operador (equivalente a bind('x').equals(2)).",
+      "properties": {
+        "bind": { "$ref": "#/$defs/binding" },
+        "eq": {}, "neq": {},
+        "gt": { "type": "number" }, "gte": { "type": "number" },
+        "lt": { "type": "number" }, "lte": { "type": "number" },
+        "truthy": { "type": "boolean" }
+      }
+    },
+
+    "visual": {
+      "description": "Todo lo que se puede poner donde va un ícono: ícono del sistema, imagen propia o avatar con iniciales.",
+      "oneOf": [
+        { "$ref": "#/$defs/icon" },
+        { "$ref": "#/$defs/image" },
+        { "$ref": "#/$defs/avatar" }
+      ]
+    },
+    "icon": {
+      "type": "object",
+      "required": ["t", "sf"],
+      "additionalProperties": false,
+      "properties": {
+        "t": { "const": "icon" },
+        "sf": { "type": "string", "description": "Nombre del SF Symbol (iOS)." },
+        "android": { "type": "string", "description": "Ruta del PNG/vector para Android. Si falta, Android usa una silueta generada o el ícono del launcher." },
+        "size": { "type": "number", "minimum": 1 },
+        "accent": { "type": "boolean", "default": false, "description": "Pintar con el color de acento." },
+        "color": { "$ref": "#/$defs/color" }
+      }
+    },
+    "image": {
+      "type": "object",
+      "required": ["t", "img"],
+      "additionalProperties": false,
+      "properties": {
+        "t": { "const": "image" },
+        "img": { "type": "string", "description": "Id en layout.images." },
+        "fit": { "enum": ["contain", "cover"], "default": "contain" },
+        "shape": { "enum": ["rounded", "circle", "square"], "default": "rounded" },
+        "size": { "type": "number", "minimum": 1 }
+      }
+    },
+    "avatar": {
+      "type": "object",
+      "required": ["t"],
+      "additionalProperties": false,
+      "properties": {
+        "t": { "const": "avatar" },
+        "text": { "type": "string", "maxLength": 2, "description": "Iniciales; círculo de acento. Se ignora si hay img." },
+        "img": { "type": "string", "description": "Foto (id en layout.images); siempre circular." },
+        "bind": { "$ref": "#/$defs/binding", "description": "Iniciales tomadas del estado." },
+        "size": { "type": "number", "minimum": 1 }
+      }
+    },
+
+    "tracker": {
+      "type": "object",
+      "required": ["visual"],
+      "additionalProperties": false,
+      "properties": {
+        "visual": { "oneOf": [ { "$ref": "#/$defs/icon" }, { "$ref": "#/$defs/image" } ] },
+        "height": { "type": "number", "default": 24, "description": "Solo imagen: alto fijo en pt, ancho automático (proporción respetada)." },
+        "background": { "enum": ["accentCircle", "none"], "default": "accentCircle", "description": "Círculo de 26 pt de acento, o sin fondo (como el auto del preset Taxi)." }
+      }
+    },
+
+    "node": {
+      "description": "Un componente. El campo 't' elige el tipo.",
+      "oneOf": [
+        { "$ref": "#/$defs/row" }, { "$ref": "#/$defs/col" }, { "$ref": "#/$defs/stack" },
+        { "$ref": "#/$defs/spacer" }, { "$ref": "#/$defs/padding" }, { "$ref": "#/$defs/box" }, { "$ref": "#/$defs/if" },
+        { "$ref": "#/$defs/text" }, { "$ref": "#/$defs/countdown" }, { "$ref": "#/$defs/stopwatch" }, { "$ref": "#/$defs/relative" },
+        { "$ref": "#/$defs/icon" }, { "$ref": "#/$defs/image" }, { "$ref": "#/$defs/avatar" },
+        { "$ref": "#/$defs/bar" }, { "$ref": "#/$defs/ring" }, { "$ref": "#/$defs/segments" },
+        { "$ref": "#/$defs/metric" }, { "$ref": "#/$defs/button" }, { "$ref": "#/$defs/toggle" }
+      ]
+    },
+
+    "children": { "type": "array", "items": { "$ref": "#/$defs/node" } },
+
+    "row": {
+      "type": "object", "required": ["t", "c"], "additionalProperties": false,
+      "properties": {
+        "t": { "const": "row" }, "c": { "$ref": "#/$defs/children" },
+        "gap": { "type": "number", "default": 8 },
+        "align": { "enum": ["start", "center", "end"], "default": "center" }
+      }
+    },
+    "col": {
+      "type": "object", "required": ["t", "c"], "additionalProperties": false,
+      "properties": {
+        "t": { "const": "col" }, "c": { "$ref": "#/$defs/children" },
+        "gap": { "type": "number", "default": 2 },
+        "align": { "enum": ["start", "center", "end"], "default": "start" }
+      }
+    },
+    "stack": {
+      "type": "object", "required": ["t", "c"], "additionalProperties": false,
+      "properties": { "t": { "const": "stack" }, "c": { "$ref": "#/$defs/children" }, "align": { "enum": ["start", "center", "end"], "default": "center" } }
+    },
+    "spacer": {
+      "type": "object", "required": ["t"], "additionalProperties": false,
+      "properties": { "t": { "const": "spacer" }, "size": { "type": "number", "description": "Fijo en pt. Sin size = flexible." } }
+    },
+    "padding": {
+      "type": "object", "required": ["t", "child"], "additionalProperties": false,
+      "properties": {
+        "t": { "const": "padding" }, "child": { "$ref": "#/$defs/node" },
+        "all": { "type": "number" }, "h": { "type": "number" }, "v": { "type": "number" },
+        "top": { "type": "number" }, "bottom": { "type": "number" }, "left": { "type": "number" }, "right": { "type": "number" }
+      }
+    },
+    "box": {
+      "type": "object", "required": ["t"], "additionalProperties": false,
+      "properties": {
+        "t": { "const": "box" }, "child": { "$ref": "#/$defs/node" },
+        "size": { "type": "number" }, "radius": { "type": "number" },
+        "tint": { "type": "number", "minimum": 0, "maximum": 1, "description": "Opacidad del color de acento como fondo (0.22 en el HTML)." },
+        "color": { "$ref": "#/$defs/color" }
+      }
+    },
+    "if": {
+      "type": "object", "required": ["t", "when", "then"], "additionalProperties": false,
+      "properties": { "t": { "const": "if" }, "when": { "$ref": "#/$defs/condition" }, "then": { "$ref": "#/$defs/node" }, "else": { "$ref": "#/$defs/node" } }
+    },
+
+    "textStyle": {
+      "type": "object",
+      "properties": {
+        "size": { "type": "number", "description": "pt. Por defecto 15." },
+        "w": { "type": "integer", "minimum": 100, "maximum": 900, "description": "Peso de fuente (400, 600, 700…)." },
+        "muted": { "type": "boolean", "default": false },
+        "accent": { "type": "boolean", "default": false },
+        "color": { "$ref": "#/$defs/color" },
+        "lines": { "type": "integer", "minimum": 1, "default": 1, "description": "Máximo de líneas; el resto se recorta con elipsis." },
+        "align": { "enum": ["start", "center", "end"] },
+        "tabular": { "type": "boolean", "description": "Cifras tabulares. Verdadero por defecto en countdown/stopwatch." }
+      }
+    },
+    "text": {
+      "type": "object", "required": ["t"], "additionalProperties": false,
+      "description": "Una de tres fuentes: bind (campo del estado), text (literal) o fmt (plantilla con {campo}).",
+      "properties": {
+        "t": { "const": "text" },
+        "bind": { "$ref": "#/$defs/binding" },
+        "text": { "type": "string" },
+        "fmt": { "type": "string", "description": "Ej.: \"{subtitulo} · {nombre}\"." },
+        "size": {"$ref": "#/$defs/textStyle/properties/size"}, "w": {"$ref": "#/$defs/textStyle/properties/w"}, "muted": {"$ref": "#/$defs/textStyle/properties/muted"}, "accent": {"$ref": "#/$defs/textStyle/properties/accent"}, "color": {"$ref": "#/$defs/textStyle/properties/color"}, "lines": {"$ref": "#/$defs/textStyle/properties/lines"}, "align": {"$ref": "#/$defs/textStyle/properties/align"}, "tabular": {"$ref": "#/$defs/textStyle/properties/tabular"}
+      },
+      "oneOf": [ { "required": ["bind"] }, { "required": ["text"] }, { "required": ["fmt"] } ]
+    },
+    "countdown": {
+      "type": "object", "required": ["t", "bind"], "additionalProperties": false,
+      "description": "Cuenta regresiva hasta la fecha ISO 8601 del campo 'bind'. Corre sola en iOS (Text(timerInterval:)) y Android (cronómetro).",
+      "properties": {
+        "t": { "const": "countdown" }, "bind": { "$ref": "#/$defs/binding" },
+        "size": {"$ref": "#/$defs/textStyle/properties/size"}, "w": {"$ref": "#/$defs/textStyle/properties/w"}, "muted": {"$ref": "#/$defs/textStyle/properties/muted"}, "accent": {"$ref": "#/$defs/textStyle/properties/accent"}, "color": {"$ref": "#/$defs/textStyle/properties/color"}, "lines": {"$ref": "#/$defs/textStyle/properties/lines"}, "align": {"$ref": "#/$defs/textStyle/properties/align"}, "tabular": {"$ref": "#/$defs/textStyle/properties/tabular"}
+      }
+    },
+    "stopwatch": {
+      "type": "object", "required": ["t", "bind"], "additionalProperties": false,
+      "description": "Cronómetro desde la fecha ISO 8601 del campo 'bind'.",
+      "properties": {
+        "t": { "const": "stopwatch" }, "bind": { "$ref": "#/$defs/binding" },
+        "size": {"$ref": "#/$defs/textStyle/properties/size"}, "w": {"$ref": "#/$defs/textStyle/properties/w"}, "muted": {"$ref": "#/$defs/textStyle/properties/muted"}, "accent": {"$ref": "#/$defs/textStyle/properties/accent"}, "color": {"$ref": "#/$defs/textStyle/properties/color"}, "lines": {"$ref": "#/$defs/textStyle/properties/lines"}, "align": {"$ref": "#/$defs/textStyle/properties/align"}, "tabular": {"$ref": "#/$defs/textStyle/properties/tabular"}
+      }
+    },
+    "relative": {
+      "type": "object", "required": ["t", "bind"], "additionalProperties": false,
+      "description": "Tiempo relativo (\"hace 3 min\", \"en 5 min\") respecto a la fecha del campo 'bind'.",
+      "properties": {
+        "t": { "const": "relative" }, "bind": { "$ref": "#/$defs/binding" },
+        "size": {"$ref": "#/$defs/textStyle/properties/size"}, "w": {"$ref": "#/$defs/textStyle/properties/w"}, "muted": {"$ref": "#/$defs/textStyle/properties/muted"}, "accent": {"$ref": "#/$defs/textStyle/properties/accent"}, "color": {"$ref": "#/$defs/textStyle/properties/color"}, "lines": {"$ref": "#/$defs/textStyle/properties/lines"}, "align": {"$ref": "#/$defs/textStyle/properties/align"}, "tabular": {"$ref": "#/$defs/textStyle/properties/tabular"}
+      }
+    },
+
+    "progressEnds": {
+      "properties": {
+        "tracker": { "$ref": "#/$defs/tracker" },
+        "start": { "oneOf": [ { "$ref": "#/$defs/icon" }, { "$ref": "#/$defs/image" } ], "description": "Ícono al inicio (16 pt)." },
+        "end": { "oneOf": [ { "$ref": "#/$defs/icon" }, { "$ref": "#/$defs/image" } ], "description": "Ícono al final (16 pt)." }
+      }
+    },
+    "bar": {
+      "type": "object", "required": ["t", "bind"], "additionalProperties": false,
+      "properties": {
+        "t": { "const": "bar" }, "bind": { "$ref": "#/$defs/binding", "description": "Campo numérico 0..1." },
+        "tracker": {"$ref": "#/$defs/progressEnds/properties/tracker"}, "start": {"$ref": "#/$defs/progressEnds/properties/start"}, "end": {"$ref": "#/$defs/progressEnds/properties/end"}
+      }
+    },
+    "ring": {
+      "type": "object", "required": ["t", "bind"], "additionalProperties": false,
+      "description": "Anillo. En Android se muestra como barra.",
+      "properties": {
+        "t": { "const": "ring" }, "bind": { "$ref": "#/$defs/binding" },
+        "child": { "$ref": "#/$defs/node", "description": "Contenido dentro del anillo (ícono o imagen)." },
+        "size": { "type": "number" }
+      }
+    },
+    "segments": {
+      "type": "object", "required": ["t", "bind", "labels"], "additionalProperties": false,
+      "description": "Barra por etapas: n etiquetas = n-1 tramos, con puntos opcionales.",
+      "properties": {
+        "t": { "const": "segments" }, "bind": { "$ref": "#/$defs/binding" },
+        "labels": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+        "points": { "type": "boolean", "default": false },
+        "tracker": {"$ref": "#/$defs/progressEnds/properties/tracker"}, "start": {"$ref": "#/$defs/progressEnds/properties/start"}, "end": {"$ref": "#/$defs/progressEnds/properties/end"}
+      }
+    },
+
+    "metric": {
+      "type": "object", "required": ["t", "bind"], "additionalProperties": false,
+      "properties": {
+        "t": { "const": "metric" }, "bind": { "$ref": "#/$defs/binding" },
+        "unit": { "type": "string" }, "label": { "type": "string" }
+      }
+    },
+
+    "action": {
+      "oneOf": [
+        { "type": "object", "required": ["t", "url"], "additionalProperties": false, "properties": { "t": { "const": "deepLink" }, "url": { "type": "string" } } },
+        { "type": "object", "required": ["t", "number"], "additionalProperties": false, "properties": { "t": { "const": "call" }, "number": { "type": "string" } } },
+        { "type": "object", "required": ["t"], "additionalProperties": false, "properties": { "t": { "const": "custom" } } }
+      ]
+    },
+    "button": {
+      "type": "object", "required": ["t", "id", "label"], "additionalProperties": false,
+      "description": "Botón. Por defecto (action 'custom') reenvía su id a LiveIsland.onAction en Dart.",
+      "properties": {
+        "t": { "const": "button" },
+        "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "label": { "type": "string" },
+        "icon": { "oneOf": [ { "$ref": "#/$defs/icon" }, { "$ref": "#/$defs/image" } ] },
+        "action": { "$ref": "#/$defs/action" }
+      }
+    },
+    "toggle": {
+      "type": "object", "required": ["t", "id", "bind"], "additionalProperties": false,
+      "properties": {
+        "t": { "const": "toggle" }, "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "bind": { "$ref": "#/$defs/binding", "description": "Campo booleano del estado." },
+        "label": { "type": "string" }, "icon": { "$ref": "#/$defs/icon" }
+      }
+    },
+
+    "android": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Bloque Android. Las notificaciones usan estilos nativos, no el árbol de nodos.",
+      "properties": {
+        "title": { "$ref": "#/$defs/androidText", "description": "Obligatorio para que Android promueva a Live Update." },
+        "text": { "$ref": "#/$defs/androidText" },
+        "chip": { "$ref": "#/$defs/chip" },
+        "colorized": { "type": "boolean", "default": false, "description": "Si es true Android NO promueve la notificación." },
+        "progress": {
+          "oneOf": [ { "$ref": "#/$defs/bar" }, { "$ref": "#/$defs/segments" }, { "$ref": "#/$defs/ring" } ],
+          "description": "Si falta, se toma el primer nodo de progreso encontrado en expanded.bottom."
+        },
+        "actions": {
+          "type": "array", "maxItems": 3, "items": { "$ref": "#/$defs/button" },
+          "description": "Si falta, se toman los botones de expanded.bottom."
+        }
+      }
+    },
+    "androidText": {
+      "oneOf": [
+        { "type": "object", "required": ["bind"], "additionalProperties": false, "properties": { "bind": { "$ref": "#/$defs/binding" } } },
+        { "type": "object", "required": ["fmt"], "additionalProperties": false, "properties": { "fmt": { "type": "string" } } },
+        { "type": "object", "required": ["text"], "additionalProperties": false, "properties": { "text": { "type": "string" } } }
+      ]
+    },
+    "chip": {
+      "oneOf": [
+        { "type": "object", "required": ["t", "bind"], "additionalProperties": false, "properties": { "t": { "const": "countdown" }, "bind": { "$ref": "#/$defs/binding" } }, "description": "Muestra los minutos (\"6 min\")." },
+        { "type": "object", "required": ["t", "text"], "additionalProperties": false, "properties": { "t": { "const": "text" }, "text": { "type": "string" }, "bind": { "$ref": "#/$defs/binding" } }, "description": "≤7 caracteres completo; 8–12 se recorta a 6 + '…'; >12 o vacío, solo ícono." },
+        { "type": "object", "required": ["t"], "additionalProperties": false, "properties": { "t": { "const": "icon" } } }
+      ]
+    }
+  }
+}
