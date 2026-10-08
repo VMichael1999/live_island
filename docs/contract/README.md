@@ -57,7 +57,9 @@ Estas reglas las comparten la vista previa de Flutter, el renderer SwiftUI y el 
 
 **Valores por defecto de estructura.** `row`: separación 8 y centrado; `col`: separación 2 y alineado al inicio. Una `row` que contiene botones salta de línea si no cabe. Un `spacer` sin tamaño es flexible solo dentro de una `row`.
 
-**Botones.** El primer botón de una superficie es el principal (acento); los demás son secundarios. En fondo `accent` el primero se invierte (blanco con texto de acento).
+**Botones.** El primer botón de una superficie es el principal (acento); los demás son secundarios. En fondo `accent` el primero se invierte (blanco con texto de acento). **La isla expandida de iOS no dibuja botones** (ni las filas que solo contienen botones): tocar la isla siempre abre la app, así que ahí no tienen función. Sí aparecen en la tarjeta de bloqueo y en la notificación de Android.
+
+**Contadores.** Un `countdown` o `stopwatch` ocupa el ancho exacto de sus dígitos y se alinea al borde de su zona (derecha en la isla compacta). Sin eso el contador de iOS (`Text(timerInterval:)`) ocupa todo el ancho disponible y alarga la isla.
 
 **Tarjeta de bloqueo con `{same: "expanded"}`.** Usa `center`, `trailing` y `bottom` de la isla expandida. La zona izquierda es el ícono de app de 40 pt (radio 11), que sale de, en este orden: `appLogo` si es imagen; el `avatar` o la imagen de `expanded.leading`; el ícono de `appLogo` o el del `box` de `expanded.leading` sobre un cuadro de acento. Con `lockScreen` propio el diseño es el del nodo, sin esta regla.
 

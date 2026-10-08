@@ -3,6 +3,9 @@ description: "Live Activities (iOS) y Live Updates (Android) con una sola API en
 version: 0.0.1
 repository: https://github.com/VMichael1999/live_island
 
+executables:
+  setup:
+
 environment:
   sdk: ^3.7.2
   flutter: '>=3.3.0'

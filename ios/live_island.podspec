@@ -9,13 +9,14 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 Live Activities (iOS) y Live Updates (Android) con una sola API en Dart, 100 % editable.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://github.com/VMichael1999/live_island'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'VMichael1999' => 'https://github.com/VMichael1999' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'Classes/**/*', 'LiveIslandExtension/Shared/**/*'
   s.dependency 'Flutter'
-  s.platform = :ios, '12.0'
+  s.platform = :ios, '15.0'
+  s.weak_frameworks = 'ActivityKit'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

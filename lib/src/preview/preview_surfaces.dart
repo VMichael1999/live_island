@@ -243,6 +243,7 @@ class LiveExpandedPreview extends StatelessWidget {
         config: config,
         now: now,
         style: _islandStyle(config.layout),
+        island: true,
       );
       final e = config.layout.expanded ?? const LiveExpanded();
       return _base(
