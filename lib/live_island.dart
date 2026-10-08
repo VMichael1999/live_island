@@ -13,6 +13,13 @@ export 'src/core/layout.dart' hide firstProgress;
 export 'src/core/node.dart';
 export 'src/core/state.dart';
 export 'src/live_island.dart';
+export 'src/platform/live_island_platform.dart'
+    show
+        LiveDismiss,
+        LiveImagePayload,
+        LiveIslandException,
+        LiveIslandPlatform,
+        MethodChannelLiveIslandPlatform;
 export 'src/preview/live_island_preview.dart';
 export 'src/preview/preview_config.dart';
 export 'src/preview/preview_icon.dart';
