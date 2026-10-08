@@ -58,7 +58,7 @@ Contenedor: negro, ancho `min(360, 100 %)`, **radio 44**, relleno `16 20 18`, se
    - **Centro**: título (**15 pt, 600**, interlínea 1.25, puede ocupar 2 líneas) y subtítulo (**13 pt**, `rgba(255,255,255,.62)`, una línea con elipsis).
    - **Trailing** (ancho máx. 130, alineado a la derecha, una línea): dato destacado (**22 pt, 700, tabular, acento**) y debajo el nombre (**12 pt**, blanco al 62 %). Con anillo: en lugar de ambos va un anillo de 46 pt sin contenido.
 2. **Progreso** (`progress(s,'dark')`) si no es anillo. Si es anillo, en su lugar una línea centrada de 12 pt: `"<dato> · <nombre>"`.
-3. **Botones** (`iosActions`).
+3. **Botones**: **no se dibujan en la isla expandida** (decisión de Michael en la fase 3: tocar la isla abre la app, los botones no tendrían función). Sí van en la tarjeta de bloqueo y en Android.
 
 ## 4. iOS · Pantalla de bloqueo (`lockCardHTML`)
 

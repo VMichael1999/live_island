@@ -45,3 +45,18 @@ Para que la API describa exactamente lo que se ve, el "Código Dart generado" ah
 - El anillo va en `expanded.trailing` (`LiveProgress.ring(..., size: 46)`) y debajo una línea con el dato y el nombre, como en el prototipo.
 - `minimal` usa el avatar o la imagen principal si los hay, igual que el dibujo.
 - `bottom` lleva `gap: 12`.
+
+## iOS real frente al HTML (Fase 3)
+
+Verificado en el simulador de iPhone 17 Pro (iOS 26.5) con los casos Taxi, Delivery y Estacionamiento. Los que importan:
+
+| Tema | HTML | iPhone | Motivo |
+| --- | --- | --- | --- |
+| Botones en la isla expandida | Dos botones debajo | **No se dibujan** | Tocar la isla abre la app, así que los botones no tendrían función. Decisión de Michael. Siguen en la tarjeta de bloqueo y en Android |
+| Distribución de la isla expandida | Una fila a todo el ancho: ícono, texto y dato | ActivityKit la reparte en `leading`, `center`, `trailing` y `bottom` y el sistema decide el espacio | Es la API de Apple; el contenido y su orden son los mismos |
+| Alto de la isla expandida | ~160 pt | El sistema la limita a 160 pt; sin botones todo cabe | — |
+| Ancho de la isla compacta | 236 pt fijos | Lo decide el sistema (~200 pt en iPhone 17 Pro); el contador queda pegado al borde derecho | El contador de SwiftUI ocupaba todo el ancho y alargaba la isla; ahora mide lo que sus dígitos |
+| Minimal | Junto a una segunda actividad ficticia | Solo lo muestra iOS cuando hay dos actividades de apps distintas | — |
+| Fondo de la tarjeta de bloqueo `system` | Oscuro translúcido | Lo pone el sistema (claro u oscuro según el modo) | `activityBackgroundTint(nil)` |
+| Permiso | — | La primera vez iOS pregunta "¿Permitir actividades de <app>?" en la pantalla de bloqueo | Lo muestra el sistema; no se puede evitar |
+| Destino mínimo de la app | — | Xcode 27 solo compila para iOS 15.0 o superior; el plugin pide 15.0 | `live_island.podspec` |
