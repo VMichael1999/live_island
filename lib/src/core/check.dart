@@ -6,7 +6,7 @@ import '../components/text.dart';
 import '../components/visuals.dart';
 import 'bind.dart';
 import 'countdown.dart';
-import 'enums.dart';
+import 'image_slots.dart';
 import 'layout.dart';
 import 'node.dart';
 import 'state.dart';
@@ -213,7 +213,7 @@ LiveReport checkLayout(
   }
 
   // 8. Peso de las imágenes y a qué tamaño se reducen.
-  for (final slot in _imageSlots(layout)) {
+  for (final slot in imageSlots(layout)) {
     final img = slot.image;
     final kb =
         img.byteSize == null
@@ -230,70 +230,6 @@ LiveReport checkLayout(
   }
 
   return LiveReport(rows);
-}
-
-class _Slot {
-  const _Slot(this.label, this.px, this.image);
-  final String label, px;
-  final LiveImage image;
-}
-
-/// Las cuatro ranuras de imagen del editor del HTML, en su mismo orden.
-List<_Slot> _imageSlots(LiveLayout layout) {
-  final slots = <_Slot>[];
-  final logo = layout.appLogo;
-  if (logo is LiveImage) {
-    slots.add(_Slot('Logo de la app', '120 × 120 px', logo));
-  }
-  LiveImage? main, avatar;
-  final leads = [
-    layout.compactLeading,
-    layout.minimal,
-    layout.expanded?.leading,
-  ];
-  for (final root in leads) {
-    if (root == null) continue;
-    for (final n in root.descendants) {
-      if (n is LiveAvatar && n.photo != null) {
-        avatar ??= n.photo;
-      } else if (n is LiveImage) {
-        if (n.shape == LiveShape.circle) {
-          avatar ??= n;
-        } else {
-          main ??= n;
-        }
-      }
-    }
-  }
-  if (main != null) {
-    slots.add(_Slot('Imagen del ícono principal', '138 × 138 px', main));
-  }
-  if (avatar != null) {
-    slots.add(_Slot('Foto del avatar', '138 × 138 px', avatar));
-  }
-  final progress = _firstProgressAnywhere(layout);
-  final tracker = switch (progress) {
-    LiveProgress p => p.tracker,
-    LiveSegments s => s.tracker,
-    _ => null,
-  };
-  if (tracker?.visual is LiveImage) {
-    slots.add(
-      _Slot(
-        'Imagen que avanza en la barra',
-        '72 px de alto',
-        tracker!.visual as LiveImage,
-      ),
-    );
-  }
-  return slots;
-}
-
-LiveNode? _firstProgressAnywhere(LiveLayout layout) {
-  for (final n in layout.allNodes) {
-    if (n is LiveProgress || n is LiveSegments) return n;
-  }
-  return null;
 }
 
 enum _ChipMode { full, cut, icon }
