@@ -10,6 +10,9 @@ import 'layout.dart';
 import 'node.dart';
 import 'state.dart';
 
+/// Límite de 4 096 bytes escrito como en el HTML de prototipos.
+const _maxBytesLabel = '4 096';
+
 /// Gravedad de un aviso de [LiveIsland.check].
 enum LiveSeverity { ok, warn, bad }
 
@@ -66,12 +69,18 @@ LiveReport checkLayout(
 
   // 1. Peso del estado.
   final bytes = utf8.encode(jsonEncode(data)).length;
-  final payload = 'Estado por actualización: $bytes bytes de ${LiveState.maxBytes} '
+  final payload =
+      'Estado por actualización: $bytes bytes de $_maxBytesLabel '
       '(iOS). Solo viajan datos, el diseño se envía una vez.';
   if (bytes > LiveState.maxBytes) {
-    rows.add(LiveCheck(LiveSeverity.bad, 'statePayload',
-        'El estado pesa $bytes bytes y supera los ${LiveState.maxBytes} de iOS. '
-        'Quita campos o acorta los textos.'));
+    rows.add(
+      LiveCheck(
+        LiveSeverity.bad,
+        'statePayload',
+        'El estado pesa $bytes bytes y supera los $_maxBytesLabel de iOS. '
+            'Quita campos o acorta los textos.',
+      ),
+    );
   } else {
     rows.add(LiveCheck(LiveSeverity.ok, 'statePayload', payload));
   }
@@ -80,11 +89,19 @@ LiveReport checkLayout(
   final highlight = _text(layout.compactTrailing, data, clock);
   if (highlight != null) {
     final n = highlight.runes.length;
-    rows.add(n > 7
-        ? LiveCheck(LiveSeverity.warn, 'highlightLength',
-            'El dato destacado tiene $n caracteres; en la isla compacta se recorta. Usa 7 o menos.')
-        : const LiveCheck(LiveSeverity.ok, 'highlightLength',
-            'El dato destacado cabe en la isla compacta.'));
+    rows.add(
+      n > 7
+          ? LiveCheck(
+            LiveSeverity.warn,
+            'highlightLength',
+            'El dato destacado tiene $n caracteres; en la isla compacta se recorta. Usa 7 o menos.',
+          )
+          : const LiveCheck(
+            LiveSeverity.ok,
+            'highlightLength',
+            'El dato destacado cabe en la isla compacta.',
+          ),
+    );
   }
 
   // 3. Chip de Android.
@@ -93,65 +110,121 @@ LiveReport checkLayout(
   if (chip != null) {
     final len = chip.length;
     if (chip.mode == _ChipMode.full) {
-      rows.add(LiveCheck(LiveSeverity.ok, 'chip', 'Chip de Android completo ($len caracteres).'));
+      rows.add(
+        LiveCheck(
+          LiveSeverity.ok,
+          'chip',
+          'Chip de Android completo ($len caracteres).',
+        ),
+      );
     } else if (chip.mode == _ChipMode.cut) {
-      rows.add(LiveCheck(LiveSeverity.warn, 'chip',
-          'Chip de Android recortado: “${chip.text}” tiene $len caracteres (máximo 7 para verse completo).'));
+      rows.add(
+        LiveCheck(
+          LiveSeverity.warn,
+          'chip',
+          'Chip de Android recortado: “${chip.text}” tiene $len caracteres (máximo 7 para verse completo).',
+        ),
+      );
     } else {
-      rows.add(LiveCheck(LiveSeverity.warn, 'chip',
-          'Chip de Android solo con ícono${chip.text.isNotEmpty ? ': el texto es demasiado largo.' : '.'}'));
+      rows.add(
+        LiveCheck(
+          LiveSeverity.warn,
+          'chip',
+          'Chip de Android solo con ícono${chip.text.isNotEmpty ? ': el texto es demasiado largo.' : '.'}',
+        ),
+      );
     }
   }
 
   // 4. ¿Android lo promueve?
   final title = _androidText(android?.title, data);
   if (!androidPromotable) {
-    rows.add(const LiveCheck(LiveSeverity.bad, 'androidPromotion',
-        'Android no promueve este caso: no lo inició el usuario como actividad con inicio y fin. Se muestra como notificación normal.'));
+    rows.add(
+      const LiveCheck(
+        LiveSeverity.bad,
+        'androidPromotion',
+        'Android no promueve este caso: no lo inició el usuario como actividad con inicio y fin. Se muestra como notificación normal.',
+      ),
+    );
   } else if (android?.colorized ?? false) {
-    rows.add(const LiveCheck(LiveSeverity.bad, 'androidPromotion',
-        'Android no promueve notificaciones con setColorized(true). Quita el color de fondo.'));
+    rows.add(
+      const LiveCheck(
+        LiveSeverity.bad,
+        'androidPromotion',
+        'Android no promueve notificaciones con setColorized(true). Quita el color de fondo.',
+      ),
+    );
   } else if (title == null || title.isEmpty) {
-    rows.add(const LiveCheck(LiveSeverity.bad, 'androidPromotion',
-        'Android exige un título (setContentTitle) para promover.'));
+    rows.add(
+      const LiveCheck(
+        LiveSeverity.bad,
+        'androidPromotion',
+        'Android exige un título (setContentTitle) para promover.',
+      ),
+    );
   } else {
-    rows.add(const LiveCheck(LiveSeverity.ok, 'androidPromotion',
-        'Android la promueve a Live Update (estilo nativo, sin RemoteViews).'));
+    rows.add(
+      const LiveCheck(
+        LiveSeverity.ok,
+        'androidPromotion',
+        'Android la promueve a Live Update (estilo nativo, sin RemoteViews).',
+      ),
+    );
   }
 
   // 5. Anillo en Android. Se evalúa el progreso que usará Android.
-  final androidProgress = android?.progress ?? firstProgress(layout.expanded?.bottom);
+  final androidProgress =
+      android?.progress ?? firstProgress(layout.expanded?.bottom);
   if (androidProgress is LiveProgress && androidProgress.isRing) {
-    rows.add(const LiveCheck(LiveSeverity.warn, 'ringOnAndroid',
-        'El anillo no existe en Android: se muestra como barra de ProgressStyle.'));
+    rows.add(
+      const LiveCheck(
+        LiveSeverity.warn,
+        'ringOnAndroid',
+        'El anillo no existe en Android: se muestra como barra de ProgressStyle.',
+      ),
+    );
   }
 
   // 6. Etapas insuficientes.
   for (final n in layout.allNodes) {
     if (n is LiveSegments && n.labels.length < 2) {
-      rows.add(const LiveCheck(LiveSeverity.warn, 'segmentsFewStages',
-          'Para la barra por etapas escribe al menos dos etapas.'));
+      rows.add(
+        const LiveCheck(
+          LiveSeverity.warn,
+          'segmentsFewStages',
+          'Para la barra por etapas escribe al menos dos etapas.',
+        ),
+      );
       break;
     }
   }
 
   // 7. Ícono pequeño de Android.
   if (layout.appLogo is LiveImage && layout.androidSmallIcon == null) {
-    rows.add(const LiveCheck(LiveSeverity.warn, 'androidSmallIcon',
-        'En Android el ícono pequeño (barra de estado, chip y encabezado) se ve como silueta de un solo color. El logo a color se muestra como ícono grande; conviene darle una versión en silueta con androidSmallIcon.'));
+    rows.add(
+      const LiveCheck(
+        LiveSeverity.warn,
+        'androidSmallIcon',
+        'En Android el ícono pequeño (barra de estado, chip y encabezado) se ve como silueta de un solo color. El logo a color se muestra como ícono grande; conviene darle una versión en silueta con androidSmallIcon.',
+      ),
+    );
   }
 
   // 8. Peso de las imágenes y a qué tamaño se reducen.
   for (final slot in _imageSlots(layout)) {
     final img = slot.image;
-    final kb = img.byteSize == null
-        ? ''
-        : '${math.max(1, (img.byteSize! / 1024).round())} KB, ';
-    rows.add(LiveCheck(
+    final kb =
+        img.byteSize == null
+            ? ''
+            : '${math.max(1, (img.byteSize! / 1024).round())} KB, ';
+    rows.add(
+      LiveCheck(
         LiveSeverity.ok,
         'imageSize',
         '${slot.label}: ${kb}se reduce a ${slot.px} antes de copiarse al App Group (iOS). '
-        'Proporción respetada con fit “${img.fit.name}”.'));
+            'Proporción respetada con fit “${img.fit.name}”.',
+      ),
+    );
   }
 
   return LiveReport(rows);
@@ -203,8 +276,13 @@ List<_Slot> _imageSlots(LiveLayout layout) {
     _ => null,
   };
   if (tracker?.visual is LiveImage) {
-    slots.add(_Slot('Imagen que avanza en la barra', '72 px de alto',
-        tracker!.visual as LiveImage));
+    slots.add(
+      _Slot(
+        'Imagen que avanza en la barra',
+        '72 px de alto',
+        tracker!.visual as LiveImage,
+      ),
+    );
   }
   return slots;
 }
@@ -220,7 +298,10 @@ enum _ChipMode { full, cut, icon }
 
 /// Mismo criterio que `chipInfo` del HTML.
 ({String text, _ChipMode mode, int length})? _chip(
-    LiveChip? chip, Map<String, Object?> data, DateTime now) {
+  LiveChip? chip,
+  Map<String, Object?> data,
+  DateTime now,
+) {
   if (chip == null) return null;
   var text = switch (chip.type) {
     'countdown' => '${_remainingMinutes(data[chip.bind!.field], now)} min',
