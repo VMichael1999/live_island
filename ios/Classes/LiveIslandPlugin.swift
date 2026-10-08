@@ -5,9 +5,18 @@ import ActivityKit
 #endif
 
 public class LiveIslandPlugin: NSObject, FlutterPlugin {
+    private static let actionStream = ActionStream()
+    private static let pushStream = PushStream()
+
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "live_island", binaryMessenger: registrar.messenger())
         registrar.addMethodCallDelegate(LiveIslandPlugin(), channel: channel)
+        FlutterEventChannel(name: "live_island/actions", binaryMessenger: registrar.messenger())
+            .setStreamHandler(actionStream)
+        FlutterEventChannel(name: "live_island/push", binaryMessenger: registrar.messenger())
+            .setStreamHandler(pushStream)
+        // Un botón de la pantalla de bloqueo (App Intent) avisa aquí.
+        LiveIslandActions.onEnqueue = { actionStream.flush() }
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -17,23 +26,114 @@ public class LiveIslandPlugin: NSObject, FlutterPlugin {
             result(LiveActivities.areEnabled())
         case "openPromotionSettings":
             result(false)
+        case "activeActivities":
+            result(LiveActivities.activeIds())
         case "start":
-            LiveActivities.start(args, result)
+            LiveActivities.start(args, result, push: Self.pushStream)
+        case "registerLayout":
+            LiveActivities.registerLayout(args, result)
         case "update":
             LiveActivities.update(args, result)
         case "end":
             LiveActivities.end(args, result)
+        case "handlePush":
+            // En iOS los push (APNs) llegan directo a ActivityKit.
+            result(nil)
         default:
             result(FlutterMethodNotImplemented)
         }
     }
 }
 
+// MARK: - Eventos hacia Dart
+
+/// Botones tocados. Lo que llegó con la app cerrada se entrega al escuchar.
+private final class ActionStream: NSObject, FlutterStreamHandler {
+    private var sink: FlutterEventSink?
+
+    func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+        sink = events
+        flush()
+        return nil
+    }
+
+    func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        sink = nil
+        return nil
+    }
+
+    func flush() {
+        guard let sink = sink else { return }
+        for id in LiveIslandActions.drain() { sink(id) }
+    }
+}
+
+/// Tokens de push de las actividades y de push-to-start, y actividades iniciadas por push.
+final class PushStream: NSObject, FlutterStreamHandler {
+    private var sink: FlutterEventSink?
+    private var watching = Set<String>()
+    private var tasks: [Task<Void, Never>] = []
+
+    func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+        sink = events
+        #if canImport(ActivityKit)
+        if #available(iOS 16.2, *) { startObserving() }
+        #endif
+        return nil
+    }
+
+    func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        sink = nil
+        tasks.forEach { $0.cancel() }
+        tasks = []
+        watching = []
+        return nil
+    }
+
+    private func send(_ event: [String: Any]) {
+        DispatchQueue.main.async { self.sink?(event) }
+    }
+
+    static func hex(_ data: Data) -> String { data.map { String(format: "%02x", $0) }.joined() }
+
+    #if canImport(ActivityKit)
+    @available(iOS 16.2, *)
+    private func startObserving() {
+        // Actividades que ya existen y las que empiecen después (por push-to-start).
+        Activity<LiveIslandAttributes>.activities.forEach { watch($0, announce: false) }
+        tasks.append(Task {
+            for await activity in Activity<LiveIslandAttributes>.activityUpdates {
+                self.watch(activity, announce: true)
+            }
+        })
+        if #available(iOS 17.2, *) {
+            tasks.append(Task {
+                for await token in Activity<LiveIslandAttributes>.pushToStartTokenUpdates {
+                    self.send(["type": "token", "token": Self.hex(token)])
+                }
+            })
+        }
+    }
+
+    @available(iOS 16.2, *)
+    func watch(_ activity: Activity<LiveIslandAttributes>, announce: Bool) {
+        if !watching.insert(activity.id).inserted { return }
+        if announce { send(["type": "started", "activityId": activity.id]) }
+        tasks.append(Task {
+            for await token in activity.pushTokenUpdates {
+                self.send(["type": "token", "activityId": activity.id, "token": Self.hex(token)])
+            }
+        })
+    }
+    #endif
+}
+
 private func fail(_ result: FlutterResult, _ code: String, _ message: String) {
     result(FlutterError(code: code, message: message, details: nil))
 }
 
-/// Puente con ActivityKit.
+// MARK: - ActivityKit
+
 enum LiveActivities {
     static func areEnabled() -> Bool {
         #if canImport(ActivityKit)
@@ -42,32 +142,22 @@ enum LiveActivities {
         return false
     }
 
-    // MARK: start
-
-    static func start(_ args: [String: Any], _ result: @escaping FlutterResult) {
+    /// Ids de las actividades que siguen vivas.
+    static func activeIds() -> [String] {
         #if canImport(ActivityKit)
-        guard #available(iOS 16.1, *) else {
-            return fail(result, "unsupported", "Las Live Activities requieren iOS 16.1 o superior.")
+        if #available(iOS 16.1, *) {
+            return Activity<LiveIslandAttributes>.activities
+                .filter { $0.activityState != .ended && $0.activityState != .dismissed }
+                .map { $0.id }
         }
-        guard LiveStorage.appGroup != nil else {
-            return fail(result, "not_configured",
-                        "Falta el App Group. Ejecuta `dart run live_island:setup` y vuelve a compilar.")
-        }
-        guard ActivityAuthorizationInfo().areActivitiesEnabled else {
-            return fail(result, "disabled", "El usuario desactivó las Live Activities para esta app.")
-        }
-        guard let layoutText = args["layout"] as? String,
-              var layout = (try? JSONSerialization.jsonObject(with: Data(layoutText.utf8))) as? [String: Any],
-              let stateText = args["state"] as? String,
-              let state = (try? JSONSerialization.jsonObject(with: Data(stateText.utf8))) as? [String: Any]
-        else { return fail(result, "bad_arguments", "layout y state deben ser JSON válido.") }
+        #endif
+        return []
+    }
 
-        let layoutId = UUID().uuidString
-        guard let dir = LiveStorage.directory(for: layoutId, create: true) else {
-            return fail(result, "not_configured", "No se pudo abrir el App Group.")
-        }
-
-        // Imágenes: se reducen al tamaño con que se muestran y se copian al App Group.
+    /// Guarda el diseño y las imágenes (reducidas) de [args] en [dir].
+    private static func store(_ args: [String: Any], layoutText: String, in dir: URL) -> Bool {
+        guard var layout = (try? JSONSerialization.jsonObject(with: Data(layoutText.utf8))) as? [String: Any]
+        else { return false }
         var manifest = layout["images"] as? [String: Any] ?? [:]
         for item in args["images"] as? [[String: Any]] ?? [] {
             guard let id = item["id"] as? String,
@@ -81,17 +171,61 @@ enum LiveActivities {
             manifest[id] = ["file": file, "w": out.width, "h": out.height]
         }
         if !manifest.isEmpty { layout["images"] = manifest }
-        guard let layoutData = try? JSONSerialization.data(withJSONObject: layout),
-              (try? layoutData.write(to: dir.appendingPathComponent("layout.json"))) != nil
+        guard let data = try? JSONSerialization.data(withJSONObject: layout) else { return false }
+        return (try? data.write(to: dir.appendingPathComponent("layout.json"))) != nil
+    }
+
+    // MARK: registerLayout
+
+    /// Guarda un diseño con nombre: una actividad iniciada por push-to-start
+    /// lo usa con `attributes.layoutId = "tpl_<nombre>"`.
+    static func registerLayout(_ args: [String: Any], _ result: @escaping FlutterResult) {
+        guard LiveStorage.appGroup != nil else {
+            return fail(result, "not_configured", "Falta el App Group. Ejecuta `dart run live_island:setup` y vuelve a compilar.")
+        }
+        guard let name = args["name"] as? String, let layoutText = args["layout"] as? String else {
+            return fail(result, "bad_arguments", "Faltan name y layout.")
+        }
+        let id = LiveStorage.templatePrefix + name.replacingOccurrences(of: "[^A-Za-z0-9_-]", with: "_", options: .regularExpression)
+        LiveStorage.removeDirectory(for: id)
+        guard let dir = LiveStorage.directory(for: id, create: true), store(args, layoutText: layoutText, in: dir) else {
+            return fail(result, "storage", "No se pudo guardar el diseño en el App Group.")
+        }
+        result(nil)
+    }
+
+    // MARK: start
+
+    static func start(_ args: [String: Any], _ result: @escaping FlutterResult, push: PushStream) {
+        #if canImport(ActivityKit)
+        guard #available(iOS 16.1, *) else {
+            return fail(result, "unsupported", "Las Live Activities requieren iOS 16.1 o superior.")
+        }
+        guard LiveStorage.appGroup != nil else {
+            return fail(result, "not_configured",
+                        "Falta el App Group. Ejecuta `dart run live_island:setup` y vuelve a compilar.")
+        }
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else {
+            return fail(result, "disabled", "El usuario desactivó las Live Activities para esta app.")
+        }
+        guard let layoutText = args["layout"] as? String,
+              let stateText = args["state"] as? String,
+              let state = (try? JSONSerialization.jsonObject(with: Data(stateText.utf8))) as? [String: Any]
+        else { return fail(result, "bad_arguments", "layout y state deben ser JSON válido.") }
+
+        let layoutId = UUID().uuidString
+        guard let dir = LiveStorage.directory(for: layoutId, create: true),
+              store(args, layoutText: layoutText, in: dir)
         else { return fail(result, "storage", "No se pudo guardar el diseño en el App Group.") }
 
-        // Limpia diseños de actividades que ya no existen.
+        // Limpia diseños de actividades que ya no existen (las plantillas no se tocan).
         LiveStorage.removeAll(except: Set(Activity<LiveIslandAttributes>.activities.map { $0.attributes.layoutId } + [layoutId]))
 
         let attributes = LiveIslandAttributes(layoutId: layoutId, deepLink: args["deepLink"] as? String)
         let content = LiveIslandAttributes.ContentState(values: LiveValue.dictionary(from: state))
         let stale = (args["staleAfter"] as? NSNumber).map { Date().addingTimeInterval($0.doubleValue) }
         let relevance = (args["relevance"] as? NSNumber)?.doubleValue ?? 0
+        let wantsPush = (args["requestPushToken"] as? Bool) ?? false
 
         do {
             let activity: Activity<LiveIslandAttributes>
@@ -99,9 +233,11 @@ enum LiveActivities {
                 activity = try Activity.request(
                     attributes: attributes,
                     content: .init(state: content, staleDate: stale, relevanceScore: relevance),
-                    pushType: nil)
+                    pushType: wantsPush ? .token : nil)
+                if wantsPush { push.watch(activity, announce: false) }
             } else {
-                activity = try Activity.request(attributes: attributes, contentState: content, pushType: nil)
+                activity = try Activity.request(attributes: attributes, contentState: content,
+                                                pushType: wantsPush ? .token : nil)
             }
             result(activity.id)
         } catch {
@@ -176,8 +312,10 @@ enum LiveActivities {
             } else {
                 await activity.end(using: content, dismissalPolicy: policy)
             }
-            // Si se cierra ya, el diseño no hace falta. Si no, se limpia en el próximo start().
-            if immediate { LiveStorage.removeDirectory(for: layoutId) }
+            // Si se cierra ya, el diseño no hace falta (las plantillas se conservan).
+            if immediate && !layoutId.hasPrefix(LiveStorage.templatePrefix) {
+                LiveStorage.removeDirectory(for: layoutId)
+            }
             result(nil)
         }
         #else

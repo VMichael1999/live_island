@@ -16,7 +16,7 @@ Live Activities (iOS) y Live Updates (Android) con una sola API en Dart, 100 % e
   s.source_files = 'Classes/**/*', 'LiveIslandExtension/Shared/**/*'
   s.dependency 'Flutter'
   s.platform = :ios, '15.0'
-  s.weak_frameworks = 'ActivityKit'
+  s.weak_frameworks = 'ActivityKit', 'AppIntents'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

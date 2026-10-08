@@ -6,10 +6,11 @@ import 'dart:isolate';
 ///     dart run live_island:setup [--app-group group.com.miapp] [--extension LiveIslandExtension]
 ///
 /// Agrega el Widget Extension al proyecto de Xcode, el App Group y
-/// `NSSupportsLiveActivities`. Se puede repetir para actualizar el renderer.
+/// `NSSupportsLiveActivities` (con `--push`, también el permiso de push). Se puede repetir para actualizar el renderer.
 Future<void> main(List<String> args) async {
   String? group;
   var extension = 'LiveIslandExtension';
+  var push = false;
   String project = '.';
   for (var i = 0; i < args.length; i++) {
     switch (args[i]) {
@@ -17,6 +18,8 @@ Future<void> main(List<String> args) async {
         group = args[++i];
       case '--extension':
         extension = args[++i];
+      case '--push':
+        push = true;
       case '--project':
         project = args[++i];
       case '-h':
@@ -65,6 +68,7 @@ Future<void> main(List<String> args) async {
     '$root/ios/LiveIslandExtension',
     group ?? '-',
     extension,
+    push ? 'push' : '-',
   ]);
   stdout.write(result.stdout);
   if (result.exitCode != 0) {
@@ -90,6 +94,9 @@ void _usage() {
 Uso: dart run live_island:setup [opciones]
 
   --app-group <id>     App Group (por defecto group.<bundle id>.liveisland)
+  --push               Agrega el permiso de push (aps-environment) para actualizar
+                       o iniciar actividades por APNs; requiere una cuenta de
+                       desarrollador con la capacidad Push Notifications
   --extension <name>   Nombre del Widget Extension (LiveIslandExtension)
   --project <dir>      Carpeta de la app Flutter (por defecto .)
 ''');

@@ -5,11 +5,12 @@
 #   - activa NSSupportsLiveActivities en la app.
 # Es idempotente: se puede ejecutar de nuevo para actualizar el renderer.
 #
-# Uso: ruby setup_ios.rb <ios_dir> <plantilla> <app_group|-> <nombre_extension>
+# Uso: ruby setup_ios.rb <ios_dir> <plantilla> <app_group|-> <nombre_extension> [push|-]
 require 'fileutils'
 require 'xcodeproj'
 
-ios_dir, template_dir, group_arg, ext_name = ARGV
+ios_dir, template_dir, group_arg, ext_name, push_arg = ARGV
+with_push = push_arg == 'push'
 abort 'Uso: setup_ios.rb <ios_dir> <plantilla> <app_group|-> <extension>' unless ios_dir && template_dir && ext_name
 
 proj_path = File.join(ios_dir, 'Runner.xcodeproj')
@@ -79,6 +80,13 @@ end
 write_entitlements(File.join(ext_dir, "#{ext_name}.entitlements"), app_group)
 runner_ent_rel = setting(runner, 'CODE_SIGN_ENTITLEMENTS') || 'Runner/Runner.entitlements'
 write_entitlements(File.join(ios_dir, runner_ent_rel), app_group)
+if with_push
+  # Push (APNs): tokens por actividad y push-to-start.
+  ent_path = File.join(ios_dir, runner_ent_rel)
+  ent = Xcodeproj::Plist.read_from_path(ent_path)
+  ent['aps-environment'] ||= 'development'
+  Xcodeproj::Plist.write_to_path(ent, ent_path)
+end
 
 # --- 2. Info.plist de la app ------------------------------------------------
 runner_info_rel = setting(runner, 'INFOPLIST_FILE') || 'Runner/Info.plist'
@@ -86,6 +94,7 @@ runner_info_path = File.join(ios_dir, runner_info_rel)
 info = Xcodeproj::Plist.read_from_path(runner_info_path)
 info['NSSupportsLiveActivities'] = true
 info['LiveIslandAppGroup'] = app_group
+info['NSSupportsLiveActivitiesFrequentUpdates'] = true if with_push
 Xcodeproj::Plist.write_to_path(info, runner_info_path)
 
 # --- 3. Proyecto de Xcode ---------------------------------------------------
