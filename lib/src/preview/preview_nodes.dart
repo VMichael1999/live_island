@@ -22,11 +22,16 @@ class LiveRenderContext {
     required this.config,
     required this.now,
     required this.style,
+    this.island = false,
   });
 
   final LivePreviewConfig config;
   final DateTime now;
   final LiveToneStyle style;
+
+  /// `true` en la isla expandida: no dibuja botones, porque tocar la isla
+  /// siempre abre la app (ver docs/design/DESVIACIONES.md).
+  final bool island;
 
   int _buttons = 0;
 
@@ -46,6 +51,19 @@ class LiveRenderContext {
       LiveImageSource.reference => null,
     };
   }
+}
+
+/// ¿Este nodo no se dibuja en este contexto? (Botones dentro de la isla.)
+bool _hidden(LiveNode n, LiveRenderContext ctx) {
+  if (!ctx.island) return false;
+  if (n is LiveButton || n is LiveToggle) return true;
+  if (n is LiveRow) {
+    return n.items.isNotEmpty &&
+        n.items.every(
+          (c) => c is LiveButton || c is LiveToggle || c is LiveSpacer,
+        );
+  }
+  return false;
 }
 
 /// Recuadro neutro cuando una imagen no se puede cargar.
@@ -154,9 +172,13 @@ Widget buildLiveNode(
     case LiveMetric():
       return _metric(node, ctx);
     case LiveButton():
-      return _button(node.label, node.icon, ctx);
+      return _hidden(node, ctx)
+          ? const SizedBox.shrink()
+          : _button(node.label, node.icon, ctx);
     case LiveToggle():
-      return _button(node.label ?? node.id, node.icon, ctx);
+      return _hidden(node, ctx)
+          ? const SizedBox.shrink()
+          : _button(node.label ?? node.id, node.icon, ctx);
     default:
       return const SizedBox.shrink();
   }
@@ -219,7 +241,10 @@ Widget _column(LiveColumn node, LiveRenderContext ctx) {
     mainAxisSize: MainAxisSize.min,
     crossAxisAlignment: cross,
     children: _spaced(
-      [for (final c in node.items) buildLiveNode(c, ctx, align: node.align)],
+      [
+        for (final c in node.items)
+          if (!_hidden(c, ctx)) buildLiveNode(c, ctx, align: node.align),
+      ],
       node.gap ?? 2,
       Axis.vertical,
     ),

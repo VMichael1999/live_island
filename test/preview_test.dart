@@ -62,8 +62,22 @@ void main() {
       findsNWidgets(3),
     ); // isla, bloqueo, Android
     expect(find.text('Carlos M.'), findsNWidgets(2));
-    expect(find.text('Llamar'), findsNWidgets(3));
+    // La isla expandida no dibuja botones: solo bloqueo y Android.
+    expect(find.text('Llamar'), findsNWidgets(2));
     expect(find.text('Asignado'), findsNWidgets(3));
+  });
+
+  testWidgets('la isla expandida no dibuja botones, la tarjeta de bloqueo sí', (
+    tester,
+  ) async {
+    await show(tester, 'taxi', surfaces: {LiveSurface.expanded});
+    expect(find.text('Llamar'), findsNothing);
+    expect(find.text('Compartir'), findsNothing);
+    expect(find.text('Asignado'), findsOneWidget);
+
+    await show(tester, 'taxi', surfaces: {LiveSurface.lockScreen});
+    expect(find.text('Llamar'), findsOneWidget);
+    expect(find.text('Compartir'), findsOneWidget);
   });
 
   testWidgets('el chip de Android muestra los minutos y la nota de promoción', (
