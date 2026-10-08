@@ -24,8 +24,11 @@ abstract final class LiveState {
 
   static String _checkKey(String key) {
     if (!_key.hasMatch(key)) {
-      throw ArgumentError.value(key, 'campo',
-          'Debe empezar con letra o guion bajo y usar solo letras, números y _');
+      throw ArgumentError.value(
+        key,
+        'campo',
+        'Debe empezar con letra o guion bajo y usar solo letras, números y _',
+      );
     }
     return key;
   }
@@ -39,7 +42,10 @@ abstract final class LiveState {
       return v;
     }
     if (v is DateTime) return v.toUtc().toIso8601String();
-    throw ArgumentError.value(v, key,
-        'Solo se admiten texto, número, booleano, nulo y fecha (${v.runtimeType})');
+    throw ArgumentError.value(
+      v,
+      key,
+      'Solo se admiten texto, número, booleano, nulo y fecha (${v.runtimeType})',
+    );
   }
 }

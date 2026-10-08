@@ -22,9 +22,9 @@ class LiveText extends LiveNode implements LiveTextSource {
     this.lines,
     this.align,
     this.tabular,
-  })  : kind = LiveTextKind.bound,
-        literal = null,
-        template = null;
+  }) : kind = LiveTextKind.bound,
+       literal = null,
+       template = null;
 
   /// Texto fijo.
   const LiveText.literal(
@@ -37,9 +37,9 @@ class LiveText extends LiveNode implements LiveTextSource {
     this.lines,
     this.align,
     this.tabular,
-  })  : kind = LiveTextKind.literal,
-        source = null,
-        template = null;
+  }) : kind = LiveTextKind.literal,
+       source = null,
+       template = null;
 
   /// Plantilla con campos entre llaves: `'{subtitulo} · {nombre}'`.
   const LiveText.format(
@@ -52,9 +52,9 @@ class LiveText extends LiveNode implements LiveTextSource {
     this.lines,
     this.align,
     this.tabular,
-  })  : kind = LiveTextKind.format,
-        source = null,
-        literal = null;
+  }) : kind = LiveTextKind.format,
+       source = null,
+       literal = null;
 
   /// Cuenta regresiva hasta la fecha del campo [until]. Corre sola.
   const LiveText.countdown(
@@ -67,10 +67,10 @@ class LiveText extends LiveNode implements LiveTextSource {
     this.lines,
     this.align,
     this.tabular,
-  })  : kind = LiveTextKind.countdown,
-        source = until,
-        literal = null,
-        template = null;
+  }) : kind = LiveTextKind.countdown,
+       source = until,
+       literal = null,
+       template = null;
 
   /// Cronómetro desde la fecha del campo [since].
   const LiveText.stopwatch(
@@ -83,10 +83,10 @@ class LiveText extends LiveNode implements LiveTextSource {
     this.lines,
     this.align,
     this.tabular,
-  })  : kind = LiveTextKind.stopwatch,
-        source = since,
-        literal = null,
-        template = null;
+  }) : kind = LiveTextKind.stopwatch,
+       source = since,
+       literal = null,
+       template = null;
 
   /// Tiempo relativo a la fecha del campo [date] ("hace 3 min", "en 5 min").
   const LiveText.relative(
@@ -99,10 +99,10 @@ class LiveText extends LiveNode implements LiveTextSource {
     this.lines,
     this.align,
     this.tabular,
-  })  : kind = LiveTextKind.relative,
-        source = date,
-        literal = null,
-        template = null;
+  }) : kind = LiveTextKind.relative,
+       source = date,
+       literal = null,
+       template = null;
 
   /// Copia de [other] con otro estilo: `LiveText.from(otro, size: 22)`.
   LiveText.from(
@@ -115,18 +115,18 @@ class LiveText extends LiveNode implements LiveTextSource {
     int? lines,
     LiveAlign? align,
     bool? tabular,
-  })  : kind = other.kind,
-        source = other.source,
-        literal = other.literal,
-        template = other.template,
-        size = size ?? other.size,
-        weight = weight ?? other.weight,
-        muted = muted ?? other.muted,
-        accent = accent ?? other.accent,
-        color = color ?? other.color,
-        lines = lines ?? other.lines,
-        align = align ?? other.align,
-        tabular = tabular ?? other.tabular;
+  }) : kind = other.kind,
+       source = other.source,
+       literal = other.literal,
+       template = other.template,
+       size = size ?? other.size,
+       weight = weight ?? other.weight,
+       muted = muted ?? other.muted,
+       accent = accent ?? other.accent,
+       color = color ?? other.color,
+       lines = lines ?? other.lines,
+       align = align ?? other.align,
+       tabular = tabular ?? other.tabular;
 
   final LiveTextKind kind;
   final LiveBind? source;
@@ -151,37 +151,39 @@ class LiveText extends LiveNode implements LiveTextSource {
 
   @override
   String get type => switch (kind) {
-        LiveTextKind.countdown => 'countdown',
-        LiveTextKind.stopwatch => 'stopwatch',
-        LiveTextKind.relative => 'relative',
-        _ => 'text',
-      };
+    LiveTextKind.countdown => 'countdown',
+    LiveTextKind.stopwatch => 'stopwatch',
+    LiveTextKind.relative => 'relative',
+    _ => 'text',
+  };
 
   @override
   Map<String, Object?> toAndroidTextJson() => switch (kind) {
-        LiveTextKind.bound => {'bind': source!.field},
-        LiveTextKind.literal => {'text': literal},
-        LiveTextKind.format => {'fmt': template},
-        _ => throw UnsupportedError(
-            'Android solo admite texto enlazado, literal o con plantilla en '
-            'el título y el texto de la notificación.'),
-      };
+    LiveTextKind.bound => {'bind': source!.field},
+    LiveTextKind.literal => {'text': literal},
+    LiveTextKind.format => {'fmt': template},
+    _ =>
+      throw UnsupportedError(
+        'Android solo admite texto enlazado, literal o con plantilla en '
+        'el título y el texto de la notificación.',
+      ),
+  };
 
   @override
   Map<String, Object?> toJson() => compact({
-        't': type,
-        'bind': source?.field,
-        'text': literal,
-        'fmt': template,
-        'size': size,
-        'w': weight,
-        'muted': muted ? true : null,
-        'accent': accent ? true : null,
-        'color': color == null ? null : colorToHex(color!),
-        'lines': lines,
-        'align': align?.name,
-        'tabular': tabular,
-      });
+    't': type,
+    'bind': source?.field,
+    'text': literal,
+    'fmt': template,
+    'size': size,
+    'w': weight,
+    'muted': muted ? true : null,
+    'accent': accent ? true : null,
+    'color': color == null ? null : colorToHex(color!),
+    'lines': lines,
+    'align': align?.name,
+    'tabular': tabular,
+  });
 
   factory LiveText.fromJson(Map<String, Object?> json) {
     final size = (json['size'] as num?)?.toDouble();
@@ -191,34 +193,87 @@ class LiveText extends LiveNode implements LiveTextSource {
     final color =
         json['color'] == null ? null : colorFromHex(json['color']! as String);
     final lines = (json['lines'] as num?)?.toInt();
-    final align = json['align'] == null
-        ? null
-        : enumByName(LiveAlign.values, json['align'], LiveAlign.start);
+    final align =
+        json['align'] == null
+            ? null
+            : enumByName(LiveAlign.values, json['align'], LiveAlign.start);
     final tabular = json['tabular'] as bool?;
     LiveBind b() => LiveBind(json['bind']! as String);
     LiveText Function(LiveBind) timed = switch (json['t']) {
-      'countdown' => (x) => LiveText.countdown(x,
-          size: size, weight: weight, muted: muted, accent: accent,
-          color: color, lines: lines, align: align, tabular: tabular),
-      'stopwatch' => (x) => LiveText.stopwatch(x,
-          size: size, weight: weight, muted: muted, accent: accent,
-          color: color, lines: lines, align: align, tabular: tabular),
-      'relative' => (x) => LiveText.relative(x,
-          size: size, weight: weight, muted: muted, accent: accent,
-          color: color, lines: lines, align: align, tabular: tabular),
-      _ => (x) => LiveText(x,
-          size: size, weight: weight, muted: muted, accent: accent,
-          color: color, lines: lines, align: align, tabular: tabular),
+      'countdown' =>
+        (x) => LiveText.countdown(
+          x,
+          size: size,
+          weight: weight,
+          muted: muted,
+          accent: accent,
+          color: color,
+          lines: lines,
+          align: align,
+          tabular: tabular,
+        ),
+      'stopwatch' =>
+        (x) => LiveText.stopwatch(
+          x,
+          size: size,
+          weight: weight,
+          muted: muted,
+          accent: accent,
+          color: color,
+          lines: lines,
+          align: align,
+          tabular: tabular,
+        ),
+      'relative' =>
+        (x) => LiveText.relative(
+          x,
+          size: size,
+          weight: weight,
+          muted: muted,
+          accent: accent,
+          color: color,
+          lines: lines,
+          align: align,
+          tabular: tabular,
+        ),
+      _ =>
+        (x) => LiveText(
+          x,
+          size: size,
+          weight: weight,
+          muted: muted,
+          accent: accent,
+          color: color,
+          lines: lines,
+          align: align,
+          tabular: tabular,
+        ),
     };
     if (json['t'] == 'text' && json['text'] != null) {
-      return LiveText.literal(json['text']! as String,
-          size: size, weight: weight, muted: muted, accent: accent,
-          color: color, lines: lines, align: align, tabular: tabular);
+      return LiveText.literal(
+        json['text']! as String,
+        size: size,
+        weight: weight,
+        muted: muted,
+        accent: accent,
+        color: color,
+        lines: lines,
+        align: align,
+        tabular: tabular,
+      );
     }
     if (json['t'] == 'text' && json['fmt'] != null) {
-      return LiveText.format(json['fmt']! as String,
-          size: size, weight: weight, muted: muted, accent: accent,
-          color: color, lines: lines, align: align, tabular: tabular);
+      return LiveText.format(
+        json['fmt']! as String,
+        size: size,
+        weight: weight,
+        muted: muted,
+        accent: accent,
+        color: color,
+        lines: lines,
+        align: align,
+        tabular: tabular,
+      );
     }
     return timed(b());
   }

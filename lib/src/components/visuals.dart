@@ -12,13 +12,12 @@ import '../core/node.dart';
 sealed class LiveVisual extends LiveNode {
   const LiveVisual();
 
-  factory LiveVisual.fromJson(Map<String, Object?> json) =>
-      switch (json['t']) {
-        'icon' => LiveIcon.fromJson(json),
-        'image' => LiveImage.fromJson(json),
-        'avatar' => LiveAvatar.fromJson(json),
-        final t => throw FormatException('Visual desconocido: $t'),
-      };
+  factory LiveVisual.fromJson(Map<String, Object?> json) => switch (json['t']) {
+    'icon' => LiveIcon.fromJson(json),
+    'image' => LiveImage.fromJson(json),
+    'avatar' => LiveAvatar.fromJson(json),
+    final t => throw FormatException('Visual desconocido: $t'),
+  };
 }
 
 /// Algo que se puede usar como ícono que avanza sobre la barra de progreso.
@@ -55,23 +54,22 @@ class LiveIcon extends LiveVisual implements LiveTrackerSource {
 
   @override
   Map<String, Object?> toJson() => compact({
-        't': 'icon',
-        'sf': sf,
-        'android': android,
-        'size': size,
-        'accent': accent ? true : null,
-        'color': color == null ? null : colorToHex(color!),
-      });
+    't': 'icon',
+    'sf': sf,
+    'android': android,
+    'size': size,
+    'accent': accent ? true : null,
+    'color': color == null ? null : colorToHex(color!),
+  });
 
   factory LiveIcon.fromJson(Map<String, Object?> json) => LiveIcon.symbol(
-        json['sf']! as String,
-        android: json['android'] as String?,
-        size: (json['size'] as num?)?.toDouble(),
-        accent: json['accent'] == true,
-        color: json['color'] == null
-            ? null
-            : colorFromHex(json['color']! as String),
-      );
+    json['sf']! as String,
+    android: json['android'] as String?,
+    size: (json['size'] as num?)?.toDouble(),
+    accent: json['accent'] == true,
+    color:
+        json['color'] == null ? null : colorFromHex(json['color']! as String),
+  );
 }
 
 /// Origen de una imagen propia.
@@ -88,10 +86,10 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
     this.byteSize,
     this.width,
     this.height,
-  })  : source = LiveImageSource.asset,
-        key = path,
-        bytes = null,
-        id = 'asset_${_slug(path)}';
+  }) : source = LiveImageSource.asset,
+       key = path,
+       bytes = null,
+       id = 'asset_${_slug(path)}';
 
   /// Imagen de red. La descarga la app, nunca el Widget Extension.
   LiveImage.network(
@@ -102,10 +100,10 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
     this.byteSize,
     this.width,
     this.height,
-  })  : source = LiveImageSource.network,
-        key = url,
-        bytes = null,
-        id = 'net_${fnv1a(url.codeUnits)}';
+  }) : source = LiveImageSource.network,
+       key = url,
+       bytes = null,
+       id = 'net_${fnv1a(url.codeUnits)}';
 
   /// Imagen de un archivo local.
   LiveImage.file(
@@ -116,10 +114,10 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
     this.byteSize,
     this.width,
     this.height,
-  })  : source = LiveImageSource.file,
-        key = file.path,
-        bytes = null,
-        id = 'file_${fnv1a(file.path.codeUnits)}';
+  }) : source = LiveImageSource.file,
+       key = file.path,
+       bytes = null,
+       id = 'file_${fnv1a(file.path.codeUnits)}';
 
   /// Imagen en memoria. Su peso se conoce solo.
   LiveImage.memory(
@@ -129,11 +127,11 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
     this.size,
     this.width,
     this.height,
-  })  : source = LiveImageSource.memory,
-        key = '',
-        bytes = data,
-        byteSize = data.lengthInBytes,
-        id = 'mem_${fnv1a(data)}';
+  }) : source = LiveImageSource.memory,
+       key = '',
+       bytes = data,
+       byteSize = data.lengthInBytes,
+       id = 'mem_${fnv1a(data)}';
 
   /// Referencia a una imagen ya registrada en `layout.images` (la usa
   /// `fromJson`; el plugin la resuelve).
@@ -142,12 +140,12 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
     this.fit = LiveFit.contain,
     this.shape = LiveShape.rounded,
     this.size,
-  })  : source = LiveImageSource.reference,
-        key = id,
-        bytes = null,
-        byteSize = null,
-        width = null,
-        height = null;
+  }) : source = LiveImageSource.reference,
+       key = id,
+       bytes = null,
+       byteSize = null,
+       width = null,
+       height = null;
 
   final LiveImageSource source;
 
@@ -176,39 +174,38 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
 
   @override
   Map<String, Object?> toJson() => compact({
-        't': 'image',
-        'img': id,
-        'fit': fit == LiveFit.contain ? null : fit.name,
-        'shape': shape == LiveShape.rounded ? null : shape.name,
-        'size': size,
-      });
+    't': 'image',
+    'img': id,
+    'fit': fit == LiveFit.contain ? null : fit.name,
+    'shape': shape == LiveShape.rounded ? null : shape.name,
+    'size': size,
+  });
 
   factory LiveImage.fromJson(Map<String, Object?> json) => LiveImage.reference(
-        json['img']! as String,
-        fit: enumByName(LiveFit.values, json['fit'], LiveFit.contain),
-        shape: enumByName(LiveShape.values, json['shape'], LiveShape.rounded),
-        size: (json['size'] as num?)?.toDouble(),
-      );
+    json['img']! as String,
+    fit: enumByName(LiveFit.values, json['fit'], LiveFit.contain),
+    shape: enumByName(LiveShape.values, json['shape'], LiveShape.rounded),
+    size: (json['size'] as num?)?.toDouble(),
+  );
 
-  static String _slug(String path) =>
-      path.replaceAll(RegExp(r'[^A-Za-z0-9]+'), '_').replaceAll(RegExp(r'^_|_$'), '');
+  static String _slug(String path) => path
+      .replaceAll(RegExp(r'[^A-Za-z0-9]+'), '_')
+      .replaceAll(RegExp(r'^_|_$'), '');
 }
 
 /// Avatar con iniciales (círculo de acento) o con foto circular.
 class LiveAvatar extends LiveVisual {
-  const LiveAvatar(this.text, {this.size})
-      : bindText = null,
-        photo = null;
+  const LiveAvatar(this.text, {this.size}) : bindText = null, photo = null;
 
   /// Iniciales tomadas de un campo del estado.
   const LiveAvatar.bound(LiveBind this.bindText, {this.size})
-      : text = null,
-        photo = null;
+    : text = null,
+      photo = null;
 
   /// Foto circular.
   const LiveAvatar.photo(LiveImage this.photo, {this.size})
-      : text = null,
-        bindText = null;
+    : text = null,
+      bindText = null;
 
   final String? text;
   final LiveBind? bindText;
@@ -223,19 +220,20 @@ class LiveAvatar extends LiveVisual {
 
   @override
   Map<String, Object?> toJson() => compact({
-        't': 'avatar',
-        'text': text,
-        'bind': bindText?.field,
-        'img': photo?.id,
-        'size': size,
-      });
+    't': 'avatar',
+    'text': text,
+    'bind': bindText?.field,
+    'img': photo?.id,
+    'size': size,
+  });
 
   factory LiveAvatar.fromJson(Map<String, Object?> json) {
     final size = (json['size'] as num?)?.toDouble();
     if (json['img'] != null) {
       return LiveAvatar.photo(
-          LiveImage.reference(json['img']! as String, shape: LiveShape.circle),
-          size: size);
+        LiveImage.reference(json['img']! as String, shape: LiveShape.circle),
+        size: size,
+      );
     }
     if (json['bind'] != null) {
       return LiveAvatar.bound(LiveBind(json['bind']! as String), size: size);
@@ -263,15 +261,18 @@ class LiveTracker implements LiveTrackerSource {
   LiveTracker asTracker() => this;
 
   Map<String, Object?> toJson() => {
-        'visual': visual.toJson(),
-        'height': height,
-        'background': background.name,
-      };
+    'visual': visual.toJson(),
+    'height': height,
+    'background': background.name,
+  };
 
   factory LiveTracker.fromJson(Map<String, Object?> json) => LiveTracker(
-        LiveVisual.fromJson(asMap(json['visual'], 'tracker.visual')),
-        height: (json['height'] as num?)?.toDouble() ?? 24,
-        background: enumByName(LiveTrackerBackground.values, json['background'],
-            LiveTrackerBackground.accentCircle),
-      );
+    LiveVisual.fromJson(asMap(json['visual'], 'tracker.visual')),
+    height: (json['height'] as num?)?.toDouble() ?? 24,
+    background: enumByName(
+      LiveTrackerBackground.values,
+      json['background'],
+      LiveTrackerBackground.accentCircle,
+    ),
+  );
 }

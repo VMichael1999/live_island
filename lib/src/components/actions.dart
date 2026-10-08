@@ -23,12 +23,11 @@ class LiveAction {
   Map<String, Object?> toJson() =>
       compact({'t': type, 'url': url, 'number': number});
 
-  factory LiveAction.fromJson(Map<String, Object?> json) =>
-      switch (json['t']) {
-        'deepLink' => LiveAction.deepLink(json['url']! as String),
-        'call' => LiveAction.call(json['number']! as String),
-        _ => const LiveAction.custom(),
-      };
+  factory LiveAction.fromJson(Map<String, Object?> json) => switch (json['t']) {
+    'deepLink' => LiveAction.deepLink(json['url']! as String),
+    'call' => LiveAction.call(json['number']! as String),
+    _ => const LiveAction.custom(),
+  };
 }
 
 final _idPattern = RegExp(r'^[a-z0-9_]+$');
@@ -36,7 +35,10 @@ final _idPattern = RegExp(r'^[a-z0-9_]+$');
 void _checkId(String id) {
   if (!_idPattern.hasMatch(id)) {
     throw ArgumentError.value(
-        id, 'id', 'Debe usar solo minúsculas, números y guiones bajos');
+      id,
+      'id',
+      'Debe usar solo minúsculas, números y guiones bajos',
+    );
   }
 }
 
@@ -59,23 +61,25 @@ class LiveButton extends LiveNode {
 
   @override
   Map<String, Object?> toJson() => compact({
-        't': 'button',
-        'id': id,
-        'label': label,
-        'icon': icon?.toJson(),
-        'action': action?.toJson(),
-      });
+    't': 'button',
+    'id': id,
+    'label': label,
+    'icon': icon?.toJson(),
+    'action': action?.toJson(),
+  });
 
   factory LiveButton.fromJson(Map<String, Object?> json) => LiveButton(
-        id: json['id']! as String,
-        label: json['label']! as String,
-        icon: json['icon'] == null
+    id: json['id']! as String,
+    label: json['label']! as String,
+    icon:
+        json['icon'] == null
             ? null
             : LiveVisual.fromJson(asMap(json['icon'], 'button.icon')),
-        action: json['action'] == null
+    action:
+        json['action'] == null
             ? null
             : LiveAction.fromJson(asMap(json['action'], 'button.action')),
-      );
+  );
 }
 
 /// Interruptor ligado a un campo booleano del estado.
@@ -97,19 +101,20 @@ class LiveToggle extends LiveNode {
 
   @override
   Map<String, Object?> toJson() => compact({
-        't': 'toggle',
-        'id': id,
-        'bind': value.field,
-        'label': label,
-        'icon': icon?.toJson(),
-      });
+    't': 'toggle',
+    'id': id,
+    'bind': value.field,
+    'label': label,
+    'icon': icon?.toJson(),
+  });
 
   factory LiveToggle.fromJson(Map<String, Object?> json) => LiveToggle(
-        id: json['id']! as String,
-        value: LiveBind(json['bind']! as String),
-        label: json['label'] as String?,
-        icon: json['icon'] == null
+    id: json['id']! as String,
+    value: LiveBind(json['bind']! as String),
+    label: json['label'] as String?,
+    icon:
+        json['icon'] == null
             ? null
             : LiveIcon.fromJson(asMap(json['icon'], 'toggle.icon')),
-      );
+  );
 }

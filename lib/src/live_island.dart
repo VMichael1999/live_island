@@ -13,6 +13,10 @@ abstract final class LiveIsland {
     Map<String, Object?> state, {
     DateTime? now,
     bool androidPromotable = true,
-  }) =>
-      checkLayout(layout, state, now: now, androidPromotable: androidPromotable);
+  }) => checkLayout(
+    layout,
+    state,
+    now: now,
+    androidPromotable: androidPromotable,
+  );
 }

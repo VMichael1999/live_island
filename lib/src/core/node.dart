@@ -69,7 +69,7 @@ abstract class LiveNode {
 
   /// Lee una lista de nodos hijos (`"c": [...]`).
   static List<LiveNode> listFromJson(Object? raw) => [
-        for (final c in (raw as List? ?? const []))
-          LiveNode.fromJson(asMap(c, 'c')),
-      ];
+    for (final c in (raw as List? ?? const []))
+      LiveNode.fromJson(asMap(c, 'c')),
+  ];
 }

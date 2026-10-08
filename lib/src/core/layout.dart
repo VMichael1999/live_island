@@ -13,19 +13,27 @@ const liveContractVersion = 1;
 
 /// Color de acento y fondo de la tarjeta de bloqueo.
 class LiveTheme {
-  const LiveTheme({required this.accent, this.background = LiveBackground.system});
+  const LiveTheme({
+    required this.accent,
+    this.background = LiveBackground.system,
+  });
 
   final Color accent;
   final LiveBackground background;
 
-  Map<String, Object?> toJson() =>
-      {'accent': colorToHex(accent), 'background': background.name};
+  Map<String, Object?> toJson() => {
+    'accent': colorToHex(accent),
+    'background': background.name,
+  };
 
   factory LiveTheme.fromJson(Map<String, Object?> json) => LiveTheme(
-        accent: colorFromHex(json['accent']! as String),
-        background: enumByName(
-            LiveBackground.values, json['background'], LiveBackground.system),
-      );
+    accent: colorFromHex(json['accent']! as String),
+    background: enumByName(
+      LiveBackground.values,
+      json['background'],
+      LiveBackground.system,
+    ),
+  );
 }
 
 /// Las cuatro zonas de la isla expandida.
@@ -38,17 +46,23 @@ class LiveExpanded {
       [leading, center, trailing, bottom].whereType<LiveNode>();
 
   Map<String, Object?> toJson() => compact({
-        'leading': leading?.toJson(),
-        'center': center?.toJson(),
-        'trailing': trailing?.toJson(),
-        'bottom': bottom?.toJson(),
-      });
+    'leading': leading?.toJson(),
+    'center': center?.toJson(),
+    'trailing': trailing?.toJson(),
+    'bottom': bottom?.toJson(),
+  });
 
   factory LiveExpanded.fromJson(Map<String, Object?> json) {
     LiveNode? n(String k) =>
-        json[k] == null ? null : LiveNode.fromJson(asMap(json[k], 'expanded.$k'));
+        json[k] == null
+            ? null
+            : LiveNode.fromJson(asMap(json[k], 'expanded.$k'));
     return LiveExpanded(
-        leading: n('leading'), center: n('center'), trailing: n('trailing'), bottom: n('bottom'));
+      leading: n('leading'),
+      center: n('center'),
+      trailing: n('trailing'),
+      bottom: n('bottom'),
+    );
   }
 }
 
@@ -62,8 +76,7 @@ class LiveLockScreen {
 
   bool get isSameAsExpanded => custom == null;
 
-  Map<String, Object?> toJson() =>
-      custom?.toJson() ?? {'same': 'expanded'};
+  Map<String, Object?> toJson() => custom?.toJson() ?? {'same': 'expanded'};
 
   factory LiveLockScreen.fromJson(Map<String, Object?> json) =>
       json['same'] == 'expanded'
@@ -92,10 +105,10 @@ class LiveChip {
       compact({'t': type, 'bind': bind?.field, 'text': text});
 
   factory LiveChip.fromJson(Map<String, Object?> json) => switch (json['t']) {
-        'countdown' => LiveChip.countdown(LiveBind(json['bind']! as String)),
-        'text' => LiveChip.text(json['text']! as String),
-        _ => const LiveChip.icon(),
-      };
+    'countdown' => LiveChip.countdown(LiveBind(json['bind']! as String)),
+    'text' => LiveChip.text(json['text']! as String),
+    _ => const LiveChip.icon(),
+  };
 }
 
 /// Bloque Android: notificación con estilos nativos (nunca `RemoteViews`).
@@ -124,13 +137,13 @@ class LiveAndroid {
   final List<LiveButton>? actions;
 
   Map<String, Object?> toJson() => compact({
-        'title': title?.toAndroidTextJson(),
-        'text': text?.toAndroidTextJson(),
-        'chip': chip?.toJson(),
-        'colorized': colorized,
-        'progress': progress?.toJson(),
-        'actions': actions == null ? null : [for (final a in actions!) a.toJson()],
-      });
+    'title': title?.toAndroidTextJson(),
+    'text': text?.toAndroidTextJson(),
+    'chip': chip?.toJson(),
+    'colorized': colorized,
+    'progress': progress?.toJson(),
+    'actions': actions == null ? null : [for (final a in actions!) a.toJson()],
+  });
 
   factory LiveAndroid.fromJson(Map<String, Object?> json) {
     LiveTextSource? t(String k) {
@@ -144,19 +157,22 @@ class LiveAndroid {
     return LiveAndroid(
       title: t('title'),
       text: t('text'),
-      chip: json['chip'] == null
-          ? null
-          : LiveChip.fromJson(asMap(json['chip'], 'android.chip')),
+      chip:
+          json['chip'] == null
+              ? null
+              : LiveChip.fromJson(asMap(json['chip'], 'android.chip')),
       colorized: json['colorized'] == true,
-      progress: json['progress'] == null
-          ? null
-          : LiveNode.fromJson(asMap(json['progress'], 'android.progress')),
-      actions: json['actions'] == null
-          ? null
-          : [
-              for (final a in json['actions']! as List)
-                LiveButton.fromJson(asMap(a, 'android.actions'))
-            ],
+      progress:
+          json['progress'] == null
+              ? null
+              : LiveNode.fromJson(asMap(json['progress'], 'android.progress')),
+      actions:
+          json['actions'] == null
+              ? null
+              : [
+                for (final a in json['actions']! as List)
+                  LiveButton.fromJson(asMap(a, 'android.actions')),
+              ],
     );
   }
 }
@@ -179,9 +195,10 @@ class LiveImageMeta {
   Map<String, Object?> toJson() => {'file': file, 'w': w, 'h': h};
 
   factory LiveImageMeta.fromJson(Map<String, Object?> json) => LiveImageMeta(
-      file: json['file']! as String,
-      w: (json['w']! as num).toInt(),
-      h: (json['h']! as num).toInt());
+    file: json['file']! as String,
+    w: (json['w']! as num).toInt(),
+    h: (json['h']! as num).toInt(),
+  );
 }
 
 /// El diseño completo de una actividad. Viaja una sola vez, en `start()`.
@@ -221,18 +238,17 @@ class LiveLayout {
     LiveExpanded? expanded,
     LiveLockScreen? lockScreen,
     LiveAndroid? android,
-  }) =>
-      LiveLayout(
-        theme: theme ?? this.theme,
-        appLogo: appLogo ?? this.appLogo,
-        androidSmallIcon: androidSmallIcon ?? this.androidSmallIcon,
-        compactLeading: compactLeading ?? this.compactLeading,
-        compactTrailing: compactTrailing ?? this.compactTrailing,
-        minimal: minimal ?? this.minimal,
-        expanded: expanded ?? this.expanded,
-        lockScreen: lockScreen ?? this.lockScreen,
-        android: android ?? this.android,
-      );
+  }) => LiveLayout(
+    theme: theme ?? this.theme,
+    appLogo: appLogo ?? this.appLogo,
+    androidSmallIcon: androidSmallIcon ?? this.androidSmallIcon,
+    compactLeading: compactLeading ?? this.compactLeading,
+    compactTrailing: compactTrailing ?? this.compactTrailing,
+    minimal: minimal ?? this.minimal,
+    expanded: expanded ?? this.expanded,
+    lockScreen: lockScreen ?? this.lockScreen,
+    android: android ?? this.android,
+  );
 
   /// Todos los nodos del diseño (regiones, bloque Android y logos).
   Iterable<LiveNode> get allNodes sync* {
@@ -267,10 +283,14 @@ class LiveLayout {
   Map<String, Object?> toJson({Map<String, LiveImageMeta>? resolved}) {
     final manifest = <String, Object?>{
       for (final img in images)
-        img.id: (resolved?[img.id] ??
-                LiveImageMeta(
-                    file: '${img.id}.png', w: img.width ?? 1, h: img.height ?? 1))
-            .toJson(),
+        img.id:
+            (resolved?[img.id] ??
+                    LiveImageMeta(
+                      file: '${img.id}.png',
+                      w: img.width ?? 1,
+                      h: img.height ?? 1,
+                    ))
+                .toJson(),
     };
     return compact({
       'v': liveContractVersion,
@@ -307,15 +327,20 @@ class LiveLayout {
       compactLeading: n('compactLeading'),
       compactTrailing: n('compactTrailing'),
       minimal: n('minimal'),
-      expanded: regions['expanded'] == null
-          ? null
-          : LiveExpanded.fromJson(asMap(regions['expanded'], 'expanded')),
-      lockScreen: regions['lockScreen'] == null
-          ? null
-          : LiveLockScreen.fromJson(asMap(regions['lockScreen'], 'lockScreen')),
-      android: json['android'] == null
-          ? null
-          : LiveAndroid.fromJson(asMap(json['android'], 'android')),
+      expanded:
+          regions['expanded'] == null
+              ? null
+              : LiveExpanded.fromJson(asMap(regions['expanded'], 'expanded')),
+      lockScreen:
+          regions['lockScreen'] == null
+              ? null
+              : LiveLockScreen.fromJson(
+                asMap(regions['lockScreen'], 'lockScreen'),
+              ),
+      android:
+          json['android'] == null
+              ? null
+              : LiveAndroid.fromJson(asMap(json['android'], 'android')),
     );
   }
 }

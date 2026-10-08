@@ -21,19 +21,20 @@ class LiveRow extends LiveNode {
 
   @override
   Map<String, Object?> toJson() => compact({
-        't': 'row',
-        'c': [for (final c in items) c.toJson()],
-        'gap': gap,
-        'align': align?.name,
-      });
+    't': 'row',
+    'c': [for (final c in items) c.toJson()],
+    'gap': gap,
+    'align': align?.name,
+  });
 
   factory LiveRow.fromJson(Map<String, Object?> json) => LiveRow(
-        LiveNode.listFromJson(json['c']),
-        gap: (json['gap'] as num?)?.toDouble(),
-        align: json['align'] == null
+    LiveNode.listFromJson(json['c']),
+    gap: (json['gap'] as num?)?.toDouble(),
+    align:
+        json['align'] == null
             ? null
             : enumByName(LiveAlign.values, json['align'], LiveAlign.center),
-      );
+  );
 }
 
 /// Hijos en vertical (VStack en SwiftUI).
@@ -52,19 +53,20 @@ class LiveColumn extends LiveNode {
 
   @override
   Map<String, Object?> toJson() => compact({
-        't': 'col',
-        'c': [for (final c in items) c.toJson()],
-        'gap': gap,
-        'align': align?.name,
-      });
+    't': 'col',
+    'c': [for (final c in items) c.toJson()],
+    'gap': gap,
+    'align': align?.name,
+  });
 
   factory LiveColumn.fromJson(Map<String, Object?> json) => LiveColumn(
-        LiveNode.listFromJson(json['c']),
-        gap: (json['gap'] as num?)?.toDouble(),
-        align: json['align'] == null
+    LiveNode.listFromJson(json['c']),
+    gap: (json['gap'] as num?)?.toDouble(),
+    align:
+        json['align'] == null
             ? null
             : enumByName(LiveAlign.values, json['align'], LiveAlign.start),
-      );
+  );
 }
 
 /// Hijos uno encima de otro (ZStack en SwiftUI).
@@ -82,17 +84,18 @@ class LiveStack extends LiveNode {
 
   @override
   Map<String, Object?> toJson() => compact({
-        't': 'stack',
-        'c': [for (final c in items) c.toJson()],
-        'align': align?.name,
-      });
+    't': 'stack',
+    'c': [for (final c in items) c.toJson()],
+    'align': align?.name,
+  });
 
   factory LiveStack.fromJson(Map<String, Object?> json) => LiveStack(
-        LiveNode.listFromJson(json['c']),
-        align: json['align'] == null
+    LiveNode.listFromJson(json['c']),
+    align:
+        json['align'] == null
             ? null
             : enumByName(LiveAlign.values, json['align'], LiveAlign.center),
-      );
+  );
 }
 
 /// Espacio. Sin [size] es flexible y empuja a los vecinos.
@@ -135,16 +138,16 @@ class LivePadding extends LiveNode {
 
   @override
   Map<String, Object?> toJson() => compact({
-        't': 'padding',
-        'child': child.toJson(),
-        'all': all,
-        'h': horizontal,
-        'v': vertical,
-        'top': top,
-        'bottom': bottom,
-        'left': left,
-        'right': right,
-      });
+    't': 'padding',
+    'child': child.toJson(),
+    'all': all,
+    'h': horizontal,
+    'v': vertical,
+    'top': top,
+    'bottom': bottom,
+    'left': left,
+    'right': right,
+  });
 
   factory LivePadding.fromJson(Map<String, Object?> json) {
     double? d(String k) => (json[k] as num?)?.toDouble();
@@ -182,25 +185,25 @@ class LiveBox extends LiveNode {
 
   @override
   Map<String, Object?> toJson() => compact({
-        't': 'box',
-        'child': child?.toJson(),
-        'size': size,
-        'radius': radius,
-        'tint': tint,
-        'color': color == null ? null : colorToHex(color!),
-      });
+    't': 'box',
+    'child': child?.toJson(),
+    'size': size,
+    'radius': radius,
+    'tint': tint,
+    'color': color == null ? null : colorToHex(color!),
+  });
 
   factory LiveBox.fromJson(Map<String, Object?> json) => LiveBox(
-        child: json['child'] == null
+    child:
+        json['child'] == null
             ? null
             : LiveNode.fromJson(asMap(json['child'], 'box.child')),
-        size: (json['size'] as num?)?.toDouble(),
-        radius: (json['radius'] as num?)?.toDouble(),
-        tint: (json['tint'] as num?)?.toDouble(),
-        color: json['color'] == null
-            ? null
-            : colorFromHex(json['color']! as String),
-      );
+    size: (json['size'] as num?)?.toDouble(),
+    radius: (json['radius'] as num?)?.toDouble(),
+    tint: (json['tint'] as num?)?.toDouble(),
+    color:
+        json['color'] == null ? null : colorFromHex(json['color']! as String),
+  );
 }
 
 /// Muestra [then] si se cumple [when] (se evalúa en el dispositivo); si no,
@@ -220,17 +223,18 @@ class LiveIf extends LiveNode {
 
   @override
   Map<String, Object?> toJson() => compact({
-        't': 'if',
-        'when': when.toJson(),
-        'then': then.toJson(),
-        'else': otherwise?.toJson(),
-      });
+    't': 'if',
+    'when': when.toJson(),
+    'then': then.toJson(),
+    'else': otherwise?.toJson(),
+  });
 
   factory LiveIf.fromJson(Map<String, Object?> json) => LiveIf(
-        LiveCondition.fromJson(asMap(json['when'], 'if.when')),
-        then: LiveNode.fromJson(asMap(json['then'], 'if.then')),
-        otherwise: json['else'] == null
+    LiveCondition.fromJson(asMap(json['when'], 'if.when')),
+    then: LiveNode.fromJson(asMap(json['then'], 'if.then')),
+    otherwise:
+        json['else'] == null
             ? null
             : LiveNode.fromJson(asMap(json['else'], 'if.else')),
-      );
+  );
 }
