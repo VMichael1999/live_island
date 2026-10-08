@@ -47,13 +47,50 @@ Future<Uint8List> defaultImageReader(LiveImage image) async {
   }
 }
 
+/// Lee un asset por su ruta (`assets/live/car.png`).
+typedef LiveAssetReader = Future<Uint8List> Function(String path);
+
+Future<Uint8List> defaultAssetReader(String path) async =>
+    (await rootBundle.load(path)).buffer.asUint8List();
+
+/// Tamaño máximo (px) de los PNG de íconos de Android: se muestran a ~24 dp.
+const liveAndroidIconMax = 96;
+
+/// Rutas `android:` de todos los íconos del [layout], sin repetir.
+List<String> androidIconPaths(LiveLayout layout) =>
+    {
+      for (final n in layout.allNodes)
+        if (n is LiveIcon && n.android != null) n.android!,
+    }.toList();
+
 /// Carga todas las imágenes del [layout], cada una con su límite de reducción.
+/// Con [androidIcons] agrega los PNG de los `LiveIcon.android`, con su ruta
+/// como id.
 Future<List<LiveImagePayload>> loadLayoutImages(
   LiveLayout layout, {
   LiveImageReader reader = defaultImageReader,
+  bool androidIcons = false,
+  LiveAssetReader assetReader = defaultAssetReader,
 }) async {
   final limits = imageLimits(layout);
+  final icons = androidIcons ? androidIconPaths(layout) : const <String>[];
   return Future.wait([
+    for (final path in icons)
+      () async {
+        try {
+          return LiveImagePayload(
+            id: path,
+            bytes: await assetReader(path),
+            maxWidth: liveAndroidIconMax,
+            maxHeight: liveAndroidIconMax,
+          );
+        } catch (e) {
+          throw LiveIslandException(
+            'image_failed',
+            'No se pudo leer el ícono de Android "$path": $e',
+          );
+        }
+      }(),
     for (final img in layout.images)
       () async {
         final Uint8List bytes;

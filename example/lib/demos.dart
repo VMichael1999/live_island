@@ -41,6 +41,19 @@ final demos = <Demo>[
     },
   ),
   Demo(
+    'courier',
+    'Courier',
+    'Envíos Rápidos',
+    _courier(),
+    () => {
+      'titulo': 'Tu paquete llega hoy',
+      'subtitulo': 'Quedan 3 paradas antes de la tuya',
+      'nombre': 'Ruta 14',
+      'destacado': '3 paradas',
+      'progreso': 0.4,
+    },
+  ),
+  Demo(
     'parking',
     'Estacionamiento',
     'Parquea',
@@ -80,6 +93,8 @@ LiveText _compactHighlight() => LiveText.from(
 LiveLayout _taxi() => LiveLayout(
   theme: const LiveTheme(accent: Color(0xFF1F6FEB)),
   appLogo: LiveImage.asset('assets/live/logo.png', fit: LiveFit.cover),
+  // Android pinta el ícono pequeño como silueta de un color.
+  androidSmallIcon: LiveImage.asset('assets/live/logo_silueta.png'),
   compactLeading: const LiveAvatar('CM'),
   compactTrailing: _compactHighlight(),
   minimal: const LiveAvatar('CM'),
@@ -97,18 +112,27 @@ LiveLayout _taxi() => LiveLayout(
           height: 24,
           background: LiveTrackerBackground.none,
         ),
-        endIcon: const LiveIcon.symbol('mappin'),
+        endIcon: const LiveIcon.symbol(
+          'mappin',
+          android: 'assets/live/mappin.png',
+        ),
       ),
       LiveRow([
         LiveButton(
           id: 'llamar',
           label: 'Llamar',
-          icon: const LiveIcon.symbol('phone.fill'),
+          icon: const LiveIcon.symbol(
+            'phone.fill',
+            android: 'assets/live/phone.png',
+          ),
         ),
         LiveButton(
           id: 'compartir',
           label: 'Compartir',
-          icon: const LiveIcon.symbol('square.and.arrow.up'),
+          icon: const LiveIcon.symbol(
+            'square.and.arrow.up',
+            android: 'assets/live/share2.png',
+          ),
         ),
       ]),
     ], gap: 12),
@@ -123,13 +147,28 @@ LiveLayout _taxi() => LiveLayout(
 
 LiveLayout _delivery() => LiveLayout(
   theme: const LiveTheme(accent: Color(0xFFE4572E)),
-  appLogo: const LiveIcon.symbol('fork.knife'),
-  compactLeading: const LiveIcon.symbol('fork.knife', accent: true),
+  appLogo: const LiveIcon.symbol(
+    'fork.knife',
+    android: 'assets/live/utensils.png',
+  ),
+  compactLeading: const LiveIcon.symbol(
+    'fork.knife',
+    android: 'assets/live/utensils.png',
+    accent: true,
+  ),
   compactTrailing: _compactHighlight(),
-  minimal: const LiveIcon.symbol('fork.knife', accent: true),
+  minimal: const LiveIcon.symbol(
+    'fork.knife',
+    android: 'assets/live/utensils.png',
+    accent: true,
+  ),
   expanded: LiveExpanded(
     leading: const LiveBox(
-      child: LiveIcon.symbol('fork.knife', accent: true),
+      child: LiveIcon.symbol(
+        'fork.knife',
+        android: 'assets/live/utensils.png',
+        accent: true,
+      ),
       size: 46,
       radius: 14,
       tint: 0.22,
@@ -141,19 +180,31 @@ LiveLayout _delivery() => LiveLayout(
         value: bind('progreso'),
         labels: const ['Confirmado', 'Preparando', 'En camino', 'Entregado'],
         points: true,
-        tracker: const LiveIcon.symbol('bicycle'),
-        endIcon: const LiveIcon.symbol('house.fill'),
+        tracker: const LiveIcon.symbol(
+          'bicycle',
+          android: 'assets/live/bike.png',
+        ),
+        endIcon: const LiveIcon.symbol(
+          'house.fill',
+          android: 'assets/live/house.png',
+        ),
       ),
       LiveRow([
         LiveButton(
           id: 'llamar',
           label: 'Llamar',
-          icon: const LiveIcon.symbol('phone.fill'),
+          icon: const LiveIcon.symbol(
+            'phone.fill',
+            android: 'assets/live/phone.png',
+          ),
         ),
         LiveButton(
           id: 'ver_mapa',
           label: 'Ver mapa',
-          icon: const LiveIcon.symbol('mappin'),
+          icon: const LiveIcon.symbol(
+            'mappin',
+            android: 'assets/live/mappin.png',
+          ),
         ),
       ]),
     ], gap: 12),
@@ -168,7 +219,10 @@ LiveLayout _delivery() => LiveLayout(
 
 LiveLayout _parking() => LiveLayout(
   theme: const LiveTheme(accent: Color(0xFF0277BD)),
-  appLogo: const LiveIcon.symbol('parkingsign.circle.fill'),
+  appLogo: const LiveIcon.symbol(
+    'parkingsign.circle.fill',
+    android: 'assets/live/squareparking.png',
+  ),
   compactLeading: const LiveIcon.symbol(
     'parkingsign.circle.fill',
     accent: true,
@@ -176,11 +230,19 @@ LiveLayout _parking() => LiveLayout(
   compactTrailing: _compactHighlight(),
   minimal: LiveProgress.ring(
     value: bind('progreso'),
-    child: const LiveIcon.symbol('parkingsign.circle.fill', accent: true),
+    child: const LiveIcon.symbol(
+      'parkingsign.circle.fill',
+      android: 'assets/live/squareparking.png',
+      accent: true,
+    ),
   ),
   expanded: LiveExpanded(
     leading: const LiveBox(
-      child: LiveIcon.symbol('parkingsign.circle.fill', accent: true),
+      child: LiveIcon.symbol(
+        'parkingsign.circle.fill',
+        android: 'assets/live/squareparking.png',
+        accent: true,
+      ),
       size: 46,
       radius: 14,
       tint: 0.22,
@@ -203,12 +265,12 @@ LiveLayout _parking() => LiveLayout(
         LiveButton(
           id: 'mas_15_min',
           label: '+15 min',
-          icon: const LiveIcon.symbol('plus'),
+          icon: const LiveIcon.symbol('plus', android: 'assets/live/plus.png'),
         ),
         LiveButton(
           id: 'terminar',
           label: 'Terminar',
-          icon: const LiveIcon.symbol('xmark'),
+          icon: const LiveIcon.symbol('xmark', android: 'assets/live/x.png'),
         ),
       ]),
     ], gap: 12),
@@ -218,5 +280,82 @@ LiveLayout _parking() => LiveLayout(
     title: bind('titulo'),
     text: const LiveText.format('{subtitulo} · {nombre}'),
     chip: LiveChip.countdown(bind('llegaA')),
+  ),
+);
+
+LiveLayout _courier() => LiveLayout(
+  theme: const LiveTheme(accent: Color(0xFF6D4C41)),
+  appLogo: const LiveIcon.symbol(
+    'shippingbox.fill',
+    android: 'assets/live/package.png',
+  ),
+  compactLeading: const LiveIcon.symbol(
+    'shippingbox.fill',
+    android: 'assets/live/package.png',
+    accent: true,
+  ),
+  compactTrailing: LiveText.from(
+    LiveText(bind('destacado')),
+    size: 15,
+    weight: 600,
+    accent: true,
+  ),
+  minimal: const LiveIcon.symbol(
+    'shippingbox.fill',
+    android: 'assets/live/package.png',
+    accent: true,
+  ),
+  expanded: LiveExpanded(
+    leading: const LiveBox(
+      child: LiveIcon.symbol(
+        'shippingbox.fill',
+        android: 'assets/live/package.png',
+        accent: true,
+      ),
+      size: 46,
+      radius: 14,
+      tint: 0.22,
+    ),
+    center: _centerText(),
+    trailing: LiveColumn([
+      LiveText.from(
+        LiveText(bind('destacado')),
+        size: 22,
+        weight: 700,
+        accent: true,
+      ),
+      LiveText(bind('nombre'), size: 12, muted: true),
+    ], align: LiveAlign.end),
+    bottom: LiveColumn([
+      LiveSegments(
+        value: bind('progreso'),
+        labels: const ['Almacén', 'En ruta', 'Cerca', 'Entregado'],
+        points: true,
+        tracker: const LiveIcon.symbol(
+          'truck.box.fill',
+          android: 'assets/live/truck.png',
+        ),
+        endIcon: const LiveIcon.symbol(
+          'house.fill',
+          android: 'assets/live/house.png',
+        ),
+      ),
+      LiveRow([
+        LiveButton(
+          id: 'ver_ruta',
+          label: 'Ver ruta',
+          icon: const LiveIcon.symbol(
+            'mappin',
+            android: 'assets/live/mappin.png',
+          ),
+        ),
+      ]),
+    ], gap: 12),
+  ),
+  lockScreen: const LiveLockScreen.sameAsExpanded(),
+  android: LiveAndroid(
+    title: bind('titulo'),
+    text: const LiveText.format('{subtitulo} · {nombre}'),
+    chip: const LiveChip.text('3 más'),
   ),
 );

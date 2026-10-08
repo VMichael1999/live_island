@@ -72,4 +72,7 @@ Estas reglas las comparten la vista previa de Flutter, el renderer SwiftUI y el 
 - Ícono pequeño (silueta de un color): `androidSmallIcon`, si no `appLogo`.
 - Ícono grande: el `avatar` de la expandida, si no `appLogo` si es imagen, si no la imagen de `leading`.
 - Título: si `compactTrailing` es un texto que no es contador, se le agrega ` · <texto>`. El encabezado muestra `<app> · <mm:ss>` si es cuenta regresiva y `ahora` si no.
-- Se promueve si no es `colorized`, `androidPromotable` es verdadero y el título no está vacío.
+- Se promueve si no es `colorized` y el título no está vacío (el plugin pide la promoción; que Android la conceda depende del usuario y de que el caso sea elegible). `androidPromotable` solo existe en `LiveIsland.check()`.
+- Etapas: cada par de etapas es un tramo de 100 y la etapa actual va como subtexto del encabezado (Android no dibuja las etiquetas).
+- Chip: `countdown` usa el cronómetro del sistema (cuenta regresiva en vivo); `text` sigue la regla de 7/12 caracteres.
+- Íconos: un `LiveIcon` se dibuja con el PNG de su campo `android` (se envía junto al diseño); sin él se omite.

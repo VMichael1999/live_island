@@ -13,8 +13,10 @@ public class LiveIslandPlugin: NSObject, FlutterPlugin {
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         let args = call.arguments as? [String: Any] ?? [:]
         switch call.method {
-        case "areEnabled":
+        case "areEnabled", "requestPermission":
             result(LiveActivities.areEnabled())
+        case "openPromotionSettings":
+            result(false)
         case "start":
             LiveActivities.start(args, result)
         case "update":

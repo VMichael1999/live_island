@@ -68,6 +68,8 @@ class _DemoScreenState extends State<DemoScreen> {
   }
 
   Future<void> _start() => _run('Iniciar', () async {
+    // Android 13+: pide el permiso de notificaciones (en iOS no hace nada).
+    await LiveIsland.requestPermission();
     _state = _demo.state();
     final a = await LiveIsland.start(
       layout: _demo.layout,

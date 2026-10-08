@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/services.dart';
 
 /// Una imagen lista para enviar al dispositivo, con el límite al que debe
@@ -54,8 +56,20 @@ class LiveIslandException implements Exception {
 
 /// Lo que cada plataforma (iOS, Android) implementa.
 abstract class LiveIslandPlatform {
-  /// ¿Puede la app mostrar actividades? (iOS: `areActivitiesEnabled`.)
+  /// ¿Esta plataforma necesita los PNG de `LiveIcon.android`? (Solo Android.)
+  bool get needsAndroidIcons;
+
+  /// ¿Puede la app mostrar actividades? (iOS: `areActivitiesEnabled`;
+  /// Android: notificaciones permitidas y, en Android 16+, promovidas.)
   Future<bool> areEnabled();
+
+  /// Pide el permiso de notificaciones (Android 13+). En iOS no hace nada y
+  /// devuelve si las actividades están activas.
+  Future<bool> requestPermission();
+
+  /// Abre los ajustes donde el usuario permite las notificaciones promovidas
+  /// a Live Update (Android 16+). Devuelve `false` si no existen.
+  Future<bool> openPromotionSettings();
 
   /// Inicia una actividad y devuelve su id.
   Future<String> start({
@@ -97,7 +111,18 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
   }
 
   @override
+  bool get needsAndroidIcons => defaultTargetPlatform == TargetPlatform.android;
+
+  @override
   Future<bool> areEnabled() async => await _call<bool>('areEnabled') ?? false;
+
+  @override
+  Future<bool> requestPermission() async =>
+      await _call<bool>('requestPermission') ?? false;
+
+  @override
+  Future<bool> openPromotionSettings() async =>
+      await _call<bool>('openPromotionSettings') ?? false;
 
   @override
   Future<String> start({

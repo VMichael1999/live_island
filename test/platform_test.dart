@@ -17,7 +17,16 @@ class _FakePlatform implements LiveIslandPlatform {
   bool enabled = true;
 
   @override
+  bool needsAndroidIcons = false;
+
+  @override
   Future<bool> areEnabled() async => enabled;
+
+  @override
+  Future<bool> requestPermission() async => enabled;
+
+  @override
+  Future<bool> openPromotionSettings() async => false;
 
   @override
   Future<String> start({
@@ -113,6 +122,42 @@ void main() {
     },
   );
 
+  test('en Android viajan también los PNG de los íconos `android:`', () async {
+    platform.needsAndroidIcons = true;
+    LiveIsland.debugOverride(
+      platform: platform,
+      imageReader: (img) async => Uint8List(4),
+      assetReader: (path) async => Uint8List.fromList(path.codeUnits),
+    );
+    final p = fx.presets.firstWhere((p) => p.id == 'taxi');
+    await LiveIsland.start(layout: fx.layoutOf(p), state: fx.stateOf(p));
+    final images = {
+      for (final i
+          in platform.calls.single.args['images']! as List<LiveImagePayload>)
+        i.id: i,
+    };
+    expect(
+      images.keys,
+      containsAll(['assets/live/mappin.png', 'assets/live/phone.png']),
+    );
+    expect(images['assets/live/phone.png']!.maxWidth, 96);
+    expect(
+      images['assets/live/phone.png']!.bytes,
+      'assets/live/phone.png'.codeUnits,
+    );
+  });
+
+  test('en iOS no se envían los PNG de los íconos', () async {
+    final p = fx.presets.firstWhere((p) => p.id == 'taxi');
+    await LiveIsland.start(layout: fx.layoutOf(p), state: fx.stateOf(p));
+    final ids = [
+      for (final i
+          in platform.calls.single.args['images']! as List<LiveImagePayload>)
+        i.id,
+    ];
+    expect(ids.where((i) => i.startsWith('assets/')), isEmpty);
+  });
+
   test('las fechas del estado viajan en ISO 8601 UTC', () async {
     await LiveIsland.start(
       layout: _plain,
@@ -184,6 +229,14 @@ void main() {
     expect(d.type, 'after');
     expect(d.after, const Duration(minutes: 5));
   });
+
+  test(
+    'requestPermission y openPromotionSettings consultan a la plataforma',
+    () async {
+      expect(await LiveIsland.requestPermission(), isTrue);
+      expect(await LiveIsland.openPromotionSettings(), isFalse);
+    },
+  );
 
   test('areEnabled consulta a la plataforma', () async {
     expect(await LiveIsland.areEnabled(), isTrue);
