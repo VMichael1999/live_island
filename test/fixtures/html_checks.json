@@ -1,0 +1,292 @@
+{
+  "taxi": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 167 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "ok",
+      "text": "El dato destacado cabe en la isla compacta."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (5 caracteres)."
+    },
+    {
+      "sev": "ok",
+      "text": "Android la promueve a Live Update (estilo nativo, sin RemoteViews)."
+    },
+    {
+      "sev": "warn",
+      "text": "En Android el ícono pequeño (barra de estado, chip y encabezado) se ve como silueta de un solo color. El logo a color se muestra como ícono grande; conviene darle una versión en silueta con androidSmallIcon."
+    },
+    {
+      "sev": "ok",
+      "text": "Logo de la app: 1 KB, se reduce a 120 × 120 px antes de copiarse al App Group (iOS). Proporción respetada con fit “cover”."
+    },
+    {
+      "sev": "ok",
+      "text": "Imagen que avanza en la barra: 1 KB, se reduce a 72 px de alto antes de copiarse al App Group (iOS). Proporción respetada con fit “contain”."
+    }
+  ],
+  "delivery": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 173 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "ok",
+      "text": "El dato destacado cabe en la isla compacta."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (6 caracteres)."
+    },
+    {
+      "sev": "ok",
+      "text": "Android la promueve a Live Update (estilo nativo, sin RemoteViews)."
+    }
+  ],
+  "courier": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 149 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "warn",
+      "text": "El dato destacado tiene 9 caracteres; en la isla compacta se recorta. Usa 7 o menos."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (5 caracteres)."
+    },
+    {
+      "sev": "ok",
+      "text": "Android la promueve a Live Update (estilo nativo, sin RemoteViews)."
+    }
+  ],
+  "pickup": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 149 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "ok",
+      "text": "El dato destacado cabe en la isla compacta."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (3 caracteres)."
+    },
+    {
+      "sev": "ok",
+      "text": "Android la promueve a Live Update (estilo nativo, sin RemoteViews)."
+    }
+  ],
+  "queue": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 138 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "ok",
+      "text": "El dato destacado cabe en la isla compacta."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (5 caracteres)."
+    },
+    {
+      "sev": "ok",
+      "text": "Android la promueve a Live Update (estilo nativo, sin RemoteViews)."
+    }
+  ],
+  "flight": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 153 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "ok",
+      "text": "El dato destacado cabe en la isla compacta."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (6 caracteres)."
+    },
+    {
+      "sev": "ok",
+      "text": "Android la promueve a Live Update (estilo nativo, sin RemoteViews)."
+    }
+  ],
+  "parking": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 153 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "ok",
+      "text": "El dato destacado cabe en la isla compacta."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (6 caracteres)."
+    },
+    {
+      "sev": "ok",
+      "text": "Android la promueve a Live Update (estilo nativo, sin RemoteViews)."
+    },
+    {
+      "sev": "warn",
+      "text": "El anillo no existe en Android: se muestra como barra de ProgressStyle."
+    }
+  ],
+  "ev": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 124 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "ok",
+      "text": "El dato destacado cabe en la isla compacta."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (4 caracteres)."
+    },
+    {
+      "sev": "ok",
+      "text": "Android la promueve a Live Update (estilo nativo, sin RemoteViews)."
+    }
+  ],
+  "workout": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 150 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "ok",
+      "text": "El dato destacado cabe en la isla compacta."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (5 caracteres)."
+    },
+    {
+      "sev": "ok",
+      "text": "Android la promueve a Live Update (estilo nativo, sin RemoteViews)."
+    }
+  ],
+  "cooking": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 152 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "ok",
+      "text": "El dato destacado cabe en la isla compacta."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (6 caracteres)."
+    },
+    {
+      "sev": "ok",
+      "text": "Android la promueve a Live Update (estilo nativo, sin RemoteViews)."
+    },
+    {
+      "sev": "warn",
+      "text": "El anillo no existe en Android: se muestra como barra de ProgressStyle."
+    }
+  ],
+  "upload": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 128 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "ok",
+      "text": "El dato destacado cabe en la isla compacta."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (4 caracteres)."
+    },
+    {
+      "sev": "ok",
+      "text": "Android la promueve a Live Update (estilo nativo, sin RemoteViews)."
+    }
+  ],
+  "tech": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 160 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "ok",
+      "text": "El dato destacado cabe en la isla compacta."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (6 caracteres)."
+    },
+    {
+      "sev": "ok",
+      "text": "Android la promueve a Live Update (estilo nativo, sin RemoteViews)."
+    }
+  ],
+  "transit": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 157 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "warn",
+      "text": "El dato destacado tiene 9 caracteres; en la isla compacta se recorta. Usa 7 o menos."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (6 caracteres)."
+    },
+    {
+      "sev": "ok",
+      "text": "Android la promueve a Live Update (estilo nativo, sin RemoteViews)."
+    }
+  ],
+  "clinic": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 145 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "ok",
+      "text": "El dato destacado cabe en la isla compacta."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (7 caracteres)."
+    },
+    {
+      "sev": "ok",
+      "text": "Android la promueve a Live Update (estilo nativo, sin RemoteViews)."
+    }
+  ],
+  "score": [
+    {
+      "sev": "ok",
+      "text": "Estado por actualización: 136 bytes de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez."
+    },
+    {
+      "sev": "ok",
+      "text": "El dato destacado cabe en la isla compacta."
+    },
+    {
+      "sev": "ok",
+      "text": "Chip de Android completo (3 caracteres)."
+    },
+    {
+      "sev": "bad",
+      "text": "Android no promueve este caso: no lo inició el usuario como actividad con inicio y fin. Se muestra como notificación normal."
+    }
+  ]
+}
