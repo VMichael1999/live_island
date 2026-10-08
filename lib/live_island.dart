@@ -13,3 +13,13 @@ export 'src/core/layout.dart' hide firstProgress;
 export 'src/core/node.dart';
 export 'src/core/state.dart';
 export 'src/live_island.dart';
+export 'src/preview/live_island_preview.dart';
+export 'src/preview/preview_config.dart';
+export 'src/preview/preview_icon.dart';
+export 'src/preview/preview_surfaces.dart'
+    show
+        LiveAndroidPreview,
+        LiveCompactPreview,
+        LiveExpandedPreview,
+        LiveLockScreenPreview,
+        LiveMinimalPreview;

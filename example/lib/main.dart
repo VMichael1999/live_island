@@ -63,6 +63,12 @@ class ExampleApp extends StatelessWidget {
         body: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            LiveIslandPreview(
+              layout: taxiLayout(),
+              state: state,
+              appName: 'Taxi Ya',
+            ),
+            const SizedBox(height: 24),
             Text('Validación', style: Theme.of(context).textTheme.titleMedium),
             for (final c in report.items)
               ListTile(

@@ -37,3 +37,37 @@ Se validan con JSON Schema 2020-12 (probado con `ajv`).
 ## Cómo se evalúa el espacio de 4 KB
 
 Solo cuenta `state`. Un taxi típico (ejemplo) pesa ~170 bytes. `LiveIsland.check()` lo mide con el mismo criterio (ver `docs/design/LECTURA_DEL_HTML.md` §8 y §12).
+
+## Reglas de render por defecto
+
+Estas reglas las comparten la vista previa de Flutter, el renderer SwiftUI y el traductor Kotlin. Salen del HTML de prototipos (`docs/design/LECTURA_DEL_HTML.md`); la vista previa (`lib/src/preview/`) es su implementación de referencia.
+
+**Estilo.** Un texto sin `size` mide 15 pt, sin `w` pesa 400, sin `lines` ocupa una línea con elipsis. `muted` usa blanco al 62 % en la isla y al 68 % en la tarjeta de bloqueo (negro al 68 % en fondo claro). `accent` usa el acento, o blanco si la tarjeta de bloqueo tiene fondo `accent`. Los contadores (`countdown`, `stopwatch`) llevan cifras tabulares.
+
+**Tamaño según la zona.** Un `icon`, `image` o `avatar` sin `size` toma el de su zona:
+
+| Zona | Cuadro | Glifo de un ícono |
+| --- | --- | --- |
+| `compactLeading` | 22 pt | 18 pt |
+| `minimal` | 24 pt (anillo: 33 pt) | 18 pt (dentro del anillo: 14 pt) |
+| `expanded.leading` | 46 pt | 38 pt |
+| `box` | el del cuadro | 52 % del cuadro |
+| Íconos de botones | — | 15 pt |
+| Íconos de inicio y fin de la barra | — | 16 pt |
+
+**Valores por defecto de estructura.** `row`: separación 8 y centrado; `col`: separación 2 y alineado al inicio. Una `row` que contiene botones salta de línea si no cabe. Un `spacer` sin tamaño es flexible solo dentro de una `row`.
+
+**Botones.** El primer botón de una superficie es el principal (acento); los demás son secundarios. En fondo `accent` el primero se invierte (blanco con texto de acento).
+
+**Tarjeta de bloqueo con `{same: "expanded"}`.** Usa `center`, `trailing` y `bottom` de la isla expandida. La zona izquierda es el ícono de app de 40 pt (radio 11), que sale de, en este orden: `appLogo` si es imagen; el `avatar` o la imagen de `expanded.leading`; el ícono de `appLogo` o el del `box` de `expanded.leading` sobre un cuadro de acento. Con `lockScreen` propio el diseño es el del nodo, sin esta regla.
+
+**Fondo `system` de la tarjeta de bloqueo.** Sigue el modo del sistema: oscuro translúcido en modo oscuro, claro translúcido en modo claro. `light` y `accent` no cambian.
+
+**Notificación de Android.** Se arma con el bloque `android`; lo que no trae sale de la isla expandida:
+
+- Barra: `android.progress`, o el primer `bar`/`segments`/`ring` de la expandida (el anillo se dibuja como barra).
+- Botones: `android.actions`, o los `button` de la expandida.
+- Ícono pequeño (silueta de un color): `androidSmallIcon`, si no `appLogo`.
+- Ícono grande: el `avatar` de la expandida, si no `appLogo` si es imagen, si no la imagen de `leading`.
+- Título: si `compactTrailing` es un texto que no es contador, se le agrega ` · <texto>`. El encabezado muestra `<app> · <mm:ss>` si es cuenta regresiva y `ahora` si no.
+- Se promueve si no es `colorized`, `androidPromotable` es verdadero y el título no está vacío.

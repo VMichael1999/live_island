@@ -345,11 +345,12 @@ class LiveLayout {
   }
 }
 
-/// Primer nodo de progreso (barra, anillo o etapas) dentro de [root].
-LiveNode? firstProgress(LiveNode? root) {
-  if (root == null) return null;
-  for (final n in root.descendants) {
-    if (n is LiveProgress || n is LiveSegments) return n;
+/// Primer nodo de progreso (barra, anillo o etapas) dentro de [roots].
+LiveNode? firstProgress(Iterable<LiveNode> roots) {
+  for (final root in roots) {
+    for (final n in root.descendants) {
+      if (n is LiveProgress || n is LiveSegments) return n;
+    }
   }
   return null;
 }

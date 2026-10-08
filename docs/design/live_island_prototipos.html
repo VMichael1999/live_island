@@ -638,6 +638,7 @@ function renderChecks(){
 }
 function dq(x){ return "'"+String(x).replace(/\\/g,'\\\\').replace(/'/g,"\\'")+"'"; }
 function sym(n){ return n==='none'?null:'LiveIcon.symbol('+dq(SF[n]||n)+', android: '+dq('assets/live/'+n.toLowerCase()+'.png')+')'; }
+function symA(n){ return n==='none'?null:'LiveIcon.symbol('+dq(SF[n]||n)+', android: '+dq('assets/live/'+n.toLowerCase()+'.png')+', accent: true)'; }
 function visCode(v,file,extra){ return "LiveImage.asset('assets/live/"+file+"', fit: LiveFit."+(v.fit||'contain')+(v.shape?', shape: LiveShape.'+v.shape:'')+(extra||'')+')'; }
 function renderCode(){
   const s=state, st=stageList(s), L=[];
@@ -653,15 +654,16 @@ function renderCode(){
   if(s.pShow) L.push("  'progreso': "+v01(s).toFixed(2)+',');
   L.push('};','');
   const H = s.hlMode==='countdown' ? "LiveText.countdown(bind('llegaA'))" : "LiveText(bind('destacado'))";
-  const leadW = s.showAvatar ? (s.avatarImg ? visCode(Object.assign({},s.avatarImg,{shape:'circle'}),'foto.jpg') : 'LiveAvatar('+dq(s.avatarText)+')') : (s.mainImg ? visCode(s.mainImg,'icono.png') : sym(s.icon));
+  const leadW = s.showAvatar ? (s.avatarImg ? visCode(Object.assign({},s.avatarImg,{shape:'circle'}),'foto.jpg') : 'LiveAvatar('+dq(s.avatarText)+')') : (s.mainImg ? visCode(s.mainImg,'icono.png') : symA(s.icon));
   L.push('// 2. Tu diseño, región por región.');
   L.push('final diseno = LiveLayout(');
   L.push('  theme: LiveTheme(accent: '+color+', background: LiveBackground.'+(s.lockBg==='dark'?'system':s.lockBg)+'),');
   L.push('  appLogo: '+(s.logoImg ? visCode(s.logoImg,'logo.png') : sym(s.icon))+',');
   if(s.logoImg) L.push("  androidSmallIcon: LiveImage.asset('assets/live/logo_silueta.png'), // Android la pinta en un solo color");
   L.push('  compactLeading: '+leadW+',');
-  L.push('  compactTrailing: '+H+',');
-  L.push('  minimal: '+(s.pShow&&s.pType==='ring'?"LiveProgress.ring(value: bind('progreso'), child: "+sym(s.icon)+')':sym(s.icon))+',');
+  L.push('  compactTrailing: LiveText.from('+H+', size: 15, weight: 600, accent: true),');
+  const minInner = s.showAvatar ? null : (s.mainImg ? visCode(s.mainImg,'icono.png') : symA(s.icon));
+  L.push('  minimal: '+(s.pShow&&s.pType==='ring'?"LiveProgress.ring(value: bind('progreso')"+(minInner?', child: '+minInner:'')+')':leadW)+',');
   let prog='';
   if(s.pShow){
     const opts=[];
@@ -670,15 +672,17 @@ function renderCode(){
     if(s.startIcon!=='none') opts.push('startIcon: '+sym(s.startIcon));
     if(s.endIcon!=='none') opts.push('endIcon: '+sym(s.endIcon));
     if(s.pType==='segments' && st.length>1) prog="LiveSegments(\n        value: bind('progreso'),\n        labels: ["+st.map(dq).join(', ')+"],\n        points: "+s.showPoints+(opts.length?',\n        '+opts.join(',\n        '):'')+',\n      )';
-    else if(s.pType==='ring') prog="LiveProgress.ring(value: bind('progreso'))";
+    else if(s.pType==='ring') prog='';
     else prog="LiveProgress.bar(\n        value: bind('progreso')"+(opts.length?',\n        '+opts.join(',\n        '):'')+',\n      )';
   }
   const btns=[[s.a1Label,s.a1Icon],[s.a2Label,s.a2Icon]].filter(a=>a[0]).map(([l,i])=>'LiveButton(id: '+dq(l.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'')||'accion')+', label: '+dq(l)+(i!=='none'?', icon: '+sym(i):'')+')');
   L.push('  expanded: LiveExpanded(');
-  L.push('    leading: '+((s.showAvatar||s.mainImg)?leadW:'LiveBox(child: '+sym(s.icon)+', size: 46, radius: 14, tint: 0.22)')+',');
-  L.push("    center: LiveColumn([LiveText(bind('titulo'), weight: 600), LiveText(bind('subtitulo'), muted: true)]),");
-  L.push("    trailing: LiveColumn([LiveText.from("+H+", size: 22, weight: 700, accent: true), LiveText(bind('nombre'), muted: true)], align: LiveAlign.end),");
-  L.push('    bottom: LiveColumn(['+(prog?'\n      '+prog+',':'')+(btns.length?'\n      LiveRow(['+btns.join(', ')+']),':'')+'\n    ]),');
+  L.push('    leading: '+((s.showAvatar||s.mainImg)?leadW:'LiveBox(child: '+symA(s.icon)+', size: 46, radius: 14, tint: 0.22)')+',');
+  L.push("    center: LiveColumn([LiveText(bind('titulo'), size: 15, weight: 600, lines: 2), LiveText(bind('subtitulo'), size: 13, muted: true)]),");
+  const ringOn = s.pShow && s.pType==='ring';
+  L.push(ringOn ? "    trailing: LiveProgress.ring(value: bind('progreso'), size: 46)," : "    trailing: LiveColumn([LiveText.from("+H+", size: 22, weight: 700, accent: true), LiveText(bind('nombre'), size: 12, muted: true)], align: LiveAlign.end),");
+  const ringLine = ringOn ? "\n      LiveRow([LiveSpacer(), LiveText.from("+H+", size: 12, muted: true), LiveText.literal('·', size: 12, muted: true), LiveText(bind('nombre'), size: 12, muted: true), LiveSpacer()], gap: 4)," : '';
+  L.push('    bottom: LiveColumn(['+(prog?'\n      '+prog+',':'')+ringLine+(btns.length?'\n      LiveRow(['+btns.join(', ')+']),':'')+'\n    ], gap: 12),');
   L.push('  ),');
   L.push('  lockScreen: LiveLockScreen.sameAsExpanded(),');
   L.push('  android: LiveAndroid(');

@@ -5,6 +5,7 @@ import '../components/progress.dart';
 import '../components/text.dart';
 import '../components/visuals.dart';
 import 'bind.dart';
+import 'countdown.dart';
 import 'enums.dart';
 import 'layout.dart';
 import 'node.dart';
@@ -174,7 +175,8 @@ LiveReport checkLayout(
 
   // 5. Anillo en Android. Se evalúa el progreso que usará Android.
   final androidProgress =
-      android?.progress ?? firstProgress(layout.expanded?.bottom);
+      android?.progress ??
+      firstProgress(layout.expanded?.nodes ?? const <LiveNode>[]);
   if (androidProgress is LiveProgress && androidProgress.isRing) {
     rows.add(
       const LiveCheck(
@@ -304,7 +306,7 @@ enum _ChipMode { full, cut, icon }
 ) {
   if (chip == null) return null;
   var text = switch (chip.type) {
-    'countdown' => '${_remainingMinutes(data[chip.bind!.field], now)} min',
+    'countdown' => '${remainingMinutes(data[chip.bind!.field], now)} min',
     'text' => chip.text ?? '',
     _ => '',
   };
@@ -316,28 +318,6 @@ enum _ChipMode { full, cut, icon }
     return (text: text, mode: _ChipMode.cut, length: len);
   }
   return (text: text, mode: _ChipMode.full, length: len);
-}
-
-int _remainingMinutes(Object? date, DateTime now) {
-  final s = _remainingSeconds(date, now);
-  final m = (s / 60).ceil();
-  return m < 1 ? 1 : m;
-}
-
-int _remainingSeconds(Object? date, DateTime now) {
-  final dl = date is String ? DateTime.tryParse(date) : null;
-  if (dl == null) return 0;
-  final ms = dl.difference(now).inMilliseconds;
-  // Igual que Math.round de JavaScript: la mitad sube.
-  final s = (ms / 1000 + 0.5).floor();
-  return s < 0 ? 0 : s;
-}
-
-/// `m:ss` o `h:mm:ss`.
-String formatCountdown(int seconds) {
-  final h = seconds ~/ 3600, m = seconds % 3600 ~/ 60, s = seconds % 60;
-  final ss = s.toString().padLeft(2, '0');
-  return h > 0 ? '$h:${m.toString().padLeft(2, '0')}:$ss' : '$m:$ss';
 }
 
 /// Texto que mostraría un nodo de texto con [data]; `null` si no es texto
@@ -352,7 +332,7 @@ String? _text(LiveNode? node, Map<String, Object?> data, DateTime now) {
     case LiveTextKind.format:
       return formatTemplate(node.template!, data);
     case LiveTextKind.countdown:
-      return formatCountdown(_remainingSeconds(data[node.source!.field], now));
+      return formatCountdown(remainingSeconds(data[node.source!.field], now));
     case LiveTextKind.stopwatch:
     case LiveTextKind.relative:
       return null;
