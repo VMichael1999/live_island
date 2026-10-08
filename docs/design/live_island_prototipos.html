@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>live_island · Prototipos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Roboto:wght@400;500&display=swap">
+<style>
+/* Layout: herramienta de dos columnas (controles fijos a la izquierda, superficies iOS/Android a la derecha), luego galería y especificación. */
+:root{
+  --bg:#F3F4F1; --surface:#FFFFFF; --surface-2:#E9ECE6; --ink:#141817; --muted:#58615E; --line:#D5DAD2;
+  --accent:#0E7C6B; --accent-ink:#FFFFFF; --good:#1E7B34; --warn:#9A5B00; --bad:#B3261E;
+  --code-bg:#14201D; --code-ink:#D9EDE7;
+  --f-display:"Bricolage Grotesque", "Instrument Sans", system-ui, sans-serif;
+  --f-body:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --f-ios:-apple-system, "SF Pro Text", "SF Pro Display", system-ui, "Helvetica Neue", sans-serif;
+  --f-android:"Roboto", "Google Sans", system-ui, sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1211; --surface:#161B1A; --surface-2:#1E2524; --ink:#E6ECE9; --muted:#97A29E; --line:#2A3331;
+  --accent:#3FBFA8; --accent-ink:#06201B; --good:#6FCF8A; --warn:#E3A33B; --bad:#F2827A;
+  --code-bg:#0A100F; --code-ink:#D9EDE7; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0E1211; --surface:#161B1A; --surface-2:#1E2524; --ink:#E6ECE9; --muted:#97A29E; --line:#2A3331;
+  --accent:#3FBFA8; --accent-ink:#06201B; --good:#6FCF8A; --warn:#E3A33B; --bad:#F2827A;
+  --code-bg:#0A100F; --code-ink:#D9EDE7; color-scheme:dark;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1320px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(28px,4vw,40px);line-height:1.1}
+h2{font-size:24px;margin-bottom:6px}
+h3{font-size:16px}
+p{margin:0}
+.muted{color:var(--muted)}
+code,.mono{font-family:var(--f-mono);font-size:.88em}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+header.top{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end;justify-content:space-between;padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:24px}
+header.top .lead{max-width:62ch;margin-top:8px;color:var(--muted)}
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:var(--surface)}
+nav.jump{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px}
+nav.jump a{font-size:13px;color:var(--ink);text-decoration:none;padding:6px 12px;border-radius:8px;background:var(--surface-2)}
+nav.jump a:hover{background:var(--line)}
+section{margin-top:48px}
+section > .intro{max-width:70ch;color:var(--muted);margin-bottom:18px}
+
+/* Playground */
+.play{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:920px){.play{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.controls{padding:6px 0;position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);max-height:calc(100vh - 24px);overflow:auto}
+@media (max-width:920px){.controls{position:static;max-height:none}}
+details.grp{border-bottom:1px solid var(--line)}
+details.grp:last-child{border-bottom:0}
+details.grp summary{cursor:pointer;list-style:none;padding:12px 16px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+details.grp summary::-webkit-details-marker{display:none}
+details.grp summary::after{content:"+";color:var(--muted);font-weight:400}
+details.grp[open] summary::after{content:"–"}
+.fields{display:grid;gap:12px;padding:0 16px 16px}
+.field{display:grid;gap:5px;min-width:0}
+.field label,.lbl{font-size:12.5px;color:var(--muted);font-weight:500}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input[type=text],input[type=number],select{width:100%;font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+input[type=color]{width:44px;height:36px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:3px;cursor:pointer}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input:focus-visible,select:focus-visible,button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;cursor:pointer}
+.check input{accent-color:var(--accent);width:16px;height:16px}
+.swatches{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.sw{width:24px;height:24px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:8px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:13px;border:0;background:transparent;color:var(--muted);padding:6px 10px;border-radius:6px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.btn{font:inherit;font-size:14px;font-weight:600;border:0;border-radius:8px;padding:9px 14px;cursor:pointer;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:var(--surface-2);color:var(--ink)}
+.hint{font-size:12px;color:var(--muted)}
+
+.stage{display:grid;gap:20px;min-width:0}
+.surfaces{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+@media (max-width:1180px){.surfaces{grid-template-columns:minmax(0,1fr)}}
+.surface{padding:16px;display:grid;gap:14px;min-width:0;align-content:start}
+.surface-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.spec-note{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.mock-label{font-size:12px;color:rgba(255,255,255,.62);margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
+.mock-scroll{overflow-x:auto}
+
+/* ===== iOS mocks (colores fijos: representan el dispositivo) ===== */
+.ios{font-family:var(--f-ios);-webkit-font-smoothing:antialiased}
+.wall{background:radial-gradient(120% 90% at 20% 0%,#3B5C7A 0%,#1D2B3B 45%,#0E1520 100%);border-radius:22px;padding:14px;display:grid;gap:12px;justify-items:center}
+.island{background:#000;color:#fff}
+.compact{width:236px;height:37px;border-radius:19px;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 10px}
+.compact .lead,.compact .trail{display:flex;align-items:center;gap:6px;min-width:0;max-width:72px}
+.compact .trail{font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;justify-content:flex-end}
+.minimal{width:37px;height:37px;border-radius:50%;display:grid;place-items:center}
+.minis{display:flex;gap:10px;align-items:center}
+.minis .other{width:37px;height:37px;border-radius:50%;background:#000;display:grid;place-items:center;opacity:.55}
+.av{border-radius:50%;display:grid;place-items:center;font-weight:600;color:#fff;flex:none}
+.expanded{width:min(360px,100%);border-radius:44px;padding:16px 20px 18px;display:grid;gap:12px}
+.ex-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center}
+.ex-icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center}
+.ex-title{font-size:15px;font-weight:600;line-height:1.25}
+.ex-sub{font-size:13px;color:rgba(255,255,255,.62);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ex-trail{text-align:right}
+.big{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1;white-space:nowrap}
+.small{font-size:12px;color:rgba(255,255,255,.62);white-space:nowrap}
+.lockscreen{width:min(360px,100%);display:grid;gap:10px;justify-items:center;color:#fff}
+.clock{font-size:64px;font-weight:600;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.date{font-size:15px;opacity:.85;font-weight:500}
+.lock-card{width:100%;border-radius:22px;padding:14px 16px;display:grid;gap:12px}
+.lock-card.bg-dark{background:rgba(22,22,24,.78);color:#fff;backdrop-filter:blur(18px)}
+.lock-card.bg-light{background:rgba(250,250,252,.86);color:#111;backdrop-filter:blur(18px)}
+.lock-card.bg-accent{color:#fff}
+.lock-card .sub{opacity:.68}
+.lc-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center}
+.app-ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center}
+.lc-title{font-weight:600;font-size:15px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lc-right{max-width:124px;text-align:right;white-space:nowrap}
+.lc-right .big,.ex-trail .big{overflow:hidden;text-overflow:ellipsis}
+.ex-trail{max-width:130px;white-space:nowrap}
+.ex-trail .small{overflow:hidden;text-overflow:ellipsis}
+.lc-right .lc-sub{display:block;overflow:hidden;text-overflow:ellipsis}
+.stage-line{display:flex;justify-content:space-between;gap:8px;font-size:11.5px}
+.lc-sub{font-size:13px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.ios-btn{font:inherit;font-size:13px;font-weight:600;border:0;border-radius:999px;padding:7px 12px;display:inline-flex;gap:6px;align-items:center;cursor:default;color:inherit}
+
+/* barra de progreso común */
+.pb{display:grid;gap:6px}
+.pb-row{display:flex;align-items:center;gap:8px}
+.pb-end{flex:none;display:grid;place-items:center;opacity:.9}
+.track{position:relative;flex:1;height:6px;border-radius:3px;display:flex;gap:4px}
+.track .seg-i{position:relative;flex:1;height:100%;border-radius:3px;overflow:hidden}
+.track .fill{position:absolute;inset:0 auto 0 0;border-radius:3px}
+.pt{position:absolute;top:50%;width:10px;height:10px;border-radius:50%;transform:translate(-50%,-50%);border:2px solid}
+.tracker{position:absolute;top:50%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.35);transition:left .25s linear}
+.labels{position:relative;height:16px;font-size:11.5px}
+.labels span{position:absolute;white-space:nowrap;transform:translateX(-50%)}
+.labels span.first{transform:none}
+.labels span.last{transform:translateX(-100%)}
+
+/* ===== Android mocks ===== */
+.android{font-family:var(--f-android);background:#141218;border-radius:22px;padding:0 0 16px;color:#E6E0E9;overflow:hidden}
+.a-status{display:flex;align-items:center;gap:8px;padding:10px 16px;font-size:14px;font-weight:500}
+.a-status .sp{flex:1}
+.chip{display:inline-flex;align-items:center;gap:5px;height:24px;border-radius:12px;padding:0 9px 0 7px;font-size:13px;font-weight:500;color:#fff;max-width:96px;white-space:nowrap;overflow:hidden}
+.chip.only{padding:0 7px}
+.shade{padding:6px 12px 0;display:grid;gap:10px}
+.a-card{background:#2B2930;border-radius:24px;padding:14px 16px;display:grid;gap:10px}
+.a-head{display:flex;align-items:center;gap:8px;font-size:12px;color:#CAC4D0}
+.a-sic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center}
+.a-body{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
+.a-title{font-size:15px;font-weight:500;color:#E6E0E9;line-height:1.3}
+.a-text{font-size:14px;color:#CAC4D0;line-height:1.35}
+.a-actions{display:flex;gap:16px;flex-wrap:wrap}
+.a-btn{font:inherit;font-size:14px;font-weight:500;background:transparent;border:0;padding:4px 0;display:inline-flex;gap:6px;align-items:center;cursor:default}
+.a-lock{display:grid;gap:4px;padding:12px 16px 0;justify-items:start}
+.a-lock .t{font-size:12px;color:#CAC4D0}
+
+/* validación + código */
+.bottom{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:20px}
+@media (max-width:1180px){.bottom{grid-template-columns:minmax(0,1fr)}}
+.checks{padding:16px;display:grid;gap:10px;align-content:start}
+.ck{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;font-size:14px;align-items:start}
+.dot{width:10px;height:10px;border-radius:50%;margin-top:6px;justify-self:center}
+.dot.ok{background:var(--good)} .dot.warn{background:var(--warn)} .dot.bad{background:var(--bad)}
+.meter{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;background:var(--accent)}
+.codebox{background:var(--code-bg);color:var(--code-ink);border-radius:14px;overflow:hidden;min-width:0}
+.codebar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px}
+.codebar .btn{padding:6px 12px;font-size:13px}
+pre{margin:0;padding:14px;overflow:auto;font-family:var(--f-mono);font-size:12.5px;line-height:1.55;max-height:520px}
+
+/* galería */
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.g-card{padding:14px;display:grid;gap:12px;align-content:start}
+.g-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.g-head h3{font-size:15px}
+.g-pats{display:flex;gap:6px;flex-wrap:wrap}
+.pat{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
+.pat.no{background:transparent;border:1px solid var(--bad);color:var(--bad)}
+.g-wall{background:radial-gradient(120% 90% at 20% 0%,#3B5C7A 0%,#1D2B3B 45%,#0E1520 100%);border-radius:16px;padding:12px;display:grid;gap:10px;justify-items:center}
+.g-wall .lock-card{padding:12px 14px}
+
+/* tablas */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600;background:var(--surface-2);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td code{white-space:nowrap}
+.rules{display:grid;gap:10px;max-width:80ch;padding-left:20px}
+.rules li{padding-left:4px}
+footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.imgbox{display:inline-grid;place-items:center;overflow:hidden;flex:none}
+.imgbox img{width:100%;height:100%;display:block}
+.tracker.bare{background:transparent!important;box-shadow:none;width:auto;height:auto;border-radius:0}
+.tracker.bare img{height:24px;width:auto;max-width:56px;display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))}
+.mono-ic img{filter:brightness(0) invert(1)}
+.slot{display:grid;gap:8px;padding:10px;border:1px solid var(--line);border-radius:10px}
+.slot-head{display:flex;gap:10px;align-items:center;min-width:0}
+.thumb{width:40px;height:40px;border-radius:8px;background:var(--surface-2);display:grid;place-items:center;overflow:hidden;flex:none;font-size:12px;color:var(--muted)}
+.thumb img{max-width:100%;max-height:100%}
+.slot-btns{display:flex;gap:6px;flex-wrap:wrap}
+.mini-btn{font:inherit;font-size:12.5px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:7px;padding:5px 9px;cursor:pointer}
+.mini-btn:hover{background:var(--surface-2)}
+@media (prefers-reduced-motion: reduce){.tracker{transition:none}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+<header class="top">
+  <div>
+    <div class="eyebrow">Paquete Flutter (pub.dev) · referencia de diseño v0.2</div>
+    <h1>live_island: prototipos de Live Activities</h1>
+    <p class="lead">Cada superficie de esta página es la referencia visual que la implementación debe seguir. Todo lo que ves se puede cambiar: textos, colores, la barra de progreso, las etapas y los botones. Y donde va un ícono puedes poner uno del sistema o una imagen propia: el logo de tu app o del cliente, la foto del conductor o la imagen de un auto que avanza sobre la barra. Edita en el panel y mira cómo queda en iPhone y en Android al mismo tiempo.</p>
+  </div>
+  <div class="tags"><span class="tag">iOS 16.1+ · Dynamic Island</span><span class="tag">Android 8+ · Live Updates en 16+</span><span class="tag">Quien lo usa solo escribe Dart</span></div>
+</header>
+<nav class="jump" aria-label="Secciones">
+  <a href="#editor">Editor en vivo</a><a href="#galeria">Galería de ejemplos</a><a href="#editable">Qué es editable</a><a href="#medidas">Medidas</a><a href="#componentes">Componentes</a><a href="#fidelidad">Reglas de fidelidad</a>
+</nav>
+
+<section id="editor" style="margin-top:0">
+  <h2>Editor en vivo</h2>
+  <p class="intro">Elige un ejemplo y cámbialo como quieras. El código Dart de abajo se genera con tus cambios, así se ve que nada está fijo.</p>
+  <div class="play">
+    <aside class="panel controls" aria-label="Controles">
+      <details class="grp" open><summary>Ejemplo de partida</summary>
+        <div class="fields">
+          <div class="field"><label for="preset">Caso de uso</label><select id="preset"></select></div>
+          <p class="hint">Solo es un punto de partida: cada campo de abajo se puede cambiar.</p>
+        </div>
+      </details>
+      <details class="grp" open><summary>Contenido</summary>
+        <div class="fields">
+          <div class="field"><label for="title">Título</label><input id="title" type="text"></div>
+          <div class="field"><label for="subtitle">Subtítulo</label><input id="subtitle" type="text"></div>
+          <div class="row2">
+            <div class="field"><label for="name">Nombre visible</label><input id="name" type="text"></div>
+            <div class="field"><label for="icon">Ícono principal</label><select id="icon" class="icon-select"></select></div>
+          </div>
+          <label class="check"><input id="showAvatar" type="checkbox"> Mostrar avatar en lugar del ícono</label>
+          <div class="field"><label for="avatarText">Iniciales del avatar</label><input id="avatarText" type="text" maxlength="2"></div>
+          <div class="field"><span class="lbl">Dato destacado</span>
+            <div class="seg" role="group" aria-label="Tipo de dato destacado"><button type="button" data-hl="text">Texto</button><button type="button" data-hl="countdown">Cuenta regresiva</button></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="highlight">Texto destacado</label><input id="highlight" type="text"></div>
+            <div class="field"><label for="minutes">Minutos</label><input id="minutes" type="number" min="0" step="0.5"></div>
+          </div>
+        </div>
+      </details>
+      <details class="grp" open><summary>Logo e imágenes</summary>
+        <div class="fields">
+          <p class="hint">Cualquier lugar donde va un ícono acepta también cualquier imagen que quieras: el logo de la app o del cliente, una foto, una ilustración. El auto es solo un ejemplo. Se ajusta sola a su proporción.</p>
+          <div id="slots" style="display:grid;gap:10px"></div>
+          <input type="file" id="fileIn" accept="image/*" hidden>
+        </div>
+      </details>
+      <details class="grp" open><summary>Estilo</summary>
+        <div class="fields">
+          <div class="field"><span class="lbl">Color de acento</span>
+            <div class="swatches"><input id="accent" type="color" aria-label="Color de acento"><span id="swatches" class="swatches"></span></div>
+          </div>
+          <div class="field"><label for="lockBg">Fondo en pantalla de bloqueo</label>
+            <select id="lockBg"><option value="dark">Oscuro translúcido (sistema)</option><option value="light">Claro translúcido</option><option value="accent">Color de acento</option></select></div>
+        </div>
+      </details>
+      <details class="grp" open><summary>Barra de progreso</summary>
+        <div class="fields">
+          <label class="check"><input id="pShow" type="checkbox"> Mostrar progreso</label>
+          <div class="row2">
+            <div class="field"><label for="pType">Tipo</label><select id="pType"><option value="bar">Barra</option><option value="segments">Por etapas</option><option value="ring">Anillo</option></select></div>
+            <div class="field"><label for="tracker">Ícono que avanza (si no hay imagen)</label><select id="tracker" class="icon-select" data-none="1"></select></div>
+          </div>
+          <div class="field"><label for="pValue">Avance: <span id="pValueOut"></span></label><input id="pValue" type="range" min="0" max="100" step="1"></div>
+          <div class="row2">
+            <div class="field"><label for="startIcon">Ícono al inicio</label><select id="startIcon" class="icon-select" data-none="1"></select></div>
+            <div class="field"><label for="endIcon">Ícono al final</label><select id="endIcon" class="icon-select" data-none="1"></select></div>
+          </div>
+          <div class="field"><label for="stages">Etapas (separadas por coma)</label><input id="stages" type="text"></div>
+          <label class="check"><input id="showPoints" type="checkbox"> Marcar cada etapa con un punto</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button id="simulate" class="btn" type="button">Simular recorrido</button><button id="reset" class="btn ghost" type="button">Volver al ejemplo</button></div>
+        </div>
+      </details>
+      <details class="grp"><summary>Botones</summary>
+        <div class="fields">
+          <div class="row2">
+            <div class="field"><label for="a1Label">Botón 1</label><input id="a1Label" type="text"></div>
+            <div class="field"><label for="a1Icon">Ícono</label><select id="a1Icon" class="icon-select" data-none="1"></select></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="a2Label">Botón 2</label><input id="a2Label" type="text"></div>
+            <div class="field"><label for="a2Icon">Ícono</label><select id="a2Icon" class="icon-select" data-none="1"></select></div>
+          </div>
+          <p class="hint">Deja el texto vacío para ocultar el botón. Cada botón llega a un callback en Dart con su id.</p>
+        </div>
+      </details>
+      <details class="grp"><summary>Android</summary>
+        <div class="fields">
+          <div class="field"><label for="chipMode">Chip de la barra de estado</label>
+            <select id="chipMode"><option value="countdown">Cuenta regresiva</option><option value="text">Texto corto</option><option value="icon">Solo ícono</option></select></div>
+          <div class="field"><label for="chipText">Texto del chip</label><input id="chipText" type="text"></div>
+          <label class="check"><input id="colorized" type="checkbox"> Notificación coloreada (setColorized)</label>
+          <p class="hint">Actívalo para ver por qué Android no la promueve a Live Update.</p>
+        </div>
+      </details>
+    </aside>
+
+    <div class="stage">
+      <div class="surfaces">
+        <div class="panel surface">
+          <div class="surface-head"><h3>iPhone</h3><span class="spec-note">ActivityKit · SwiftUI</span></div>
+          <div class="wall ios" id="iosWall"></div>
+        </div>
+        <div class="panel surface">
+          <div class="surface-head"><h3>Android</h3><span class="spec-note">Notification · ProgressStyle</span></div>
+          <div id="androidMock"></div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="panel checks" id="checks" aria-live="polite"></div>
+        <div class="codebox">
+          <div class="codebar"><span>Código Dart generado</span><button class="btn" id="copy" type="button">Copiar</button></div>
+          <pre id="code"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="galeria">
+  <h2>Galería de ejemplos</h2>
+  <p class="intro">Quince casos construidos con el mismo núcleo. Los números de cada etiqueta son los patrones que usa: 1 etapas, 2 llegada o distancia, 3 cuenta regresiva, 4 métrica en vivo, 5 posición en cola, 6 código o credencial.</p>
+  <div class="gallery" id="gallery"></div>
+</section>
+
+<section id="editable">
+  <h2>Qué es editable</h2>
+  <p class="intro">Cada propiedad de esta tabla debe existir en la API pública. Ninguna es fija en el código nativo.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Propiedad</th><th>Ejemplo</th><th>API Dart</th><th>iOS</th><th>Android</th></tr></thead>
+    <tbody>
+      <tr><td>Título y subtítulo</td><td>"Tu conductor está en camino"</td><td><code>LiveText(bind('titulo'))</code></td><td>Text en cualquier región</td><td><code>setContentTitle</code>, <code>setContentText</code></td></tr>
+      <tr><td>Nombre visible</td><td>"Carlos M." bajo el dato destacado</td><td><code>LiveText(bind('nombre'))</code></td><td>Región trailing o bottom</td><td>Parte del texto</td></tr>
+      <tr><td>Dato destacado</td><td>"6 min", "B-027", "68 %"</td><td><code>LiveText</code> o <code>LiveText.countdown</code></td><td>Compact trailing, expandida, bloqueo</td><td>Chip y <code>setWhen</code></td></tr>
+      <tr><td>Cuenta regresiva</td><td>Llega en 06:00</td><td><code>LiveText.countdown(bind('llegaA'))</code></td><td><code>Text(timerInterval:)</code>, corre sola</td><td><code>setUsesChronometer</code> + <code>setChronometerCountDown</code></td></tr>
+      <tr><td>Ícono principal</td><td>Auto, moto, avión, propio</td><td><code>LiveIcon.symbol('car.fill', android: 'assets/live/car.png')</code></td><td>SF Symbol o imagen del App Group</td><td><code>setSmallIcon</code></td></tr>
+      <tr><td>Logo de la app</td><td>Logo propio o del cliente en la tarjeta de bloqueo</td><td><code>appLogo: LiveImage.asset('assets/logo.png')</code></td><td>Imagen copiada al App Group</td><td>Ícono grande a color; silueta en <code>setSmallIcon</code></td></tr>
+      <tr><td>Cualquier ícono</td><td>Ícono del sistema o imagen propia</td><td><code>LiveIcon.symbol(...)</code> o <code>LiveImage.asset/.network/.file/.memory(fit:, shape:)</code></td><td>SF Symbol o imagen</td><td>Recurso o <code>Icon.createWithBitmap</code></td></tr>
+      <tr><td>Avatar o imagen</td><td>Foto del conductor</td><td><code>LiveImage.network(url, circle: true)</code></td><td>Imagen ≤ 4 KB recomendada</td><td><code>setLargeIcon</code></td></tr>
+      <tr><td>Color de acento</td><td>#1F6FEB</td><td><code>LiveTheme(accent: Color(...))</code></td><td>Tint de textos, barra y botones</td><td><code>setColor</code> (sin colorizar)</td></tr>
+      <tr><td>Fondo de bloqueo</td><td>Oscuro, claro, acento</td><td><code>LiveTheme(background: ...)</code></td><td><code>activityBackgroundTint</code></td><td>No aplica (fondo del sistema)</td></tr>
+      <tr><td>Barra de progreso</td><td>Barra, por etapas, anillo</td><td><code>LiveProgress.bar</code>, <code>LiveSegments</code>, <code>LiveProgress.ring</code></td><td><code>ProgressView</code>, <code>Gauge</code></td><td><code>ProgressStyle</code> (el anillo se muestra como barra)</td></tr>
+      <tr><td>Ícono que avanza</td><td>Ícono de auto o la imagen real del auto</td><td><code>tracker: LiveTracker(LiveImage.asset('assets/auto.png'), background: ...)</code></td><td>Vista sobre la barra en la posición del avance</td><td><code>setProgressTrackerIcon</code></td></tr>
+      <tr><td>Íconos de inicio y fin</td><td>Pin de origen y bandera</td><td><code>startIcon</code>, <code>endIcon</code></td><td>Íconos a los lados de la barra</td><td><code>setProgressStartIcon</code>, <code>setProgressEndIcon</code></td></tr>
+      <tr><td>Etapas y puntos</td><td>Asignado, En camino, Llegó</td><td><code>LiveSegments(labels, points: true)</code></td><td>Tramos y etiquetas</td><td><code>Segment</code> y <code>Point</code></td></tr>
+      <tr><td>Botones</td><td>Llamar, Cancelar, +15 min</td><td><code>LiveButton(id:, label:, icon:)</code> + <code>LiveIsland.onAction</code></td><td>App Intents (iOS 17+)</td><td>Acciones de notificación</td></tr>
+      <tr><td>Chip de estado</td><td>"6 min", "B-027" o solo ícono</td><td><code>LiveChip.countdown</code>, <code>.text</code>, <code>.icon</code></td><td>No aplica</td><td><code>setShortCriticalText</code>, <code>setWhen</code></td></tr>
+      <tr><td>Diseño por región</td><td>Otro contenido en minimal</td><td><code>compactLeading</code>, <code>compactTrailing</code>, <code>minimal</code>, <code>expanded</code>, <code>lockScreen</code></td><td>Cada región de ActivityKit</td><td>Bloque <code>android:</code></td></tr>
+      <tr><td>Condiciones</td><td>Otro texto cuando llegó</td><td><code>LiveIf(bind('etapa').equals(2), ...)</code></td><td>Se evalúa en el renderer</td><td>Se evalúa en el puente</td></tr>
+      <tr><td>Deep link y cierre</td><td>Abrir el viaje, cerrar en 5 min</td><td><code>deepLink:</code>, <code>end(dismiss: ...)</code>, <code>staleAfter:</code></td><td><code>widgetURL</code>, <code>dismissalPolicy</code>, <code>staleDate</code></td><td><code>setContentIntent</code>, <code>cancel</code>, <code>setTimeoutAfter</code></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="medidas">
+  <h2>Medidas de cada superficie</h2>
+  <p class="intro">Los prototipos están dibujados con estas medidas. La implementación debe respetarlas y recortar con elipsis, no desbordar.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Superficie</th><th>Tamaño de referencia</th><th>Contenido en el prototipo</th><th>Regla</th></tr></thead>
+    <tbody>
+      <tr><td>Compact leading</td><td>~44 pt de ancho, 37 pt de alto</td><td>Ícono 18 pt en color de acento, o avatar 22 pt</td><td>Nunca texto largo</td></tr>
+      <tr><td>Compact trailing</td><td>~44–72 pt de ancho</td><td>Dato destacado, 15 pt semibold, cifras tabulares</td><td>Máximo 7 caracteres, si no, elipsis</td></tr>
+      <tr><td>Minimal</td><td>37 × 37 pt</td><td>Anillo de progreso con ícono, o solo ícono</td><td>Se usa cuando hay dos actividades</td></tr>
+      <tr><td>Expandida</td><td>Ancho de la isla, ~160 pt de alto</td><td>Ícono 46 pt, título 15 pt, dato 22 pt bold, barra, etiquetas 11,5 pt, botones</td><td>Esquinas 44 pt, relleno 16–20 pt</td></tr>
+      <tr><td>Pantalla de bloqueo</td><td>Ancho completo, alto libre hasta ~160 pt</td><td>Ícono de app 40 pt (radio 11), título 15 pt, subtítulo 13 pt</td><td>Esquinas 22 pt</td></tr>
+      <tr><td>Barra de progreso</td><td>6 pt de alto, separación entre tramos 4 pt</td><td>Tracker de 26 pt en un círculo de color de acento</td><td>El tracker se centra en el avance</td></tr>
+      <tr><td>Chip Android</td><td>Máximo 96 dp, 24 dp de alto</td><td>Ícono + texto en el color de acento</td><td>≤ 7 caracteres completo, más se recorta, muy largo solo ícono</td></tr>
+      <tr><td>Notificación Android</td><td>Ancho del panel, esquinas del sistema</td><td>Título, texto, ProgressStyle, acciones</td><td>Sin RemoteViews ni setColorized para que se promueva</td></tr>
+      <tr><td>Imágenes propias</td><td>Se reducen al tamaño mostrado × 3 px</td><td>Logo 120 px, ícono y avatar 138 px, tracker 72 px de alto</td><td>Se respeta la proporción con <code>fit</code> (contain o cover); nunca se deforma</td></tr>
+      <tr><td>Estado (payload)</td><td>4 KB por actualización en iOS</td><td>Solo datos, nunca el diseño</td><td>Validar antes de enviar</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="componentes">
+  <h2>Componentes</h2>
+  <p class="intro">Con estas piezas se arma cualquier diseño. Las plantillas de la galería son combinaciones de ellas.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Grupo</th><th>Componentes</th><th>iOS</th><th>Android</th></tr></thead>
+    <tbody>
+      <tr><td>Estructura</td><td><code>LiveRow</code>, <code>LiveColumn</code>, <code>LiveStack</code>, <code>LiveSpacer</code>, <code>LivePadding</code>, <code>LiveBox</code>, <code>LiveIf</code></td><td>HStack, VStack, ZStack</td><td>Se resume en el bloque <code>android:</code></td></tr>
+      <tr><td>Texto</td><td><code>LiveText</code>, <code>.format</code>, <code>.countdown</code>, <code>.stopwatch</code>, <code>.relative</code></td><td>Text, Text(timerInterval:)</td><td>Título, texto, chip, cronómetro</td></tr>
+      <tr><td>Imágenes</td><td><code>LiveImage.asset</code>, <code>.network</code>, <code>.memory</code>, <code>LiveIcon.symbol</code></td><td>App Group, SF Symbols</td><td>Small, large, tracker, start y end icons</td></tr>
+      <tr><td>Progreso</td><td><code>LiveProgress.bar</code>, <code>.ring</code>, <code>LiveSegments</code>, <code>LivePoint</code></td><td>ProgressView, Gauge</td><td>ProgressStyle</td></tr>
+      <tr><td>Datos</td><td><code>LiveMetric</code></td><td>Vista de métrica</td><td>MetricStyle (API 37), texto antes</td></tr>
+      <tr><td>Acciones</td><td><code>LiveButton</code>, <code>LiveToggle</code>, <code>LiveAction.deepLink</code>, <code>.call</code>, <code>.custom</code></td><td>App Intents</td><td>Acciones de notificación</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fidelidad">
+  <h2>Reglas de fidelidad</h2>
+  <p class="intro">Cómo leer esta página al implementar.</p>
+  <ol class="rules">
+    <li>Cada superficie dibujada aquí es un requisito. Si la implementación se ve distinta, es un error, salvo que el sistema operativo lo impida, y eso se documenta.</li>
+    <li>El orden, la jerarquía y los tamaños de la tabla de medidas son obligatorios: qué va a la izquierda, qué va a la derecha, qué texto es más grande.</li>
+    <li>Nada visible puede estar fijo en Swift o Kotlin. Si en el editor se puede cambiar, en la API también.</li>
+    <li>Toda ranura de ícono acepta una imagen propia (logo, foto, ilustración) con su proporción original, igual que en el grupo “Logo e imágenes” del editor.</li>
+    <li>El ícono que avanza debe moverse con el valor de progreso en iOS y en Android, igual que con el botón “Simular recorrido”.</li>
+    <li>El color de acento se aplica igual que aquí: ícono compacto, dato destacado, relleno de la barra, tracker, botón principal y chip.</li>
+    <li>Los avisos del panel de validación deben existir en <code>LiveIsland.check()</code> con el mismo criterio.</li>
+    <li>El código generado en esta página es la forma esperada de la API. Si cambia un nombre, se actualiza esta página primero.</li>
+  </ol>
+</section>
+
+<footer>live_island · referencia de diseño v0.2 · Los ejemplos usan datos ficticios.</footer>
+</div>
+
+<script>
+const ICONS = {"Car":[["path",{"d":"M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"}],["circle",{"cx":"7","cy":"17","r":"2"}],["path",{"d":"M9 17h6"}],["circle",{"cx":"17","cy":"17","r":"2"}]],"Bike":[["circle",{"cx":"18.5","cy":"17.5","r":"3.5"}],["circle",{"cx":"5.5","cy":"17.5","r":"3.5"}],["circle",{"cx":"15","cy":"5","r":"1"}],["path",{"d":"M12 17.5V14l-3-3 4-3 2 3h2"}]],"Truck":[["path",{"d":"M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"}],["path",{"d":"M15 18H9"}],["path",{"d":"M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"}],["circle",{"cx":"17","cy":"18","r":"2"}],["circle",{"cx":"7","cy":"18","r":"2"}]],"Plane":[["path",{"d":"M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"}]],"Footprints":[["path",{"d":"M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"}],["path",{"d":"M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"}],["path",{"d":"M16 17h4"}],["path",{"d":"M4 13h4"}]],"Package":[["path",{"d":"M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"}],["path",{"d":"M12 22V12"}],["path",{"d":"m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"}],["path",{"d":"m7.5 4.27 9 5.15"}]],"Zap":[["path",{"d":"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"}]],"ShoppingBag":[["path",{"d":"M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"}],["path",{"d":"M3 6h18"}],["path",{"d":"M16 10a4 4 0 0 1-8 0"}]],"Clock":[["circle",{"cx":"12","cy":"12","r":"10"}],["polyline",{"points":"12 6 12 12 16 14"}]],"User":[["path",{"d":"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"}],["circle",{"cx":"12","cy":"7","r":"4"}]],"Users":[["path",{"d":"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"}],["circle",{"cx":"9","cy":"7","r":"4"}],["path",{"d":"M22 21v-2a4 4 0 0 0-3-3.87"}],["path",{"d":"M16 3.13a4 4 0 0 1 0 7.75"}]],"Ticket":[["path",{"d":"M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"}],["path",{"d":"M13 5v2"}],["path",{"d":"M13 17v2"}],["path",{"d":"M13 11v2"}]],"Coffee":[["path",{"d":"M10 2v2"}],["path",{"d":"M14 2v2"}],["path",{"d":"M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"}],["path",{"d":"M6 2v2"}]],"Upload":[["path",{"d":"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}],["polyline",{"points":"17 8 12 3 7 8"}],["line",{"x1":"12","x2":"12","y1":"3","y2":"15"}]],"Wrench":[["path",{"d":"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"}]],"Bus":[["path",{"d":"M8 6v6"}],["path",{"d":"M15 6v6"}],["path",{"d":"M2 12h19.6"}],["path",{"d":"M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"}],["circle",{"cx":"7","cy":"18","r":"2"}],["path",{"d":"M9 18h5"}],["circle",{"cx":"16","cy":"18","r":"2"}]],"TrainFront":[["path",{"d":"M8 3.1V7a4 4 0 0 0 8 0V3.1"}],["path",{"d":"m9 15-1-1"}],["path",{"d":"m15 15 1-1"}],["path",{"d":"M9 19c-2.8 0-5-2.2-5-5v-4a8 8 0 0 1 16 0v4c0 2.8-2.2 5-5 5Z"}],["path",{"d":"m8 19-2 3"}],["path",{"d":"m16 19 2 3"}]],"Trophy":[["path",{"d":"M6 9H4.5a2.5 2.5 0 0 1 0-5H6"}],["path",{"d":"M18 9h1.5a2.5 2.5 0 0 0 0-5H18"}],["path",{"d":"M4 22h16"}],["path",{"d":"M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"}],["path",{"d":"M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"}],["path",{"d":"M18 2H6v7a6 6 0 0 0 12 0V2Z"}]],"Stethoscope":[["path",{"d":"M11 2v2"}],["path",{"d":"M5 2v2"}],["path",{"d":"M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"}],["path",{"d":"M8 15a6 6 0 0 0 12 0v-3"}],["circle",{"cx":"20","cy":"10","r":"2"}]],"Dumbbell":[["path",{"d":"M14.4 14.4 9.6 9.6"}],["path",{"d":"M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"}],["path",{"d":"m21.5 21.5-1.4-1.4"}],["path",{"d":"M3.9 3.9 2.5 2.5"}],["path",{"d":"M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"}]],"SquareParking":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M9 17V7h4a3 3 0 0 1 0 6H9"}]],"BatteryCharging":[["path",{"d":"M15 7h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"}],["path",{"d":"M6 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h1"}],["path",{"d":"m11 7-3 5h4l-3 5"}],["line",{"x1":"22","x2":"22","y1":"11","y2":"13"}]],"Phone":[["path",{"d":"M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"}]],"X":[["path",{"d":"M18 6 6 18"}],["path",{"d":"m6 6 12 12"}]],"Share2":[["circle",{"cx":"18","cy":"5","r":"3"}],["circle",{"cx":"6","cy":"12","r":"3"}],["circle",{"cx":"18","cy":"19","r":"3"}],["line",{"x1":"8.59","x2":"15.42","y1":"13.51","y2":"17.49"}],["line",{"x1":"15.41","x2":"8.59","y1":"6.51","y2":"10.49"}]],"Plus":[["path",{"d":"M5 12h14"}],["path",{"d":"M12 5v14"}]],"Pause":[["rect",{"x":"14","y":"4","width":"4","height":"16","rx":"1"}],["rect",{"x":"6","y":"4","width":"4","height":"16","rx":"1"}]],"Play":[["polygon",{"points":"6 3 20 12 6 21 6 3"}]],"MapPin":[["path",{"d":"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"}],["circle",{"cx":"12","cy":"10","r":"3"}]],"Timer":[["line",{"x1":"10","x2":"14","y1":"2","y2":"2"}],["line",{"x1":"12","x2":"15","y1":"14","y2":"11"}],["circle",{"cx":"12","cy":"14","r":"8"}]],"Utensils":[["path",{"d":"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"}],["path",{"d":"M7 2v20"}],["path",{"d":"M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"}]],"ChefHat":[["path",{"d":"M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z"}],["path",{"d":"M6 17h12"}]],"Building2":[["path",{"d":"M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"}],["path",{"d":"M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"}],["path",{"d":"M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"}],["path",{"d":"M10 6h4"}],["path",{"d":"M10 10h4"}],["path",{"d":"M10 14h4"}],["path",{"d":"M10 18h4"}]],"Navigation":[["polygon",{"points":"3 11 22 2 13 21 11 13 3 11"}]],"Flag":[["path",{"d":"M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"}],["line",{"x1":"4","x2":"4","y1":"22","y2":"15"}]],"Check":[["path",{"d":"M20 6 9 17l-5-5"}]],"Copy":[["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"MessageCircle":[["path",{"d":"M7.9 20A9 9 0 1 0 4 16.1L2 22Z"}]],"House":[["path",{"d":"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"}],["path",{"d":"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"}]],"Store":[["path",{"d":"m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"}],["path",{"d":"M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"}],["path",{"d":"M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"}],["path",{"d":"M2 7h20"}],["path",{"d":"M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"}]],"Landmark":[["line",{"x1":"3","x2":"21","y1":"22","y2":"22"}],["line",{"x1":"6","x2":"6","y1":"18","y2":"11"}],["line",{"x1":"10","x2":"10","y1":"18","y2":"11"}],["line",{"x1":"14","x2":"14","y1":"18","y2":"11"}],["line",{"x1":"18","x2":"18","y1":"18","y2":"11"}],["polygon",{"points":"12 2 20 7 4 7"}]],"Gavel":[["path",{"d":"m14.5 12.5-8 8a2.119 2.119 0 1 1-3-3l8-8"}],["path",{"d":"m16 16 6-6"}],["path",{"d":"m8 8 6-6"}],["path",{"d":"m9 7 8 8"}],["path",{"d":"m21 11-8-8"}]],"CookingPot":[["path",{"d":"M2 12h20"}],["path",{"d":"M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"}],["path",{"d":"m4 8 16-4"}],["path",{"d":"m8.86 6.78-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8"}]],"PlugZap":[["path",{"d":"M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z"}],["path",{"d":"m2 22 3-3"}],["path",{"d":"M7.5 13.5 10 11"}],["path",{"d":"M10.5 16.5 13 14"}],["path",{"d":"m18 3-4 4h6l-4 4"}]],"Hourglass":[["path",{"d":"M5 22h14"}],["path",{"d":"M5 2h14"}],["path",{"d":"M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"}],["path",{"d":"M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"}]],"QrCode":[["rect",{"width":"5","height":"5","x":"3","y":"3","rx":"1"}],["rect",{"width":"5","height":"5","x":"16","y":"3","rx":"1"}],["rect",{"width":"5","height":"5","x":"3","y":"16","rx":"1"}],["path",{"d":"M21 16h-3a2 2 0 0 0-2 2v3"}],["path",{"d":"M21 21v.01"}],["path",{"d":"M12 7v3a2 2 0 0 1-2 2H7"}],["path",{"d":"M3 12h.01"}],["path",{"d":"M12 3h.01"}],["path",{"d":"M12 16v.01"}],["path",{"d":"M16 12h1"}],["path",{"d":"M21 12v.01"}],["path",{"d":"M12 21v-1"}]],"Signal":[["path",{"d":"M2 20h.01"}],["path",{"d":"M7 20v-4"}],["path",{"d":"M12 20v-8"}],["path",{"d":"M17 20V8"}],["path",{"d":"M22 4v16"}]],"Wifi":[["path",{"d":"M12 20h.01"}],["path",{"d":"M2 8.82a15 15 0 0 1 20 0"}],["path",{"d":"M5 12.859a10 10 0 0 1 14 0"}],["path",{"d":"M8.5 16.429a5 5 0 0 1 7 0"}]],"BatteryFull":[["rect",{"width":"16","height":"10","x":"2","y":"7","rx":"2","ry":"2"}],["line",{"x1":"22","x2":"22","y1":"11","y2":"13"}],["line",{"x1":"6","x2":"6","y1":"11","y2":"13"}],["line",{"x1":"10","x2":"10","y1":"11","y2":"13"}],["line",{"x1":"14","x2":"14","y1":"11","y2":"13"}]],"Lock":[["rect",{"width":"18","height":"11","x":"3","y":"11","rx":"2","ry":"2"}],["path",{"d":"M7 11V7a5 5 0 0 1 10 0v4"}]],"Flashlight":[["path",{"d":"M18 6c0 2-2 2-2 4v10a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V10c0-2-2-2-2-4V2h12z"}],["line",{"x1":"6","x2":"18","y1":"6","y2":"6"}],["line",{"x1":"12","x2":"12","y1":"12","y2":"12"}]],"Camera":[["path",{"d":"M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"}],["circle",{"cx":"12","cy":"13","r":"3"}]],"Bell":[["path",{"d":"M10.268 21a2 2 0 0 0 3.464 0"}],["path",{"d":"M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"}]]};
+const ICON_LABELS = {Car:'Auto',Bike:'Bicicleta o moto',Truck:'Camión',Plane:'Avión',Bus:'Bus',TrainFront:'Tren',Footprints:'A pie',Navigation:'Navegación',MapPin:'Ubicación',Flag:'Bandera',Package:'Paquete',ShoppingBag:'Bolsa',Utensils:'Comida',Coffee:'Café',CookingPot:'Olla',ChefHat:'Cocina',Store:'Tienda',Landmark:'Banco',Building2:'Edificio',House:'Casa',User:'Persona',Users:'Personas',Stethoscope:'Salud',Dumbbell:'Gimnasio',Trophy:'Trofeo',SquareParking:'Parqueo',BatteryCharging:'Carga',Zap:'Rayo',PlugZap:'Enchufe',Upload:'Subida',Wrench:'Herramienta',Timer:'Temporizador',Clock:'Reloj',Hourglass:'Reloj de arena',Ticket:'Ticket',QrCode:'Código QR',Phone:'Teléfono',MessageCircle:'Mensaje',Share2:'Compartir',X:'Cerrar',Plus:'Sumar',Pause:'Pausa',Play:'Play',Check:'Listo',Bell:'Campana',Gavel:'Subasta'};
+const SF = {Car:'car.fill',Bike:'bicycle',Truck:'truck.box.fill',Plane:'airplane',Bus:'bus.fill',TrainFront:'tram.fill',Footprints:'figure.walk',Navigation:'location.fill',MapPin:'mappin',Flag:'flag.checkered',Package:'shippingbox.fill',ShoppingBag:'bag.fill',Utensils:'fork.knife',Coffee:'cup.and.saucer.fill',CookingPot:'frying.pan.fill',ChefHat:'frying.pan',Store:'storefront.fill',Landmark:'building.columns.fill',Building2:'building.2.fill',House:'house.fill',User:'person.fill',Users:'person.3.fill',Stethoscope:'stethoscope',Dumbbell:'dumbbell.fill',Trophy:'trophy.fill',SquareParking:'parkingsign.circle.fill',BatteryCharging:'bolt.car.fill',Zap:'bolt.fill',PlugZap:'powerplug.fill',Upload:'arrow.up.circle.fill',Wrench:'wrench.and.screwdriver.fill',Timer:'timer',Clock:'clock.fill',Hourglass:'hourglass',Ticket:'ticket.fill',QrCode:'qrcode',Phone:'phone.fill',MessageCircle:'message.fill',Share2:'square.and.arrow.up',X:'xmark',Plus:'plus',Pause:'pause.fill',Play:'play.fill',Check:'checkmark',Bell:'bell.fill',Gavel:'hammer.fill'};
+const SWATCHES = ['#1F6FEB','#E4572E','#2E7D32','#00897B','#C62828','#F57C00','#6D4C41','#D81B60','#5E35B1','#0277BD'];
+const PAT_NAMES = {1:'Etapas',2:'Llegada',3:'Cuenta regresiva',4:'Métrica',5:'Cola',6:'Código'};
+
+const svgUri = x => 'data:image/svg+xml,'+encodeURIComponent(x);
+const SAMPLES = {
+  logo: svgUri('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="#FFC72C"/><text x="60" y="78" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="700" fill="#111">TY</text></svg>'),
+  car: svgUri('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 90"><path d="M20 60 Q22 42 45 40 L70 22 Q78 16 92 16 L128 16 Q142 16 152 26 L168 40 Q188 42 190 58 L190 66 Q190 70 186 70 L14 70 Q10 70 10 66 Z" fill="#E53935"/><path d="M76 26 Q82 21 92 21 L108 21 L108 40 L60 40 Z" fill="#BBDEFB"/><path d="M114 21 L128 21 Q138 21 146 29 L156 40 L114 40 Z" fill="#BBDEFB"/><circle cx="52" cy="70" r="14" fill="#222"/><circle cx="52" cy="70" r="6" fill="#9E9E9E"/><circle cx="150" cy="70" r="14" fill="#222"/><circle cx="150" cy="70" r="6" fill="#9E9E9E"/><rect x="176" y="48" width="12" height="6" rx="2" fill="#FFF59D"/></svg>'),
+  photo: svgUri('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="#90A4AE"/><circle cx="60" cy="48" r="22" fill="#ECEFF1"/><path d="M20 120 Q24 80 60 80 Q96 80 100 120Z" fill="#ECEFF1"/></svg>')
+};
+const SLOT_DEFS = [
+  {key:'logoImg',label:'Logo de la app',where:'Pantalla de bloqueo y Android',sample:'logo',file:'logo.png',shapes:true,px:'120 × 120 px'},
+  {key:'mainImg',label:'Imagen del ícono principal',where:'Isla compacta, minimal y expandida. Reemplaza al avatar',sample:'logo',file:'icono.png',shapes:true,px:'138 × 138 px'},
+  {key:'avatarImg',label:'Foto del avatar',where:'Cuando “Mostrar avatar” está activo',sample:'photo',file:'foto.jpg',shapes:false,px:'138 × 138 px'},
+  {key:'trackerImg',label:'Imagen que avanza en la barra',where:'Cualquier imagen: auto, moto, persona, paquete, tu logo',sample:'car',file:'auto.png',shapes:false,tracker:true,px:'72 px de alto'}
+];
+const BASE = {logoImg:null,mainImg:null,avatarImg:null,trackerImg:null,trackerCircle:true,title:'',subtitle:'',name:'',icon:'Car',showAvatar:false,avatarText:'',hlMode:'text',highlight:'',minutes:5,accent:'#1F6FEB',lockBg:'dark',
+  pShow:true,pType:'bar',pValue:40,tracker:'none',startIcon:'none',endIcon:'none',stages:'',showPoints:false,
+  a1Label:'',a1Icon:'none',a2Label:'',a2Icon:'none',chipMode:'text',chipText:'',colorized:false,androidOk:true,app:'Mi app',pats:[]};
+const PRESETS = [
+  {id:'taxi',label:'Taxi',app:'Taxi Ya',pats:[1,2,6],logoImg:{src:SAMPLES.logo,fit:'cover',shape:'rounded'},trackerImg:{src:SAMPLES.car,fit:'contain'},trackerCircle:false,title:'Tu conductor está en camino',subtitle:'Toyota Yaris gris · ABC-123',name:'Carlos M.',icon:'Car',showAvatar:true,avatarText:'CM',hlMode:'countdown',minutes:6,accent:'#1F6FEB',pType:'segments',pValue:45,tracker:'Car',startIcon:'none',endIcon:'MapPin',stages:'Asignado, En camino, Llegó',showPoints:true,a1Label:'Llamar',a1Icon:'Phone',a2Label:'Compartir',a2Icon:'Share2',chipMode:'countdown'},
+  {id:'delivery',label:'Delivery de comida',app:'Come Ya',pats:[1,2],title:'Tu pedido va en camino',subtitle:'Pollería La Brasa · 2 productos',name:'Luis, repartidor',icon:'Utensils',hlMode:'countdown',minutes:12,accent:'#E4572E',pType:'segments',pValue:62,tracker:'Bike',endIcon:'House',stages:'Confirmado, Preparando, En camino, Entregado',showPoints:true,a1Label:'Llamar',a1Icon:'Phone',a2Label:'Ver mapa',a2Icon:'MapPin',chipMode:'countdown'},
+  {id:'courier',label:'Courier',app:'Envíos Rápidos',pats:[1,2,5],title:'Tu paquete llega hoy',subtitle:'Quedan 3 paradas antes de la tuya',name:'Ruta 14',icon:'Package',highlight:'3 paradas',accent:'#6D4C41',pType:'segments',pValue:40,tracker:'Truck',endIcon:'House',stages:'Almacén, En ruta, Cerca, Entregado',showPoints:true,a1Label:'Ver ruta',a1Icon:'MapPin',chipMode:'text',chipText:'3 más'},
+  {id:'pickup',label:'Pedido para recoger',app:'Café Central',pats:[1,6],title:'Tu pedido está casi listo',subtitle:'Latte grande · Mesa de recojo',name:'Código 47',icon:'Coffee',highlight:'#47',accent:'#8D5B3A',pType:'segments',pValue:50,stages:'Recibido, Preparando, Listo',showPoints:true,a1Label:'Ver código',a1Icon:'QrCode',chipMode:'text',chipText:'#47'},
+  {id:'queue',label:'Turno en banco',app:'Mi Banco',pats:[5,6],title:'Tu turno se acerca',subtitle:'Agencia Miraflores · Plataforma',name:'Turno B-027',icon:'Landmark',highlight:'4 antes',accent:'#00897B',pType:'bar',pValue:70,tracker:'User',a1Label:'Cancelar turno',a1Icon:'X',chipMode:'text',chipText:'B-027'},
+  {id:'flight',label:'Vuelo',app:'Vuela',pats:[1,3,6],title:'Embarque en curso',subtitle:'LIM → CUZ · Vuelo 2041',name:'Puerta 18',icon:'Plane',hlMode:'countdown',minutes:25,accent:'#2D5BD7',pType:'segments',pValue:35,tracker:'Plane',stages:'Check-in, Embarque, Despegue',showPoints:true,a1Label:'Pase de abordar',a1Icon:'QrCode',chipMode:'countdown'},
+  {id:'parking',label:'Estacionamiento',app:'Parquea',pats:[3],title:'Estacionamiento activo',subtitle:'Zona azul · Av. Larco 400',name:'Placa ABC-123',icon:'SquareParking',hlMode:'countdown',minutes:45,accent:'#0277BD',pType:'ring',pValue:35,a1Label:'+15 min',a1Icon:'Plus',a2Label:'Terminar',a2Icon:'X',chipMode:'countdown'},
+  {id:'ev',label:'Carga de auto eléctrico',app:'Carga Fácil',pats:[3,4],title:'Cargando tu auto',subtitle:'Estación 3 · 50 kW',name:'Termina 10:35',icon:'BatteryCharging',highlight:'68 %',accent:'#2E7D32',pType:'bar',pValue:68,tracker:'Zap',a1Label:'Detener',a1Icon:'Pause',chipMode:'text',chipText:'68 %'},
+  {id:'workout',label:'Entrenamiento',app:'Gym Pro',pats:[3,4],title:'Descanso',subtitle:'Press de banca · Serie 3 de 4',name:'60 kg × 10',icon:'Dumbbell',hlMode:'countdown',minutes:1.5,accent:'#D81B60',pType:'segments',pValue:50,stages:'1, 2, 3, 4',showPoints:false,a1Label:'+30 s',a1Icon:'Plus',a2Label:'Saltar',a2Icon:'Play',chipMode:'countdown'},
+  {id:'cooking',label:'Temporizador de cocina',app:'Recetas',pats:[1,3],title:'Arroz en cocción',subtitle:'Paso 3 de 5 · Bajar el fuego',name:'Arroz con pollo',icon:'CookingPot',hlMode:'countdown',minutes:15,accent:'#F57C00',pType:'ring',pValue:40,a1Label:'Pausar',a1Icon:'Pause',chipMode:'countdown'},
+  {id:'upload',label:'Subida de archivo',app:'Nube',pats:[4],title:'Subiendo video',subtitle:'vacaciones.mp4 · 420 MB',name:'3 min restantes',icon:'Upload',highlight:'42 %',accent:'#5E35B1',pType:'bar',pValue:42,a1Label:'Cancelar',a1Icon:'X',chipMode:'text',chipText:'42 %'},
+  {id:'tech',label:'Técnico a domicilio',app:'Hogar Fácil',pats:[1,2],title:'Tu técnico está en camino',subtitle:'Instalación de internet',name:'Jorge R.',icon:'Wrench',showAvatar:true,avatarText:'JR',hlMode:'countdown',minutes:20,accent:'#00838F',pType:'segments',pValue:30,tracker:'Car',stages:'Asignado, En camino, Trabajando, Listo',showPoints:true,a1Label:'Llamar',a1Icon:'Phone',chipMode:'countdown'},
+  {id:'transit',label:'Transporte público',app:'Ruta Lima',pats:[2,5],title:'Bájate en 3 paradas',subtitle:'Línea 201 · Javier Prado',name:'Paradero Las Begonias',icon:'Bus',highlight:'3 paradas',accent:'#C62828',pType:'segments',pValue:55,tracker:'Bus',endIcon:'Flag',stages:'Subiste, 2, 3, 4, Bajas',showPoints:true,chipMode:'text',chipText:'3 par.'},
+  {id:'clinic',label:'Sala de espera médica',app:'Salud Online',pats:[3,5],title:'Sala de espera virtual',subtitle:'Dra. Ríos · Medicina general',name:'Te llaman pronto',icon:'Stethoscope',highlight:'2 antes',accent:'#00796B',pType:'bar',pValue:80,tracker:'User',a1Label:'Salir de la fila',a1Icon:'X',chipMode:'text',chipText:'2 antes'},
+  {id:'score',label:'Marcador deportivo',app:'Fútbol Vivo',pats:[4],title:'Lima FC 2 – 1 Callao SC',subtitle:'Segundo tiempo · Gol de Lima FC',name:'Liga 1',icon:'Trophy',highlight:"78'",accent:'#1B5E20',pShow:false,chipMode:'text',chipText:'2–1',androidOk:false}
+];
+
+let state, deadline, simTimer=null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function ic(name,size=20,color='currentColor',sw=2){
+  if(!name||name==='none'||!ICONS[name]) return '';
+  const inner = ICONS[name].map(([t,a])=>'<'+t+' '+Object.entries(a).map(([k,v])=>k+'="'+v+'"').join(' ')+'/>').join('');
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="'+color+'" stroke-width="'+sw+'" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+inner+'</svg>';
+}
+function fromPreset(p){ return Object.assign({}, BASE, p); }
+function stageList(s){ return s.stages.split(',').map(x=>x.trim()).filter(Boolean); }
+function v01(s){ return Math.max(0,Math.min(1,s.pValue/100)); }
+function remaining(dl){ return Math.max(0, Math.round((dl - Date.now())/1000)); }
+function mmss(sec){ const h=Math.floor(sec/3600), m=Math.floor(sec%3600/60), x=sec%60; return (h? h+':'+String(m).padStart(2,'0') : m)+':'+String(x).padStart(2,'0'); }
+function hl(s,dl){ return s.hlMode==='countdown' ? mmss(remaining(dl)) : s.highlight; }
+function hex2rgba(h,a){ const n=parseInt(h.slice(1),16); return 'rgba('+(n>>16&255)+','+(n>>8&255)+','+(n&255)+','+a+')'; }
+
+function imgBox(v,size,shapeOverride,bg){
+  const shape = shapeOverride||v.shape||'rounded';
+  const r = shape==='circle'?'50%':shape==='square'?Math.round(size*.12)+'px':Math.round(size*.26)+'px';
+  return '<span class="imgbox" style="width:'+size+'px;height:'+size+'px;border-radius:'+r+';'+(bg?'background:'+bg:'')+'"><img alt="" src="'+v.src+'" style="object-fit:'+(v.fit||'contain')+'"></span>';
+}
+function lead(s,size){
+  if(s.showAvatar && s.avatarImg) return imgBox(s.avatarImg,size,'circle');
+  if(!s.showAvatar && s.mainImg) return imgBox(s.mainImg,size);
+  if(s.showAvatar) return '<span class="av" style="width:'+size+'px;height:'+size+'px;font-size:'+Math.round(size*.42)+'px;background:'+s.accent+'">'+esc(s.avatarText||'?')+'</span>';
+  return ic(s.icon, Math.round(size*.82), s.accent, 2.2);
+}
+function ring(s,size,inner){
+  const r=size/2-3, c=2*Math.PI*r, v=v01(s);
+  return '<span style="position:relative;display:inline-grid;place-items:center;width:'+size+'px;height:'+size+'px"><svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" aria-hidden="true"><circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="3"/><circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="'+s.accent+'" stroke-width="3" stroke-linecap="round" stroke-dasharray="'+(c*v)+' '+c+'" transform="rotate(-90 '+size/2+' '+size/2+')"/></svg>'+(inner?'<span style="position:absolute;display:grid;place-items:center">'+inner+'</span>':'')+'</span>';
+}
+/* surface: 'dark' | 'light' | 'accent' | 'android' */
+function progress(s,surface){
+  if(!s.pShow) return '';
+  const v=v01(s), st=stageList(s);
+  const trackBg = surface==='light' ? 'rgba(0,0,0,.12)' : 'rgba(255,255,255,.2)';
+  const fillC = surface==='accent' ? '#fff' : s.accent;
+  const trkBg = surface==='accent' ? '#fff' : s.accent;
+  const trkFg = surface==='accent' ? s.accent : '#fff';
+  const useSeg = (s.pType==='segments' || (surface==='android' && st.length>1 && s.pType!=='bar')) && st.length>1;
+  let track='';
+  if(useSeg){
+    const n=st.length-1;
+    for(let i=0;i<n;i++){ const f=Math.max(0,Math.min(1,(v-i/n)*n)); track+='<span class="seg-i" style="background:'+trackBg+'"><span class="fill" style="width:'+(f*100)+'%;background:'+fillC+'"></span></span>'; }
+  } else {
+    track='<span class="seg-i" style="background:'+trackBg+'"><span class="fill" style="width:'+(v*100)+'%;background:'+fillC+'"></span></span>';
+  }
+  let pts='';
+  if(s.showPoints && st.length>1){
+    st.forEach((_,k)=>{ const p=k/(st.length-1); const done=p<=v+1e-6; pts+='<span class="pt" style="left:'+(p*100)+'%;background:'+(done?fillC:(surface==='light'?'#fff':'#1c1c1e'))+';border-color:'+(done?fillC:trackBg)+'"></span>'; });
+  }
+  let trk = '';
+  if(s.trackerImg){
+    trk = s.trackerCircle ? '<span class="tracker" style="left:'+(v*100)+'%;background:'+trkBg+'">'+imgBox(s.trackerImg,17,'square')+'</span>'
+                          : '<span class="tracker bare" style="left:'+(v*100)+'%"><img alt="" src="'+s.trackerImg.src+'"></span>';
+  } else if(s.tracker!=='none'){
+    trk = '<span class="tracker" style="left:'+(v*100)+'%;background:'+trkBg+'">'+ic(s.tracker,15,trkFg,2.2)+'</span>';
+  }
+  const endC = surface==='light' ? '#333' : '#fff';
+  let html='<div class="pb"><div class="pb-row">'+(s.startIcon!=='none'?'<span class="pb-end">'+ic(s.startIcon,16,endC)+'</span>':'')+'<div class="track">'+track+pts+trk+'</div>'+(s.endIcon!=='none'?'<span class="pb-end">'+ic(s.endIcon,16,endC)+'</span>':'')+'</div>';
+  if(st.length>1 && (s.pType==='segments'||s.showPoints)){
+    const cur = Math.min(st.length-1, Math.floor(v*(st.length-1)+1e-6));
+    const muted = surface==='light'?'rgba(0,0,0,.55)':'rgba(255,255,255,.6)';
+    const strong = surface==='accent'?'#fff':(surface==='light'?'#111':'#fff');
+    if(st.length>3){ return html+'<div class="stage-line"><span style="color:'+strong+';font-weight:600">'+esc(st[cur])+'</span><span style="color:'+muted+'">Paso '+(cur+1)+' de '+st.length+'</span></div></div>'; }
+    html+='<div class="labels" style="margin-inline:'+(s.startIcon!=='none'?24:0)+'px '+(s.endIcon!=='none'?24:0)+'px">'+st.map((t,k)=>'<span class="'+(k===0?'first':k===st.length-1?'last':'')+'" style="left:'+(k/(st.length-1)*100)+'%;color:'+(k===cur?strong:muted)+';font-weight:'+(k===cur?600:400)+'">'+esc(t)+'</span>').join('')+'</div>';
+  }
+  return html+'</div>';
+}
+function iosActions(s,surface){
+  const list=[[s.a1Label,s.a1Icon],[s.a2Label,s.a2Icon]].filter(a=>a[0]);
+  if(!list.length) return '';
+  return '<div class="actions">'+list.map(([l,i],k)=>{
+    let bg,fg;
+    if(surface==='accent'){ bg=k===0?'#fff':'rgba(255,255,255,.22)'; fg=k===0?s.accent:'#fff'; }
+    else if(surface==='light'){ bg=k===0?s.accent:'rgba(0,0,0,.08)'; fg=k===0?'#fff':'#111'; }
+    else { bg=k===0?s.accent:'rgba(255,255,255,.14)'; fg='#fff'; }
+    return '<span class="ios-btn" style="background:'+bg+';color:'+fg+'">'+ic(i,15,fg)+esc(l)+'</span>';
+  }).join('')+'</div>';
+}
+function compactHTML(s,dl){
+  return '<div class="island compact" role="img" aria-label="Dynamic Island compacta"><span class="lead">'+lead(s,22)+'</span><span class="trail" style="color:'+s.accent+'">'+esc(hl(s,dl))+'</span></div>';
+}
+function minimalHTML(s){
+  const inner = s.showAvatar ? '' : (s.mainImg ? imgBox(s.mainImg,16) : ic(s.icon,14,s.accent,2.4));
+  const body = (s.pShow && s.pType==='ring') ? ring(s,33,inner) : lead(s,s.showAvatar||s.mainImg?24:22);
+  return '<div class="minis"><div class="island minimal" role="img" aria-label="Dynamic Island minimal">'+body+'</div><div class="other" title="Otra actividad">'+ic('Timer',16,'#999')+'</div></div>';
+}
+function expandedHTML(s,dl){
+  const iconBox = (s.showAvatar||s.mainImg) ? lead(s,46) : '<span class="ex-icon" style="background:'+hex2rgba(s.accent,.22)+'">'+ic(s.icon,24,s.accent,2.2)+'</span>';
+  const ringSide = (s.pShow && s.pType==='ring') ? ring(s,46,'') : '';
+  return '<div class="island expanded" role="img" aria-label="Dynamic Island expandida">'+
+    '<div class="ex-top">'+iconBox+'<div style="min-width:0"><div class="ex-title">'+esc(s.title)+'</div><div class="ex-sub">'+esc(s.subtitle)+'</div></div>'+
+    '<div class="ex-trail">'+(ringSide||'<div class="big" style="color:'+s.accent+'">'+esc(hl(s,dl))+'</div><div class="small">'+esc(s.name)+'</div>')+'</div></div>'+
+    (s.pType!=='ring'?progress(s,'dark'):'<div class="small" style="text-align:center">'+esc(hl(s,dl))+' · '+esc(s.name)+'</div>')+iosActions(s,'dark')+'</div>';
+}
+function lockCardHTML(s,dl){
+  const surf=s.lockBg;
+  const bgStyle = surf==='accent' ? 'background:'+s.accent : '';
+  const appBg = surf==='accent' ? 'rgba(255,255,255,.22)' : s.accent;
+  const app = s.logoImg ? imgBox(s.logoImg,40) : s.showAvatar ? (s.avatarImg ? imgBox(s.avatarImg,40,'circle') : '<span class="av" style="width:40px;height:40px;font-size:16px;background:'+(surf==='accent'?'rgba(255,255,255,.25)':s.accent)+'">'+esc(s.avatarText||'?')+'</span>') : '<span class="app-ic" style="background:'+appBg+'">'+ic(s.icon,22,'#fff',2.2)+'</span>';
+  const hlC = surf==='accent' ? '#fff' : s.accent;
+  const right = (s.pShow && s.pType==='ring') ? '<div style="display:grid;justify-items:end;gap:2px">'+ring(Object.assign({},s,{accent:surf==='accent'?'#fff':s.accent}),40,'')+'<div class="big" style="font-size:15px;color:'+hlC+'">'+esc(hl(s,dl))+'</div></div>' : '<div class="lc-right"><div class="big" style="color:'+hlC+'">'+esc(hl(s,dl))+'</div><div class="lc-sub sub">'+esc(s.name)+'</div></div>';
+  return '<div class="lock-card bg-'+surf+'" style="'+bgStyle+'">'+
+    '<div class="lc-top">'+app+'<div style="min-width:0"><div class="lc-title">'+esc(s.title)+'</div><div class="lc-sub sub">'+esc(s.subtitle)+'</div></div>'+right+'</div>'+
+    (s.pType!=='ring'?progress(s,surf):'')+iosActions(s,surf)+'</div>';
+}
+function chipInfo(s,dl){
+  let text = s.chipMode==='countdown' ? Math.max(1,Math.ceil(remaining(dl)/60))+' min' : s.chipMode==='text' ? s.chipText : '';
+  const len=[...text].length;
+  let shown=text, mode='full';
+  if(!text){ mode='icon'; }
+  else if(len>12){ shown=''; mode='icon'; }
+  else if(len>7){ shown=[...text].slice(0,6).join('')+'…'; mode='cut'; }
+  return {text,shown,mode,len};
+}
+function androidHTML(s,dl){
+  const c=chipInfo(s,dl);
+  const promoted = !s.colorized && s.androidOk && !!s.title;
+  const smallIc = sz => s.logoImg ? '<span class="mono-ic" style="display:inline-grid">'+imgBox(s.logoImg,sz,'square')+'</span>' : ic(s.icon,sz,'#fff',2.4);
+  const chip = promoted ? '<span class="chip'+(c.shown?'':' only')+'" style="background:'+s.accent+'">'+smallIc(14)+esc(c.shown)+'</span>' : '';
+  const cardBg = s.colorized ? 'background:'+s.accent : '';
+  const txtC = s.colorized ? '#fff' : '';
+  const text = [s.subtitle, s.name].filter(Boolean).join(' · ');
+  const when = s.hlMode==='countdown' ? mmss(remaining(dl)) : 'ahora';
+  const large = s.showAvatar ? (s.avatarImg ? imgBox(s.avatarImg,40,'circle') : '<span class="av" style="width:40px;height:40px;font-size:15px;background:'+s.accent+'">'+esc(s.avatarText||'?')+'</span>') : (s.logoImg ? imgBox(s.logoImg,40) : (s.mainImg ? imgBox(s.mainImg,40) : ''));
+  const acts=[[s.a1Label,s.a1Icon],[s.a2Label,s.a2Icon]].filter(a=>a[0]);
+  const pbS = Object.assign({},s); if(pbS.pType==='ring') pbS.pType='bar';
+  return '<div class="android" role="img" aria-label="Notificación de Android">'+
+    '<div class="a-status"><span>9:41</span>'+chip+'<span class="sp"></span>'+ic('Signal',15,'#E6E0E9')+ic('Wifi',15,'#E6E0E9')+ic('BatteryFull',17,'#E6E0E9')+'</div>'+
+    '<div class="shade"><div class="a-card" style="'+cardBg+'">'+
+      '<div class="a-head" style="color:'+(txtC||'')+'"><span class="a-sic" style="background:'+(s.colorized?'rgba(255,255,255,.25)':s.accent)+'">'+smallIc(13)+'</span>'+esc(s.app)+' · '+esc(when)+'</div>'+
+      '<div class="a-body"><div style="min-width:0"><div class="a-title" style="color:'+(txtC||'')+'">'+esc(s.title)+(s.hlMode==='text'&&s.highlight?' · '+esc(s.highlight):'')+'</div><div class="a-text" style="color:'+(txtC?'rgba(255,255,255,.85)':'')+'">'+esc(text)+'</div></div>'+large+'</div>'+
+      (pbS.pShow?progress(pbS,'android'):'')+
+      (acts.length?'<div class="a-actions">'+acts.map(([l,i])=>'<span class="a-btn" style="color:'+(s.colorized?'#fff':s.accent)+'">'+ic(i,16,s.colorized?'#fff':s.accent)+esc(l)+'</span>').join('')+'</div>':'')+
+    '</div></div>'+
+    '<div class="a-lock"><span class="t">'+(promoted?'Promovida a Live Update: chip en la barra de estado, arriba del panel y en la pantalla de bloqueo.':'No se promueve: se ve como notificación en curso normal, sin chip.')+'</span></div>'+
+  '</div>';
+}
+
+function renderPreviews(){
+  const s=state;
+  $('iosWall').innerHTML =
+    '<div style="width:100%"><div class="mock-label"><span>Compact</span><span class="mono">~44 pt por lado</span></div><div style="display:flex;justify-content:center">'+compactHTML(s,deadline)+'</div></div>'+
+    '<div style="width:100%"><div class="mock-label"><span>Minimal (con otra actividad)</span><span class="mono">37 × 37 pt</span></div><div style="display:flex;justify-content:center">'+minimalHTML(s)+'</div></div>'+
+    '<div style="width:100%"><div class="mock-label"><span>Expandida</span><span class="mono">~160 pt de alto</span></div><div style="display:flex;justify-content:center">'+expandedHTML(s,deadline)+'</div></div>'+
+    '<div style="width:100%"><div class="mock-label"><span>Pantalla de bloqueo</span><span class="mono">esquinas 22 pt</span></div><div class="lockscreen" style="margin:0 auto"><div class="clock">9:41</div><div class="date">domingo 4 de octubre</div>'+lockCardHTML(s,deadline)+'</div></div>';
+  $('androidMock').innerHTML = androidHTML(s,deadline);
+  renderChecks(); renderCode();
+}
+function renderChecks(){
+  const s=state, rows=[];
+  const payload = {titulo:s.title,subtitulo:s.subtitle,nombre:s.name,destacado:s.hlMode==='text'?s.highlight:undefined,llegaA:s.hlMode==='countdown'?new Date(deadline).toISOString():undefined,progreso:+v01(s).toFixed(2),etapa:stageList(s).length?Math.floor(v01(s)*(stageList(s).length-1)):undefined};
+  const bytes = new TextEncoder().encode(JSON.stringify(payload)).length;
+  rows.push(['ok','Estado por actualización: <b>'+bytes+' bytes</b> de 4 096 (iOS). Solo viajan datos, el diseño se envía una vez.<div class="meter"><i style="width:'+Math.min(100,bytes/4096*100)+'%"></i></div>']);
+  const t = hl(s,deadline);
+  rows.push([[...t].length>7?'warn':'ok', [...t].length>7?'El dato destacado tiene '+[...t].length+' caracteres; en la isla compacta se recorta. Usa 7 o menos.':'El dato destacado cabe en la isla compacta.']);
+  const c=chipInfo(s,deadline);
+  rows.push([c.mode==='full'?'ok':'warn', c.mode==='full'?'Chip de Android completo ('+c.len+' caracteres).':c.mode==='cut'?'Chip de Android recortado: “'+esc(c.text)+'” tiene '+c.len+' caracteres (máximo 7 para verse completo).':'Chip de Android solo con ícono'+(c.text?': el texto es demasiado largo.':'.')]);
+  if(!s.androidOk) rows.push(['bad','Android no promueve este caso: no lo inició el usuario como actividad con inicio y fin. Se muestra como notificación normal.']);
+  else if(s.colorized) rows.push(['bad','Android no promueve notificaciones con setColorized(true). Quita el color de fondo.']);
+  else if(!s.title) rows.push(['bad','Android exige un título (setContentTitle) para promover.']);
+  else rows.push(['ok','Android la promueve a Live Update (estilo nativo, sin RemoteViews).']);
+  if(s.pShow && s.pType==='ring') rows.push(['warn','El anillo no existe en Android: se muestra como barra de ProgressStyle.']);
+  if(s.pShow && s.pType==='segments' && stageList(s).length<2) rows.push(['warn','Para la barra por etapas escribe al menos dos etapas.']);
+  if(s.logoImg) rows.push(['warn','En Android el ícono pequeño (barra de estado, chip y encabezado) se ve como silueta de un solo color. El logo a color se muestra como ícono grande; conviene darle una versión en silueta con <code>androidSmallIcon</code>.']);
+  SLOT_DEFS.forEach(d=>{ const v=s[d.key]; if(!v) return; const kb=Math.max(1,Math.round(v.src.length*0.75/1024)); rows.push(['ok', d.label+': '+kb+' KB, se reduce a '+d.px+' antes de copiarse al App Group (iOS). Proporción respetada con fit “'+(v.fit||'contain')+'”.']); });
+  if((s.tracker!=='none'||s.trackerImg) && !s.pShow) rows.push(['warn','El ícono que avanza solo se ve si la barra está visible.']);
+  $('checks').innerHTML='<h3>Validación</h3>'+rows.map(([k,h])=>'<div class="ck"><span class="dot '+k+'"></span><div>'+h+'</div></div>').join('')+'<p class="hint">Estos avisos deben salir igual en <code>LiveIsland.check()</code>.</p>';
+}
+function dq(x){ return "'"+String(x).replace(/\\/g,'\\\\').replace(/'/g,"\\'")+"'"; }
+function sym(n){ return n==='none'?null:'LiveIcon.symbol('+dq(SF[n]||n)+', android: '+dq('assets/live/'+n.toLowerCase()+'.png')+')'; }
+function visCode(v,file,extra){ return "LiveImage.asset('assets/live/"+file+"', fit: LiveFit."+(v.fit||'contain')+(v.shape?', shape: LiveShape.'+v.shape:'')+(extra||'')+')'; }
+function renderCode(){
+  const s=state, st=stageList(s), L=[];
+  const color = 'Color(0xFF'+s.accent.slice(1).toUpperCase()+')';
+  L.push("import 'package:live_island/live_island.dart';",'');
+  L.push('// 1. Tus datos: los nombres los eliges tú.');
+  L.push('final estado = <String, dynamic>{');
+  L.push("  'titulo': "+dq(s.title)+',');
+  L.push("  'subtitulo': "+dq(s.subtitle)+',');
+  L.push("  'nombre': "+dq(s.name)+',');
+  if(s.hlMode==='countdown') L.push("  'llegaA': DateTime.now().add(const Duration(seconds: "+Math.round(s.minutes*60)+')),');
+  else L.push("  'destacado': "+dq(s.highlight)+',');
+  if(s.pShow) L.push("  'progreso': "+v01(s).toFixed(2)+',');
+  L.push('};','');
+  const H = s.hlMode==='countdown' ? "LiveText.countdown(bind('llegaA'))" : "LiveText(bind('destacado'))";
+  const leadW = s.showAvatar ? (s.avatarImg ? visCode(Object.assign({},s.avatarImg,{shape:'circle'}),'foto.jpg') : 'LiveAvatar('+dq(s.avatarText)+')') : (s.mainImg ? visCode(s.mainImg,'icono.png') : sym(s.icon));
+  L.push('// 2. Tu diseño, región por región.');
+  L.push('final diseno = LiveLayout(');
+  L.push('  theme: LiveTheme(accent: '+color+', background: LiveBackground.'+(s.lockBg==='dark'?'system':s.lockBg)+'),');
+  L.push('  appLogo: '+(s.logoImg ? visCode(s.logoImg,'logo.png') : sym(s.icon))+',');
+  if(s.logoImg) L.push("  androidSmallIcon: LiveImage.asset('assets/live/logo_silueta.png'), // Android la pinta en un solo color");
+  L.push('  compactLeading: '+leadW+',');
+  L.push('  compactTrailing: '+H+',');
+  L.push('  minimal: '+(s.pShow&&s.pType==='ring'?"LiveProgress.ring(value: bind('progreso'), child: "+sym(s.icon)+')':sym(s.icon))+',');
+  let prog='';
+  if(s.pShow){
+    const opts=[];
+    if(s.trackerImg) opts.push('tracker: LiveTracker('+visCode(s.trackerImg,'auto.png',', height: 24')+', background: LiveTrackerBackground.'+(s.trackerCircle?'accentCircle':'none')+')');
+    else if(s.tracker!=='none') opts.push('tracker: '+sym(s.tracker));
+    if(s.startIcon!=='none') opts.push('startIcon: '+sym(s.startIcon));
+    if(s.endIcon!=='none') opts.push('endIcon: '+sym(s.endIcon));
+    if(s.pType==='segments' && st.length>1) prog="LiveSegments(\n        value: bind('progreso'),\n        labels: ["+st.map(dq).join(', ')+"],\n        points: "+s.showPoints+(opts.length?',\n        '+opts.join(',\n        '):'')+',\n      )';
+    else if(s.pType==='ring') prog="LiveProgress.ring(value: bind('progreso'))";
+    else prog="LiveProgress.bar(\n        value: bind('progreso')"+(opts.length?',\n        '+opts.join(',\n        '):'')+',\n      )';
+  }
+  const btns=[[s.a1Label,s.a1Icon],[s.a2Label,s.a2Icon]].filter(a=>a[0]).map(([l,i])=>'LiveButton(id: '+dq(l.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'')||'accion')+', label: '+dq(l)+(i!=='none'?', icon: '+sym(i):'')+')');
+  L.push('  expanded: LiveExpanded(');
+  L.push('    leading: '+((s.showAvatar||s.mainImg)?leadW:'LiveBox(child: '+sym(s.icon)+', size: 46, radius: 14, tint: 0.22)')+',');
+  L.push("    center: LiveColumn([LiveText(bind('titulo'), weight: 600), LiveText(bind('subtitulo'), muted: true)]),");
+  L.push("    trailing: LiveColumn([LiveText.from("+H+", size: 22, weight: 700, accent: true), LiveText(bind('nombre'), muted: true)], align: LiveAlign.end),");
+  L.push('    bottom: LiveColumn(['+(prog?'\n      '+prog+',':'')+(btns.length?'\n      LiveRow(['+btns.join(', ')+']),':'')+'\n    ]),');
+  L.push('  ),');
+  L.push('  lockScreen: LiveLockScreen.sameAsExpanded(),');
+  L.push('  android: LiveAndroid(');
+  L.push("    title: bind('titulo'),");
+  L.push("    text: LiveText.format('{subtitulo} · {nombre}'),");
+  L.push('    chip: '+(s.chipMode==='countdown'?"LiveChip.countdown(bind('llegaA'))":s.chipMode==='text'?'LiveChip.text('+dq(s.chipText)+')':'LiveChip.icon()')+',');
+  if(s.colorized) L.push('    colorized: true, // Android no la promoverá');
+  L.push('  ),');
+  L.push(');','');
+  L.push('// 3. Iniciar, actualizar y terminar.');
+  L.push('final actividad = await LiveIsland.start(layout: diseno, state: estado);');
+  if(s.pShow) L.push("await actividad.update({'progreso': 0.8});");
+  btns.length && L.push("LiveIsland.onAction((id) { /* "+[s.a1Label,s.a2Label].filter(Boolean).join(', ')+' */ });');
+  L.push('await actividad.end(dismiss: LiveDismiss.after(const Duration(minutes: 5)));');
+  $('code').textContent=L.join('\n');
+}
+
+function renderGallery(){
+  $('gallery').innerHTML = PRESETS.map((p,i)=>{
+    const s=fromPreset(p), dl=GDL[i];
+    const pats = s.pats.map(n=>'<span class="pat" title="'+PAT_NAMES[n]+'">'+n+' '+PAT_NAMES[n]+'</span>').join('')+(s.androidOk?'':'<span class="pat no">Sin Live Update en Android</span>');
+    return '<article class="panel g-card"><div class="g-head"><h3>'+esc(p.label)+'</h3><button class="btn ghost" type="button" data-load="'+p.id+'" style="padding:6px 10px;font-size:12.5px">Editar</button></div><div class="g-pats">'+pats+'</div><div class="g-wall ios">'+compactHTML(s,dl)+lockCardHTML(s,dl)+'</div></article>';
+  }).join('');
+}
+const GDL = PRESETS.map(p=>Date.now()+(p.minutes||5)*60000);
+
+/* controles */
+function fillIconSelects(){
+  document.querySelectorAll('.icon-select').forEach(sel=>{
+    const none = sel.dataset.none ? '<option value="none">Ninguno</option>' : '';
+    sel.innerHTML = none + Object.keys(ICON_LABELS).filter(k=>ICONS[k]).map(k=>'<option value="'+k+'">'+ICON_LABELS[k]+'</option>').join('');
+  });
+  $('preset').innerHTML = PRESETS.map(p=>'<option value="'+p.id+'">'+esc(p.label)+'</option>').join('');
+  $('swatches').innerHTML = SWATCHES.map(c=>'<button type="button" class="sw" style="background:'+c+'" data-sw="'+c+'" aria-label="Color '+c+'"></button>').join('');
+}
+const TEXT_FIELDS=['title','subtitle','name','avatarText','highlight','stages','a1Label','a2Label','chipText'];
+const SELECT_FIELDS=['icon','lockBg','pType','tracker','startIcon','endIcon','a1Icon','a2Icon','chipMode'];
+const CHECK_FIELDS=['showAvatar','pShow','showPoints','colorized'];
+let pendingSlot=null;
+function renderSlots(){
+  $('slots').innerHTML = SLOT_DEFS.map(d=>{
+    const v=state[d.key];
+    const thumb = v ? '<img alt="" src="'+v.src+'">' : '—';
+    let opts='';
+    if(v && d.shapes) opts='<div class="row2"><select data-fit="'+d.key+'" aria-label="Ajuste de '+d.label+'"><option value="contain">Ajustar (sin recortar)</option><option value="cover">Rellenar (recorta)</option></select><select data-shape="'+d.key+'" aria-label="Forma de '+d.label+'"><option value="rounded">Redondeada</option><option value="circle">Círculo</option><option value="square">Cuadrada</option></select></div>';
+    if(d.tracker) opts+='<label class="check"><input type="checkbox" data-circle="1"'+(state.trackerCircle?' checked':'')+'> Fondo circular de color de acento</label>';
+    return '<div class="slot"><div class="slot-head"><span class="thumb">'+thumb+'</span><div style="min-width:0"><div style="font-size:13.5px;font-weight:600">'+d.label+'</div><div class="hint">'+d.where+'</div></div></div>'+
+      '<div class="slot-btns"><button type="button" class="mini-btn" data-up="'+d.key+'">Subir imagen</button><button type="button" class="mini-btn" data-sample="'+d.key+'">Usar ejemplo</button>'+(v?'<button type="button" class="mini-btn" data-clear="'+d.key+'">Quitar</button>':'')+'</div>'+opts+'</div>';
+  }).join('');
+  SLOT_DEFS.forEach(d=>{ const v=state[d.key]; if(!v) return; const f=document.querySelector('[data-fit="'+d.key+'"]'), sh=document.querySelector('[data-shape="'+d.key+'"]'); if(f) f.value=v.fit||'contain'; if(sh) sh.value=v.shape||'rounded'; });
+}
+function syncControls(){
+  const s=state; renderSlots();
+  TEXT_FIELDS.forEach(f=>$(f).value=s[f]);
+  SELECT_FIELDS.forEach(f=>$(f).value=s[f]);
+  CHECK_FIELDS.forEach(f=>$(f).checked=!!s[f]);
+  $('accent').value=s.accent; $('minutes').value=s.minutes; $('pValue').value=s.pValue; $('pValueOut').textContent=s.pValue+' %';
+  document.querySelectorAll('[data-hl]').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.hl===s.hlMode)));
+  $('highlight').disabled = s.hlMode==='countdown'; $('minutes').disabled = s.hlMode!=='countdown';
+}
+function load(id){
+  stopSim();
+  const p=PRESETS.find(x=>x.id===id)||PRESETS[0];
+  state=fromPreset(p); deadline=Date.now()+state.minutes*60000;
+  $('preset').value=p.id; syncControls(); renderPreviews();
+}
+function stopSim(){ if(simTimer){clearInterval(simTimer);simTimer=null;$('simulate').textContent='Simular recorrido';} }
+function bind(){
+  TEXT_FIELDS.forEach(f=>$(f).addEventListener('input',e=>{state[f]=e.target.value;renderPreviews();}));
+  SELECT_FIELDS.forEach(f=>$(f).addEventListener('change',e=>{state[f]=e.target.value;renderPreviews();}));
+  CHECK_FIELDS.forEach(f=>$(f).addEventListener('change',e=>{state[f]=e.target.checked;renderPreviews();}));
+  $('accent').addEventListener('input',e=>{state.accent=e.target.value;renderPreviews();});
+  $('swatches').addEventListener('click',e=>{const c=e.target.dataset&&e.target.dataset.sw;if(c){state.accent=c;$('accent').value=c;renderPreviews();}});
+  $('minutes').addEventListener('input',e=>{state.minutes=Math.max(0,+e.target.value||0);deadline=Date.now()+state.minutes*60000;renderPreviews();});
+  $('pValue').addEventListener('input',e=>{state.pValue=+e.target.value;$('pValueOut').textContent=state.pValue+' %';renderPreviews();});
+  document.querySelectorAll('[data-hl]').forEach(b=>b.addEventListener('click',()=>{state.hlMode=b.dataset.hl;if(state.hlMode==='countdown')deadline=Date.now()+state.minutes*60000;syncControls();renderPreviews();}));
+  $('preset').addEventListener('change',e=>load(e.target.value));
+  $('slots').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    if(b.dataset.up){ pendingSlot=b.dataset.up; $('fileIn').value=''; $('fileIn').click(); }
+    if(b.dataset.sample){ const d=SLOT_DEFS.find(x=>x.key===b.dataset.sample); state[d.key]={src:SAMPLES[d.sample],fit:d.key==='logoImg'?'cover':'contain',shape:d.key==='avatarImg'?'circle':'rounded'}; if(d.key==='avatarImg') state.showAvatar=true; if(d.key==='mainImg') state.showAvatar=false; syncControls(); renderPreviews(); }
+    if(b.dataset.clear){ state[b.dataset.clear]=null; syncControls(); renderPreviews(); }
+  });
+  $('slots').addEventListener('change',e=>{
+    const t=e.target;
+    if(t.dataset.fit){ state[t.dataset.fit]=Object.assign({},state[t.dataset.fit],{fit:t.value}); }
+    if(t.dataset.shape){ state[t.dataset.shape]=Object.assign({},state[t.dataset.shape],{shape:t.value}); }
+    if(t.dataset.circle){ state.trackerCircle=t.checked; }
+    renderPreviews();
+  });
+  $('fileIn').addEventListener('change',e=>{
+    const f=e.target.files&&e.target.files[0]; if(!f||!pendingSlot) return;
+    const r=new FileReader();
+    r.onload=()=>{ state[pendingSlot]={src:r.result,fit:pendingSlot==='logoImg'?'cover':'contain',shape:pendingSlot==='avatarImg'?'circle':'rounded'}; if(pendingSlot==='avatarImg') state.showAvatar=true; if(pendingSlot==='mainImg') state.showAvatar=false; syncControls(); renderPreviews(); };
+    r.readAsDataURL(f);
+  });
+  $('reset').addEventListener('click',()=>load($('preset').value));
+  $('simulate').addEventListener('click',()=>{
+    if(simTimer){stopSim();return;}
+    state.pShow=true; if(state.pValue>=100) state.pValue=0; syncControls();
+    $('simulate').textContent='Detener';
+    simTimer=setInterval(()=>{state.pValue=Math.min(100,state.pValue+1);$('pValue').value=state.pValue;$('pValueOut').textContent=state.pValue+' %';renderPreviews();if(state.pValue>=100)stopSim();},90);
+  });
+  $('gallery').addEventListener('click',e=>{const b=e.target.closest('[data-load]');if(b){load(b.dataset.load);document.getElementById('editor').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}});
+  $('copy').addEventListener('click',async()=>{
+    const btn=$('copy');
+    try{await navigator.clipboard.writeText($('code').textContent);btn.textContent='Copiado';}
+    catch(_){const r=document.createRange();r.selectNodeContents($('code'));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);btn.textContent='Seleccionado';}
+    setTimeout(()=>btn.textContent='Copiar',1600);
+  });
+}
+fillIconSelects(); bind(); load('taxi'); renderGallery();
+setInterval(()=>{ if(state.hlMode==='countdown'||state.chipMode==='countdown'){ if(!simTimer) renderPreviews(); } renderGallery(); },1000);
+</script>
+
+</body>
+</html>
