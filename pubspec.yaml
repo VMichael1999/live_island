@@ -1,7 +1,7 @@
 name: live_island
 description: "Live Activities (iOS) y Live Updates (Android) con una sola API en Dart, 100 % editable."
 version: 0.0.1
-homepage:
+repository: https://github.com/VMichael1999/live_island
 
 environment:
   sdk: ^3.7.2
