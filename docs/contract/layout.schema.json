@@ -275,6 +275,7 @@
         "gap": { "type": "number", "minimum": 0, "default": 4, "description": "Separación entre tramos." },
         "radius": { "type": "number", "minimum": 0, "description": "Esquinas. Por defecto la mitad del grosor." },
         "pointSize": { "type": "number", "exclusiveMinimum": 0, "default": 10, "description": "Diámetro de los puntos de etapa." },
+        "pointShape": { "enum": ["circle", "square", "rounded"], "default": "circle", "description": "Forma de los puntos de etapa. Android no dibuja puntos propios, así que la ignora." },
         "pointColor": { "$ref": "#/$defs/color", "description": "Color de los puntos completados. Por defecto el de lo avanzado." },
         "labelSize": { "type": "number", "exclusiveMinimum": 0, "default": 11.5, "description": "Tamaño de las etiquetas de etapas." },
         "trackerSize": { "type": "number", "exclusiveMinimum": 0, "default": 26, "description": "Diámetro del círculo del ícono que avanza." }
