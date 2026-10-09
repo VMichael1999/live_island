@@ -205,3 +205,22 @@ La app de [`example/`](example) tiene una pantalla por preset y un editor que pa
 - [`docs/contract/`](docs/contract): el contrato JSON entre Dart, Swift y Kotlin y sus reglas de render.
 - [`docs/design/DESVIACIONES.md`](docs/design/DESVIACIONES.md): en qué se diferencian iOS y Android del prototipo.
 - [`docs/push.md`](docs/push.md): formato de los push de APNs y FCM.
+
+### Barra en vivo: sigue la señal del conductor
+
+La barra lee `progreso` del estado, así que basta con actualizarlo. `LiveRoute` convierte una posición en avance y `follow` mantiene la actividad al día sin saturar al sistema:
+
+```dart
+final ruta = LiveRoute.straight(origen, destino); // o LiveRoute([a, b, c, ...])
+
+actividad.follow(
+  posicionesDelConductor, // Stream<LiveLatLng> de tu mapa, socket o servidor
+  (p) => {
+    'progreso': ruta.progressAt(p),
+    'etapa': ruta.stageAt(p, 4),
+  },
+  minInterval: const Duration(seconds: 5), // envía como máximo una cada 5 s
+);
+```
+
+Los puntos de etapa también son tuyos: cuántos (`stages`, con o sin texto: `''`), su forma (`LiveProgressStyle(pointShape: LivePointShape.square)`) y su tamaño. Para eventos (pedido confirmado, llegó) usa el mismo `follow` o `actividad.update({...})`.
