@@ -227,21 +227,23 @@ enum LiveRenderer {
         }
     }
 
-    private static func tracker(_ t: LNode?, _ c: LiveCtx) -> AnyView? {
+    private static func tracker(_ t: LNode?, _ c: LiveCtx, _ bs: BarStyle) -> AnyView? {
         guard let t = t, let v = t.node("visual") else { return nil }
         let st = c.style
+        let size = bs.trackerSize ?? 26
+        let k = size / 26
         func circle(_ inner: AnyView) -> AnyView {
             AnyView(inner
-                .frame(width: 26, height: 26)
-                .background(Circle().fill(st.trackerBg))
+                .frame(width: size, height: size)
+                .background(Circle().fill(bs.color ?? st.trackerBg))
                 .shadow(color: .black.opacity(0.35), radius: 1.5, x: 0, y: 1))
         }
         if v.t == "icon" {
-            return circle(icon(v, c, size: 15, color: st.trackerFg))
+            return circle(icon(v, c, size: 15 * k, color: st.trackerFg))
         }
         if v.t == "image" {
             if (t.string("background") ?? "accentCircle") == "accentCircle" {
-                return circle(image(v, c, size: 17, shape: "square"))
+                return circle(image(v, c, size: 17 * k, shape: "square"))
             }
             let h = CGFloat(t.double("height") ?? 24)
             guard let id = v.string("img"), let ui = c.doc.image(id) else { return nil }
@@ -252,33 +254,67 @@ enum LiveRenderer {
         return nil
     }
 
+    /// Estilo opcional de la barra o el anillo (`style` del contrato).
+    struct BarStyle {
+        var height: CGFloat = 6
+        var color: Color? = nil
+        var trackColor: Color? = nil
+        var gap: CGFloat = 4
+        var radius: CGFloat? = nil
+        var pointSize: CGFloat = 10
+        var pointColor: Color? = nil
+        var labelSize: CGFloat = 11.5
+        var trackerSize: CGFloat? = nil
+        var strokeWidth: CGFloat? = nil
+
+        init(_ n: LNode) {
+            guard let s = n.node("style") else { return }
+            func hex(_ k: String) -> Color? { s.string(k).map { Color(hex: $0) } }
+            if let h = s.double("h") { height = CGFloat(h); strokeWidth = CGFloat(h) }
+            color = hex("color")
+            trackColor = hex("trackColor")
+            if let g = s.double("gap") { gap = CGFloat(g) }
+            radius = s.double("radius").map { CGFloat($0) }
+            if let p = s.double("pointSize") { pointSize = CGFloat(p) }
+            pointColor = hex("pointColor")
+            if let l = s.double("labelSize") { labelSize = CGFloat(l) }
+            trackerSize = s.double("trackerSize").map { CGFloat($0) }
+        }
+    }
+
+    private static func barView(_ n: LNode, _ c: LiveCtx, labels: [String], segmented: Bool,
+                                points: Bool, showLabels: Bool) -> AnyView {
+        let bs = BarStyle(n)
+        return AnyView(LiveBarView(value: value(n, c), labels: labels, segmented: segmented,
+                                   points: points, showLabels: showLabels,
+                                   tracker: tracker(n.node("tracker"), c, bs),
+                                   start: endView(n.node("start"), c), end: endView(n.node("end"), c),
+                                   style: c.style, bar: bs))
+    }
+
     private static func bar(_ n: LNode, _ c: LiveCtx) -> AnyView {
-        AnyView(LiveBarView(value: value(n, c), labels: [], segmented: false, points: false,
-                            tracker: tracker(n.node("tracker"), c),
-                            start: endView(n.node("start"), c), end: endView(n.node("end"), c),
-                            style: c.style))
+        barView(n, c, labels: [], segmented: false, points: false, showLabels: true)
     }
 
     private static func segments(_ n: LNode, _ c: LiveCtx) -> AnyView {
-        AnyView(LiveBarView(value: value(n, c), labels: n.d["labels"] as? [String] ?? [],
-                            segmented: true, points: n.bool("points"),
-                            tracker: tracker(n.node("tracker"), c),
-                            start: endView(n.node("start"), c), end: endView(n.node("end"), c),
-                            style: c.style))
+        barView(n, c, labels: n.d["labels"] as? [String] ?? [], segmented: true,
+                points: n.bool("points"), showLabels: n.d["showLabels"] as? Bool ?? true)
     }
 
     private static func ring(_ n: LNode, _ c: LiveCtx, slot: CGFloat?) -> AnyView {
         let size = CGFloat(n.double("size") ?? Double(slot ?? 40))
         let v = value(n, c)
+        let bs = BarStyle(n)
+        let stroke = bs.strokeWidth ?? 3
         let inner: AnyView = n.node("child").map { render($0, c, slot: 16, iconSize: 14) } ?? AnyView(EmptyView())
         return AnyView(ZStack {
-            Circle().stroke(Color.white.opacity(0.22), lineWidth: 3)
+            Circle().stroke(bs.trackColor ?? Color.white.opacity(0.22), lineWidth: stroke)
             Circle().trim(from: 0, to: v)
-                .stroke(c.style.fill, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                .stroke(bs.color ?? c.style.fill, style: StrokeStyle(lineWidth: stroke, lineCap: .round))
                 .rotationEffect(.degrees(-90))
             inner
         }
-        .padding(1.5)
+        .padding(stroke / 2)
         .frame(width: size, height: size))
     }
 
@@ -322,24 +358,29 @@ struct LiveBarView: View {
     let labels: [String]
     let segmented: Bool
     let points: Bool
+    var showLabels: Bool = true
     let tracker: AnyView?
     let start: AnyView?
     let end: AnyView?
     let style: LiveStyle
+    var bar: LiveRenderer.BarStyle = .init(LNode(d: [:]))
 
     private var hasStages: Bool { labels.count > 1 }
-    private var showLabels: Bool { hasStages && (segmented || points) }
+    private var labelsVisible: Bool { showLabels && hasStages && (segmented || points) }
     private var current: Int { min(labels.count - 1, Int(value * Double(labels.count - 1) + 1e-6)) }
+    private var fill: Color { bar.color ?? style.fill }
+    private var trackColor: Color { bar.trackColor ?? style.trackBg }
+    private var radius: CGFloat { bar.radius ?? bar.height / 2 }
 
     var body: some View {
         VStack(spacing: 6) {
             HStack(spacing: 8) {
                 if let s = start { s.opacity(0.9) }
-                track.frame(height: 6)
+                track.frame(height: bar.height)
                 if let e = end { e.opacity(0.9) }
             }
-            .frame(height: (start != nil || end != nil) ? 16 : 6)
-            if showLabels {
+            .frame(height: (start != nil || end != nil) ? max(16, bar.height) : bar.height)
+            if labelsVisible {
                 if labels.count > 3 { stageLine } else { stageLabels }
             }
         }
@@ -351,7 +392,7 @@ struct LiveBarView: View {
             let n = hasStages ? labels.count - 1 : 1
             let useSegs = segmented && hasStages
             ZStack(alignment: .leading) {
-                HStack(spacing: 4) {
+                HStack(spacing: bar.gap) {
                     ForEach(0..<(useSegs ? n : 1), id: \.self) { i in
                         let f = useSegs ? min(1, max(0, (value - Double(i) / Double(n)) * Double(n))) : value
                         segment(f)
@@ -361,36 +402,37 @@ struct LiveBarView: View {
                     ForEach(0..<labels.count, id: \.self) { k in
                         let p = Double(k) / Double(labels.count - 1)
                         let done = p <= value + 1e-6
+                        let doneColor = bar.pointColor ?? fill
                         Circle()
-                            .strokeBorder(done ? style.fill : style.trackBg, lineWidth: 2)
-                            .background(Circle().fill(done ? style.fill : style.pendingDot))
-                            .frame(width: 10, height: 10)
-                            .position(x: CGFloat(p) * w, y: 3)
+                            .strokeBorder(done ? doneColor : trackColor, lineWidth: 2)
+                            .background(Circle().fill(done ? doneColor : style.pendingDot))
+                            .frame(width: bar.pointSize, height: bar.pointSize)
+                            .position(x: CGFloat(p) * w, y: bar.height / 2)
                     }
                 }
-                if let t = tracker { t.position(x: CGFloat(value) * w, y: 3) }
+                if let t = tracker { t.position(x: CGFloat(value) * w, y: bar.height / 2) }
             }
-            .frame(width: w, height: 6, alignment: .leading)
+            .frame(width: w, height: bar.height, alignment: .leading)
         }
     }
 
     private func segment(_ f: Double) -> some View {
         GeometryReader { g in
             ZStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 3).fill(style.trackBg)
-                RoundedRectangle(cornerRadius: 3).fill(style.fill).frame(width: g.size.width * CGFloat(f))
+                Rectangle().fill(trackColor)
+                Rectangle().fill(fill).frame(width: g.size.width * CGFloat(f))
             }
         }
-        .frame(height: 6)
-        .clipShape(RoundedRectangle(cornerRadius: 3))
+        .frame(height: bar.height)
+        .clipShape(RoundedRectangle(cornerRadius: radius))
     }
 
     private var stageLine: some View {
         HStack {
-            Text(labels[current]).font(.system(size: 11.5, weight: .semibold))
+            Text(labels[current]).font(.system(size: bar.labelSize, weight: .semibold))
                 .foregroundColor(style.stageStrong).lineLimit(1)
             Spacer(minLength: 4)
-            Text("Paso \(current + 1) de \(labels.count)").font(.system(size: 11.5))
+            Text("Paso \(current + 1) de \(labels.count)").font(.system(size: bar.labelSize))
                 .foregroundColor(style.stageMuted)
         }
     }
@@ -401,7 +443,7 @@ struct LiveBarView: View {
                 ForEach(0..<labels.count, id: \.self) { k in
                     let isCur = k == current
                     let t = Text(labels[k])
-                        .font(.system(size: 11.5, weight: isCur ? .semibold : .regular))
+                        .font(.system(size: bar.labelSize, weight: isCur ? .semibold : .regular))
                         .foregroundColor(isCur ? style.stageStrong : style.stageMuted)
                         .lineLimit(1)
                     if k == 0 {
@@ -409,13 +451,13 @@ struct LiveBarView: View {
                     } else if k == labels.count - 1 {
                         t.frame(width: g.size.width, alignment: .trailing)
                     } else {
-                        t.fixedSize().position(x: g.size.width * 0.5, y: 8)
+                        t.fixedSize().position(x: g.size.width * 0.5, y: (bar.labelSize + 4.5) / 2)
                     }
                 }
             }
         }
         .padding(.leading, start != nil ? 24 : 0)
         .padding(.trailing, end != nil ? 24 : 0)
-        .frame(height: 16)
+        .frame(height: bar.labelSize + 4.5)
     }
 }
