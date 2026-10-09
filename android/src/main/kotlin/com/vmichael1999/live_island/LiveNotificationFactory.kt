@@ -97,9 +97,11 @@ class LiveNotificationFactory(private val context: Context, private val store: L
     @android.annotation.SuppressLint("NewApi")
     private fun progressStyle(id: String, spec: LiveSpec, p: ProgressSpec): Notification.Style {
         val style = Notification.ProgressStyle().setStyledByProgress(true).setProgress(p.progress)
-        style.setProgressSegments(p.segments.map { Notification.ProgressStyle.Segment(it).setColor(spec.accent) })
+        val fill = p.color ?: spec.accent
+        style.setProgressSegments(p.segments.map { Notification.ProgressStyle.Segment(it).setColor(fill) })
         if (p.points.isNotEmpty()) {
-            style.setProgressPoints(p.points.map { Notification.ProgressStyle.Point(it).setColor(spec.accent) })
+            val dot = p.pointColor ?: fill
+            style.setProgressPoints(p.points.map { Notification.ProgressStyle.Point(it).setColor(dot) })
         }
         fun icon(ref: IconRef?) = ref?.let { store.bitmap(id, it, spec.accent) }?.let { Icon.createWithBitmap(it) }
         icon(p.tracker)?.let { style.setProgressTrackerIcon(it) }

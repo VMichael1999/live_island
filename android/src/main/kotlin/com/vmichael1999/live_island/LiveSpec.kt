@@ -44,6 +44,10 @@ data class ProgressSpec(
     val tracker: IconRef?,
     val start: IconRef?,
     val end: IconRef?,
+    /** Color de los tramos (`style.color`); `null` = acento. */
+    val color: Int? = null,
+    /** Color de los puntos (`style.pointColor`); `null` = el de los tramos. */
+    val pointColor: Int? = null,
 )
 
 /**
@@ -205,6 +209,8 @@ data class LiveSpec(
                 tracker = iconOf(LiveJson.obj(tracker, "visual")),
                 start = iconOf(LiveJson.obj(node, "start")),
                 end = iconOf(LiveJson.obj(node, "end")),
+                color = LiveJson.str(LiveJson.obj(node, "style"), "color")?.let { parseColor(it) },
+                pointColor = LiveJson.str(LiveJson.obj(node, "style"), "pointColor")?.let { parseColor(it) },
             )
         }
 
