@@ -105,3 +105,5 @@ Verificado en un emulador Android 17 (API 37, Pixel 10 Pro XL) con Taxi y Courie
 | Etiquetas de etapa | Sí | Sí | No existen (la etapa va en el subtexto) |
 | Tamaño de los puntos | Sí | Sí | **Se ignora** |
 | Ícono que avanza y marcador final | Sí, opcionales | Sí, opcionales | Sin tracker ni marcador, no se dibujan |
+
+`pointShape` (círculo, cuadrado, redondeado) se dibuja en la vista previa y en iOS; Android no dibuja puntos propios y lo ignora. `LiveRoute` y `LiveActivity.follow` son solo Dart: el avance viaja como cualquier otro campo del estado.

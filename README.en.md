@@ -205,3 +205,19 @@ The [`example/`](example) app has one screen per preset and an editor that start
 - [`docs/contract/`](docs/contract): the JSON contract between Dart, Swift and Kotlin and its render rules.
 - [`docs/design/DESVIACIONES.md`](docs/design/DESVIACIONES.md): how iOS and Android differ from the prototype.
 - [`docs/push.md`](docs/push.md): APNs and FCM push formats.
+
+### Live bar: follow the driver's signal
+
+The bar reads `progreso` from the state, so updating it is enough. `LiveRoute` turns a position into progress and `follow` keeps the activity current without flooding the system:
+
+```dart
+final route = LiveRoute.straight(origin, destination); // or LiveRoute([a, b, c, ...])
+
+activity.follow(
+  driverPositions, // Stream<LiveLatLng> from your map, socket or server
+  (p) => {'progreso': route.progressAt(p), 'etapa': route.stageAt(p, 4)},
+  minInterval: const Duration(seconds: 5), // at most one update every 5 s
+);
+```
+
+Stage points are yours too: how many (`stages`, with or without text: `''`), their shape (`LiveProgressStyle(pointShape: LivePointShape.square)`) and size. For events (order confirmed, arrived) use the same `follow` or `actividad.update({...})`.

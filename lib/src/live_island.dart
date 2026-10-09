@@ -24,6 +24,65 @@ class LiveActivity {
         staleAfter: staleAfter,
       );
 
+  /// Mantiene la actividad al día con una fuente de datos en vivo: la posición
+  /// del conductor, el estado de un pedido, un temporizador… Cada evento de
+  /// [source] pasa por [toState] y el resultado se envía con [update].
+  ///
+  /// Para no gastar el presupuesto de actualizaciones del sistema, envía como
+  /// máximo una cada [minInterval] (la última siempre llega) y se salta las que
+  /// no cambian nada. Devuelve la suscripción: cancélala (o llama a [end]) para
+  /// dejar de seguir.
+  ///
+  /// ```dart
+  /// actividad.follow(
+  ///   posiciones, // Stream<LiveLatLng> de tu mapa o de tu servidor
+  ///   (p) => {'progreso': ruta.progressAt(p), 'etapa': ruta.stageAt(p, 4)},
+  /// );
+  /// ```
+  StreamSubscription<T> follow<T>(
+    Stream<T> source,
+    Map<String, Object?> Function(T event) toState, {
+    Duration minInterval = const Duration(seconds: 5),
+  }) {
+    Map<String, Object?>? last;
+    Map<String, Object?>? pending;
+    Timer? timer;
+    DateTime? sentAt;
+
+    Future<void> flush() async {
+      timer = null;
+      final next = pending;
+      pending = null;
+      if (next == null) return;
+      sentAt = DateTime.now();
+      last = {...?last, ...next};
+      await update(next);
+    }
+
+    final sub = source.listen((event) {
+      final next = toState(event);
+      final merged = {...?pending, ...next};
+      final base = {...?last};
+      if (merged.entries.every(
+        (e) => base.containsKey(e.key) && base[e.key] == e.value,
+      )) {
+        return;
+      }
+      pending = merged;
+      final wait =
+          sentAt == null
+              ? Duration.zero
+              : minInterval - DateTime.now().difference(sentAt!);
+      if (wait <= Duration.zero) {
+        timer?.cancel();
+        flush();
+      } else {
+        timer ??= Timer(wait, flush);
+      }
+    }, onDone: () => timer?.cancel());
+    return sub;
+  }
+
   /// Tokens de push de esta actividad (iOS; empiezan a llegar poco después
   /// de [LiveIsland.start] con `requestPushToken: true`). Envíalos a tu
   /// servidor para actualizarla o terminarla por APNs.

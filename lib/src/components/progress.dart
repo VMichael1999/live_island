@@ -1,6 +1,7 @@
 import 'dart:ui' show Color;
 
 import '../core/bind.dart';
+import '../core/enums.dart';
 import '../core/json_util.dart';
 import '../core/node.dart';
 import 'visuals.dart';
@@ -32,6 +33,7 @@ class LiveProgressStyle {
     this.radius,
     this.pointSize,
     this.pointColor,
+    this.pointShape,
     this.labelSize,
     this.trackerSize,
   });
@@ -57,6 +59,9 @@ class LiveProgressStyle {
   /// Color de los puntos completados (por defecto el de [color]).
   final Color? pointColor;
 
+  /// Forma de los puntos de etapa (por defecto círculo).
+  final LivePointShape? pointShape;
+
   /// Tamaño de las etiquetas de etapas (por defecto 11,5).
   final double? labelSize;
 
@@ -71,6 +76,7 @@ class LiveProgressStyle {
       radius == null &&
       pointSize == null &&
       pointColor == null &&
+      pointShape == null &&
       labelSize == null &&
       trackerSize == null;
 
@@ -82,6 +88,7 @@ class LiveProgressStyle {
     double? radius,
     double? pointSize,
     Color? pointColor,
+    LivePointShape? pointShape,
     double? labelSize,
     double? trackerSize,
   }) => LiveProgressStyle(
@@ -92,6 +99,7 @@ class LiveProgressStyle {
     radius: radius ?? this.radius,
     pointSize: pointSize ?? this.pointSize,
     pointColor: pointColor ?? this.pointColor,
+    pointShape: pointShape ?? this.pointShape,
     labelSize: labelSize ?? this.labelSize,
     trackerSize: trackerSize ?? this.trackerSize,
   );
@@ -104,6 +112,7 @@ class LiveProgressStyle {
     'radius': radius,
     'pointSize': pointSize,
     'pointColor': pointColor == null ? null : colorToHex(pointColor!),
+    'pointShape': pointShape?.name,
     'labelSize': labelSize,
     'trackerSize': trackerSize,
   });
@@ -120,6 +129,10 @@ class LiveProgressStyle {
       radius: d('radius'),
       pointSize: d('pointSize'),
       pointColor: c('pointColor'),
+      pointShape:
+          json['pointShape'] == null
+              ? null
+              : LivePointShape.values.byName(json['pointShape']! as String),
       labelSize: d('labelSize'),
       trackerSize: d('trackerSize'),
     );

@@ -263,6 +263,7 @@ enum LiveRenderer {
         var radius: CGFloat? = nil
         var pointSize: CGFloat = 10
         var pointColor: Color? = nil
+        var pointShape: String = "circle"
         var labelSize: CGFloat = 11.5
         var trackerSize: CGFloat? = nil
         var strokeWidth: CGFloat? = nil
@@ -277,6 +278,7 @@ enum LiveRenderer {
             radius = s.double("radius").map { CGFloat($0) }
             if let p = s.double("pointSize") { pointSize = CGFloat(p) }
             pointColor = hex("pointColor")
+            if let sh = s.string("pointShape") { pointShape = sh }
             if let l = s.double("labelSize") { labelSize = CGFloat(l) }
             trackerSize = s.double("trackerSize").map { CGFloat($0) }
         }
@@ -403,9 +405,8 @@ struct LiveBarView: View {
                         let p = Double(k) / Double(labels.count - 1)
                         let done = p <= value + 1e-6
                         let doneColor = bar.pointColor ?? fill
-                        Circle()
-                            .strokeBorder(done ? doneColor : trackColor, lineWidth: 2)
-                            .background(Circle().fill(done ? doneColor : style.pendingDot))
+                        LivePoint(shape: bar.pointShape, fill: done ? doneColor : style.pendingDot,
+                                  border: done ? doneColor : trackColor)
                             .frame(width: bar.pointSize, height: bar.pointSize)
                             .position(x: CGFloat(p) * w, y: bar.height / 2)
                     }
@@ -459,5 +460,27 @@ struct LiveBarView: View {
         .padding(.leading, start != nil ? 24 : 0)
         .padding(.trailing, end != nil ? 24 : 0)
         .frame(height: bar.labelSize + 4.5)
+    }
+}
+
+/// Punto de etapa: círculo, cuadrado o cuadrado redondeado, con borde de 2 pt.
+struct LivePoint: View {
+    let shape: String
+    let fill: Color
+    let border: Color
+
+    var body: some View {
+        GeometryReader { g in
+            let r = min(g.size.width, g.size.height)
+            switch shape {
+            case "square":
+                Rectangle().fill(fill).overlay(Rectangle().strokeBorder(border, lineWidth: 2))
+            case "rounded":
+                RoundedRectangle(cornerRadius: r / 3).fill(fill)
+                    .overlay(RoundedRectangle(cornerRadius: r / 3).strokeBorder(border, lineWidth: 2))
+            default:
+                Circle().fill(fill).overlay(Circle().strokeBorder(border, lineWidth: 2))
+            }
+        }
     }
 }

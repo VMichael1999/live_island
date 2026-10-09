@@ -511,6 +511,7 @@ Widget _bar(
     fillColor: style?.color,
     trackColor: style?.trackColor,
     pointColor: style?.pointColor,
+    pointShape: style?.pointShape ?? LivePointShape.circle,
   );
 }
 

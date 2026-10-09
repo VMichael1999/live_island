@@ -175,4 +175,66 @@ void main() {
       matchesGoldenFile('goldens/barra_editable.png'),
     );
   });
+
+  testWidgets('puntos de etapa: forma, cantidad y texto a gusto', (
+    tester,
+  ) async {
+    final key = GlobalKey();
+    LivePreviewConfig cfg(DeliveryPreset p) => LivePreviewConfig(
+      layout: p.build(),
+      state: {...p.sampleState(now: fx.now), 'progreso': 0.5},
+      now: fx.now,
+      appName: p.appName,
+    );
+    final variantes = [
+      // Cinco puntos cuadrados, sin texto, sin marcador final.
+      const DeliveryPreset(
+        stages: ['', '', '', '', ''],
+        showLabels: false,
+        showEndIcon: false,
+        progressStyle: LiveProgressStyle(
+          pointShape: LivePointShape.square,
+          pointSize: 12,
+        ),
+      ),
+      // Tres puntos redondeados con texto.
+      const DeliveryPreset(
+        stages: ['Recibido', 'En camino', 'Llegó'],
+        progressStyle: LiveProgressStyle(
+          pointShape: LivePointShape.rounded,
+          pointSize: 14,
+        ),
+      ),
+      // Siete puntos circulares, solo la barra y el ícono que avanza.
+      const DeliveryPreset(
+        stages: ['', '', '', '', '', '', ''],
+        showLabels: false,
+        showEndIcon: false,
+        progressStyle: LiveProgressStyle(pointSize: 8, height: 3, gap: 0),
+      ),
+    ];
+    await tester.binding.setSurfaceSize(const Size(420, 700));
+    tester.view.devicePixelRatio = 2;
+    await tester.pumpWidget(
+      _harness(
+        key,
+        380,
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final v in variantes)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: LiveExpandedPreview(cfg(v)),
+              ),
+          ],
+        ),
+      ),
+    );
+    await tester.pump();
+    await expectLater(
+      find.byKey(key),
+      matchesGoldenFile('goldens/puntos_editables.png'),
+    );
+  });
 }
