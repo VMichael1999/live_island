@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui' show Color;
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
