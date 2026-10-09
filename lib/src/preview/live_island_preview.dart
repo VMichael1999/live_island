@@ -24,6 +24,7 @@ class LiveIslandPreview extends StatelessWidget {
     String appName = 'Mi app',
     bool androidPromotable = true,
     LiveSymbolBuilder? symbolBuilder,
+    bool blur = true,
     this.surfaces = const {
       LiveSurface.compact,
       LiveSurface.minimal,

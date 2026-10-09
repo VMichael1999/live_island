@@ -49,6 +49,15 @@ class LiveIcon extends LiveVisual implements LiveTrackerSource {
   @override
   String get type => 'icon';
 
+  /// El mismo ícono pintado (o no) con el color de acento.
+  LiveIcon withAccent([bool accent = true]) => LiveIcon.symbol(
+    sf,
+    android: android,
+    size: size,
+    accent: accent,
+    color: color,
+  );
+
   @override
   LiveTracker asTracker() => LiveTracker(this);
 
