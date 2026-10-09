@@ -11,7 +11,7 @@ Tú defines tus datos y tu diseño (textos, colores, íconos o imágenes, barra 
 
 | Taxi | Estacionamiento | Delivery |
 | --- | --- | --- |
-| ![Taxi](docs/assets/taxi.gif) | ![Estacionamiento](docs/assets/estacionamiento.gif) | ![Delivery](docs/assets/delivery.gif) |
+| ![Taxi](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/taxi.gif) | ![Estacionamiento](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/estacionamiento.gif) | ![Delivery](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/delivery.gif) |
 
 *Vista previa de Flutter (`LiveIslandPreview`) de cada preset: la isla compacta y la tarjeta de la pantalla de bloqueo, con el avance y la cuenta regresiva.*
 
