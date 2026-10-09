@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 
+import '../core/enums.dart';
 import 'preview_style.dart';
 
 /// Barra continua o por etapas, con puntos, ícono que avanza y etiquetas.
@@ -23,6 +24,7 @@ class LivePreviewBar extends StatelessWidget {
     this.gap = 4,
     this.radius,
     this.pointSize = 10,
+    this.pointShape = LivePointShape.circle,
     this.labelSize = 11.5,
     this.fillColor,
     this.trackColor,
@@ -54,6 +56,7 @@ class LivePreviewBar extends StatelessWidget {
   /// Esquinas (por defecto la mitad del grosor).
   final double? radius;
   final double pointSize;
+  final LivePointShape pointShape;
   final double labelSize;
 
   /// Colores propios; si faltan se usan los de la superficie.
@@ -250,7 +253,14 @@ class LivePreviewBar extends StatelessWidget {
           width: pointSize,
           height: pointSize,
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
+            shape:
+                pointShape == LivePointShape.circle
+                    ? BoxShape.circle
+                    : BoxShape.rectangle,
+            borderRadius:
+                pointShape == LivePointShape.rounded
+                    ? BorderRadius.circular(pointSize / 3)
+                    : null,
             color: done ? doneColor : style.pendingDot,
             border: Border.all(color: done ? doneColor : _track, width: 2),
           ),

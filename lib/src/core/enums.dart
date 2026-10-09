@@ -10,6 +10,9 @@ enum LiveBackground { system, light, accent }
 /// Alineación de hijos en filas, columnas y textos.
 enum LiveAlign { start, center, end }
 
+/// Forma de los puntos de etapa de una barra.
+enum LivePointShape { circle, square, rounded }
+
 /// Fondo del ícono que avanza sobre la barra.
 enum LiveTrackerBackground { accentCircle, none }
 

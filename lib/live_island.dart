@@ -11,6 +11,7 @@ export 'src/core/check.dart' hide checkLayout;
 export 'src/core/enums.dart' hide enumByName;
 export 'src/core/layout.dart' hide firstProgress;
 export 'src/core/node.dart';
+export 'src/core/route.dart';
 export 'src/core/state.dart';
 export 'src/live_island.dart';
 export 'src/presets/preset.dart';
