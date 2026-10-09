@@ -173,12 +173,15 @@ void main() {
     };
     expect(
       images.keys,
-      containsAll(['assets/live/mappin.png', 'assets/live/phone.png']),
+      containsAll([
+        'packages/live_island/assets/icons/mappin.png',
+        'packages/live_island/assets/icons/phone.png',
+      ]),
     );
-    expect(images['assets/live/phone.png']!.maxWidth, 96);
+    expect(images['packages/live_island/assets/icons/phone.png']!.maxWidth, 96);
     expect(
-      images['assets/live/phone.png']!.bytes,
-      'assets/live/phone.png'.codeUnits,
+      images['packages/live_island/assets/icons/phone.png']!.bytes,
+      'packages/live_island/assets/icons/phone.png'.codeUnits,
     );
   });
 

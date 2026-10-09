@@ -159,15 +159,17 @@ Widget buildLiveNode(
     case LiveProgress():
       return _progress(node, ctx, slot: slot);
     case LiveSegments():
-      return LivePreviewBar(
+      return _bar(
+        ctx,
         value: _num(ctx.state[node.value.field]),
-        style: ctx.style,
+        style: node.style,
         labels: node.labels,
         segmented: true,
         points: node.points,
-        tracker: _tracker(node.tracker, ctx),
-        start: _endIcon(node.startIcon, ctx),
-        end: _endIcon(node.endIcon, ctx),
+        showLabels: node.showLabels,
+        tracker: node.tracker,
+        start: node.startIcon,
+        end: node.endIcon,
       );
     case LiveMetric():
       return _metric(node, ctx);
@@ -395,7 +397,7 @@ Widget liveImageBox(
               : Image(
                 image: provider,
                 fit: img.fit == LiveFit.cover ? BoxFit.cover : BoxFit.contain,
-                filterQuality: FilterQuality.medium,
+                filterQuality: FilterQuality.low,
                 errorBuilder: (_, __, ___) => _missingImage,
               ),
     ),
@@ -453,19 +455,62 @@ Widget _progress(LiveProgress p, LiveRenderContext ctx, {double? slot}) {
     return LivePreviewRing(
       value: value,
       size: size,
-      color: ctx.style.fill,
+      color: p.style?.color ?? ctx.style.fill,
+      strokeWidth: p.style?.height ?? 3,
+      trackColor: p.style?.trackColor,
       child:
           p.child == null
               ? null
               : buildLiveNode(p.child!, ctx, slot: 16, iconSize: 14),
     );
   }
+  return _bar(
+    ctx,
+    value: value,
+    style: p.style,
+    tracker: p.tracker,
+    start: p.startIcon,
+    end: p.endIcon,
+  );
+}
+
+/// Barra con todos sus estilos opcionales ([style]).
+Widget _bar(
+  LiveRenderContext ctx, {
+  required double value,
+  LiveProgressStyle? style,
+  List<String> labels = const [],
+  bool segmented = false,
+  bool points = false,
+  bool showLabels = true,
+  LiveTracker? tracker,
+  LiveVisual? start,
+  LiveVisual? end,
+}) {
+  final h = style?.height ?? 6;
   return LivePreviewBar(
     value: value,
     style: ctx.style,
-    tracker: _tracker(p.tracker, ctx),
-    start: _endIcon(p.startIcon, ctx),
-    end: _endIcon(p.endIcon, ctx),
+    labels: labels,
+    segmented: segmented,
+    points: points,
+    showLabels: showLabels,
+    tracker: _tracker(
+      tracker,
+      ctx,
+      size: style?.trackerSize ?? 26,
+      fill: style?.color,
+    ),
+    start: _endIcon(start, ctx),
+    end: _endIcon(end, ctx),
+    height: h,
+    gap: style?.gap ?? 4,
+    radius: style?.radius,
+    pointSize: style?.pointSize ?? 10,
+    labelSize: style?.labelSize ?? 11.5,
+    fillColor: style?.color,
+    trackColor: style?.trackColor,
+    pointColor: style?.pointColor,
   );
 }
 
@@ -478,16 +523,22 @@ Widget? _endIcon(LiveVisual? v, LiveRenderContext ctx) {
   };
 }
 
-Widget? _tracker(LiveTracker? t, LiveRenderContext ctx) {
+Widget? _tracker(
+  LiveTracker? t,
+  LiveRenderContext ctx, {
+  double size = 26,
+  Color? fill,
+}) {
   if (t == null) return null;
   final style = ctx.style;
+  final k = size / 26;
   Widget circle(Widget child) => Container(
-    width: 26,
-    height: 26,
+    width: size,
+    height: size,
     alignment: Alignment.center,
     decoration: BoxDecoration(
       shape: BoxShape.circle,
-      color: style.trackerBg,
+      color: fill ?? style.trackerBg,
       boxShadow: const [
         BoxShadow(
           color: Color(0x59000000),
@@ -500,11 +551,11 @@ Widget? _tracker(LiveTracker? t, LiveRenderContext ctx) {
   );
   final v = t.visual;
   if (v is LiveIcon) {
-    return circle(liveSymbol(v, 15, ctx, color: style.trackerFg));
+    return circle(liveSymbol(v, 15 * k, ctx, color: style.trackerFg));
   }
   if (v is LiveImage) {
     if (t.background == LiveTrackerBackground.accentCircle) {
-      return circle(liveImageBox(v, 17, ctx, shape: LiveShape.square));
+      return circle(liveImageBox(v, 17 * k, ctx, shape: LiveShape.square));
     }
     return _bareTracker(v, t.height, ctx);
   }

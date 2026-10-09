@@ -1,6 +1,7 @@
-// Genera los PNG de íconos de Android (`LiveIcon.android`) de la app de ejemplo
-// a partir de los trazos de lib/src/preview/preview_symbols.dart.
-// Uso: npm i playwright-core && node tool/make_example_icons.js
+// Genera los PNG de íconos de Android (`LiveIcon.android`) que el paquete trae
+// para sus presets (assets/icons/), a partir de los trazos de
+// lib/src/preview/preview_symbols.dart.
+// Uso: npm i playwright-core && node tool/make_icons.js
 const { chromium } = require('playwright-core');
 const fs = require('fs');
 const path = require('path');
@@ -11,12 +12,15 @@ const paths = {};
 for (const m of dart.matchAll(/'([^']+)':\s*'([^']+)'/g)) paths[m[1]] = m[2];
 
 // archivo -> nombre en preview_symbols.dart
-const icons = {
-  phone: 'phone', share2: 'share2', mappin: 'mappin', bike: 'bike', house: 'house',
-  truck: 'truck', utensils: 'utensils', squareparking: 'squareparking', plus: 'plus',
-  x: 'x', package: 'package', trophy: 'trophy',
-};
-const out = path.join(root, 'example/assets/live');
+const names = [
+  'bike', 'bus', 'car', 'coffee', 'cookingpot', 'dumbbell', 'flag', 'house', 'landmark',
+  'mappin', 'package', 'pause', 'phone', 'plane', 'play', 'plus', 'qrcode', 'share2',
+  'squareparking', 'stethoscope', 'trophy', 'truck', 'upload', 'user', 'utensils', 'wrench',
+  'x', 'zap', 'batterycharging',
+];
+const icons = Object.fromEntries(names.map((n) => [n, n]));
+const out = path.join(root, 'assets/icons');
+fs.mkdirSync(out, { recursive: true });
 const COLOR = '#5F6368';
 
 (async () => {

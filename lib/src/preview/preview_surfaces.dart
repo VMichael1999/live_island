@@ -318,7 +318,7 @@ class LiveLockScreenPreview extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(22),
           child:
-              tone == LiveTone.accent
+              (tone == LiveTone.accent || !config.blur)
                   ? card
                   : BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),

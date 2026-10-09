@@ -112,4 +112,67 @@ void main() {
       }
     }
   });
+
+  testWidgets('la barra de progreso es editable (tres variantes)', (
+    tester,
+  ) async {
+    final key = GlobalKey();
+    LivePreviewConfig cfg(DeliveryPreset p) => LivePreviewConfig(
+      layout: p.build(),
+      state: p.sampleState(now: fx.now),
+      now: fx.now,
+      appName: p.appName,
+    );
+    final variantes = [
+      // 1. Por defecto.
+      const DeliveryPreset(),
+      // 2. Gruesa, roja, con puntos grandes y sin etiquetas.
+      const DeliveryPreset(
+        showLabels: false,
+        progressStyle: LiveProgressStyle(
+          height: 14,
+          color: Color(0xFFC62828),
+          trackColor: Color(0xFF3A2A2A),
+          gap: 2,
+          pointSize: 18,
+          trackerSize: 34,
+        ),
+      ),
+      // 3. Solo la barra: sin puntos, sin etiquetas, sin ícono ni marcador final.
+      const DeliveryPreset(
+        showLabels: false,
+        showPoints: false,
+        showTracker: false,
+        showEndIcon: false,
+        progressStyle: LiveProgressStyle(
+          height: 4,
+          color: Color(0xFF00897B),
+          gap: 0,
+        ),
+      ),
+    ];
+    await tester.binding.setSurfaceSize(const Size(420, 700));
+    tester.view.devicePixelRatio = 2;
+    await tester.pumpWidget(
+      _harness(
+        key,
+        380,
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final v in variantes)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: LiveExpandedPreview(cfg(v)),
+              ),
+          ],
+        ),
+      ),
+    );
+    await tester.pump();
+    await expectLater(
+      find.byKey(key),
+      matchesGoldenFile('goldens/barra_editable.png'),
+    );
+  });
 }

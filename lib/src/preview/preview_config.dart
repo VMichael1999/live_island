@@ -21,6 +21,7 @@ class LivePreviewConfig {
     this.appName = 'Mi app',
     this.androidPromotable = true,
     this.symbolBuilder,
+    this.blur = true,
   }) : state = LiveState.normalize(state);
 
   final LiveLayout layout;
@@ -47,6 +48,10 @@ class LivePreviewConfig {
 
   /// Dibuja los SF Symbols que no vienen incluidos en la vista previa.
   final LiveSymbolBuilder? symbolBuilder;
+
+  /// Desenfoca el fondo de la tarjeta de bloqueo (`BackdropFilter`). Apágalo si
+  /// tu GPU lo rechaza (por ejemplo, Impeller con OpenGL ES en algunos emuladores).
+  final bool blur;
 }
 
 /// Entrega la hora actual a [builder]; si [fixed] es `null` se actualiza cada

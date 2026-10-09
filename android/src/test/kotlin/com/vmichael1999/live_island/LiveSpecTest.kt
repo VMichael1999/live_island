@@ -174,6 +174,40 @@ class LiveSpecTest {
         assertEquals(10, LiveSpec.from(l, mapOf("a" to 0.1, "b" to 0.9)).progress!!.progress)
     }
 
+    @Test
+    fun `el estilo de la barra da color a los tramos y a los puntos`() {
+        val l = layout(
+            """{"title":{"text":"T"}}""",
+            """{"expanded":{"bottom":{"t":"segments","bind":"p","labels":["a","b","c"],"points":true,
+                "style":{"color":"#C62828","pointColor":"#2E7D32","h":12,"gap":8,"labelSize":14}}}}""",
+        )
+        val p = LiveSpec.from(l, mapOf("p" to 0.5)).progress!!
+        assertEquals(0xFFC62828.toInt(), p.color)
+        assertEquals(0xFF2E7D32.toInt(), p.pointColor)
+        // El grosor, el espacio y las etiquetas los decide Android: no cambian los tramos.
+        assertEquals(listOf(100, 100), p.segments)
+    }
+
+    @Test
+    fun `sin estilo los tramos usan el acento`() {
+        val p = LiveSpec.from(example("taxi"), state("taxi")).progress!!
+        assertNull(p.color)
+        assertNull(p.pointColor)
+    }
+
+    @Test
+    fun `sin puntos, sin marcador final y sin tracker no hay nada que dibujar`() {
+        val l = layout(
+            """{"title":{"text":"T"}}""",
+            """{"expanded":{"bottom":{"t":"segments","bind":"p","labels":["a","b","c"],"showLabels":false}}}""",
+        )
+        val p = LiveSpec.from(l, mapOf("p" to 0.5)).progress!!
+        assertTrue(p.points.isEmpty())
+        assertNull(p.tracker)
+        assertNull(p.end)
+        assertNull(p.start)
+    }
+
     // --- acciones y texto -----------------------------------------------------
 
     @Test
