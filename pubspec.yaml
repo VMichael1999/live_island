@@ -9,9 +9,6 @@ topics:
   - notifications
   - ios
   - android
-screenshots:
-  - description: Taxi en la isla dinámica, la pantalla de bloqueo y Android.
-    path: docs/assets/taxi.gif
 
 executables:
   setup:
