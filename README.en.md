@@ -11,7 +11,7 @@ You define your data and your design (texts, colors, icons or images, progress b
 
 | Taxi | Parking | Delivery |
 | --- | --- | --- |
-| ![Taxi](docs/assets/taxi.gif) | ![Parking](docs/assets/estacionamiento.gif) | ![Delivery](docs/assets/delivery.gif) |
+| ![Taxi](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/taxi.gif) | ![Parking](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/estacionamiento.gif) | ![Delivery](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/delivery.gif) |
 
 *Flutter preview (`LiveIslandPreview`) of each preset: the compact island and the lock-screen card, with progress and countdown.*
 
