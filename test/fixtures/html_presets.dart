@@ -80,7 +80,7 @@ class HtmlFixtures {
     final sfName = sf[name as String] ?? name;
     return LiveIcon.symbol(
       sfName,
-      android: 'assets/live/${name.toLowerCase()}.png',
+      android: 'packages/live_island/assets/icons/${name.toLowerCase()}.png',
       accent: accent,
     );
   }
