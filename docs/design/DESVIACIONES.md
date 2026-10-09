@@ -92,3 +92,16 @@ Verificado en un emulador Android 17 (API 37, Pixel 10 Pro XL) con Taxi y Courie
 | Push en Android | `LiveIsland.handlePush` o `LiveIslandPush.handle` desde tu `FirebaseMessagingService`; formato en `docs/push.md` | El plugin no depende de Firebase |
 | Iniciar por push | Solo con un diseño registrado (`registerLayout`) | Un push no lleva el diseño |
 | `staleAfter` | Se envía pero Android lo ignora | Android no tiene equivalente |
+
+## Barra de progreso editable (Fase 6)
+
+`LiveProgressStyle` (grosor, color, color del fondo, separación entre tramos, radio, tamaño y color de los puntos, tamaño de etiquetas y del ícono que avanza) se aplica a `LiveProgress.bar`, `LiveProgress.ring` y `LiveSegments`. Además cada parte es opcional: `showLabels`, `points`, `tracker`, `endIcon`. Los presets de etapas (`TripPreset`, `DeliveryPreset`, `CourierPreset`…) lo exponen como parámetros.
+
+| Opción | Vista previa | iOS | Android |
+| --- | --- | --- | --- |
+| Color de la barra | Sí | Sí | Sí (`color` del tramo) |
+| Color de los puntos | Sí | Sí | Sí |
+| Grosor, separación, radio | Sí | Sí | **Se ignora**: lo decide `ProgressStyle` |
+| Etiquetas de etapa | Sí | Sí | No existen (la etapa va en el subtexto) |
+| Tamaño de los puntos | Sí | Sí | **Se ignora** |
+| Ícono que avanza y marcador final | Sí, opcionales | Sí, opcionales | Sin tracker ni marcador, no se dibujan |
