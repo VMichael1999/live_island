@@ -76,3 +76,5 @@ Estas reglas las comparten la vista previa de Flutter, el renderer SwiftUI y el 
 - Etapas: cada par de etapas es un tramo de 100 y la etapa actual va como subtexto del encabezado (Android no dibuja las etiquetas).
 - Chip: `countdown` usa el cronómetro del sistema (cuenta regresiva en vivo); `text` sigue la regla de 7/12 caracteres.
 - Íconos: un `LiveIcon` se dibuja con el PNG de su campo `android` (se envía junto al diseño); sin él se omite.
+
+**Estilo de la barra.** `bar`, `ring` y `segments` aceptan `style` (`progressStyle`: `h`, `color`, `trackColor`, `gap`, `radius`, `pointSize`, `pointColor`, `labelSize`, `trackerSize`); todo opcional, lo que falta usa el valor del HTML. `segments` acepta además `showLabels` (por defecto `true`). El `tracker` y el `end` ya eran opcionales. Android usa solo `color` y `pointColor`.

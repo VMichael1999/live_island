@@ -264,10 +264,27 @@
         "end": { "oneOf": [ { "$ref": "#/$defs/icon" }, { "$ref": "#/$defs/image" } ], "description": "Ícono al final (16 pt)." }
       }
     },
+    "progressStyle": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Estilo opcional de la barra o el anillo. Lo que falta toma su valor por defecto. En Android solo se respetan color, pointColor, el tracker y los marcadores; el grosor, el espacio, las esquinas y las etiquetas los decide el sistema.",
+      "properties": {
+        "h": { "type": "number", "exclusiveMinimum": 0, "default": 6, "description": "Grosor de la barra en pt (en el anillo, el ancho del trazo; por defecto 3)." },
+        "color": { "$ref": "#/$defs/color", "description": "Color de lo avanzado. Por defecto el acento (blanco sobre fondo de acento)." },
+        "trackColor": { "$ref": "#/$defs/color", "description": "Color de lo que falta." },
+        "gap": { "type": "number", "minimum": 0, "default": 4, "description": "Separación entre tramos." },
+        "radius": { "type": "number", "minimum": 0, "description": "Esquinas. Por defecto la mitad del grosor." },
+        "pointSize": { "type": "number", "exclusiveMinimum": 0, "default": 10, "description": "Diámetro de los puntos de etapa." },
+        "pointColor": { "$ref": "#/$defs/color", "description": "Color de los puntos completados. Por defecto el de lo avanzado." },
+        "labelSize": { "type": "number", "exclusiveMinimum": 0, "default": 11.5, "description": "Tamaño de las etiquetas de etapas." },
+        "trackerSize": { "type": "number", "exclusiveMinimum": 0, "default": 26, "description": "Diámetro del círculo del ícono que avanza." }
+      }
+    },
     "bar": {
       "type": "object", "required": ["t", "bind"], "additionalProperties": false,
       "properties": {
         "t": { "const": "bar" }, "bind": { "$ref": "#/$defs/binding", "description": "Campo numérico 0..1." },
+        "style": { "$ref": "#/$defs/progressStyle" },
         "tracker": {"$ref": "#/$defs/progressEnds/properties/tracker"}, "start": {"$ref": "#/$defs/progressEnds/properties/start"}, "end": {"$ref": "#/$defs/progressEnds/properties/end"}
       }
     },
@@ -276,6 +293,7 @@
       "description": "Anillo. En Android se muestra como barra.",
       "properties": {
         "t": { "const": "ring" }, "bind": { "$ref": "#/$defs/binding" },
+        "style": { "$ref": "#/$defs/progressStyle" },
         "child": { "$ref": "#/$defs/node", "description": "Contenido dentro del anillo (ícono o imagen)." },
         "size": { "type": "number" }
       }
@@ -287,6 +305,8 @@
         "t": { "const": "segments" }, "bind": { "$ref": "#/$defs/binding" },
         "labels": { "type": "array", "minItems": 2, "items": { "type": "string" } },
         "points": { "type": "boolean", "default": false },
+        "showLabels": { "type": "boolean", "default": true, "description": "Mostrar las etiquetas de las etapas (con false quedan solo los tramos y los puntos)." },
+        "style": { "$ref": "#/$defs/progressStyle" },
         "tracker": {"$ref": "#/$defs/progressEnds/properties/tracker"}, "start": {"$ref": "#/$defs/progressEnds/properties/start"}, "end": {"$ref": "#/$defs/progressEnds/properties/end"}
       }
     },
