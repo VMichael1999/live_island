@@ -47,6 +47,8 @@ class _EditorScreenState extends State<EditorScreen> {
   double pointSize = 10;
   double gap = 4;
   Color? barColor;
+  LivePointShape pointShape = LivePointShape.circle;
+  int stageCount = 0; // 0 = las del preset
 
   bool get hasBarEditor =>
       const {'trip', 'delivery', 'courier'}.contains(entry.id);
@@ -57,8 +59,23 @@ class _EditorScreenState extends State<EditorScreen> {
       pointSize: pointSize == 10 ? null : pointSize,
       gap: gap == 4 ? null : gap,
       color: barColor,
+      pointShape: pointShape == LivePointShape.circle ? null : pointShape,
     );
     return st.isEmpty ? null : st;
+  }
+
+  /// Con 0 se usan las etapas del preset; con otro número se reparten esa
+  /// cantidad de puntos (con texto solo el primero y el último).
+  List<String> _stages(List<String> preset) {
+    if (stageCount == 0 || stageCount == preset.length) return preset;
+    return [
+      for (var i = 0; i < stageCount; i++)
+        i == 0
+            ? preset.first
+            : i == stageCount - 1
+            ? preset.last
+            : '',
+    ];
   }
 
   LivePreset get preset {
@@ -68,6 +85,7 @@ class _EditorScreenState extends State<EditorScreen> {
     final base = entry.preset as dynamic;
     final a = accent ?? base.accent as Color;
     final style = barStyle;
+    final stages = _stages(base.stages as List<String>);
     return switch (entry.id) {
       'trip' => TripPreset(
         accent: a,
@@ -77,6 +95,7 @@ class _EditorScreenState extends State<EditorScreen> {
         showTracker: showTracker,
         showEndIcon: showEndIcon,
         progressStyle: style,
+        stages: stages,
       ),
       'delivery' => DeliveryPreset(
         accent: a,
@@ -86,6 +105,7 @@ class _EditorScreenState extends State<EditorScreen> {
         showTracker: showTracker,
         showEndIcon: showEndIcon,
         progressStyle: style,
+        stages: stages,
       ),
       _ => CourierPreset(
         accent: a,
@@ -95,6 +115,7 @@ class _EditorScreenState extends State<EditorScreen> {
         showTracker: showTracker,
         showEndIcon: showEndIcon,
         progressStyle: style,
+        stages: stages,
       ),
     };
   }
@@ -107,6 +128,8 @@ class _EditorScreenState extends State<EditorScreen> {
     pointSize = 10;
     gap = 4;
     barColor = null;
+    pointShape = LivePointShape.circle;
+    stageCount = 0;
     state = e.preset.sampleState();
     title.text = state['titulo'] as String;
     subtitle.text = state['subtitulo'] as String;
