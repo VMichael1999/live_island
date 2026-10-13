@@ -28,6 +28,7 @@ class _Fake implements LiveIslandPlatform {
     String id,
     String stateJson, {
     Duration? staleAfter,
+    LiveAlert? alert,
   }) async => updates.add(jsonDecode(stateJson) as Map<String, Object?>);
 
   @override

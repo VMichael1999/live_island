@@ -99,8 +99,14 @@ class _FakePlatform implements LiveIslandPlatform {
     String id,
     String stateJson, {
     Duration? staleAfter,
+    LiveAlert? alert,
   }) async => calls.add(
-    _Call('update', {'id': id, 'state': stateJson, 'staleAfter': staleAfter}),
+    _Call('update', {
+      'id': id,
+      'state': stateJson,
+      'staleAfter': staleAfter,
+      'alert': alert,
+    }),
   );
 
   @override
@@ -400,6 +406,23 @@ void main() {
       },
     );
 
+    test('update pasa el aviso a la plataforma', () async {
+      final a = (await LiveIsland.activeActivities()).last;
+      await a.update(
+        {'estado': 'llegó'},
+        alert: const LiveAlert(
+          title: 'Llegó',
+          body: 'Tu conductor',
+          sound: 'a.caf',
+        ),
+      );
+      final sent = platform.calls.last.args['alert']! as LiveAlert;
+      expect(sent.title, 'Llegó');
+      expect(sent.sound, 'a.caf');
+      await a.update({'progreso': .2});
+      expect(platform.calls.last.args['alert'], isNull);
+    });
+
     test('activity devuelve null si no hay una con ese id', () async {
       expect(await LiveIsland.activity('no-existe'), isNull);
     });
@@ -512,6 +535,23 @@ void main() {
         expect((args['images'] as List).single, containsPair('maxWidth', 120));
       },
     );
+
+    test('update serializa el aviso con title, body y sound', () async {
+      mock((call) async => null);
+      await MethodChannelLiveIslandPlatform().update(
+        'a',
+        '{}',
+        alert: const LiveAlert(title: 'T', body: 'B', sound: 's.caf'),
+      );
+      expect((log.single.arguments as Map)['alert'], {
+        'title': 'T',
+        'body': 'B',
+        'sound': 's.caf',
+      });
+      log.clear();
+      await MethodChannelLiveIslandPlatform().update('a', '{}');
+      expect((log.single.arguments as Map)['alert'], isNull);
+    });
 
     test(
       'start envía customId y activeActivities lee las dos formas',

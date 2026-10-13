@@ -35,6 +35,19 @@ class LivePushTest {
     }
 
     @Test
+    fun `update puede pedir aviso con true, con objeto o como texto de FCM`() {
+        val sin = cmd("""{"event":"update","id":"a","state":{"x":1}}""") as PushCommand.Update
+        assertEquals(false, sin.alert)
+        val bool = cmd("""{"event":"update","id":"a","state":{"x":1},"alert":true}""") as PushCommand.Update
+        assertEquals(true, bool.alert)
+        val obj = cmd("""{"event":"update","id":"a","state":{"x":1},"alert":{"title":"Llegó","body":"Ya"}}""") as PushCommand.Update
+        assertEquals(true, obj.alert)
+        val flat = LivePush.parse(mapOf("event" to "update", "id" to "a", "state" to """{"x":1}""", "alert" to "true"))
+            as PushCommand.Update
+        assertEquals(true, flat.alert)
+    }
+
+    @Test
     fun `start puede llevar un id propio para no duplicar la actividad`() {
         val c = cmd("""{"event":"start","template":"taxi","customId":"viaje-42"}""") as PushCommand.Start
         assertEquals("viaje-42", c.customId)
