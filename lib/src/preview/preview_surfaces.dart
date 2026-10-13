@@ -229,9 +229,9 @@ Widget _topAndBottom({
   );
 }
 
-/// Isla expandida (esquinas de 44 pt, negra).
-class LiveExpandedPreview extends StatelessWidget {
-  const LiveExpandedPreview(this.config, {super.key});
+/// Contenido de la isla expandida, sin el fondo negro.
+class LiveExpandedBody extends StatelessWidget {
+  const LiveExpandedBody(this.config, {super.key});
 
   final LivePreviewConfig config;
 
@@ -247,27 +247,37 @@ class LiveExpandedPreview extends StatelessWidget {
       );
       final e = config.layout.expanded ?? const LiveExpanded();
       return _base(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 360),
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 18),
-          decoration: BoxDecoration(
-            color: _black,
-            borderRadius: BorderRadius.circular(44),
-          ),
-          child: _topAndBottom(
-            ctx: ctx,
-            leading:
-                e.leading == null
-                    ? null
-                    : buildLiveNode(e.leading!, ctx, slot: 46, iconSize: 38),
-            center: e.center,
-            trailing: e.trailing,
-            bottom: e.bottom,
-            trailingMax: 130,
-          ),
+        child: _topAndBottom(
+          ctx: ctx,
+          leading:
+              e.leading == null
+                  ? null
+                  : buildLiveNode(e.leading!, ctx, slot: 46, iconSize: 38),
+          center: e.center,
+          trailing: e.trailing,
+          bottom: e.bottom,
+          trailingMax: 130,
         ),
       );
     },
+  );
+}
+
+/// Isla expandida (esquinas de 44 pt, negra).
+class LiveExpandedPreview extends StatelessWidget {
+  const LiveExpandedPreview(this.config, {super.key});
+
+  final LivePreviewConfig config;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    constraints: const BoxConstraints(maxWidth: 360),
+    padding: const EdgeInsets.fromLTRB(20, 16, 20, 18),
+    decoration: BoxDecoration(
+      color: _black,
+      borderRadius: BorderRadius.circular(44),
+    ),
+    child: LiveExpandedBody(config),
   );
 }
 
