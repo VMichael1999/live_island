@@ -335,7 +335,12 @@
         "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
         "label": { "type": "string" },
         "icon": { "oneOf": [ { "$ref": "#/$defs/icon" }, { "$ref": "#/$defs/image" } ] },
-        "action": { "$ref": "#/$defs/action" }
+        "action": { "$ref": "#/$defs/action" },
+        "input": {
+          "type": "object", "additionalProperties": false,
+          "description": "Respuesta en línea (Android): el botón abre un cuadro de texto y lo escrito llega a LiveIsland.onReply. En iOS es un botón normal.",
+          "properties": { "hint": { "type": "string", "description": "Texto de ayuda del campo." } }
+        }
       }
     },
     "toggle": {
