@@ -110,17 +110,18 @@ class LiveActivities(private val context: Context) {
         store.deleteAllExcept((listOf(newId) + store.allIds().filter { store.load(it)?.notificationId in active }).toSet())
     }
 
-    private fun post(a: StoredActivity, end: EndInfo? = null) {
-        nm.notify(a.notificationId, factory.build(a, LiveSpec.from(a.layout, a.state), end))
+    private fun post(a: StoredActivity, end: EndInfo? = null, alert: Boolean = false) {
+        nm.notify(a.notificationId, factory.build(a, LiveSpec.from(a.layout, a.state), end, alert))
     }
 
-    fun update(ref: String, changes: LiveState) {
+    /** [alert] hace que esta actualización suene y salga como aviso emergente. */
+    fun update(ref: String, changes: LiveState, alert: Boolean = false) {
         val id = resolve(ref)
         val a = store.load(id) ?: throw LiveException("not_found", "No existe una actividad con ese id (¿ya terminó?).")
         if (a.dismissed) throw LiveException("dismissed", "El usuario cerró la notificación; no se vuelve a publicar.")
         val merged = LiveJson.merge(a.state, changes)
         store.saveState(id, merged)
-        post(a.copy(state = merged))
+        post(a.copy(state = merged), alert = alert)
     }
 
     /** Termina todas las actividades vivas de la app. */
@@ -148,7 +149,7 @@ class LiveActivities(private val context: Context) {
     fun handlePush(data: Map<String, String?>): String? = when (val cmd = LivePush.parse(data)) {
         null -> null
         is PushCommand.Start -> startFromTemplate(cmd.template, cmd.state, cmd.deepLink, cmd.customId)
-        is PushCommand.Update -> cmd.id.also { update(it, cmd.state) }
+        is PushCommand.Update -> cmd.id.also { update(it, cmd.state, cmd.alert) }
         is PushCommand.End -> cmd.id.also { end(it, cmd.state, cmd.dismiss, cmd.dismissAfterSeconds) }
     }
 }
