@@ -38,6 +38,11 @@ swift_sources = %w[Shared Renderer Widget].flat_map do |sub|
   end
 end
 
+# Manifiesto de privacidad de la extensión: sus fuentes comparten el código que
+# lee el UserDefaults del App Group, así que lleva su propia declaración.
+privacy_src = File.join(template_dir, '..', 'Resources', 'PrivacyInfo.xcprivacy')
+FileUtils.cp(privacy_src, File.join(ext_dir, 'PrivacyInfo.xcprivacy')) if File.exist?(privacy_src)
+
 File.write(File.join(ext_dir, 'LEEME.md'), <<~MD)
   # #{ext_name}
 
@@ -129,6 +134,10 @@ plist_ref = file_ref(main_group, 'Info.plist')
 ent_ref = file_ref(main_group, "#{ext_name}.entitlements")
 xc_ref = file_ref(main_group, "#{ext_name}.xcconfig")
 file_ref(main_group, 'LEEME.md')
+privacy_ref = File.exist?(File.join(ext_dir, 'PrivacyInfo.xcprivacy')) ? file_ref(main_group, 'PrivacyInfo.xcprivacy') : nil
+if privacy_ref && !ext_target.resources_build_phase.files_references.include?(privacy_ref)
+  ext_target.resources_build_phase.add_file_reference(privacy_ref)
+end
 
 %w[SwiftUI WidgetKit ActivityKit].each do |fw|
   next if ext_target.frameworks_build_phase.files_references.any? { |r| r.path.to_s.include?("#{fw}.framework") }
