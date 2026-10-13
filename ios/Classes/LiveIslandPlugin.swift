@@ -300,9 +300,20 @@ enum LiveActivities {
         for (k, v) in LiveValue.dictionary(from: state) { values[k] = v }
         let content = LiveIslandAttributes.ContentState(values: values)
         let stale = (args["staleAfter"] as? NSNumber).map { Date().addingTimeInterval($0.doubleValue) }
+        let alertArgs = args["alert"] as? [String: Any]
         Task {
             if #available(iOS 16.2, *) {
-                await activity.update(ActivityContent(state: content, staleDate: stale))
+                // Con `alert`, la isla se expande un momento (o sale un banner) y suena.
+                var alert: AlertConfiguration? = nil
+                if let a = alertArgs, let title = a["title"] as? String, let body = a["body"] as? String {
+                    let sound: AlertConfiguration.AlertSound =
+                        (a["sound"] as? String).map { .named($0) } ?? .default
+                    alert = AlertConfiguration(title: LocalizedStringResource(stringLiteral: title),
+                                               body: LocalizedStringResource(stringLiteral: body),
+                                               sound: sound)
+                }
+                await activity.update(ActivityContent(state: content, staleDate: stale),
+                                      alertConfiguration: alert)
             } else {
                 await activity.update(using: content)
             }
