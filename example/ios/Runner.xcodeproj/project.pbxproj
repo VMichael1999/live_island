@@ -27,6 +27,7 @@
 		9A7281C73234AD2564BB5107 /* LiveRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D14703FD34116E85F37AE5E2 /* LiveRenderer.swift */; };
 		C17CA7C9BBFD0863BA3B297C /* LiveStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7703F916CCB02EBACE6F48EB /* LiveStorage.swift */; };
 		C22F3E56A9BD926D1D9B3741 /* LiveIslandAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEC11047255E4F5646B6D3C /* LiveIslandAttributes.swift */; };
+		CB5D315E482322C1E6CE182D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 67AE69FF8F0AE151E5302E2C /* PrivacyInfo.xcprivacy */; };
 		D9CE4CE125FDD05403BDCAED /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F5B12158D6CA415F0BE49F9 /* Foundation.framework */; };
 		E5230E5D21EAE2E30BDEF55E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3141FF90A8BD06B8B8A18958 /* SwiftUI.framework */; };
 /* End PBXBuildFile section */
@@ -90,6 +91,7 @@
 		56D304ACBE5976DA25C2AB4A /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		5A1FC93DE90E46104D2CF4C0 /* LiveStyle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveStyle.swift; sourceTree = "<group>"; };
 		6660EB184DF868A85D5604EB /* LiveIslandWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveIslandWidget.swift; sourceTree = "<group>"; };
+		67AE69FF8F0AE151E5302E2C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		737A22DBAF04FB7FF2185576 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/WidgetKit.framework; sourceTree = DEVELOPER_DIR; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 				386C2300002729EB222BB3BF /* LiveIslandExtension.entitlements */,
 				C59B205538BAD76CCE899D29 /* LiveIslandExtension.xcconfig */,
 				748643B4CF59A8689DE17021 /* LEEME.md */,
+				67AE69FF8F0AE151E5302E2C /* PrivacyInfo.xcprivacy */,
 			);
 			name = LiveIslandExtension;
 			path = LiveIslandExtension;
@@ -413,6 +416,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB5D315E482322C1E6CE182D /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

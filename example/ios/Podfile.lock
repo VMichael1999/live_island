@@ -2,7 +2,7 @@ PODS:
   - Flutter (1.0.0)
   - integration_test (0.0.1):
     - Flutter
-  - live_island (0.0.1):
+  - live_island (0.1.0):
     - Flutter
 
 DEPENDENCIES:
@@ -21,7 +21,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
-  live_island: 46e2e108c63d39b6e272a352899755ce40dbf156
+  live_island: bcbcd5b221b8e4b1a158e093325abbc6c228e9ee
 
 PODFILE CHECKSUM: a541f804b5e4a4a91f1da645ca67edc95e1bc9c9
 
