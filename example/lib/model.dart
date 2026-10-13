@@ -14,6 +14,9 @@ class ExampleModel extends ChangeNotifier {
   Map<String, Object?> state = const {};
   String status = 'Sin actividad';
   final List<String> tokens = [];
+
+  /// Respuestas escritas en la notificación (Android), la última al final.
+  final List<String> replies = [];
   final List<StreamSubscription<Object?>> _subs = [];
 
   /// Inicia el modelo: escucha botones, tokens y push, y registra los diseños.
@@ -21,6 +24,13 @@ class ExampleModel extends ChangeNotifier {
     // Un botón de la actividad (pantalla de bloqueo o notificación) llega aquí,
     // también si la app estaba cerrada.
     _subs.add(LiveIsland.onAction(_onAction));
+    // Lo que el usuario escribe en un botón de respuesta en línea (Android).
+    _subs.add(
+      LiveIsland.onReply((id, text) {
+        replies.add('$id: $text');
+        _setStatus('Respuesta: «$text»');
+      }),
+    );
     // Tokens de push de iOS (para enviarlos a tu servidor).
     _subs.add(
       LiveIsland.pushTokens.listen((t) {
@@ -208,6 +218,10 @@ class ExampleModel extends ChangeNotifier {
 
   /// Qué hace cada botón de los ejemplos. El id es el de `LiveButton(id: ...)`.
   Future<void> _onAction(String id) async {
+    // En iOS un botón de respuesta llega aquí, sin texto: la app lo pide ella.
+    if (id == 'responder') {
+      return _setStatus('Responder (iOS): pide el texto en la app');
+    }
     if (id == 'terminar') return end();
     final changes = switch (id) {
       'mas_15_min' => <String, Object?>{

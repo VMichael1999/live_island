@@ -29,6 +29,16 @@ final catalog = <CatalogEntry>[
     (a, b) => TripPreset(
       accent: _a(a, const TripPreset().accent),
       lockBackground: b ?? LiveBackground.system,
+      // El segundo botón es una respuesta en línea (Android): abre un cuadro de
+      // texto y lo escrito llega a `LiveIsland.onReply`.
+      buttons: [
+        LiveButton(id: 'llamar', label: 'Llamar'),
+        LiveButton.reply(
+          id: 'responder',
+          label: 'Responder',
+          hint: 'Escribe al conductor',
+        ),
+      ],
     ),
   ),
   CatalogEntry(

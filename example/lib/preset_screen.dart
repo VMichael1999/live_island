@@ -128,6 +128,8 @@ class _PresetScreenState extends State<PresetScreen> {
             ),
             for (final t in model.tokens)
               Text(t, style: Theme.of(context).textTheme.bodySmall),
+            for (final r in model.replies)
+              Text('✉ $r', style: Theme.of(context).textTheme.bodyMedium),
             const SizedBox(height: 16),
             _MorphDemo(
               config: LivePreviewConfig(
