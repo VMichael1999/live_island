@@ -139,6 +139,28 @@ DeliveryPreset(
 
 Lo mismo con `LiveProgress.bar(style: ...)` y `LiveSegments(style: ..., showLabels: ...)`. En Android solo cambian el color de la barra y de los puntos; el sistema decide el resto.
 
+### Actividades con id propio
+
+Dale a cada actividad un id de tu app y olvídate del id de la plataforma:
+
+```dart
+// Crea la actividad; si ya hay una con ese id, la actualiza en vez de duplicarla.
+final viaje = await LiveIsland.start(
+  customId: 'viaje-42',
+  layout: layout,
+  state: estado,
+);
+
+// Tras reabrir la app (aunque el proceso muriera):
+final a = await LiveIsland.activity('viaje-42'); // null si ya terminó
+await a?.update({'progreso': 0.8});
+
+// Cerrar sesión, cambiar de cuenta…
+await LiveIsland.endAll();
+```
+
+El id es tuyo y puede repetirse entre actividades que terminaron. `LiveIsland.activeActivities()` lista las vivas con su `customId`.
+
 ## Íconos e imágenes
 
 Donde va un ícono puedes poner uno del sistema o una imagen tuya (logo de la app o del cliente, foto, ilustración):

@@ -111,3 +111,12 @@ Verificado en un emulador Android 17 (API 37, Pixel 10 Pro XL) con Taxi y Courie
 ## Animación de la gota (`LiveIslandMorph`)
 
 Idea y geometría tomadas de `rit3zh/expo-dynamic-notifications` (MIT): tres formas (isla, cuello y gota) se difuminan y un umbral sobre el alfa las funde. Aquí está escrita desde cero con `saveLayer` (desenfoque y `ColorFilter.matrix`). Es solo Dart: no cambia el contrato ni lo que viaja al sistema, y en el dispositivo real la isla la anima el sistema, no el plugin.
+
+## Actividades con id propio
+
+| Tema | iOS | Android |
+| --- | --- | --- |
+| Dónde vive el `customId` | En los `ActivityAttributes` (opcional; las actividades antiguas o de un push sin él no lo traen) | En el `meta.json` de la actividad |
+| `start` con un `customId` vivo | Actualiza el estado (y `staleAfter`) y devuelve el mismo id; **no cambia el diseño** | Igual |
+| Push | `attributes.customId` en push-to-start; las actualizaciones van por token (APNs) | `customId` en `start`; `id` acepta el id o el `customId` |
+| `endAll` | Termina todas con la política indicada y borra sus diseños si es inmediata | Cancela y borra las notificaciones vivas de la app |
