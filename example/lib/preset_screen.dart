@@ -60,6 +60,10 @@ class _PresetScreenState extends State<PresetScreen> {
                   child: const Text('Avisar'),
                 ),
                 OutlinedButton(
+                  onPressed: model.activity == null ? null : model.scheduleEnd,
+                  child: const Text('Programar fin (20 s)'),
+                ),
+                OutlinedButton(
                   onPressed:
                       () => model.startStale(
                         widget.entry,
