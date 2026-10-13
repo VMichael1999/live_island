@@ -148,3 +148,12 @@ Idea y geometría tomadas de `rit3zh/expo-dynamic-notifications` (MIT): tres for
 | `FlutterFramework` | Flutter 3.38+ pide depender de él; el manifiesto lo enlaza solo si existe junto al paquete, así las versiones anteriores no fallan al resolver |
 | Frameworks débiles | `ActivityKit` y `AppIntents` se enlazan con `-weak_framework` (como `weak_frameworks` del podspec), por eso hay `unsafeFlags`: es válido en paquetes locales, que es lo que usa Flutter |
 | Destino mínimo | iOS 15.0 |
+
+## Respuesta en línea (`LiveButton.reply`)
+
+| Tema | iOS | Android |
+| --- | --- | --- |
+| Qué hace | Botón normal: su `id` llega a `onAction`, **sin texto** | El botón abre un cuadro de texto (`LiveReplyActivity`); lo escrito llega a `onReply` |
+| Por qué no el campo nativo | ActivityKit no admite campos de texto en los botones | Probé `RemoteInput`: la notificación de un Live Update (`ProgressStyle`) lo guarda en `actions` pero **no lo dibuja** (API 37). Por eso el botón abre un cuadro propio |
+| App cerrada | Se entrega al abrir (cola del App Group) | El cuadro arranca el proceso; el texto queda en la cola y se entrega al abrir |
+| Cancelar o texto vacío | — | No se envía nada |

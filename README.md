@@ -194,6 +194,16 @@ Cambia según la plataforma, porque ActivityKit no puede «terminar más tarde»
 
 Si `at` ya pasó, termina de inmediato.
 
+### Respuesta en línea
+
+```dart
+LiveButton.reply(id: 'responder', label: 'Responder', hint: 'Escribe al conductor')
+
+LiveIsland.onReply((id, texto) => enviarMensaje(texto)); // también con la app cerrada
+```
+
+En Android el botón abre un cuadro de texto y lo escrito llega a `onReply`; si el proceso estaba muerto, se entrega al abrir la app. En iOS es un botón normal: su `id` llega a `onAction`, sin texto, y la app lo pide (las actividades de iOS no admiten campos de texto).
+
 ### Avisos y estado desactualizado
 
 ```dart

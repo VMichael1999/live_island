@@ -194,6 +194,16 @@ It differs per platform, because ActivityKit cannot «end later» a live activit
 
 If `at` is in the past it ends immediately.
 
+### Inline reply
+
+```dart
+LiveButton.reply(id: 'responder', label: 'Reply', hint: 'Write to the driver')
+
+LiveIsland.onReply((id, text) => sendMessage(text)); // also with the app closed
+```
+
+On Android the button opens a text box and what is typed reaches `onReply`; if the process was dead, it is delivered when the app opens. On iOS it is a normal button: its `id` reaches `onAction`, without text, and the app asks for it (iOS activities cannot take text fields).
+
 ### Alerts and stale state
 
 ```dart
