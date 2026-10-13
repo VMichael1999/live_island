@@ -30,6 +30,7 @@ export 'src/platform/live_island_platform.dart'
 export 'src/preview/live_island_preview.dart';
 export 'src/preview/preview_config.dart';
 export 'src/preview/preview_icon.dart';
+export 'src/preview/preview_morph.dart' show LiveIslandMorph, LiveMorphGeometry;
 export 'src/preview/preview_surfaces.dart'
     show
         LiveAndroidPreview,
