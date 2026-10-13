@@ -5,7 +5,12 @@ import org.json.JSONObject
 /** Lo que un push le pide a una actividad. */
 sealed class PushCommand {
     /** Inicia una actividad con un diseño guardado antes con `registerLayout`. */
-    data class Start(val template: String, val state: LiveState, val deepLink: String?) : PushCommand()
+    data class Start(
+        val template: String,
+        val state: LiveState,
+        val deepLink: String?,
+        val customId: String? = null,
+    ) : PushCommand()
 
     /** Cambia solo los campos indicados del estado. */
     data class Update(val id: String, val state: LiveState) : PushCommand()
@@ -40,7 +45,12 @@ object LivePush {
             ?: throw IllegalArgumentException("Falta \"$key\" en el push de live_island.")
 
         return when (val event = need("event")) {
-            "start" -> PushCommand.Start(need("template"), state ?: emptyMap(), root.optString("deepLink").ifEmpty { null })
+            "start" -> PushCommand.Start(
+                need("template"),
+                state ?: emptyMap(),
+                root.optString("deepLink").ifEmpty { null },
+                root.optString("customId").ifEmpty { null },
+            )
             "update" -> PushCommand.Update(need("id"), state ?: throw IllegalArgumentException("Falta \"state\" en el push de live_island."))
             "end" -> PushCommand.End(need("id"), state, root.optString("dismiss", "default"), root.optDouble("dismissAfter", 0.0))
             else -> throw IllegalArgumentException("Evento desconocido en el push de live_island: $event")

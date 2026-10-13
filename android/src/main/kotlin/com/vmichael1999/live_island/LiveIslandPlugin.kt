@@ -86,7 +86,14 @@ class LiveIslandPlugin :
             when (call.method) {
                 "areEnabled" -> result.success(live.areEnabled())
                 "requestPermission" -> requestPermission(result)
-                "activeActivities" -> result.success(live.activeIds())
+                "activeActivities" -> result.success(live.activeInfos())
+                "endAll" -> {
+                    live.endAll(
+                        call.argument<String>("dismiss") ?: "immediate",
+                        call.argument<Number>("dismissAfter")?.toDouble() ?: 0.0,
+                    )
+                    result.success(null)
+                }
                 "openPromotionSettings" -> result.success(openPromotionSettings())
                 "start" -> result.success(
                     live.start(
@@ -94,6 +101,7 @@ class LiveIslandPlugin :
                         LiveJson.state(JSONObject(call.argument<String>("state") ?: "{}")),
                         call.argument<String>("deepLink"),
                         images(call),
+                        call.argument<String>("customId"),
                     ),
                 )
                 "registerLayout" -> {
