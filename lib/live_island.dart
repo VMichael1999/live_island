@@ -18,6 +18,7 @@ export 'src/presets/preset.dart';
 export 'src/presets/presets.dart';
 export 'src/platform/live_island_platform.dart'
     show
+        LiveActivityInfo,
         LiveDismiss,
         LiveImagePayload,
         LivePushEvent,
