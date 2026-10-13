@@ -129,3 +129,12 @@ Idea y geometría tomadas de `rit3zh/expo-dynamic-notifications` (MIT): tres for
 | Sonido propio | `sound: 'x.caf'` del paquete de la app | El del canal; no se cambia por aviso (Android fija el sonido al crear el canal) |
 | `LiveBind.stale` | `ActivityViewContext.isStale` (16.2+); lo dispara el sistema al llegar `staleAfter` | **Siempre `false`**: Android no tiene el concepto. Usa `update` para cambiar el estado |
 | Push | `alert` del `aps` (documentado en `docs/push.md`) | `"alert": true` en `update` |
+
+## Fin programado (`scheduleEnd`)
+
+| Tema | iOS | Android |
+| --- | --- | --- |
+| Qué hace | `end(dismissalPolicy: .after(at))`: la actividad **termina ya** y no se puede actualizar | `setTimeoutAfter` sobre la notificación viva: sigue activa y se actualiza hasta `at` |
+| Quién la retira | El sistema, a `at` (tope de 4 h después de terminar) | El sistema, a `at`, aunque la app esté cerrada |
+| Persistencia | — | La hora se guarda con la actividad: las actualizaciones posteriores conservan el tiempo restante |
+| Hora pasada | Termina de inmediato | Termina de inmediato |
