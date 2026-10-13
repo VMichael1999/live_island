@@ -56,6 +56,19 @@ class _PresetScreenState extends State<PresetScreen> {
                   child: const Text('Terminar'),
                 ),
                 OutlinedButton(
+                  onPressed: model.activity == null ? null : model.alert,
+                  child: const Text('Avisar'),
+                ),
+                OutlinedButton(
+                  onPressed:
+                      () => model.startStale(
+                        widget.entry,
+                        layout,
+                        preset.sampleState(),
+                      ),
+                  child: const Text('Probar desactualizado'),
+                ),
+                OutlinedButton(
                   onPressed: model.endAll,
                   child: const Text('Terminar todas'),
                 ),

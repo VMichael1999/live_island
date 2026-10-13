@@ -8,7 +8,8 @@ import WidgetKit
 struct LiveIslandWidget: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: LiveIslandAttributes.self) { context in
-            LiveLockScreenView(attributes: context.attributes, state: context.state)
+            LiveLockScreenView(attributes: context.attributes, state: context.state,
+                               isStale: LiveIslandSurfaces.isStale(context))
         } dynamicIsland: { context in
             LiveIslandSurfaces.dynamicIsland(context)
         }
@@ -17,10 +18,18 @@ struct LiveIslandWidget: Widget {
 
 @available(iOS 16.1, *)
 enum LiveIslandSurfaces {
+    /// `ActivityViewContext.isStale` existe desde iOS 16.2.
+    static func isStale(_ context: ActivityViewContext<LiveIslandAttributes>) -> Bool {
+        if #available(iOS 16.2, *) { return context.isStale }
+        return false
+    }
+
     private static func ctx(_ attributes: LiveIslandAttributes,
-                            _ state: LiveIslandAttributes.ContentState) -> LiveCtx? {
+                            _ state: LiveIslandAttributes.ContentState,
+                            stale: Bool = false) -> LiveCtx? {
         guard let doc = LiveLayoutDoc.load(attributes.layoutId) else { return nil }
-        return LiveCtx(doc: doc, values: state.values,
+        // `$stale` es un campo reservado: lo pone el sistema, no el estado.
+        return LiveCtx(doc: doc, values: stateValues(state, stale: stale),
                        style: LiveStyle(tone: .dark, accent: doc.accent, mutedAlpha: 0.62))
     }
 
@@ -37,10 +46,17 @@ enum LiveIslandSurfaces {
         return LiveRenderer.render(n, island, slot: slot, iconSize: iconSize, align: align)
     }
 
+    static func stateValues(_ state: LiveIslandAttributes.ContentState,
+                            stale: Bool) -> [String: LiveValue] {
+        var values = state.values
+        values["$stale"] = .bool(stale)
+        return values
+    }
+
     static func dynamicIsland(
         _ context: ActivityViewContext<LiveIslandAttributes>
     ) -> DynamicIsland {
-        let c = ctx(context.attributes, context.state)
+        let c = ctx(context.attributes, context.state, stale: isStale(context))
         let minimalNode = c?.doc.region("minimal")
         let minimalIsRing = minimalNode?.t == "ring"
         let url = context.attributes.deepLink.flatMap { URL(string: $0) }
@@ -75,6 +91,7 @@ enum LiveIslandSurfaces {
 struct LiveLockScreenView: View {
     let attributes: LiveIslandAttributes
     let state: LiveIslandAttributes.ContentState
+    var isStale: Bool = false
 
     @Environment(\.colorScheme) private var scheme
 
@@ -109,7 +126,8 @@ struct LiveLockScreenView: View {
 
     @ViewBuilder
     private func content(_ doc: LiveLayoutDoc) -> some View {
-        let c = LiveCtx(doc: doc, values: state.values,
+        let c = LiveCtx(doc: doc,
+                        values: LiveIslandSurfaces.stateValues(state, stale: isStale),
                         style: LiveStyle(tone: tone(doc), accent: doc.accent))
         if let custom = doc.lockCustom {
             LiveRenderer.render(custom, c)

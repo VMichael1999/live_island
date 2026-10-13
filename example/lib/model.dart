@@ -93,6 +93,56 @@ class ExampleModel extends ChangeNotifier {
     _setStatus('Activa (${a.id.substring(0, 8)}…)');
   });
 
+  /// Una actividad que se «desactualiza» sola: pasados [seconds] s el sistema
+  /// la vuelve a dibujar con `LiveBind.stale` en `true` (iOS 16.2 o superior).
+  Future<void> startStale(
+    CatalogEntry entry,
+    LiveLayout layout,
+    Map<String, Object?> newState, {
+    int seconds = 15,
+  }) => _guard('Iniciar (desactualizable)', () async {
+    await LiveIsland.requestPermission();
+    final stale = entry.preset.override(
+      expandedCenter: LiveIf(
+        LiveBind.stale.isTrue,
+        then: const LiveText.literal(
+          'Sin novedades: toca para actualizar',
+          size: 15,
+          weight: 600,
+        ),
+        otherwise: LiveText(bind('titulo'), size: 15, weight: 600),
+      ),
+    );
+    final a = await LiveIsland.start(
+      layout: stale,
+      state: newState,
+      staleAfter: Duration(seconds: seconds),
+      customId: 'demo-stale-${entry.id}',
+    );
+    activity = a;
+    activeEntry = entry;
+    state = newState;
+    _setStatus('Se desactualiza en $seconds s');
+  });
+
+  /// Actualiza con un aviso: la isla se expande y suena.
+  Future<void> alert() => _guard('Avisar', () async {
+    final a = activity ?? (await LiveIsland.activeActivities()).lastOrNull;
+    if (a == null) return;
+    await a.update(
+      {'progreso': (((state['progreso'] as num?) ?? 0) + 0.1).clamp(0.0, 1.0)},
+      alert: const LiveAlert(
+        title: 'Tu conductor llegó',
+        body: 'Toyota Yaris gris · ABC-123',
+      ),
+    );
+    state = {
+      ...state,
+      'progreso': (((state['progreso'] as num?) ?? 0) + 0.1).clamp(0.0, 1.0),
+    };
+    _setStatus('Aviso enviado');
+  });
+
   Future<void> update(Map<String, Object?> changes, {String? label}) =>
       _guard('Actualizar', () async {
         final a = activity ?? (await LiveIsland.activeActivities()).lastOrNull;
