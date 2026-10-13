@@ -21,6 +21,16 @@ class CatalogEntry {
 
 Color _a(Color? c, Color d) => c ?? d;
 
+/// Imagen de referencia de `assets/reference/` (recorte o logotipo de terceros;
+/// solo para esta app de ejemplo).
+LiveImage _ref(String file, double w, double h) => LiveImage.asset(
+  'assets/reference/$file',
+  width: w.round(),
+  height: h.round(),
+  size: w,
+  shape: LiveShape.square,
+);
+
 /// Los 15 presets de la galería.
 final catalog = <CatalogEntry>[
   CatalogEntry(
@@ -141,6 +151,74 @@ final catalog = <CatalogEntry>[
     (a, b) => ScorePreset(
       accent: _a(a, const ScorePreset().accent),
       lockBackground: b ?? LiveBackground.system,
+    ),
+  ),
+
+  // --- Diseños de referencia (lib/src/presets/designs.dart) ---
+  CatalogEntry(
+    'ride_light',
+    'Recogida · tarjeta clara',
+    (a, b) => RidePickupPreset(
+      accent: _a(a, const RidePickupPreset().accent),
+      brandLogo: _ref('uber.png', 70, 24),
+      headerImage: _ref('ride_head_light.png', 102, 42),
+      trackerImage: _ref('ride_car_light.png', 46, 26),
+    ),
+  ),
+  CatalogEntry(
+    'ride_dark',
+    'Recogida · tarjeta oscura',
+    (a, b) => RidePickupPreset(
+      dark: true,
+      accent: _a(a, const RidePickupPreset().accent),
+      brandLogo: _ref('uber_white.png', 64, 22),
+      headerImage: _ref('ride_head_dark.png', 118, 47),
+      trackerImage: _ref('ride_car_dark.png', 44, 24),
+    ),
+  ),
+  CatalogEntry(
+    'store',
+    'Pedido en tienda',
+    (a, b) => StorePickupPreset(
+      accent: _a(a, const StorePickupPreset().accent),
+      brandLogo: _ref('starbucks.png', 28, 28),
+    ),
+  ),
+  CatalogEntry(
+    'run',
+    'Carrera',
+    (a, b) => RunPreset(
+      accent: _a(a, const RunPreset().accent),
+      brandMark: _ref('nike.png', 56, 20),
+    ),
+  ),
+  CatalogEntry(
+    'match',
+    'Marcador de partido',
+    (a, b) => MatchPreset(
+      accent: _a(a, const MatchPreset().accent),
+      homeCrest: _ref('psg.png', 84, 84),
+      awayCrest: _ref('chelsea.png', 84, 84),
+    ),
+  ),
+  // Un preset de la galería con la barra reestilizada: así queda una línea de tren.
+  CatalogEntry(
+    'train_line',
+    'Tren · línea verde',
+    (a, b) => TransitPreset(
+      accent: _a(a, const Color(0xFFA7F060)),
+      lockBackground: b ?? LiveBackground.system,
+      stages: const ['Harajuku', 'Shibuya', 'Ebisu'],
+      showTracker: false,
+      showEndIcon: false,
+      progressStyle: LiveProgressStyle(
+        height: 16,
+        color: _a(a, const Color(0xFFA7F060)),
+        trackColor: const Color(0xFF2F6A12),
+        pointSize: 12,
+        pointColor: const Color(0xFF000000),
+        gap: 0,
+      ),
     ),
   ),
 ];

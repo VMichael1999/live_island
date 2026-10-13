@@ -3,3 +3,5 @@ example/build/
 docs/design/
 docs/PROMPT.md
 tool/
+example/assets/reference/
+tool/extract_reference_assets.py
