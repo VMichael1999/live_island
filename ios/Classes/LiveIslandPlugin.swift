@@ -27,7 +27,9 @@ public class LiveIslandPlugin: NSObject, FlutterPlugin {
         case "openPromotionSettings":
             result(false)
         case "activeActivities":
-            result(LiveActivities.activeIds())
+            result(LiveActivities.activeInfos())
+        case "endAll":
+            LiveActivities.endAll(args, result)
         case "start":
             LiveActivities.start(args, result, push: Self.pushStream)
         case "registerLayout":
@@ -154,6 +156,18 @@ enum LiveActivities {
         return []
     }
 
+    /// Las actividades vivas con su id propio (`null` si no lo tienen).
+    static func activeInfos() -> [[String: Any]] {
+        #if canImport(ActivityKit)
+        if #available(iOS 16.1, *) {
+            return Activity<LiveIslandAttributes>.activities
+                .filter { $0.activityState != .ended && $0.activityState != .dismissed }
+                .map { ["id": $0.id, "customId": $0.attributes.customId ?? NSNull()] }
+        }
+        #endif
+        return []
+    }
+
     /// Guarda el diseño y las imágenes (reducidas) de [args] en [dir].
     private static func store(_ args: [String: Any], layoutText: String, in dir: URL) -> Bool {
         guard var layout = (try? JSONSerialization.jsonObject(with: Data(layoutText.utf8))) as? [String: Any]
@@ -213,6 +227,18 @@ enum LiveActivities {
               let state = (try? JSONSerialization.jsonObject(with: Data(stateText.utf8))) as? [String: Any]
         else { return fail(result, "bad_arguments", "layout y state deben ser JSON válido.") }
 
+        // Con el mismo id propio no se crea otra actividad: se actualiza la que ya existe.
+        let customId = (args["customId"] as? String).flatMap { $0.isEmpty ? nil : $0 }
+        if let customId,
+           let existing = Activity<LiveIslandAttributes>.activities.first(where: {
+               $0.attributes.customId == customId
+                   && $0.activityState != .ended && $0.activityState != .dismissed
+           }) {
+            var merged = args
+            merged["id"] = existing.id
+            return update(merged, result, returning: existing.id)
+        }
+
         let layoutId = UUID().uuidString
         guard let dir = LiveStorage.directory(for: layoutId, create: true),
               store(args, layoutText: layoutText, in: dir)
@@ -221,7 +247,8 @@ enum LiveActivities {
         // Limpia diseños de actividades que ya no existen (las plantillas no se tocan).
         LiveStorage.removeAll(except: Set(Activity<LiveIslandAttributes>.activities.map { $0.attributes.layoutId } + [layoutId]))
 
-        let attributes = LiveIslandAttributes(layoutId: layoutId, deepLink: args["deepLink"] as? String)
+        let attributes = LiveIslandAttributes(layoutId: layoutId, deepLink: args["deepLink"] as? String,
+                                              customId: customId)
         let content = LiveIslandAttributes.ContentState(values: LiveValue.dictionary(from: state))
         let stale = (args["staleAfter"] as? NSNumber).map { Date().addingTimeInterval($0.doubleValue) }
         let relevance = (args["relevance"] as? NSNumber)?.doubleValue ?? 0
@@ -258,7 +285,7 @@ enum LiveActivities {
     }
     #endif
 
-    static func update(_ args: [String: Any], _ result: @escaping FlutterResult) {
+    static func update(_ args: [String: Any], _ result: @escaping FlutterResult, returning value: Any? = nil) {
         #if canImport(ActivityKit)
         guard #available(iOS 16.1, *) else { return fail(result, "unsupported", "Requiere iOS 16.1.") }
         guard let id = args["id"] as? String, let activity = find(id) else {
@@ -279,10 +306,38 @@ enum LiveActivities {
             } else {
                 await activity.update(using: content)
             }
-            result(nil)
+            result(value)
         }
         #else
         fail(result, "unsupported", "ActivityKit no está disponible.")
+        #endif
+    }
+
+    /// Termina todas las actividades vivas de la app.
+    static func endAll(_ args: [String: Any], _ result: @escaping FlutterResult) {
+        #if canImport(ActivityKit)
+        guard #available(iOS 16.1, *) else { return result(nil) }
+        let immediate = (args["dismiss"] as? String ?? "immediate") == "immediate"
+        let after = (args["dismissAfter"] as? NSNumber)?.doubleValue ?? 0
+        let policy: ActivityUIDismissalPolicy = immediate ? .immediate
+            : (args["dismiss"] as? String) == "after" ? .after(Date().addingTimeInterval(after)) : .default
+        let all = Activity<LiveIslandAttributes>.activities
+        Task {
+            for activity in all {
+                let layoutId = activity.attributes.layoutId
+                if #available(iOS 16.2, *) {
+                    await activity.end(nil, dismissalPolicy: policy)
+                } else {
+                    await activity.end(dismissalPolicy: policy)
+                }
+                if immediate && !layoutId.hasPrefix(LiveStorage.templatePrefix) {
+                    LiveStorage.removeDirectory(for: layoutId)
+                }
+            }
+            result(nil)
+        }
+        #else
+        result(nil)
         #endif
     }
 
