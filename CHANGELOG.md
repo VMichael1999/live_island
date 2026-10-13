@@ -11,6 +11,7 @@ Primera versión publicada.
 * Barra de progreso editable: color, grosor, puntos, etiquetas, ícono que avanza y marcador final (`LiveProgressStyle`).
 * Puntos de etapa a gusto: cantidad, con o sin texto, y forma (`LivePointShape`: círculo, cuadrado, redondeado).
 * Barra en vivo: `LiveRoute` convierte la posición en avance y `LiveActivity.follow` mantiene la actividad al día con un `Stream`, espaciando las actualizaciones.
+* `LiveIslandMorph`: la isla suelta una gota que se abre en tarjeta (vista previa y aviso dentro de la app), con descarte por gesto.
 * `LiveIsland.check()` valida el diseño y el estado con los mismos avisos que el HTML de prototipos.
 * `LiveIslandPreview`: vista previa en Flutter de la isla, la pantalla de bloqueo y la notificación de Android.
 * 15 presets listos (`TripPreset`, `DeliveryPreset`, `CourierPreset`…) y app de ejemplo.

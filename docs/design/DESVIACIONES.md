@@ -107,3 +107,7 @@ Verificado en un emulador Android 17 (API 37, Pixel 10 Pro XL) con Taxi y Courie
 | Ícono que avanza y marcador final | Sí, opcionales | Sí, opcionales | Sin tracker ni marcador, no se dibujan |
 
 `pointShape` (círculo, cuadrado, redondeado) se dibuja en la vista previa y en iOS; Android no dibuja puntos propios y lo ignora. `LiveRoute` y `LiveActivity.follow` son solo Dart: el avance viaja como cualquier otro campo del estado.
+
+## Animación de la gota (`LiveIslandMorph`)
+
+Idea y geometría tomadas de `rit3zh/expo-dynamic-notifications` (MIT): tres formas (isla, cuello y gota) se difuminan y un umbral sobre el alfa las funde. Aquí está escrita desde cero con `saveLayer` (desenfoque y `ColorFilter.matrix`). Es solo Dart: no cambia el contrato ni lo que viaja al sistema, y en el dispositivo real la isla la anima el sistema, no el plugin.
