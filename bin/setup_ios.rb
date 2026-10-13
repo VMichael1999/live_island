@@ -28,8 +28,11 @@ ext_bundle_id = "#{bundle_id}.#{ext_name}"
 ext_dir = File.join(ios_dir, ext_name)
 
 # --- 1. Archivos de la extensión -------------------------------------------
+# Shared vive en las fuentes del plugin (las usa también Swift Package Manager);
+# Renderer y Widget son solo de la extensión.
+plugin_sources = File.join(template_dir, '..', 'live_island', 'Sources', 'live_island')
 swift_sources = %w[Shared Renderer Widget].flat_map do |sub|
-  src = File.join(template_dir, sub)
+  src = sub == 'Shared' ? File.join(plugin_sources, 'Shared') : File.join(template_dir, sub)
   dst = File.join(ext_dir, sub)
   FileUtils.mkdir_p(dst)
   Dir[File.join(src, '*.swift')].sort.map do |f|
@@ -40,7 +43,7 @@ end
 
 # Manifiesto de privacidad de la extensión: sus fuentes comparten el código que
 # lee el UserDefaults del App Group, así que lleva su propia declaración.
-privacy_src = File.join(template_dir, '..', 'Resources', 'PrivacyInfo.xcprivacy')
+privacy_src = File.join(plugin_sources, 'PrivacyInfo.xcprivacy')
 FileUtils.cp(privacy_src, File.join(ext_dir, 'PrivacyInfo.xcprivacy')) if File.exist?(privacy_src)
 
 File.write(File.join(ext_dir, 'LEEME.md'), <<~MD)
