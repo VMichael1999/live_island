@@ -34,6 +34,11 @@ class _FakePlatform implements LiveIslandPlatform {
   @override
   Stream<String> get actions => actionsController.stream;
 
+  final repliesController = StreamController<LiveReply>.broadcast();
+
+  @override
+  Stream<LiveReply> get replies => repliesController.stream;
+
   @override
   Stream<LivePushEvent> get pushEvents => pushController.stream;
 
@@ -311,6 +316,17 @@ void main() {
   });
 
   group('interacción y push', () {
+    test('onReply entrega el botón y el texto escrito', () async {
+      final got = <String>[];
+      final sub = LiveIsland.onReply((id, text) => got.add('$id:$text'));
+      platform.repliesController
+        ..add(const LiveReply('responder', 'Voy en camino'))
+        ..add(const LiveReply('responder', ''));
+      await Future<void>.delayed(Duration.zero);
+      expect(got, ['responder:Voy en camino', 'responder:']);
+      await sub.cancel();
+    });
+
     test('onAction entrega el id de cada botón tocado', () async {
       final ids = <String>[];
       final sub = LiveIsland.onAction(ids.add);
@@ -610,6 +626,42 @@ void main() {
         expect(args['dismissAfter'] as double, closeTo(120, 2));
       },
     );
+
+    test('actions y replies comparten un solo oyente nativo', () async {
+      var listens = 0;
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      messenger.setMockStreamHandler(
+        const EventChannel('live_island/actions'),
+        MockStreamHandler.inline(
+          onListen: (args, sink) {
+            listens++;
+            sink.success('llamar');
+            sink.success({'id': 'responder', 'text': 'Hola'});
+            sink.success('compartir');
+          },
+        ),
+      );
+      addTearDown(
+        () => messenger.setMockStreamHandler(
+          const EventChannel('live_island/actions'),
+          null,
+        ),
+      );
+
+      final p = MethodChannelLiveIslandPlatform();
+      final ids = <String>[];
+      final replies = <LiveReply>[];
+      final a = p.actions.listen(ids.add);
+      final r = p.replies.listen(replies.add);
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+
+      expect(ids, ['llamar', 'compartir']);
+      expect(replies, [const LiveReply('responder', 'Hola')]);
+      expect(listens, 1);
+      await a.cancel();
+      await r.cancel();
+    });
 
     test('update serializa el aviso con title, body y sound', () async {
       mock((call) async => null);

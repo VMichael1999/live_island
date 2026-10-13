@@ -23,6 +23,35 @@ class LiveSpecTest {
     // --- taxi (completo) -----------------------------------------------------
 
     @Test
+    fun `un boton con input es una respuesta en linea con su sugerencia`() {
+        val layout = JSONObject("""{
+          "theme": {"accent": "#1F6FEB"},
+          "regions": {"expanded": {"bottom": {"t": "row", "c": [
+            {"t": "button", "id": "responder", "label": "Responder", "input": {"hint": "Escribe tu mensaje"}},
+            {"t": "button", "id": "llamar", "label": "Llamar"},
+            {"t": "button", "id": "sin_hint", "label": "Nota", "input": {}}
+          ]}}},
+          "android": {"title": {"text": "Viaje"}}
+        }""")
+        val spec = LiveSpec.from(layout, emptyMap())
+        assertEquals("Escribe tu mensaje", spec.actions.first { it.id == "responder" }.replyHint)
+        assertNull(spec.actions.first { it.id == "llamar" }.replyHint)
+        assertEquals("Responder", spec.actions.first { it.id == "sin_hint" }.replyHint)
+    }
+
+    @Test
+    fun `una accion pendiente conserva el texto de la respuesta`() {
+        assertEquals("a", PendingAction("a").toEvent())
+        assertEquals(mapOf("id" to "a", "text" to "hola"), PendingAction("a", "hola").toEvent())
+        assertEquals(PendingAction("a"), PendingAction.fromStored("a"))
+        assertEquals(
+            PendingAction("a", "hola"),
+            PendingAction.fromStored(JSONObject().put("id", "a").put("text", "hola")),
+        )
+        assertNull(PendingAction.fromStored(42))
+    }
+
+    @Test
     fun `el fin programado deja el tiempo que falta y nada si ya paso`() {
         assertEquals(60_000L, LiveTimeout.remaining(160_000L, 100_000L))
         assertNull(LiveTimeout.remaining(100_000L, 100_000L))
