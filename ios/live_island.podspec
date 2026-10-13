@@ -4,10 +4,11 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'live_island'
-  s.version          = '0.0.1'
-  s.summary          = 'Live Activities (iOS) y Live Updates (Android) con una sola API en Dart, 100 % editable.'
+  s.version          = '0.1.0'
+  s.summary          = 'Live Activities (iOS) y Live Updates (Android) con una sola API en Dart, sin Swift ni Kotlin.'
   s.description      = <<-DESC
-Live Activities (iOS) y Live Updates (Android) con una sola API en Dart, 100 % editable.
+Live Activities (iOS) y Live Updates (Android) con una sola API en Dart. Isla dinámica,
+pantalla de bloqueo, 15 presets y vista previa; sin escribir Swift ni Kotlin.
                        DESC
   s.homepage         = 'https://github.com/VMichael1999/live_island'
   s.license          = { :file => '../LICENSE' }
@@ -22,9 +23,7 @@ Live Activities (iOS) y Live Updates (Android) con una sola API en Dart, 100 % e
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'
 
-  # If your plugin requires a privacy manifest, for example if it uses any
-  # required reason APIs, update the PrivacyInfo.xcprivacy file to describe your
-  # plugin's privacy impact, and then uncomment this line. For more information,
-  # see https://developer.apple.com/documentation/bundleresources/privacy_manifest_files
-  # s.resource_bundles = {'live_island_privacy' => ['Resources/PrivacyInfo.xcprivacy']}
+  # Manifiesto de privacidad: el plugin lee el UserDefaults del App Group
+  # (cola de acciones de los botones). Motivo 1C8F.1.
+  s.resource_bundles = {'live_island_privacy' => ['Resources/PrivacyInfo.xcprivacy']}
 end
