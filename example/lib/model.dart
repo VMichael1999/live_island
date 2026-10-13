@@ -72,6 +72,21 @@ class ExampleModel extends ChangeNotifier {
     }
   }
 
+  /// En la demo solo hay una actividad a la vez.
+  ///
+  /// iOS muestra **una sola** actividad en la isla (la de mayor `relevance`;
+  /// con el mismo valor, la más antigua). Si otro caso de la lista siguiera
+  /// vivo, al iniciar uno nuevo la isla seguiría mostrando el anterior. Aquí
+  /// se terminan las demás; una app real decide su propia política (o usa
+  /// `relevance` para ordenarlas).
+  Future<void> _endOthers(String keepCustomId) async {
+    for (final a in await LiveIsland.activeActivities()) {
+      if (a.customId != keepCustomId) {
+        await a.end(dismiss: LiveDismiss.immediate);
+      }
+    }
+  }
+
   /// Inicia [layout] con [newState].
   Future<void> start(
     CatalogEntry entry,
@@ -80,12 +95,15 @@ class ExampleModel extends ChangeNotifier {
   ) => _guard('Iniciar', () async {
     // Android 13+: pide el permiso de notificaciones (en iOS no hace nada).
     await LiveIsland.requestPermission();
+    await _endOthers('demo-${entry.id}');
     final a = await LiveIsland.start(
       layout: layout,
       state: newState,
       deepLink: 'liveisland://${entry.id}',
       // Iniciar el mismo caso otra vez actualiza la actividad en vez de crear otra.
       customId: 'demo-${entry.id}',
+      // La que se acaba de iniciar es la que debe verse en la isla.
+      relevance: 100,
     );
     activity = a;
     activeEntry = entry;
@@ -102,6 +120,7 @@ class ExampleModel extends ChangeNotifier {
     int seconds = 15,
   }) => _guard('Iniciar (desactualizable)', () async {
     await LiveIsland.requestPermission();
+    await _endOthers('demo-stale-${entry.id}');
     final stale = entry.preset.override(
       expandedCenter: LiveIf(
         LiveBind.stale.isTrue,
@@ -118,6 +137,7 @@ class ExampleModel extends ChangeNotifier {
       state: newState,
       staleAfter: Duration(seconds: seconds),
       customId: 'demo-stale-${entry.id}',
+      relevance: 100,
     );
     activity = a;
     activeEntry = entry;

@@ -161,6 +161,17 @@ await LiveIsland.endAll();
 
 The id is yours and may be reused once an activity has ended. `LiveIsland.activeActivities()` lists live ones with their `customId`.
 
+### Several activities at once
+
+iOS shows **one** activity in the island: the one with the highest `relevance` (the oldest on a tie). The rest stay on the Lock Screen. So if you start a new case while another is alive, the island keeps showing the old one. Give the one you want to see more `relevance`, or end the previous one:
+
+```dart
+await LiveIsland.start(layout: layout, state: state, relevance: 100);
+await LiveIsland.endAll(); // or end only those no longer needed
+```
+
+The example app ends the others when you start a case, so each one shows up in the island.
+
 ### Alerts and stale state
 
 ```dart

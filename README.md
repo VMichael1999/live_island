@@ -161,6 +161,17 @@ await LiveIsland.endAll();
 
 El id es tuyo y puede repetirse entre actividades que terminaron. `LiveIsland.activeActivities()` lista las vivas con su `customId`.
 
+### Varias actividades a la vez
+
+iOS muestra **una sola** actividad en la isla: la de mayor `relevance` (con el mismo valor, la más antigua). Las demás quedan en la pantalla de bloqueo. Por eso, si inicias un caso nuevo y otro sigue vivo, la isla seguirá mostrando el anterior. Dale más `relevance` a la que quieres ver, o termina la anterior:
+
+```dart
+await LiveIsland.start(layout: layout, state: estado, relevance: 100);
+await LiveIsland.endAll(); // o termina solo las que ya no hacen falta
+```
+
+La app de ejemplo termina las demás al iniciar un caso, para que cada uno se vea en la isla.
+
 ### Avisos y estado desactualizado
 
 ```dart
