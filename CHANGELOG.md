@@ -19,6 +19,8 @@ Primera versión publicada.
 * Ejemplo: iniciar un caso termina el anterior y usa `relevance: 100`, para que la isla muestre siempre el que se acaba de iniciar (iOS solo muestra una actividad en la isla).
 * Fin programado: `LiveActivity.scheduleEnd(at)` y `LiveDismiss.at(DateTime)`. En Android la notificación sigue viva y el sistema la retira a esa hora; en iOS termina ya y la tarjeta se queda hasta esa hora.
 * iOS: soporte de Swift Package Manager (`ios/live_island/Package.swift`), además de CocoaPods; ambos usan las mismas fuentes. Probado con Flutter 3.29, 3.41 y 3.47.
+* Diseños de referencia (`RidePickupPreset` clara y oscura, `StorePickupPreset`, `RunPreset`, `MatchPreset`) y una línea de tren hecha con `TransitPreset`: tarjetas más elaboradas como punto de partida. Imágenes propias y genéricas (`car_top.png`, `car_side.png`).
+* `LiveProgressStyle.dashed`: lo que falta de la barra, como trazo discontinuo.
 * `LiveIsland.check()` valida el diseño y el estado con los mismos avisos que el HTML de prototipos.
 * `LiveIslandPreview`: vista previa en Flutter de la isla, la pantalla de bloqueo y la notificación de Android.
 * 15 presets listos (`TripPreset`, `DeliveryPreset`, `CourierPreset`…) y app de ejemplo.

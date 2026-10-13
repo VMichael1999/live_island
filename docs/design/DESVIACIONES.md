@@ -148,3 +148,14 @@ Idea y geometría tomadas de `rit3zh/expo-dynamic-notifications` (MIT): tres for
 | `FlutterFramework` | Flutter 3.38+ pide depender de él; el manifiesto lo enlaza solo si existe junto al paquete, así las versiones anteriores no fallan al resolver |
 | Frameworks débiles | `ActivityKit` y `AppIntents` se enlazan con `-weak_framework` (como `weak_frameworks` del podspec), por eso hay `unsafeFlags`: es válido en paquetes locales, que es lo que usa Flutter |
 | Destino mínimo | iOS 15.0 |
+
+## Diseños de referencia y barra discontinua
+
+| Tema | Detalle |
+| --- | --- |
+| Origen | Capturas de tarjetas reales (recogida de viaje, pedido en tienda, carrera, marcador, tren). Se rehicieron con nodos del contrato |
+| Imágenes | El paquete trae solo dibujos propios y genéricos (`car_top.png`, `car_side.png`). La app de ejemplo usa además logotipos y recortes de terceros en `example/assets/reference/` (generados con `tool/extract_reference_assets.py`) para que se vean idénticos a la referencia; esa carpeta está en `.pubignore` y no se publica con el paquete |
+| Isla y tarjeta | La isla es siempre negra; la tarjeta de bloqueo es propia (`LiveLockScreen.custom`), clara, oscura o de color |
+| `dashed` | iOS y vista previa dibujan lo que falta como trazo discontinuo. Android lo ignora: `ProgressStyle` usa tramos sólidos |
+| Imágenes | `car_top.png` y `car_side.png` son dibujos propios; cámbialos con `LiveImage.asset(...)` |
+| Pendiente | Gráfica de línea (bolsa, pulso), arco (ISS), ruta curva (vuelo) y cable luminoso (carga) necesitan nodos nuevos |
