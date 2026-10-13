@@ -21,6 +21,8 @@ data class StoredActivity(
     val state: LiveState,
     val deepLink: String?,
     val dismissed: Boolean,
+    /** Id propio de la app (`LiveIsland.start(customId:)`); `null` si no se indicó. */
+    val customId: String? = null,
 )
 
 /**
@@ -32,12 +34,19 @@ class LiveStore(private val context: Context) {
     private val root get() = File(context.filesDir, "live_island")
     private fun dir(id: String) = File(root, id)
 
-    fun create(id: String, notificationId: Int, layout: JSONObject, state: LiveState, deepLink: String?) {
+    fun create(
+        id: String,
+        notificationId: Int,
+        layout: JSONObject,
+        state: LiveState,
+        deepLink: String?,
+        customId: String? = null,
+    ) {
         val d = dir(id).apply { mkdirs() }
         File(d, "layout.json").writeText(layout.toString())
         File(d, "meta.json").writeText(
             JSONObject().put("notificationId", notificationId).put("deepLink", deepLink ?: JSONObject.NULL)
-                .put("dismissed", false).toString(),
+                .put("dismissed", false).put("customId", customId ?: JSONObject.NULL).toString(),
         )
         saveState(id, state)
     }
@@ -58,6 +67,7 @@ class LiveStore(private val context: Context) {
                 state = LiveJson.state(JSONObject(File(d, "state.json").readText())),
                 deepLink = if (meta.isNull("deepLink")) null else meta.getString("deepLink"),
                 dismissed = meta.optBoolean("dismissed", false),
+                customId = if (meta.isNull("customId")) null else meta.optString("customId").ifEmpty { null },
             )
         } catch (_: Exception) {
             null
@@ -108,11 +118,18 @@ class LiveStore(private val context: Context) {
     fun hasTemplate(name: String) = File(templateDir(name), "layout.json").exists()
 
     /** Crea la actividad [id] copiando el diseño y las imágenes de la plantilla [name]. */
-    fun instantiate(name: String, id: String, notificationId: Int, state: LiveState, deepLink: String?): Boolean {
+    fun instantiate(
+        name: String,
+        id: String,
+        notificationId: Int,
+        state: LiveState,
+        deepLink: String?,
+        customId: String? = null,
+    ): Boolean {
         val src = templateDir(name)
         if (!File(src, "layout.json").exists()) return false
         val layout = JSONObject(File(src, "layout.json").readText())
-        create(id, notificationId, layout, state, deepLink)
+        create(id, notificationId, layout, state, deepLink, customId)
         src.listFiles { f -> f.name.startsWith("img_") }?.forEach { it.copyTo(File(dir(id), it.name), overwrite = true) }
         return true
     }

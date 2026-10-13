@@ -55,6 +55,10 @@ class _PresetScreenState extends State<PresetScreen> {
                   onPressed: model.activity == null ? null : model.end,
                   child: const Text('Terminar'),
                 ),
+                OutlinedButton(
+                  onPressed: model.endAll,
+                  child: const Text('Terminar todas'),
+                ),
               ],
             ),
             const SizedBox(height: 8),

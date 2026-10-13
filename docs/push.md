@@ -47,11 +47,13 @@ Cabeceras: `apns-push-type: liveactivity`, `apns-topic: <bundle id>.push-type.li
 }
 ```
 
-El `layoutId` es `tpl_` más el nombre usado en `registerLayout`. Las fechas van en ISO 8601 UTC. La actividad nueva llega a Dart por `LiveIsland.startedByPush`, junto con su token.
+El `layoutId` es `tpl_` más el nombre usado en `registerLayout`. `attributes` puede llevar además `"customId": "viaje-42"`, el id propio con que luego se encuentra la actividad con `LiveIsland.activity('viaje-42')`. Las fechas van en ISO 8601 UTC. La actividad nueva llega a Dart por `LiveIsland.startedByPush`, junto con su token.
 
 ## Android (FCM)
 
 El plugin no depende de Firebase. Envía un mensaje **de datos** (no de notificación) con el campo `live_island` como JSON en texto, y pásalo al plugin desde tu manejador:
+
+En `start` puedes añadir `"customId": "viaje-42"`: si ya hay una actividad viva con ese id no se crea otra, se actualiza. En `update` y `end`, `"id"` acepta el id de la actividad **o su `customId`**, así el servidor no necesita guardar el id de la plataforma.
 
 ```dart
 // firebase_messaging

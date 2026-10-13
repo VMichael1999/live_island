@@ -35,6 +35,16 @@ class LivePushTest {
     }
 
     @Test
+    fun `start puede llevar un id propio para no duplicar la actividad`() {
+        val c = cmd("""{"event":"start","template":"taxi","customId":"viaje-42"}""") as PushCommand.Start
+        assertEquals("viaje-42", c.customId)
+        val sin = cmd("""{"event":"start","template":"taxi"}""") as PushCommand.Start
+        assertNull(sin.customId)
+        val vacio = cmd("""{"event":"start","template":"taxi","customId":""}""") as PushCommand.Start
+        assertNull(vacio.customId)
+    }
+
+    @Test
     fun `end admite estado final y politica de cierre`() {
         val c = cmd("""{"event":"end","id":"abc","state":{"titulo":"Llegó"},"dismiss":"after","dismissAfter":300}""")
         assertEquals(PushCommand.End("abc", mapOf("titulo" to "Llegó"), "after", 300.0), c)

@@ -139,6 +139,28 @@ DeliveryPreset(
 
 Also available on `LiveProgress.bar(style: ...)` and `LiveSegments(style: ..., showLabels: ...)`. On Android only the bar and dot colors apply; the system decides the rest.
 
+### Activities with your own id
+
+Give each activity an id from your app and forget the platform's id:
+
+```dart
+// Creates the activity; if one with that id is alive, it updates it instead.
+final trip = await LiveIsland.start(
+  customId: 'trip-42',
+  layout: layout,
+  state: state,
+);
+
+// After reopening the app (even if the process died):
+final a = await LiveIsland.activity('trip-42'); // null if it already ended
+await a?.update({'progreso': 0.8});
+
+// Sign out, switch account…
+await LiveIsland.endAll();
+```
+
+The id is yours and may be reused once an activity has ended. `LiveIsland.activeActivities()` lists live ones with their `customId`.
+
 ## Icons and images
 
 Wherever an icon goes you can use a system one or your own image (app or client logo, photo, illustration):

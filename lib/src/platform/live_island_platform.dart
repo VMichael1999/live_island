@@ -77,6 +77,22 @@ class LiveDismiss {
   final Duration after;
 }
 
+/// Una actividad viva: su id de la plataforma y, si la app se lo dio al
+/// iniciarla, su id propio.
+class LiveActivityInfo {
+  const LiveActivityInfo(this.id, {this.customId});
+
+  final String id;
+  final String? customId;
+
+  @override
+  bool operator ==(Object other) =>
+      other is LiveActivityInfo && other.id == id && other.customId == customId;
+
+  @override
+  int get hashCode => Object.hash(id, customId);
+}
+
 /// Error de la plataforma al manejar una actividad.
 class LiveIslandException implements Exception {
   const LiveIslandException(this.code, this.message);
@@ -98,9 +114,12 @@ abstract class LiveIslandPlatform {
   /// Android: notificaciones permitidas y, en Android 16+, promovidas.)
   Future<bool> areEnabled();
 
-  /// Ids de las actividades que siguen vivas (también las iniciadas antes de
-  /// que la app se cerrara o por un push).
-  Future<List<String>> activeActivities();
+  /// Las actividades que siguen vivas (también las iniciadas antes de que la
+  /// app se cerrara o por un push), con su id propio si lo tienen.
+  Future<List<LiveActivityInfo>> activeActivities();
+
+  /// Termina todas las actividades vivas de la app.
+  Future<void> endAll({LiveDismiss dismiss = LiveDismiss.immediate});
 
   /// Id de cada botón que el usuario toca en la actividad. Las acciones que
   /// llegaron con la app cerrada se entregan al empezar a escuchar.
@@ -138,6 +157,7 @@ abstract class LiveIslandPlatform {
     Duration? staleAfter,
     double relevance = 0,
     bool requestPushToken = false,
+    String? customId,
   });
 
   Future<void> update(String id, String stateJson, {Duration? staleAfter});
@@ -172,9 +192,26 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
   }
 
   @override
-  Future<List<String>> activeActivities() async =>
-      (await _call<List<Object?>>('activeActivities') ?? const [])
-          .cast<String>();
+  Future<List<LiveActivityInfo>> activeActivities() async => [
+    for (final e in await _call<List<Object?>>('activeActivities') ?? const [])
+      if (e is Map)
+        LiveActivityInfo(
+          e['id']! as String,
+          customId:
+              (e['customId'] as String?)?.isEmpty ?? true
+                  ? null
+                  : e['customId'] as String?,
+        )
+      else
+        LiveActivityInfo(e! as String),
+  ];
+
+  @override
+  Future<void> endAll({LiveDismiss dismiss = LiveDismiss.immediate}) =>
+      _call<void>('endAll', {
+        'dismiss': dismiss.type,
+        'dismissAfter': dismiss.after.inMilliseconds / 1000,
+      });
 
   @override
   Stream<String> get actions =>
@@ -233,8 +270,10 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
     Duration? staleAfter,
     double relevance = 0,
     bool requestPushToken = false,
+    String? customId,
   }) async {
     final id = await _call<String>('start', {
+      'customId': customId,
       'layout': layoutJson,
       'state': stateJson,
       'images': [for (final i in images) i.toMap()],

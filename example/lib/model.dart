@@ -40,7 +40,8 @@ class ExampleModel extends ChangeNotifier {
     LiveIsland.activeActivities().then((list) {
       if (list.isNotEmpty && activity == null) {
         activity = list.last;
-        status = 'Recuperada (${list.last.id.substring(0, 8)}…)';
+        status =
+            'Recuperada (${list.last.customId ?? list.last.id.substring(0, 8)})';
         notifyListeners();
       }
     });
@@ -83,6 +84,8 @@ class ExampleModel extends ChangeNotifier {
       layout: layout,
       state: newState,
       deepLink: 'liveisland://${entry.id}',
+      // Iniciar el mismo caso otra vez actualiza la actividad en vez de crear otra.
+      customId: 'demo-${entry.id}',
     );
     activity = a;
     activeEntry = entry;
@@ -107,6 +110,13 @@ class ExampleModel extends ChangeNotifier {
       'progreso': next,
     }, label: 'Progreso ${(next * 100).round()} %');
   }
+
+  /// Termina todas las actividades de la app (por ejemplo al cerrar sesión).
+  Future<void> endAll() => _guard('Terminar todas', () async {
+    await LiveIsland.endAll();
+    activity = null;
+    _setStatus('Todas terminadas');
+  });
 
   Future<void> end() => _guard('Terminar', () async {
     await activity?.end(dismiss: LiveDismiss.immediate);

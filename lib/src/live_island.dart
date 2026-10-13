@@ -9,10 +9,13 @@ import 'platform/live_island_platform.dart';
 
 /// Una actividad en curso. Se obtiene con [LiveIsland.start].
 class LiveActivity {
-  LiveActivity._(this.id, this._platform);
+  LiveActivity._(this.id, this._platform, {this.customId});
 
   /// Identificador de la plataforma (ActivityKit en iOS).
   final String id;
+
+  /// El id propio que la app dio en [LiveIsland.start] (`customId`), si lo hay.
+  final String? customId;
   final LiveIslandPlatform _platform;
 
   /// Cambia solo los campos indicados; el resto del estado se conserva. Es lo
@@ -135,9 +138,26 @@ abstract final class LiveIsland {
   /// Las actividades que siguen vivas, por ejemplo tras reabrir la app o
   /// cuando una acción llegó con la app cerrada, para poder actualizarlas.
   static Future<List<LiveActivity>> activeActivities() async => [
-    for (final id in await _platform.activeActivities())
-      LiveActivity._(id, _platform),
+    for (final a in await _platform.activeActivities())
+      LiveActivity._(a.id, _platform, customId: a.customId),
   ];
+
+  /// La actividad viva que se inició con [customId], o `null` si no existe
+  /// (ya terminó o el usuario la descartó). Sirve tras reabrir la app, sin
+  /// guardar el id de la plataforma.
+  static Future<LiveActivity?> activity(String customId) async {
+    for (final a in await _platform.activeActivities()) {
+      if (a.customId == customId) {
+        return LiveActivity._(a.id, _platform, customId: customId);
+      }
+    }
+    return null;
+  }
+
+  /// Termina todas las actividades vivas de la app (por ejemplo al cerrar
+  /// sesión). Con [dismiss] `immediate` desaparecen de inmediato.
+  static Future<void> endAll({LiveDismiss dismiss = LiveDismiss.immediate}) =>
+      _platform.endAll(dismiss: dismiss);
 
   /// Cada vez que el usuario toca un botón de una actividad llega aquí su
   /// `id` (el de `LiveButton(id: ...)`). Las acciones que ocurrieron con la
@@ -192,6 +212,10 @@ abstract final class LiveIsland {
   /// Inicia una actividad con su [layout] (que viaja una sola vez) y su
   /// estado inicial [state].
   ///
+  /// [customId] es un id propio de tu app (`'viaje-42'`). Si ya hay una
+  /// actividad viva con ese id, no se crea otra: se actualiza su estado y se
+  /// devuelve la misma. Después se encuentra con [activity].
+  ///
   /// [deepLink] se abre al tocar la actividad. [staleAfter] marca el contenido
   /// como desactualizado pasado ese tiempo. Lanza [LiveIslandException] si la
   /// plataforma no puede (`disabled`, `not_configured`…) y [StateError] si el
@@ -203,7 +227,11 @@ abstract final class LiveIsland {
     Duration? staleAfter,
     double relevance = 0,
     bool requestPushToken = false,
+    String? customId,
   }) async {
+    if (customId != null && customId.isEmpty) {
+      throw ArgumentError.value(customId, 'customId', 'No puede estar vacío');
+    }
     final normalized = LiveState.normalize(state);
     final report = check(layout, normalized, androidPromotable: true);
     final blocking = report.items.where(
@@ -226,8 +254,9 @@ abstract final class LiveIsland {
       staleAfter: staleAfter,
       relevance: relevance,
       requestPushToken: requestPushToken,
+      customId: customId,
     );
-    return LiveActivity._(id, _platform);
+    return LiveActivity._(id, _platform, customId: customId);
   }
 
   /// Valida [layout] con [state] con el mismo criterio del panel "Validación"

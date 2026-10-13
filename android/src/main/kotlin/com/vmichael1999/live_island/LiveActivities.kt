@@ -45,6 +45,18 @@ class LiveActivities(private val context: Context) {
         return store.allIds().filter { store.load(it)?.notificationId in active }
     }
 
+    /** Las actividades vivas con su id propio (`null` si no tienen). */
+    fun activeInfos(): List<Map<String, Any?>> =
+        activeIds().map { id -> mapOf("id" to id, "customId" to store.load(id)?.customId) }
+
+    /** El id de la actividad viva con ese [customId], si existe. */
+    fun findByCustomId(customId: String): String? =
+        activeIds().firstOrNull { store.load(it)?.customId == customId }
+
+    /** [ref] puede ser el id de la actividad o su id propio (los push usan cualquiera). */
+    private fun resolve(ref: String): String =
+        if (store.load(ref) != null) ref else findByCustomId(ref) ?: ref
+
     private fun newIds(): Pair<String, Int> {
         val id = UUID.randomUUID().toString()
         return id to abs(id.hashCode() % 1_000_000) + 1000
@@ -55,10 +67,21 @@ class LiveActivities(private val context: Context) {
         images.forEach { store.saveTemplateImage(name, it.id, it.bytes, it.maxWidth, it.maxHeight) }
     }
 
-    fun start(layout: JSONObject, state: LiveState, deepLink: String?, images: List<ImagePayload>): String {
+    fun start(
+        layout: JSONObject,
+        state: LiveState,
+        deepLink: String?,
+        images: List<ImagePayload>,
+        customId: String? = null,
+    ): String {
         requireNotifications()
+        // Con el mismo id propio no se crea otra: se actualiza la que ya existe.
+        customId?.let { findByCustomId(it) }?.let { existing ->
+            update(existing, state)
+            return existing
+        }
         val (id, notificationId) = newIds()
-        store.create(id, notificationId, layout, state, deepLink)
+        store.create(id, notificationId, layout, state, deepLink, customId)
         images.forEach { store.saveImage(id, it.id, it.bytes, it.maxWidth, it.maxHeight) }
         cleanup(id)
         post(store.load(id)!!)
@@ -66,10 +89,14 @@ class LiveActivities(private val context: Context) {
     }
 
     /** Inicia una actividad con un diseño guardado con [registerLayout]. */
-    fun startFromTemplate(template: String, state: LiveState, deepLink: String?): String {
+    fun startFromTemplate(template: String, state: LiveState, deepLink: String?, customId: String? = null): String {
         requireNotifications()
+        customId?.let { findByCustomId(it) }?.let { existing ->
+            update(existing, state)
+            return existing
+        }
         val (id, notificationId) = newIds()
-        if (!store.instantiate(template, id, notificationId, state, deepLink)) {
+        if (!store.instantiate(template, id, notificationId, state, deepLink, customId)) {
             throw LiveException("template_not_found", "No hay un diseño registrado con el nombre \"$template\". Llama a LiveIsland.registerLayout.")
         }
         cleanup(id)
@@ -87,7 +114,8 @@ class LiveActivities(private val context: Context) {
         nm.notify(a.notificationId, factory.build(a, LiveSpec.from(a.layout, a.state), end))
     }
 
-    fun update(id: String, changes: LiveState) {
+    fun update(ref: String, changes: LiveState) {
+        val id = resolve(ref)
         val a = store.load(id) ?: throw LiveException("not_found", "No existe una actividad con ese id (¿ya terminó?).")
         if (a.dismissed) throw LiveException("dismissed", "El usuario cerró la notificación; no se vuelve a publicar.")
         val merged = LiveJson.merge(a.state, changes)
@@ -95,7 +123,13 @@ class LiveActivities(private val context: Context) {
         post(a.copy(state = merged))
     }
 
-    fun end(id: String, changes: LiveState?, dismiss: String, afterSeconds: Double) {
+    /** Termina todas las actividades vivas de la app. */
+    fun endAll(dismiss: String = "immediate", afterSeconds: Double = 0.0) {
+        activeIds().forEach { end(it, null, dismiss, afterSeconds) }
+    }
+
+    fun end(ref: String, changes: LiveState?, dismiss: String, afterSeconds: Double) {
+        val id = resolve(ref)
         val a = store.load(id) ?: return
         val state = changes?.let { LiveJson.merge(a.state, it) } ?: a.state
         if (dismiss == "after") {
@@ -113,7 +147,7 @@ class LiveActivities(private val context: Context) {
     /** Ejecuta un mensaje de FCM. Devuelve el id de la actividad afectada; `null` si no era de live_island. */
     fun handlePush(data: Map<String, String?>): String? = when (val cmd = LivePush.parse(data)) {
         null -> null
-        is PushCommand.Start -> startFromTemplate(cmd.template, cmd.state, cmd.deepLink)
+        is PushCommand.Start -> startFromTemplate(cmd.template, cmd.state, cmd.deepLink, cmd.customId)
         is PushCommand.Update -> cmd.id.also { update(it, cmd.state) }
         is PushCommand.End -> cmd.id.also { end(it, cmd.state, cmd.dismiss, cmd.dismissAfterSeconds) }
     }
