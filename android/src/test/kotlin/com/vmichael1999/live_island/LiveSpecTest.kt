@@ -23,6 +23,14 @@ class LiveSpecTest {
     // --- taxi (completo) -----------------------------------------------------
 
     @Test
+    fun `el fin programado deja el tiempo que falta y nada si ya paso`() {
+        assertEquals(60_000L, LiveTimeout.remaining(160_000L, 100_000L))
+        assertNull(LiveTimeout.remaining(100_000L, 100_000L))
+        assertNull(LiveTimeout.remaining(50_000L, 100_000L))
+        assertNull(LiveTimeout.remaining(null, 100_000L))
+    }
+
+    @Test
     fun `taxi se traduce a ProgressStyle con tramos, puntos, tracker y acciones`() {
         val spec = LiveSpec.from(example("taxi"), state("taxi"))
 

@@ -110,6 +110,19 @@ class _FakePlatform implements LiveIslandPlatform {
   );
 
   @override
+  Future<void> scheduleEnd(
+    String id, {
+    required double secondsFromNow,
+    String? stateJson,
+  }) async => calls.add(
+    _Call('scheduleEnd', {
+      'id': id,
+      'secondsFromNow': secondsFromNow,
+      'state': stateJson,
+    }),
+  );
+
+  @override
   Future<void> end(
     String id, {
     String? stateJson,
@@ -423,6 +436,43 @@ void main() {
       expect(platform.calls.last.args['alert'], isNull);
     });
 
+    test('scheduleEnd pasa la distancia a la hora y el estado final', () async {
+      final a = (await LiveIsland.activeActivities()).last;
+      await a.scheduleEnd(
+        DateTime.now().add(const Duration(minutes: 30)),
+        state: {'estado': 'llegó'},
+      );
+      final c = platform.calls.last;
+      expect(c.name, 'scheduleEnd');
+      expect(c.args['id'], 'a2');
+      expect(c.args['secondsFromNow'] as double, closeTo(1800, 2));
+      expect(c.args['state'], contains('llegó'));
+    });
+
+    test('scheduleEnd con una hora pasada termina de inmediato', () async {
+      final a = (await LiveIsland.activeActivities()).last;
+      await a.scheduleEnd(DateTime.now().subtract(const Duration(minutes: 1)));
+      final c = platform.calls.last;
+      expect(c.name, 'end');
+      expect((c.args['dismiss'] as LiveDismiss).type, 'immediate');
+    });
+
+    test('LiveDismiss.at calcula la espera al momento de usarse', () {
+      final now = DateTime(2026, 10, 12, 12);
+      final d = LiveDismiss.at(now.add(const Duration(minutes: 5)));
+      expect(d.type, 'after');
+      expect(d.afterFromNow(now), const Duration(minutes: 5));
+      expect(
+        d.afterFromNow(now.add(const Duration(minutes: 9))),
+        Duration.zero,
+      );
+      expect(LiveDismiss.immediate.afterFromNow(now), Duration.zero);
+      expect(
+        const LiveDismiss.after(Duration(seconds: 7)).afterFromNow(now),
+        const Duration(seconds: 7),
+      );
+    });
+
     test('activity devuelve null si no hay una con ese id', () async {
       expect(await LiveIsland.activity('no-existe'), isNull);
     });
@@ -533,6 +583,31 @@ void main() {
         );
         expect(args['staleAfter'], 1.5);
         expect((args['images'] as List).single, containsPair('maxWidth', 120));
+      },
+    );
+
+    test(
+      'scheduleEnd y end con LiveDismiss.at usan los nombres nativos',
+      () async {
+        mock((call) async => null);
+        final p = MethodChannelLiveIslandPlatform();
+        await p.scheduleEnd('a', secondsFromNow: 90.5, stateJson: '{"x":1}');
+        expect(log.single.method, 'scheduleEnd');
+        expect(log.single.arguments, {
+          'id': 'a',
+          'state': '{"x":1}',
+          'dismissAfter': 90.5,
+        });
+        log.clear();
+        await p.end(
+          'a',
+          dismiss: LiveDismiss.at(
+            DateTime.now().add(const Duration(minutes: 2)),
+          ),
+        );
+        final args = log.single.arguments as Map;
+        expect(args['dismiss'], 'after');
+        expect(args['dismissAfter'] as double, closeTo(120, 2));
       },
     );
 
