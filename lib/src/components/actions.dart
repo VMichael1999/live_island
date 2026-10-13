@@ -43,8 +43,27 @@ void _checkId(String id) {
 }
 
 /// Botón. Su [id] llega al callback `LiveIsland.onAction`.
+///
+/// Con [LiveButton.reply] es una respuesta en línea: en Android el botón abre
+/// un cuadro de texto y lo escrito llega a `LiveIsland.onReply`.
 class LiveButton extends LiveNode {
-  LiveButton({required this.id, required this.label, this.icon, this.action}) {
+  LiveButton({required this.id, required this.label, this.icon, this.action})
+    : replyHint = null {
+    _checkId(id);
+  }
+
+  /// Botón de respuesta en línea. [hint] es el texto de ayuda del campo
+  /// («Escribe tu mensaje»). Solo Android: al tocarlo abre un cuadro de texto
+  /// (el campo nativo de la notificación no se dibuja en un Live Update). En
+  /// iOS es un botón normal cuyo `id` llega a `LiveIsland.onAction` sin
+  /// texto, para que la app lo pida.
+  LiveButton.reply({
+    required this.id,
+    required this.label,
+    String hint = 'Responder',
+    this.icon,
+  }) : replyHint = hint,
+       action = null {
     _checkId(id);
   }
 
@@ -52,6 +71,9 @@ class LiveButton extends LiveNode {
   final String label;
   final LiveVisual? icon;
   final LiveAction? action;
+
+  /// No nulo si es una respuesta en línea.
+  final String? replyHint;
 
   @override
   String get type => 'button';
@@ -66,20 +88,33 @@ class LiveButton extends LiveNode {
     'label': label,
     'icon': icon?.toJson(),
     'action': action?.toJson(),
+    'input': replyHint == null ? null : {'hint': replyHint},
   });
 
-  factory LiveButton.fromJson(Map<String, Object?> json) => LiveButton(
-    id: json['id']! as String,
-    label: json['label']! as String,
-    icon:
+  factory LiveButton.fromJson(Map<String, Object?> json) {
+    final icon =
         json['icon'] == null
             ? null
-            : LiveVisual.fromJson(asMap(json['icon'], 'button.icon')),
-    action:
-        json['action'] == null
-            ? null
-            : LiveAction.fromJson(asMap(json['action'], 'button.action')),
-  );
+            : LiveVisual.fromJson(asMap(json['icon'], 'button.icon'));
+    final input = json['input'];
+    if (input != null) {
+      return LiveButton.reply(
+        id: json['id']! as String,
+        label: json['label']! as String,
+        hint: ((input as Map)['hint'] as String?) ?? 'Responder',
+        icon: icon,
+      );
+    }
+    return LiveButton(
+      id: json['id']! as String,
+      label: json['label']! as String,
+      icon: icon,
+      action:
+          json['action'] == null
+              ? null
+              : LiveAction.fromJson(asMap(json['action'], 'button.action')),
+    );
+  }
 }
 
 /// Interruptor ligado a un campo booleano del estado.

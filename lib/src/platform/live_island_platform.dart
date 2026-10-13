@@ -135,6 +135,28 @@ class LiveDismiss {
   }
 }
 
+/// Lo que el usuario escribió en un botón de respuesta en línea
+/// (`LiveButton.reply`).
+class LiveReply {
+  const LiveReply(this.id, this.text);
+
+  /// El `id` del botón.
+  final String id;
+
+  /// El texto que escribió el usuario.
+  final String text;
+
+  @override
+  bool operator ==(Object other) =>
+      other is LiveReply && other.id == id && other.text == text;
+
+  @override
+  int get hashCode => Object.hash(id, text);
+
+  @override
+  String toString() => 'LiveReply($id, $text)';
+}
+
 /// Una actividad viva: su id de la plataforma y, si la app se lo dio al
 /// iniciarla, su id propio.
 class LiveActivityInfo {
@@ -182,6 +204,10 @@ abstract class LiveIslandPlatform {
   /// Id de cada botón que el usuario toca en la actividad. Las acciones que
   /// llegaron con la app cerrada se entregan al empezar a escuchar.
   Stream<String> get actions;
+
+  /// Textos escritos en los botones de respuesta en línea (Android). Las que
+  /// llegaron con la app cerrada se entregan al empezar a escuchar.
+  Stream<LiveReply> get replies;
 
   /// Tokens de push y actividades iniciadas por push.
   Stream<LivePushEvent> get pushEvents;
@@ -284,9 +310,24 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
         'dismissAfter': dismiss.afterFromNow().inMilliseconds / 1000,
       });
 
+  // Un solo oyente nativo: si `actions` y `replies` abrieran uno cada uno, la
+  // cola de acciones pendientes se la quedaría el primero.
+  late final Stream<Object?> _actionEvents =
+      _actionsChannel.receiveBroadcastStream();
+
   @override
   Stream<String> get actions =>
-      _actionsChannel.receiveBroadcastStream().map((e) => e as String);
+      _actionEvents.where((e) => e is String).cast<String>();
+
+  @override
+  Stream<LiveReply> get replies => _actionEvents
+      .where((e) => e is Map)
+      .map(
+        (e) => LiveReply(
+          (e! as Map)['id']! as String,
+          ((e as Map)['text'] as String?) ?? '',
+        ),
+      );
 
   @override
   Stream<LivePushEvent> get pushEvents =>

@@ -28,6 +28,7 @@ export 'src/platform/live_island_platform.dart'
         LivePushTokenEvent,
         LiveIslandException,
         LiveIslandPlatform,
+        LiveReply,
         MethodChannelLiveIslandPlatform;
 export 'src/preview/live_island_preview.dart';
 export 'src/preview/preview_config.dart';

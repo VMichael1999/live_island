@@ -202,6 +202,16 @@ abstract final class LiveIsland {
     void Function(String id) callback,
   ) => _platform.actions.listen(callback);
 
+  /// Textos que el usuario escribe en los botones de respuesta en línea
+  /// (`LiveButton.reply`), con el `id` del botón. Solo Android: en iOS esos
+  /// botones llegan por [actions], sin texto.
+  static Stream<LiveReply> get replies => _platform.replies;
+
+  /// Atajo de [replies]: llama a [callback] con el botón y el texto escrito.
+  static StreamSubscription<LiveReply> onReply(
+    void Function(String id, String text) callback,
+  ) => _platform.replies.listen((r) => callback(r.id, r.text));
+
   /// Tokens de push de iOS: los de cada actividad (con `requestPushToken`) y
   /// el de push-to-start (iOS 17.2), que no tiene `activityId`.
   static Stream<LivePushToken> get pushTokens => _platform.pushEvents
