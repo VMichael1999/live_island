@@ -20,7 +20,10 @@ void main() {
   });
 
   test('el manifiesto de privacidad declara el UserDefaults del App Group', () {
-    final xml = File('ios/Resources/PrivacyInfo.xcprivacy').readAsStringSync();
+    final xml =
+        File(
+          'ios/live_island/Sources/live_island/PrivacyInfo.xcprivacy',
+        ).readAsStringSync();
     expect(xml, contains('NSPrivacyAccessedAPICategoryUserDefaults'));
     expect(xml, contains('1C8F.1'));
     expect(xml, contains('<key>NSPrivacyTracking</key>\n\t<false/>'));
@@ -31,12 +34,30 @@ void main() {
         .split('\n')
         .where((l) => !l.trimLeft().startsWith('#'))
         .join('\n');
-    expect(active, contains("Resources/PrivacyInfo.xcprivacy"));
+    expect(
+      active,
+      contains('live_island/Sources/live_island/PrivacyInfo.xcprivacy'),
+    );
   });
 
   test('la extensión recibe su propio manifiesto al ejecutar setup', () {
     final rb = File('bin/setup_ios.rb').readAsStringSync();
     expect(rb, contains('PrivacyInfo.xcprivacy'));
     expect(rb, contains('resources_build_phase'));
+  });
+
+  test('el paquete de Swift Package Manager apunta a las mismas fuentes', () {
+    final pkg = File('ios/live_island/Package.swift').readAsStringSync();
+    expect(pkg, contains('name: "live_island"'));
+    expect(pkg, contains('.process("PrivacyInfo.xcprivacy")'));
+    expect(pkg, contains('-weak_framework'));
+    expect(
+      File(
+        'ios/live_island/Sources/live_island/LiveIslandPlugin.swift',
+      ).existsSync(),
+      isTrue,
+    );
+    // El podspec lee las mismas fuentes que el paquete.
+    expect(podspec, contains("live_island/Sources/live_island/**/*.swift"));
   });
 }
