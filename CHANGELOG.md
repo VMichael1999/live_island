@@ -14,6 +14,8 @@ Primera versión publicada.
 * `LiveIslandMorph`: la isla suelta una gota que se abre en tarjeta (vista previa y aviso dentro de la app), con descarte por gesto.
 * iOS: manifiesto de privacidad que declara el uso de `UserDefaults` del App Group (motivo `1C8F.1`), empaquetado con el plugin y copiado a la extensión por `dart run live_island:setup`; el podspec toma la versión del paquete.
 * Actividades con id propio: `start(customId:)` crea o actualiza, `LiveIsland.activity(customId)` las encuentra tras reabrir la app, `LiveIsland.endAll()` las termina y `activeActivities()` trae su `customId`. Los push de Android aceptan `customId` en `start` y como `id` en `update`/`end`.
+* Avisos: `update(alert: LiveAlert(...))` expande la isla y suena en iOS; en Android usa un canal con sonido y sale como emergente. El push de Android acepta `"alert": true`.
+* Estado desactualizado: `LiveBind.stale` (campo reservado `$stale`) cambia el diseño al pasar `staleAfter` sin push (iOS 16.2+).
 * `LiveIsland.check()` valida el diseño y el estado con los mismos avisos que el HTML de prototipos.
 * `LiveIslandPreview`: vista previa en Flutter de la isla, la pantalla de bloqueo y la notificación de Android.
 * 15 presets listos (`TripPreset`, `DeliveryPreset`, `CourierPreset`…) y app de ejemplo.

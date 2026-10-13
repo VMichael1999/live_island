@@ -120,3 +120,12 @@ Idea y geometría tomadas de `rit3zh/expo-dynamic-notifications` (MIT): tres for
 | `start` con un `customId` vivo | Actualiza el estado (y `staleAfter`) y devuelve el mismo id; **no cambia el diseño** | Igual |
 | Push | `attributes.customId` en push-to-start; las actualizaciones van por token (APNs) | `customId` en `start`; `id` acepta el id o el `customId` |
 | `endAll` | Termina todas con la política indicada y borra sus diseños si es inmediata | Cancela y borra las notificaciones vivas de la app |
+
+## Avisos (`alert`) y estado desactualizado (`$stale`)
+
+| Tema | iOS | Android |
+| --- | --- | --- |
+| `LiveAlert` | `AlertConfiguration` (16.2+): la isla se expande, banner y sonido con `title` y `body` | Sonido y aviso emergente del canal `live_island_alerts` (importancia alta). No muestra `title` ni `body`: se ve el contenido de la actividad |
+| Sonido propio | `sound: 'x.caf'` del paquete de la app | El del canal; no se cambia por aviso (Android fija el sonido al crear el canal) |
+| `LiveBind.stale` | `ActivityViewContext.isStale` (16.2+); lo dispara el sistema al llegar `staleAfter` | **Siempre `false`**: Android no tiene el concepto. Usa `update` para cambiar el estado |
+| Push | `alert` del `aps` (documentado en `docs/push.md`) | `"alert": true` en `update` |

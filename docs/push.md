@@ -53,6 +53,8 @@ El `layoutId` es `tpl_` más el nombre usado en `registerLayout`. `attributes` p
 
 El plugin no depende de Firebase. Envía un mensaje **de datos** (no de notificación) con el campo `live_island` como JSON en texto, y pásalo al plugin desde tu manejador:
 
+En `update` puedes añadir `"alert": true` (o un objeto `{"title","body"}` como en iOS): la notificación suena y sale como aviso emergente. Android no muestra el texto del aviso, sino el contenido de la actividad.
+
 En `start` puedes añadir `"customId": "viaje-42"`: si ya hay una actividad viva con ese id no se crea otra, se actualiza. En `update` y `end`, `"id"` acepta el id de la actividad **o su `customId`**, así el servidor no necesita guardar el id de la plataforma.
 
 ```dart
