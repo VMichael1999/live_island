@@ -101,6 +101,30 @@ class LiveActivity {
       .where((e) => e is LivePushTokenEvent && e.token.activityId == id)
       .map((e) => (e as LivePushTokenEvent).token.token);
 
+  /// Programa que la actividad desaparezca a las [at].
+  ///
+  /// El comportamiento depende de la plataforma, porque ActivityKit no tiene
+  /// «terminar más tarde» para una actividad viva:
+  ///
+  /// - **iOS:** la actividad **termina ya** (sale de la isla y no se puede
+  ///   actualizar más) y la tarjeta de la pantalla de bloqueo se queda con
+  ///   [state] hasta [at]; iOS la quita como mucho 4 horas después.
+  /// - **Android:** la notificación **sigue viva y se puede actualizar**, y el
+  ///   sistema la retira solo a las [at], aunque la app esté cerrada.
+  ///
+  /// Si [at] ya pasó, termina de inmediato.
+  Future<void> scheduleEnd(DateTime at, {Map<String, Object?>? state}) {
+    final wait = at.difference(DateTime.now());
+    if (wait <= Duration.zero) {
+      return end(state: state, dismiss: LiveDismiss.immediate);
+    }
+    return _platform.scheduleEnd(
+      id,
+      secondsFromNow: wait.inMilliseconds / 1000,
+      stateJson: state == null ? null : jsonEncode(LiveState.normalize(state)),
+    );
+  }
+
   /// Termina la actividad. Con [state] deja un último estado visible.
   Future<void> end({
     Map<String, Object?>? state,

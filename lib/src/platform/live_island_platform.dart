@@ -102,7 +102,7 @@ class LiveAlert {
 
 /// Cómo se descarta una actividad al terminar.
 class LiveDismiss {
-  const LiveDismiss._(this.type, this.after);
+  const LiveDismiss._(this.type, this.after, [this.at]);
 
   /// Desaparece de inmediato.
   static const immediate = LiveDismiss._('immediate', Duration.zero);
@@ -114,8 +114,25 @@ class LiveDismiss {
   /// (iOS la limita a 4 horas).
   const LiveDismiss.after(Duration delay) : this._('after', delay);
 
+  /// Se queda visible con su último estado hasta [when] y luego desaparece.
+  /// Si [when] ya pasó, equivale a [immediate]. iOS la limita a 4 horas
+  /// después de terminar.
+  const LiveDismiss.at(DateTime when) : this._('after', Duration.zero, when);
+
   final String type;
   final Duration after;
+
+  /// Hora absoluta de [LiveDismiss.at]; `null` en los demás.
+  final DateTime? at;
+
+  /// La espera hasta el descarte, calculada ahora: para [at] es la distancia
+  /// hasta esa hora.
+  Duration afterFromNow([DateTime? now]) {
+    final target = at;
+    if (target == null) return after;
+    final d = target.difference(now ?? DateTime.now());
+    return d.isNegative ? Duration.zero : d;
+  }
 }
 
 /// Una actividad viva: su id de la plataforma y, si la app se lo dio al
@@ -213,6 +230,14 @@ abstract class LiveIslandPlatform {
     String? stateJson,
     LiveDismiss dismiss = LiveDismiss.byDefault,
   });
+
+  /// Programa el fin de la actividad para [at] (ver [LiveActivity.scheduleEnd]).
+  /// [secondsFromNow] ya es la distancia desde ahora, mayor que cero.
+  Future<void> scheduleEnd(
+    String id, {
+    required double secondsFromNow,
+    String? stateJson,
+  });
 }
 
 /// Implementación por canal de métodos (`live_island`).
@@ -256,7 +281,7 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
   Future<void> endAll({LiveDismiss dismiss = LiveDismiss.immediate}) =>
       _call<void>('endAll', {
         'dismiss': dismiss.type,
-        'dismissAfter': dismiss.after.inMilliseconds / 1000,
+        'dismissAfter': dismiss.afterFromNow().inMilliseconds / 1000,
       });
 
   @override
@@ -362,6 +387,17 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
     'id': id,
     'state': stateJson,
     'dismiss': dismiss.type,
-    'dismissAfter': dismiss.after.inMilliseconds / 1000,
+    'dismissAfter': dismiss.afterFromNow().inMilliseconds / 1000,
+  });
+
+  @override
+  Future<void> scheduleEnd(
+    String id, {
+    required double secondsFromNow,
+    String? stateJson,
+  }) => _call<void>('scheduleEnd', {
+    'id': id,
+    'state': stateJson,
+    'dismissAfter': secondsFromNow,
   });
 }
