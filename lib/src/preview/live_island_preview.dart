@@ -25,6 +25,7 @@ class LiveIslandPreview extends StatelessWidget {
     bool androidPromotable = true,
     LiveSymbolBuilder? symbolBuilder,
     bool blur = true,
+    bool stale = false,
     this.surfaces = const {
       LiveSurface.compact,
       LiveSurface.minimal,
@@ -42,6 +43,7 @@ class LiveIslandPreview extends StatelessWidget {
          appName: appName,
          androidPromotable: androidPromotable,
          symbolBuilder: symbolBuilder,
+         stale: stale,
        );
 
   final LivePreviewConfig config;

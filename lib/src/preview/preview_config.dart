@@ -22,7 +22,8 @@ class LivePreviewConfig {
     this.androidPromotable = true,
     this.symbolBuilder,
     this.blur = true,
-  }) : state = LiveState.normalize(state);
+    this.stale = false,
+  }) : state = {...LiveState.normalize(state), if (stale) r'$stale': true};
 
   final LiveLayout layout;
 
@@ -48,6 +49,10 @@ class LivePreviewConfig {
 
   /// Dibuja los SF Symbols que no vienen incluidos en la vista previa.
   final LiveSymbolBuilder? symbolBuilder;
+
+  /// Dibuja la actividad como la vería el usuario pasado su `staleAfter`:
+  /// `LiveBind.stale` vale `true`.
+  final bool stale;
 
   /// Desenfoca el fondo de la tarjeta de bloqueo (`BackdropFilter`). Apágalo si
   /// tu GPU lo rechaza (por ejemplo, Impeller con OpenGL ES en algunos emuladores).

@@ -20,12 +20,20 @@ class LiveActivity {
 
   /// Cambia solo los campos indicados; el resto del estado se conserva. Es lo
   /// único que viaja en cada actualización (iOS limita a 4 096 bytes).
-  Future<void> update(Map<String, Object?> state, {Duration? staleAfter}) =>
-      _platform.update(
-        id,
-        jsonEncode(LiveState.normalize(state)),
-        staleAfter: staleAfter,
-      );
+  ///
+  /// [staleAfter] marca el contenido como desactualizado pasado ese tiempo
+  /// (ver [LiveBind.stale]). [alert] llama la atención: expande la isla y suena
+  /// en iOS; en Android la notificación suena y aparece como aviso emergente.
+  Future<void> update(
+    Map<String, Object?> state, {
+    Duration? staleAfter,
+    LiveAlert? alert,
+  }) => _platform.update(
+    id,
+    jsonEncode(LiveState.normalize(state)),
+    staleAfter: staleAfter,
+    alert: alert,
+  );
 
   /// Mantiene la actividad al día con una fuente de datos en vivo: la posición
   /// del conductor, el estado de un pedido, un temporizador… Cada evento de

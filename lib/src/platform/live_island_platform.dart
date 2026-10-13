@@ -59,6 +59,47 @@ class LivePushStartedEvent extends LivePushEvent {
   final String activityId;
 }
 
+/// Un aviso que acompaña a una actualización: en iOS la isla se expande un
+/// momento (o aparece un banner en la pantalla de bloqueo) con [title] y
+/// [body], y suena; en Android la notificación suena y aparece como aviso
+/// emergente.
+///
+/// ```dart
+/// await actividad.update(
+///   {'estado': 'llegó'},
+///   alert: const LiveAlert(title: 'Tu conductor llegó', body: 'Toyota Yaris · ABC-123'),
+/// );
+/// ```
+class LiveAlert {
+  const LiveAlert({required this.title, required this.body, this.sound});
+
+  /// Título del aviso (iOS). Android muestra el contenido de la actividad.
+  final String title;
+
+  /// Texto del aviso (iOS).
+  final String body;
+
+  /// Nombre de un archivo de sonido del paquete de la app (`aviso.caf`).
+  /// Con `null` suena el sonido por defecto.
+  final String? sound;
+
+  Map<String, Object?> toMap() => {
+    'title': title,
+    'body': body,
+    if (sound != null) 'sound': sound,
+  };
+
+  @override
+  bool operator ==(Object other) =>
+      other is LiveAlert &&
+      other.title == title &&
+      other.body == body &&
+      other.sound == sound;
+
+  @override
+  int get hashCode => Object.hash(title, body, sound);
+}
+
 /// Cómo se descarta una actividad al terminar.
 class LiveDismiss {
   const LiveDismiss._(this.type, this.after);
@@ -160,7 +201,12 @@ abstract class LiveIslandPlatform {
     String? customId,
   });
 
-  Future<void> update(String id, String stateJson, {Duration? staleAfter});
+  Future<void> update(
+    String id,
+    String stateJson, {
+    Duration? staleAfter,
+    LiveAlert? alert,
+  });
 
   Future<void> end(
     String id, {
@@ -295,13 +341,17 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
   }
 
   @override
-  Future<void> update(String id, String stateJson, {Duration? staleAfter}) =>
-      _call<void>('update', {
-        'id': id,
-        'state': stateJson,
-        'staleAfter':
-            staleAfter == null ? null : staleAfter.inMilliseconds / 1000,
-      });
+  Future<void> update(
+    String id,
+    String stateJson, {
+    Duration? staleAfter,
+    LiveAlert? alert,
+  }) => _call<void>('update', {
+    'id': id,
+    'alert': alert?.toMap(),
+    'state': stateJson,
+    'staleAfter': staleAfter == null ? null : staleAfter.inMilliseconds / 1000,
+  });
 
   @override
   Future<void> end(

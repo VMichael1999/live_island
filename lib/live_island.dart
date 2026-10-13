@@ -19,6 +19,7 @@ export 'src/presets/presets.dart';
 export 'src/platform/live_island_platform.dart'
     show
         LiveActivityInfo,
+        LiveAlert,
         LiveDismiss,
         LiveImagePayload,
         LivePushEvent,

@@ -8,6 +8,19 @@ abstract interface class LiveTextSource {
 class LiveBind implements LiveTextSource {
   const LiveBind(this.field);
 
+  /// El estado «desactualizado»: pasa a `true` cuando llega la fecha de
+  /// `staleAfter` y el sistema vuelve a dibujar la actividad, sin push ni
+  /// actualización. Úsalo en un `LiveIf` para mostrar el estado final:
+  ///
+  /// ```dart
+  /// LiveIf(LiveBind.stale.isTrue,
+  ///     then: LiveText.literal('Llegó'), otherwise: LiveText(bind('estado')))
+  /// ```
+  ///
+  /// iOS 16.2 o superior y la vista previa; Android no lo evalúa (siempre es
+  /// `false`): ahí cambia el estado con `update`.
+  static const stale = LiveBind(r'$stale');
+
   final String field;
 
   LiveCondition equals(Object? value) => LiveCondition(field, 'eq', value);
