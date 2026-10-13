@@ -237,4 +237,96 @@ void main() {
       matchesGoldenFile('goldens/puntos_editables.png'),
     );
   });
+
+  testWidgets('diseños de referencia con las imágenes de la app de ejemplo', (
+    tester,
+  ) async {
+    final key = GlobalKey();
+    const names = [
+      'uber',
+      'uber_white',
+      'starbucks',
+      'nike',
+      'psg',
+      'chelsea',
+      'ride_head_light',
+      'ride_car_light',
+      'ride_head_dark',
+      'ride_car_dark',
+    ];
+    final images = <String, ImageProvider>{
+      for (final n in names)
+        'asset_assets_reference_${n}_png': MemoryImage(
+          File('example/assets/reference/$n.png').readAsBytesSync(),
+        ),
+    };
+    LiveImage ref(String f, double w, double h) => LiveImage.asset(
+      'assets/reference/$f',
+      width: w.round(),
+      height: h.round(),
+      size: w,
+      shape: LiveShape.square,
+    );
+    final presets = <LivePreset>[
+      RidePickupPreset(
+        brandLogo: ref('uber.png', 70, 24),
+        headerImage: ref('ride_head_light.png', 102, 42),
+        trackerImage: ref('ride_car_light.png', 46, 26),
+      ),
+      RidePickupPreset(
+        dark: true,
+        brandLogo: ref('uber_white.png', 64, 22),
+        headerImage: ref('ride_head_dark.png', 118, 47),
+        trackerImage: ref('ride_car_dark.png', 44, 24),
+      ),
+      StorePickupPreset(brandLogo: ref('starbucks.png', 28, 28)),
+      RunPreset(brandMark: ref('nike.png', 56, 20)),
+      MatchPreset(
+        homeCrest: ref('psg.png', 84, 84),
+        awayCrest: ref('chelsea.png', 84, 84),
+      ),
+    ];
+    await tester.binding.setSurfaceSize(const Size(900, 1900));
+    tester.view.devicePixelRatio = 2;
+    await tester.pumpWidget(const SizedBox());
+    await tester.runAsync(() async {
+      final ctx = tester.element(find.byType(SizedBox).first);
+      for (final p in images.values) {
+        await precacheImage(p, ctx);
+      }
+    });
+    await tester.pumpWidget(
+      _harness(
+        key,
+        860,
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            for (final p in presets)
+              SizedBox(
+                width: 420,
+                child: LiveIslandPreview(
+                  layout: p.build(),
+                  state: p.sampleState(now: fx.now),
+                  now: fx.now,
+                  images: images,
+                  appName: p.appName,
+                  surfaces: const {
+                    LiveSurface.expanded,
+                    LiveSurface.lockScreen,
+                  },
+                  showLabels: false,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+    await tester.pump();
+    await expectLater(
+      find.byKey(key),
+      matchesGoldenFile('goldens/disenos_referencia.png'),
+    );
+  });
 }
