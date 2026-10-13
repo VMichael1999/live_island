@@ -14,6 +14,13 @@ import android.os.Bundle
 /** Cómo termina una actividad que se deja visible un tiempo. */
 data class EndInfo(val timeoutMillis: Long)
 
+/** Cuenta de tiempos del fin programado (función pura, para poder probarla). */
+object LiveTimeout {
+    /** Milisegundos que faltan hasta [endAtMillis]; `null` si no hay fin o ya pasó. */
+    fun remaining(endAtMillis: Long?, nowMillis: Long): Long? =
+        endAtMillis?.let { it - nowMillis }?.takeIf { it > 0 }
+}
+
 /**
  * Convierte un [LiveSpec] en una `Notification` con estilos nativos: nunca
  * `RemoteViews`, para que Android 16+ la promueva a Live Update.
@@ -65,7 +72,12 @@ class LiveNotificationFactory(private val context: Context, private val store: L
         b.setOnlyAlertOnce(!alert)
         b.setOngoing(end == null)
         b.setCategory(Notification.CATEGORY_PROGRESS)
-        if (end != null) b.setTimeoutAfter(end.timeoutMillis)
+        if (end != null) {
+            b.setTimeoutAfter(end.timeoutMillis)
+        } else {
+            // Fin programado: el sistema retira la notificación a esa hora, con la app abierta o no.
+            LiveTimeout.remaining(activity.endAtMillis, System.currentTimeMillis())?.let { b.setTimeoutAfter(it) }
+        }
 
         // Cuenta regresiva en el encabezado (y en el chip, si es de cuenta regresiva).
         spec.countdownEnd?.let {

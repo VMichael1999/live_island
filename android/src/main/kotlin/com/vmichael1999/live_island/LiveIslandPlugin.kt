@@ -129,6 +129,14 @@ class LiveIslandPlugin :
                     )
                     result.success(null)
                 }
+                "scheduleEnd" -> {
+                    live.scheduleEnd(
+                        call.argument<String>("id") ?: throw LiveException("bad_arguments", "Falta id."),
+                        call.argument<Number>("dismissAfter")?.toDouble() ?: 0.0,
+                        call.argument<String>("state")?.let { LiveJson.state(JSONObject(it)) },
+                    )
+                    result.success(null)
+                }
                 "handlePush" -> {
                     val data = call.argument<Map<String, Any?>>("data") ?: emptyMap()
                     result.success(LiveIslandPush.handle(context, data.mapValues { it.value?.toString() }))
