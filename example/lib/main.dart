@@ -1,3 +1,7 @@
+// `CupertinoPageTransitionsBuilder` vive en `material` (Flutter 3.29) o en
+// `cupertino` (versiones recientes): se importan los dos.
+// ignore: unnecessary_import, unused_import
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'catalog.dart';
@@ -23,7 +27,8 @@ class ExampleApp extends StatelessWidget {
       colorSchemeSeed: const Color(0xFF1F6FEB),
       // La transición de zoom de Android fotografía la pantalla nueva en una
       // textura con mipmaps y Impeller + OpenGL ES la rechaza en algunos emuladores.
-      pageTransitionsTheme: const PageTransitionsTheme(
+      // Sin `const`: en Flutter recientes el constructor ya no lo es.
+      pageTransitionsTheme: PageTransitionsTheme(
         builders: {TargetPlatform.android: CupertinoPageTransitionsBuilder()},
       ),
     ),
