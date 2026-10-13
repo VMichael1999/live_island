@@ -138,3 +138,13 @@ Idea y geometría tomadas de `rit3zh/expo-dynamic-notifications` (MIT): tres for
 | Quién la retira | El sistema, a `at` (tope de 4 h después de terminar) | El sistema, a `at`, aunque la app esté cerrada |
 | Persistencia | — | La hora se guarda con la actividad: las actualizaciones posteriores conservan el tiempo restante |
 | Hora pasada | Termina de inmediato | Termina de inmediato |
+
+## Swift Package Manager
+
+| Tema | Detalle |
+| --- | --- |
+| Estructura | `ios/live_island/Package.swift` y `ios/live_island/Sources/live_island/` (plugin, `Shared/` y `PrivacyInfo.xcprivacy`). El podspec lee las mismas fuentes |
+| Extensión | `Renderer/` y `Widget/` siguen en `ios/LiveIslandExtension/`; `dart run live_island:setup` copia `Shared/` desde las fuentes del plugin |
+| `FlutterFramework` | Flutter 3.38+ pide depender de él; el manifiesto lo enlaza solo si existe junto al paquete, así las versiones anteriores no fallan al resolver |
+| Frameworks débiles | `ActivityKit` y `AppIntents` se enlazan con `-weak_framework` (como `weak_frameworks` del podspec), por eso hay `unsafeFlags`: es válido en paquetes locales, que es lo que usa Flutter |
+| Destino mínimo | iOS 15.0 |
