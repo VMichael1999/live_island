@@ -19,10 +19,17 @@ class _FakePlatform implements LiveIslandPlatform {
   final actionsController = StreamController<String>.broadcast();
   final pushController = StreamController<LivePushEvent>.broadcast();
 
-  List<String> active = ['a1', 'a2'];
+  List<LiveActivityInfo> active = const [
+    LiveActivityInfo('a1'),
+    LiveActivityInfo('a2', customId: 'viaje-42'),
+  ];
 
   @override
-  Future<List<String>> activeActivities() async => active;
+  Future<List<LiveActivityInfo>> activeActivities() async => active;
+
+  @override
+  Future<void> endAll({LiveDismiss dismiss = LiveDismiss.immediate}) async =>
+      calls.add(_Call('endAll', {'dismiss': dismiss}));
 
   @override
   Stream<String> get actions => actionsController.stream;
@@ -70,9 +77,11 @@ class _FakePlatform implements LiveIslandPlatform {
     Duration? staleAfter,
     double relevance = 0,
     bool requestPushToken = false,
+    String? customId,
   }) async {
     calls.add(
       _Call('start', {
+        'customId': customId,
         'requestPushToken': requestPushToken,
         'layout': layoutJson,
         'state': stateJson,
@@ -374,6 +383,70 @@ void main() {
       },
     );
 
+    test('activeActivities trae el id propio de cada actividad', () async {
+      final list = await LiveIsland.activeActivities();
+      expect(list.map((a) => a.customId), [null, 'viaje-42']);
+    });
+
+    test(
+      'activity(customId) encuentra la actividad y la deja actualizar',
+      () async {
+        final a = await LiveIsland.activity('viaje-42');
+        expect(a, isNotNull);
+        expect(a!.id, 'a2');
+        expect(a.customId, 'viaje-42');
+        await a.update({'progreso': .5});
+        expect(platform.calls.last.args['id'], 'a2');
+      },
+    );
+
+    test('activity devuelve null si no hay una con ese id', () async {
+      expect(await LiveIsland.activity('no-existe'), isNull);
+    });
+
+    test('start envía el customId y lo conserva en la actividad', () async {
+      final act = await LiveIsland.start(
+        layout: _plain,
+        state: const {'x': 1},
+        customId: 'pedido-7',
+      );
+      expect(act.customId, 'pedido-7');
+      expect(platform.calls.single.args['customId'], 'pedido-7');
+    });
+
+    test('start sin customId no manda ninguno', () async {
+      final act = await LiveIsland.start(layout: _plain, state: const {'x': 1});
+      expect(act.customId, isNull);
+      expect(platform.calls.single.args['customId'], isNull);
+    });
+
+    test(
+      'un customId vacío se rechaza antes de llamar a la plataforma',
+      () async {
+        await expectLater(
+          LiveIsland.start(layout: _plain, state: const {}, customId: ''),
+          throwsArgumentError,
+        );
+        expect(platform.calls, isEmpty);
+      },
+    );
+
+    test('endAll pasa la política de descarte', () async {
+      await LiveIsland.endAll();
+      expect(platform.calls.single.name, 'endAll');
+      expect(
+        (platform.calls.single.args['dismiss'] as LiveDismiss).type,
+        'immediate',
+      );
+      await LiveIsland.endAll(
+        dismiss: const LiveDismiss.after(Duration(minutes: 5)),
+      );
+      expect(
+        (platform.calls.last.args['dismiss'] as LiveDismiss).after,
+        const Duration(minutes: 5),
+      );
+    });
+
     test('handlePush pasa los datos a la plataforma', () async {
       final id = await LiveIsland.handlePush({
         'live_island': '{"event":"update"}',
@@ -437,6 +510,42 @@ void main() {
         );
         expect(args['staleAfter'], 1.5);
         expect((args['images'] as List).single, containsPair('maxWidth', 120));
+      },
+    );
+
+    test(
+      'start envía customId y activeActivities lee las dos formas',
+      () async {
+        mock(
+          (call) async => switch (call.method) {
+            'start' => 'abc',
+            'activeActivities' => [
+              'viejo-solo-id',
+              {'id': 'n1', 'customId': 'viaje-42'},
+              {'id': 'n2', 'customId': null},
+            ],
+            _ => null,
+          },
+        );
+        final p = MethodChannelLiveIslandPlatform();
+        await p.start(
+          layoutJson: '{}',
+          stateJson: '{}',
+          images: const [],
+          customId: 'viaje-42',
+        );
+        expect((log.single.arguments as Map)['customId'], 'viaje-42');
+        final list = await p.activeActivities();
+        expect(list, [
+          const LiveActivityInfo('viejo-solo-id'),
+          const LiveActivityInfo('n1', customId: 'viaje-42'),
+          const LiveActivityInfo('n2'),
+        ]);
+        await p.endAll(dismiss: const LiveDismiss.after(Duration(seconds: 90)));
+        final args = log.last.arguments as Map;
+        expect(log.last.method, 'endAll');
+        expect(args['dismiss'], 'after');
+        expect(args['dismissAfter'], 90);
       },
     );
 

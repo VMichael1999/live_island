@@ -20,6 +20,7 @@ class _Fake implements LiveIslandPlatform {
     Duration? staleAfter,
     double relevance = 0,
     bool requestPushToken = false,
+    String? customId,
   }) async => 'a1';
 
   @override
