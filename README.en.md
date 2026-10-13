@@ -161,6 +161,27 @@ await LiveIsland.endAll();
 
 The id is yours and may be reused once an activity has ended. `LiveIsland.activeActivities()` lists live ones with their `customId`.
 
+### Alerts and stale state
+
+```dart
+// Grab attention: the island expands and plays a sound (iOS); on Android it
+// sounds and shows as a heads-up notification.
+await activity.update(
+  {'estado': 'arrived'},
+  alert: const LiveAlert(title: 'Your driver arrived', body: 'Toyota Yaris · ABC-123'),
+);
+
+// After the date, the system redraws the activity with `stale` true — no push,
+// no update — so you can show the final state there.
+final activity = await LiveIsland.start(
+  layout: layout,                   // with LiveIf(LiveBind.stale.isTrue, ...)
+  state: state,
+  staleAfter: const Duration(minutes: 15),
+);
+```
+
+`LiveBind.stale` exists on iOS 16.2+ and in the preview (`LiveIslandPreview(stale: true)`). On Android it is always `false`: update the state with `update` instead.
+
 ## Icons and images
 
 Wherever an icon goes you can use a system one or your own image (app or client logo, photo, illustration):

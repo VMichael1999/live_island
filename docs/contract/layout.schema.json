@@ -71,7 +71,7 @@
     "binding": {
       "type": "string",
       "minLength": 1,
-      "description": "Nombre de un campo del estado. Lo elige el desarrollador."
+      "description": "Nombre de un campo del estado. Lo elige el desarrollador. `$stale` está reservado: lo pone el sistema (iOS 16.2+) cuando pasa la fecha de `staleAfter` de la actividad."
     },
 
     "condition": {

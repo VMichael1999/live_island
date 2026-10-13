@@ -116,6 +116,7 @@ class LiveIslandPlugin :
                     live.update(
                         call.argument<String>("id") ?: throw LiveException("bad_arguments", "Falta id."),
                         LiveJson.state(JSONObject(call.argument<String>("state") ?: "{}")),
+                        call.argument<Map<String, Any?>>("alert") != null,
                     )
                     result.success(null)
                 }

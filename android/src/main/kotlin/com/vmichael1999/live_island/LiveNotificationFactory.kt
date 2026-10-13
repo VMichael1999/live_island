@@ -32,10 +32,26 @@ class LiveNotificationFactory(private val context: Context, private val store: L
         )
     }
 
-    fun build(activity: StoredActivity, spec: LiveSpec, end: EndInfo? = null): Notification {
+    private fun ensureAlertChannel() {
+        val nm = context.getSystemService(NotificationManager::class.java)
+        if (nm.getNotificationChannel(ALERT_CHANNEL_ID) != null) return
+        nm.createNotificationChannel(
+            NotificationChannel(ALERT_CHANNEL_ID, "Avisos de actividades en vivo", NotificationManager.IMPORTANCE_HIGH)
+                .apply { setShowBadge(false) },
+        )
+    }
+
+    fun build(
+        activity: StoredActivity,
+        spec: LiveSpec,
+        end: EndInfo? = null,
+        alert: Boolean = false,
+    ): Notification {
         ensureChannel()
+        if (alert) ensureAlertChannel()
         val id = activity.id
-        val b = Notification.Builder(context, CHANNEL_ID)
+        // El aviso usa otro canal (con sonido): el sonido de un canal no se puede cambiar después.
+        val b = Notification.Builder(context, if (alert) ALERT_CHANNEL_ID else CHANNEL_ID)
 
         // Íconos
         b.setSmallIcon(smallIcon(id, spec))
@@ -45,7 +61,8 @@ class LiveNotificationFactory(private val context: Context, private val store: L
         b.setContentTitle(spec.title).setContentText(spec.text)
         spec.subText?.let { b.setSubText(it) }
         b.setColor(spec.accent).setColorized(spec.colorized)
-        b.setOnlyAlertOnce(true)
+        // Con aviso vuelve a sonar y a salir como emergente; el resto de las actualizaciones, no.
+        b.setOnlyAlertOnce(!alert)
         b.setOngoing(end == null)
         b.setCategory(Notification.CATEGORY_PROGRESS)
         if (end != null) b.setTimeoutAfter(end.timeoutMillis)
@@ -134,6 +151,7 @@ class LiveNotificationFactory(private val context: Context, private val store: L
 
     companion object {
         const val CHANNEL_ID = "live_island"
+        const val ALERT_CHANNEL_ID = "live_island_alerts"
         const val EXTRA_REQUEST_PROMOTED_ONGOING = "android.requestPromotedOngoing"
     }
 }

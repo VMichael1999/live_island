@@ -13,7 +13,7 @@ sealed class PushCommand {
     ) : PushCommand()
 
     /** Cambia solo los campos indicados del estado. */
-    data class Update(val id: String, val state: LiveState) : PushCommand()
+    data class Update(val id: String, val state: LiveState, val alert: Boolean = false) : PushCommand()
 
     data class End(val id: String, val state: LiveState?, val dismiss: String, val dismissAfterSeconds: Double) :
         PushCommand()
@@ -51,7 +51,12 @@ object LivePush {
                 root.optString("deepLink").ifEmpty { null },
                 root.optString("customId").ifEmpty { null },
             )
-            "update" -> PushCommand.Update(need("id"), state ?: throw IllegalArgumentException("Falta \"state\" en el push de live_island."))
+            "update" -> PushCommand.Update(
+                need("id"),
+                state ?: throw IllegalArgumentException("Falta \"state\" en el push de live_island."),
+                // `"alert": true` (o un objeto con title/body, como en iOS): suena y sale como emergente.
+                root.opt("alert").let { it == true || it == "true" || it is JSONObject },
+            )
             "end" -> PushCommand.End(need("id"), state, root.optString("dismiss", "default"), root.optDouble("dismissAfter", 0.0))
             else -> throw IllegalArgumentException("Evento desconocido en el push de live_island: $event")
         }
