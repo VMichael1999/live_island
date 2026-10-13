@@ -38,6 +38,12 @@ public class LiveIslandPlugin: NSObject, FlutterPlugin {
             LiveActivities.update(args, result)
         case "end":
             LiveActivities.end(args, result)
+        case "scheduleEnd":
+            // ActivityKit no puede terminar más tarde una actividad viva: termina ya
+            // y la tarjeta se queda hasta la hora (máx. 4 h después).
+            var a = args
+            a["dismiss"] = "after"
+            LiveActivities.end(a, result)
         case "handlePush":
             // En iOS los push (APNs) llegan directo a ActivityKit.
             result(nil)
