@@ -7,5 +7,12 @@
         <receiver
             android:name="com.vmichael1999.live_island.LiveActionReceiver"
             android:exported="false" />
+        <!-- Cuadro de texto de los botones de respuesta en línea. -->
+        <activity
+            android:name="com.vmichael1999.live_island.LiveReplyActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 </manifest>

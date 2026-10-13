@@ -198,15 +198,15 @@ class LiveIslandPlugin :
         private val main = Handler(Looper.getMainLooper())
 
         /** Un botón de la notificación fue tocado: se guarda y se entrega a Dart en cuanto escuche. */
-        fun deliverAction(context: Context, buttonId: String) {
-            LiveActionQueue(context.applicationContext).add(buttonId)
+        fun deliverAction(context: Context, action: PendingAction) {
+            LiveActionQueue(context.applicationContext).add(action)
             flushActions(context.applicationContext)
         }
 
         private fun flushActions(context: Context) {
             main.post {
                 val sink = actionSink ?: return@post
-                LiveActionQueue(context).drain().forEach { sink.success(it) }
+                LiveActionQueue(context).drain().forEach { sink.success(it.toEvent()) }
             }
         }
 

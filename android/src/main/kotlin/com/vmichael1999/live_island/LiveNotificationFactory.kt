@@ -89,7 +89,10 @@ class LiveNotificationFactory(private val context: Context, private val store: L
         b.setDeleteIntent(broadcast(activity, LiveActionReceiver.ACTION_DELETE, null, 0))
         spec.actions.forEachIndexed { i, a ->
             val icon = a.icon?.let { store.bitmap(id, it, spec.accent) }?.let { Icon.createWithBitmap(it) }
-            val pi = broadcast(activity, LiveActionReceiver.ACTION_BUTTON, a.id, i + 1)
+            // Respuesta en línea: el botón abre un cuadro de texto. El campo nativo
+            // (RemoteInput) no se dibuja en la notificación de un Live Update.
+            val pi = if (a.replyHint != null) replyIntent(activity, a, i + 1)
+            else broadcast(activity, LiveActionReceiver.ACTION_BUTTON, a.id, i + 1)
             b.addAction(Notification.Action.Builder(icon, a.label, pi).build())
         }
 
@@ -151,7 +154,25 @@ class LiveNotificationFactory(private val context: Context, private val store: L
         )
     }
 
-    private fun broadcast(activity: StoredActivity, action: String, buttonId: String?, slot: Int): PendingIntent {
+    /** Abre el cuadro de texto de un botón de respuesta en línea. */
+    private fun replyIntent(activity: StoredActivity, a: ActionSpec, slot: Int): PendingIntent {
+        val intent = Intent(context, LiveReplyActivity::class.java)
+            .putExtra(LiveReplyActivity.EXTRA_BUTTON_ID, a.id)
+            .putExtra(LiveReplyActivity.EXTRA_HINT, a.replyHint)
+            .putExtra(LiveReplyActivity.EXTRA_TITLE, a.label)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+        return PendingIntent.getActivity(
+            context, activity.notificationId * 10 + 1 + slot, intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+    }
+
+    private fun broadcast(
+        activity: StoredActivity,
+        action: String,
+        buttonId: String?,
+        slot: Int,
+    ): PendingIntent {
         val intent = Intent(context, LiveActionReceiver::class.java).setAction(action)
             .putExtra(LiveActionReceiver.EXTRA_ACTIVITY_ID, activity.id)
             .putExtra(LiveActionReceiver.EXTRA_BUTTON_ID, buttonId)

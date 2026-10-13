@@ -30,7 +30,8 @@ sealed class Chip {
     data class Countdown(val endMillis: Long) : Chip()
 }
 
-data class ActionSpec(val id: String, val label: String, val icon: IconRef?)
+/** [replyHint] no nulo: es un botón de respuesta en línea (campo de texto en la notificación). */
+data class ActionSpec(val id: String, val label: String, val icon: IconRef?, val replyHint: String? = null)
 
 data class ProgressSpec(
     val max: Int,
@@ -126,7 +127,12 @@ data class LiveSpec(
                 if (android?.has("actions") == true) LiveJson.array(android, "actions")
                 else LiveJson.expandedNodes(layout).filter { it.optString("t") == "button" }
                 ).take(MAX_ACTIONS).map {
-                ActionSpec(it.optString("id"), it.optString("label"), iconOf(LiveJson.obj(it, "icon")))
+                ActionSpec(
+                    it.optString("id"),
+                    it.optString("label"),
+                    iconOf(LiveJson.obj(it, "icon")),
+                    LiveJson.obj(it, "input")?.let { i -> i.optString("hint").ifEmpty { "Responder" } },
+                )
             }
 
             val leading = LiveJson.obj(LiveJson.obj(regions, "expanded"), "leading")
