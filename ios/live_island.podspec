@@ -14,7 +14,8 @@ pantalla de bloqueo, 15 presets y vista previa; sin escribir Swift ni Kotlin.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'VMichael1999' => 'https://github.com/VMichael1999' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*', 'LiveIslandExtension/Shared/**/*'
+  # Las mismas fuentes que usa Swift Package Manager (live_island/Package.swift).
+  s.source_files = 'live_island/Sources/live_island/**/*.swift'
   s.dependency 'Flutter'
   s.platform = :ios, '15.0'
   s.weak_frameworks = 'ActivityKit', 'AppIntents'
@@ -25,5 +26,5 @@ pantalla de bloqueo, 15 presets y vista previa; sin escribir Swift ni Kotlin.
 
   # Manifiesto de privacidad: el plugin lee el UserDefaults del App Group
   # (cola de acciones de los botones). Motivo 1C8F.1.
-  s.resource_bundles = {'live_island_privacy' => ['Resources/PrivacyInfo.xcprivacy']}
+  s.resource_bundles = {'live_island_privacy' => ['live_island/Sources/live_island/PrivacyInfo.xcprivacy']}
 end

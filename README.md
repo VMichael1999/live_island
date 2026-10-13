@@ -23,7 +23,7 @@ Tú defines tus datos y tu diseño (textos, colores, íconos o imágenes, barra 
 | --- | --- | --- |
 | iOS | 16.1 (push-to-start: 17.2; botones: 17) | Xcode 15 o superior; con Xcode 27 el destino mínimo de la app es iOS 15.0 |
 | Android | API 26 (Live Update: API 36) | Por debajo de Android 16 se muestra una notificación en curso con barra estándar |
-| Flutter | 3.29 | |
+| Flutter | 3.29 | iOS con CocoaPods o con Swift Package Manager (probado en 3.29, 3.41 y 3.47) |
 
 ## Instalación
 

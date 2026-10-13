@@ -23,7 +23,7 @@ You define your data and your design (texts, colors, icons or images, progress b
 | --- | --- | --- |
 | iOS | 16.1 (push-to-start: 17.2; buttons: 17) | Xcode 15+; with Xcode 27 the app's minimum target is iOS 15.0 |
 | Android | API 26 (Live Update: API 36) | Below Android 16 an ongoing notification with a standard bar is shown |
-| Flutter | 3.29 | |
+| Flutter | 3.29 | iOS with CocoaPods or Swift Package Manager (tested on 3.29, 3.41 and 3.47) |
 
 ## Installation
 
