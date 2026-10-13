@@ -25,6 +25,7 @@ class LivePreviewBar extends StatelessWidget {
     this.radius,
     this.pointSize = 10,
     this.pointShape = LivePointShape.circle,
+    this.dashed = false,
     this.labelSize = 11.5,
     this.fillColor,
     this.trackColor,
@@ -57,6 +58,9 @@ class LivePreviewBar extends StatelessWidget {
   final double? radius;
   final double pointSize;
   final LivePointShape pointShape;
+
+  /// Lo que falta se dibuja como trazo discontinuo.
+  final bool dashed;
   final double labelSize;
 
   /// Colores propios; si faltan se usan los de la superficie.
@@ -228,16 +232,25 @@ class LivePreviewBar extends StatelessWidget {
     borderRadius: BorderRadius.circular(_radius),
     child: SizedBox(
       height: height,
-      child: DecoratedBox(
-        decoration: BoxDecoration(color: _track),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: FractionallySizedBox(
-            widthFactor: f,
-            heightFactor: 1,
-            child: DecoratedBox(decoration: BoxDecoration(color: _fill)),
+      child: Stack(
+        children: [
+          if (dashed)
+            Positioned.fill(
+              child: CustomPaint(painter: _DashPainter(_track, height)),
+            )
+          else
+            Positioned.fill(
+              child: DecoratedBox(decoration: BoxDecoration(color: _track)),
+            ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: FractionallySizedBox(
+              widthFactor: f,
+              heightFactor: 1,
+              child: DecoratedBox(decoration: BoxDecoration(color: _fill)),
+            ),
           ),
-        ),
+        ],
       ),
     ),
   );
@@ -339,4 +352,32 @@ class _RingPainter extends CustomPainter {
       old.color != color ||
       old.stroke != stroke ||
       old.track != track;
+}
+
+/// Trazo discontinuo de lo que falta de la barra (rayas del doble del grosor).
+class _DashPainter extends CustomPainter {
+  _DashPainter(this.color, this.thickness);
+
+  final Color color;
+  final double thickness;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final dash = math.max(thickness * 2.6, 8.0),
+        gap = math.max(thickness * 1.8, 6.0);
+    final paint = Paint()..color = color;
+    for (double x = 0; x < size.width; x += dash + gap) {
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(x, 0, math.min(dash, size.width - x), size.height),
+          Radius.circular(thickness / 2),
+        ),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DashPainter old) =>
+      old.color != color || old.thickness != thickness;
 }

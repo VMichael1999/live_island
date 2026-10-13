@@ -34,6 +34,7 @@ class LiveProgressStyle {
     this.pointSize,
     this.pointColor,
     this.pointShape,
+    this.dashed,
     this.labelSize,
     this.trackerSize,
   });
@@ -62,6 +63,9 @@ class LiveProgressStyle {
   /// Forma de los puntos de etapa (por defecto círculo).
   final LivePointShape? pointShape;
 
+  /// Dibuja lo que falta como trazo discontinuo (por defecto sólido).
+  final bool? dashed;
+
   /// Tamaño de las etiquetas de etapas (por defecto 11,5).
   final double? labelSize;
 
@@ -77,6 +81,7 @@ class LiveProgressStyle {
       pointSize == null &&
       pointColor == null &&
       pointShape == null &&
+      dashed == null &&
       labelSize == null &&
       trackerSize == null;
 
@@ -89,6 +94,7 @@ class LiveProgressStyle {
     double? pointSize,
     Color? pointColor,
     LivePointShape? pointShape,
+    bool? dashed,
     double? labelSize,
     double? trackerSize,
   }) => LiveProgressStyle(
@@ -100,6 +106,7 @@ class LiveProgressStyle {
     pointSize: pointSize ?? this.pointSize,
     pointColor: pointColor ?? this.pointColor,
     pointShape: pointShape ?? this.pointShape,
+    dashed: dashed ?? this.dashed,
     labelSize: labelSize ?? this.labelSize,
     trackerSize: trackerSize ?? this.trackerSize,
   );
@@ -113,6 +120,7 @@ class LiveProgressStyle {
     'pointSize': pointSize,
     'pointColor': pointColor == null ? null : colorToHex(pointColor!),
     'pointShape': pointShape?.name,
+    'dashed': dashed == true ? true : null,
     'labelSize': labelSize,
     'trackerSize': trackerSize,
   });
@@ -133,6 +141,7 @@ class LiveProgressStyle {
           json['pointShape'] == null
               ? null
               : LivePointShape.values.byName(json['pointShape']! as String),
+      dashed: json['dashed'] == true ? true : null,
       labelSize: d('labelSize'),
       trackerSize: d('trackerSize'),
     );

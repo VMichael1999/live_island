@@ -512,6 +512,7 @@ Widget _bar(
     trackColor: style?.trackColor,
     pointColor: style?.pointColor,
     pointShape: style?.pointShape ?? LivePointShape.circle,
+    dashed: style?.dashed ?? false,
   );
 }
 

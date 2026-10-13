@@ -264,6 +264,7 @@ enum LiveRenderer {
         var pointSize: CGFloat = 10
         var pointColor: Color? = nil
         var pointShape: String = "circle"
+        var dashed: Bool = false
         var labelSize: CGFloat = 11.5
         var trackerSize: CGFloat? = nil
         var strokeWidth: CGFloat? = nil
@@ -279,6 +280,7 @@ enum LiveRenderer {
             if let p = s.double("pointSize") { pointSize = CGFloat(p) }
             pointColor = hex("pointColor")
             if let sh = s.string("pointShape") { pointShape = sh }
+            dashed = (s.d["dashed"] as? Bool) ?? false
             if let l = s.double("labelSize") { labelSize = CGFloat(l) }
             trackerSize = s.double("trackerSize").map { CGFloat($0) }
         }
@@ -420,7 +422,17 @@ struct LiveBarView: View {
     private func segment(_ f: Double) -> some View {
         GeometryReader { g in
             ZStack(alignment: .leading) {
-                Rectangle().fill(trackColor)
+                if bar.dashed {
+                    // Lo que falta, como trazo discontinuo.
+                    Path { p in
+                        p.move(to: CGPoint(x: 0, y: g.size.height / 2))
+                        p.addLine(to: CGPoint(x: g.size.width, y: g.size.height / 2))
+                    }
+                    .stroke(trackColor, style: StrokeStyle(lineWidth: bar.height, lineCap: .round,
+                                                           dash: [bar.height * 2.6, bar.height * 1.8]))
+                } else {
+                    Rectangle().fill(trackColor)
+                }
                 Rectangle().fill(fill).frame(width: g.size.width * CGFloat(f))
             }
         }
