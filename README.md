@@ -151,6 +151,23 @@ LiveImage.network(url, shape: LiveShape.circle)
 
 La imagen se reduce al tamaño con que se muestra antes de copiarse al dispositivo y nunca se deforma. Android pinta el ícono pequeño de la barra de estado como silueta de un solo color: pasa `androidSmallIcon` con una versión en silueta de tu logo.
 
+### Animación de la isla (gota)
+
+`LiveIslandMorph` dibuja la isla soltando una gota que se abre en tarjeta, con el contenido de tu diseño. Sirve en la vista previa y como aviso dentro de tu app; la isla real la dibuja el sistema y no se anima así.
+
+![Gota](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/gota.gif)
+
+```dart
+LiveIslandMorph.preview(
+  LivePreviewConfig(layout: layout, state: state),
+  visible: mostrar,
+  onTap: () => abrirViaje(),
+  onDismissed: () => setState(() => mostrar = false),
+);
+```
+
+Deslizar hacia arriba la descarta; `blur`, `gain`, `threshold`, `dropSize` y `timeScale` ajustan lo líquido y la velocidad.
+
 ## Botones
 
 ```dart

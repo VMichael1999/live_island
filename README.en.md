@@ -151,6 +151,23 @@ LiveImage.network(url, shape: LiveShape.circle)
 
 Images are downscaled to the size they are shown at before being copied to the device, and are never distorted. Android paints the status-bar small icon as a single-color silhouette: pass `androidSmallIcon` with a silhouette version of your logo.
 
+### Island animation (drop)
+
+`LiveIslandMorph` draws the island dropping a blob that opens into a card holding your layout. Use it in the preview or as an in-app banner; the real island is drawn by the system and cannot be animated this way.
+
+![Drop](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/gota.gif)
+
+```dart
+LiveIslandMorph.preview(
+  LivePreviewConfig(layout: layout, state: state),
+  visible: show,
+  onTap: () => openTrip(),
+  onDismissed: () => setState(() => show = false),
+);
+```
+
+Swiping up dismisses it; `blur`, `gain`, `threshold`, `dropSize` and `timeScale` tune how liquid it looks and its speed.
+
 ## Buttons
 
 ```dart

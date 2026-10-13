@@ -108,6 +108,14 @@ class _PresetScreenState extends State<PresetScreen> {
             for (final t in model.tokens)
               Text(t, style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 16),
+            _MorphDemo(
+              config: LivePreviewConfig(
+                layout: layout,
+                state: state,
+                appName: preset.appName,
+              ),
+            ),
+            const SizedBox(height: 16),
             LiveIslandPreview(
               layout: layout,
               state: state,
@@ -129,6 +137,42 @@ class _PresetScreenState extends State<PresetScreen> {
           ],
         );
       },
+    ),
+  );
+}
+
+/// La isla suelta una gota y se abre en la tarjeta del preset.
+class _MorphDemo extends StatefulWidget {
+  const _MorphDemo({required this.config});
+
+  final LivePreviewConfig config;
+
+  @override
+  State<_MorphDemo> createState() => _MorphDemoState();
+}
+
+class _MorphDemoState extends State<_MorphDemo> {
+  bool visible = true;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    decoration: BoxDecoration(
+      color: const Color(0xFFF3F4F1),
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Column(
+      children: [
+        LiveIslandMorph.preview(
+          widget.config,
+          visible: visible,
+          onTap: () => setState(() => visible = false),
+          onDismissed: () => setState(() => visible = false),
+        ),
+        TextButton(
+          onPressed: () => setState(() => visible = !visible),
+          child: Text(visible ? 'Cerrar' : 'Mostrar animación'),
+        ),
+      ],
     ),
   );
 }

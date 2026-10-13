@@ -13,6 +13,8 @@ for d in sorted(glob.glob(os.path.join(src, '*'))):
     frames = [Image.open(f).convert('RGB') for f in sorted(glob.glob(os.path.join(d, '*.png')))]
     if not frames:
         continue
+    if os.path.basename(d) == 'gota':
+        frames = frames[::2]
     w = 400
     frames = [f.resize((w, round(f.height * w / f.width)), Image.LANCZOS) for f in frames]
     pal = [f.quantize(colors=128, method=Image.MEDIANCUT, dither=Image.NONE) for f in frames]

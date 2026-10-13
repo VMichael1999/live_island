@@ -96,4 +96,82 @@ void main() {
       }
     });
   }
+
+  testWidgets(
+    'cuadros de la gota (isla que se abre en tarjeta)',
+    skip: out == null,
+    (tester) async {
+      final key = GlobalKey();
+      const preset = TripPreset();
+      final t0 = DateTime.utc(2026, 10, 4, 15);
+      final config = LivePreviewConfig(
+        layout: preset.build(),
+        state: preset.sampleState(now: t0),
+        now: t0,
+        appName: preset.appName,
+        images: {
+          'asset_packages_live_island_assets_presets_car_png': MemoryImage(
+            File('assets/presets/car.png').readAsBytesSync(),
+          ),
+        },
+      );
+      await tester.binding.setSurfaceSize(const Size(420, 330));
+      tester.view.devicePixelRatio = 2;
+      Directory('$out/gota').createSync(recursive: true);
+
+      Widget host(bool visible) => Directionality(
+        textDirection: TextDirection.ltr,
+        child: MediaQuery(
+          data: const MediaQueryData(),
+          child: Center(
+            child: RepaintBoundary(
+              key: key,
+              child: DefaultTextStyle(
+                style: const TextStyle(fontFamily: 'Roboto'),
+                child: SizedBox(
+                  width: 380,
+                  child: ColoredBox(
+                    color: const Color(0xFFF3F4F1),
+                    child: LiveIslandMorph.preview(config, visible: visible),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      Future<void> shot(int i) async {
+        final boundary =
+            key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+        final bytes = await tester.runAsync<Uint8List>(() async {
+          final img = await boundary.toImage(pixelRatio: 2);
+          final data = await img.toByteData(format: ui.ImageByteFormat.png);
+          return data!.buffer.asUint8List();
+        });
+        File(
+          '$out/gota/${i.toString().padLeft(3, '0')}.png',
+        ).writeAsBytesSync(bytes!);
+      }
+
+      await tester.pumpWidget(host(true));
+      var n = 0;
+      for (var ms = 0; ms < 2700; ms += 50) {
+        for (var j = 0; j < 3; j++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        await shot(n++);
+      }
+      for (var k = 0; k < 8; k++) {
+        await shot(n++);
+      }
+      await tester.pumpWidget(host(false));
+      for (var ms = 0; ms < 2000; ms += 50) {
+        for (var j = 0; j < 3; j++) {
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        await shot(n++);
+      }
+    },
+  );
 }
