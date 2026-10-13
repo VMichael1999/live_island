@@ -145,6 +145,18 @@ class ExampleModel extends ChangeNotifier {
     _setStatus('Se desactualiza en $seconds s');
   });
 
+  /// Programa que la actividad desaparezca sola dentro de [seconds] s.
+  ///
+  /// Android: sigue viva y se puede actualizar hasta entonces. iOS: termina ya y
+  /// la tarjeta de la pantalla de bloqueo se queda hasta esa hora.
+  Future<void> scheduleEnd({int seconds = 20}) =>
+      _guard('Programar fin', () async {
+        final a = activity ?? (await LiveIsland.activeActivities()).lastOrNull;
+        if (a == null) return;
+        await a.scheduleEnd(DateTime.now().add(Duration(seconds: seconds)));
+        _setStatus('Desaparece en $seconds s');
+      });
+
   /// Actualiza con un aviso: la isla se expande y suena.
   Future<void> alert() => _guard('Avisar', () async {
     final a = activity ?? (await LiveIsland.activeActivities()).lastOrNull;

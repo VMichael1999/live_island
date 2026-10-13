@@ -172,6 +172,28 @@ await LiveIsland.endAll(); // o termina solo las que ya no hacen falta
 
 La app de ejemplo termina las demás al iniciar un caso, para que cada uno se vea en la isla.
 
+### Terminar a una hora
+
+```dart
+// Desaparece a las 18:30; la tarjeta se queda con este último estado hasta entonces.
+await actividad.scheduleEnd(
+  DateTime(2026, 10, 12, 18, 30),
+  state: {'estado': 'entregado'},
+);
+
+// O al terminar ahora, con descarte a una hora (en vez de una espera):
+await actividad.end(dismiss: LiveDismiss.at(DateTime(2026, 10, 12, 18, 30)));
+```
+
+Cambia según la plataforma, porque ActivityKit no puede «terminar más tarde» una actividad viva:
+
+| | `scheduleEnd(at)` |
+| --- | --- |
+| iOS | Termina **ya** (sale de la isla y no se actualiza más); la tarjeta de bloqueo se queda hasta `at` (iOS la quita, como mucho, 4 h después) |
+| Android | Sigue **viva y actualizable**; el sistema la retira solo a las `at`, aunque la app esté cerrada |
+
+Si `at` ya pasó, termina de inmediato.
+
 ### Avisos y estado desactualizado
 
 ```dart

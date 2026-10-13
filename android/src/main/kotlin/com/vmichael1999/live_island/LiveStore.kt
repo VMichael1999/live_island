@@ -23,6 +23,8 @@ data class StoredActivity(
     val dismissed: Boolean,
     /** Id propio de la app (`LiveIsland.start(customId:)`); `null` si no se indicó. */
     val customId: String? = null,
+    /** Hora (ms) a la que el sistema retira la notificación; `null` si no hay fin programado. */
+    val endAtMillis: Long? = null,
 )
 
 /**
@@ -68,10 +70,18 @@ class LiveStore(private val context: Context) {
                 deepLink = if (meta.isNull("deepLink")) null else meta.getString("deepLink"),
                 dismissed = meta.optBoolean("dismissed", false),
                 customId = if (meta.isNull("customId")) null else meta.optString("customId").ifEmpty { null },
+                endAtMillis = if (meta.has("endAt") && !meta.isNull("endAt")) meta.optLong("endAt") else null,
             )
         } catch (_: Exception) {
             null
         }
+    }
+
+    /** Guarda la hora de fin programada para que las actualizaciones la conserven. */
+    fun saveEndAt(id: String, endAtMillis: Long) {
+        val f = File(dir(id), "meta.json")
+        if (!f.exists()) return
+        f.writeText(JSONObject(f.readText()).put("endAt", endAtMillis).toString())
     }
 
     fun markDismissed(id: String) {

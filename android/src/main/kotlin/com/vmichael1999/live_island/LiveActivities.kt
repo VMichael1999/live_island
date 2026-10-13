@@ -129,6 +129,22 @@ class LiveActivities(private val context: Context) {
         activeIds().forEach { end(it, null, dismiss, afterSeconds) }
     }
 
+    /**
+     * Programa el fin: la notificación sigue viva y se puede actualizar, y el
+     * sistema la retira a la hora indicada (`setTimeoutAfter`).
+     */
+    fun scheduleEnd(ref: String, afterSeconds: Double, changes: LiveState?) {
+        val id = resolve(ref)
+        val a = store.load(id) ?: throw LiveException("not_found", "No existe una actividad con ese id (¿ya terminó?).")
+        val state = changes?.let { LiveJson.merge(a.state, it) } ?: a.state
+        val endAt = System.currentTimeMillis() + (afterSeconds * 1000).toLong()
+        store.saveState(id, state)
+        store.saveEndAt(id, endAt)
+        post(a.copy(state = state, endAtMillis = endAt))
+        // Limpia lo guardado cuando la notificación ya se retiró.
+        Handler(Looper.getMainLooper()).postDelayed({ if (id !in activeIds()) store.delete(id) }, (afterSeconds * 1000).toLong() + 2000)
+    }
+
     fun end(ref: String, changes: LiveState?, dismiss: String, afterSeconds: Double) {
         val id = resolve(ref)
         val a = store.load(id) ?: return

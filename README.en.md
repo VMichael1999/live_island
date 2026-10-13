@@ -172,6 +172,28 @@ await LiveIsland.endAll(); // or end only those no longer needed
 
 The example app ends the others when you start a case, so each one shows up in the island.
 
+### End at a given time
+
+```dart
+// Disappears at 18:30; the card keeps this last state until then.
+await activity.scheduleEnd(
+  DateTime(2026, 10, 12, 18, 30),
+  state: {'estado': 'delivered'},
+);
+
+// Or end now and dismiss at a time (instead of after a delay):
+await activity.end(dismiss: LiveDismiss.at(DateTime(2026, 10, 12, 18, 30)));
+```
+
+It differs per platform, because ActivityKit cannot «end later» a live activity:
+
+| | `scheduleEnd(at)` |
+| --- | --- |
+| iOS | Ends **now** (leaves the island, no more updates); the Lock Screen card stays until `at` (iOS removes it at most 4 h later) |
+| Android | Stays **alive and updatable**; the system removes it at `at` even if the app is closed |
+
+If `at` is in the past it ends immediately.
+
 ### Alerts and stale state
 
 ```dart
