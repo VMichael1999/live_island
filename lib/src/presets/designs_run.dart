@@ -85,7 +85,8 @@ final class RideArrivalPreset extends LivePreset {
   /// Nombre de la app, arriba a la izquierda de la tarjeta.
   final String brand;
 
-  /// Imagen del auto, de lado y sin fondo; por defecto la del paquete.
+  /// Imagen del auto, sin fondo. Por defecto es un sedán con su placa ya
+  /// dibujada; con una imagen propia la placa sale del campo `placa`.
   final LiveImage? carImage;
 
   /// Ícono o imagen de la isla compacta y la mínima (por defecto un auto).
@@ -123,18 +124,21 @@ final class RideArrivalPreset extends LivePreset {
   LiveVisual get _compact =>
       compactIcon ?? presetIcon('car.fill', 'car', accent: true);
 
-  LiveNode get _car => (carImage ??
-          LiveImage.asset(
-            liveDesignCarSideAsset,
-            width: 200,
-            height: 80,
-            shape: LiveShape.square,
-          ))
-      .withHeight(30);
-
-  /// Auto con su placa debajo, alineados a la derecha.
+  /// Con la imagen por defecto la placa ya viene dibujada; con una imagen
+  /// propia se dibuja la placa del estado (`placa`) debajo del auto.
   LiveNode get _carWithPlate =>
-      LiveColumn([_car, _plate('placa')], gap: 1, align: LiveAlign.end);
+      carImage == null
+          ? LiveImage.asset(
+            liveDesignCarPlateAsset,
+            width: 560,
+            height: 258,
+            shape: LiveShape.square,
+          ).withHeight(54)
+          : LiveColumn(
+            [carImage!.withHeight(30), _plate('placa')],
+            gap: 1,
+            align: LiveAlign.end,
+          );
 
   LiveNode get _brand =>
       LiveText.literal(brand, size: 24, weight: 800, color: _white);

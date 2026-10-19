@@ -27,6 +27,10 @@ const liveDesignCarTopAsset =
 const liveDesignCarSideAsset =
     'packages/live_island_kit/assets/presets/car_side.png';
 
+/// Sedán de frente con su placa (CSB488) dibujada, sin fondo.
+const liveDesignCarPlateAsset =
+    'packages/live_island_kit/assets/presets/car_plate.png';
+
 /// Escudo genérico azul y rojo (equipo local de ejemplo).
 const liveDesignCrestAAsset =
     'packages/live_island_kit/assets/presets/crest_a.png';

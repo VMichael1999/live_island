@@ -29,6 +29,7 @@ void main() {
   final files = {
     liveDesignCarTopAsset: 'assets/presets/car_top.png',
     liveDesignCarSideAsset: 'assets/presets/car_side.png',
+    liveDesignCarPlateAsset: 'assets/presets/car_plate.png',
     liveDesignCrestAAsset: 'assets/presets/crest_a.png',
     liveDesignCrestBAsset: 'assets/presets/crest_b.png',
     'assets/run/header.png': 'example/assets/run/header.png',

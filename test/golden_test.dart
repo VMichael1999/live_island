@@ -265,6 +265,7 @@ void main() {
     const files = {
       liveDesignCarTopAsset: 'assets/presets/car_top.png',
       liveDesignCarSideAsset: 'assets/presets/car_side.png',
+      liveDesignCarPlateAsset: 'assets/presets/car_plate.png',
       liveDesignCrestAAsset: 'assets/presets/crest_a.png',
       liveDesignCrestBAsset: 'assets/presets/crest_b.png',
     };
@@ -355,7 +356,7 @@ void main() {
 
   testWidgets('golden: viajes de Run (llegada y detalle)', (tester) async {
     await designsGolden(tester, 'viajes_run', [
-      RideArrivalPreset(carImage: run('header.png', 760, 308, height: 34)),
+      const RideArrivalPreset(),
       RideTripPreset(driverPhoto: run('avatar.png', 200, 205, size: 46)),
     ], height: 1100);
   });
