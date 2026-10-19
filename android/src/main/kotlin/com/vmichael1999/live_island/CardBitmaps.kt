@@ -3,6 +3,7 @@ package com.vmichael1999.live_island
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Typeface
 import android.graphics.Path
 import android.graphics.PathMeasure
 import android.graphics.RectF
@@ -150,7 +151,8 @@ object CardBitmaps {
         // Puntos de etapa y marcadores
         val dotColor = color(st, "pointColor", fill)
         val shape = st?.optString("pointShape").orEmpty().ifEmpty { "circle" }
-        fun dot(px: Float, on: Boolean, sh: String = shape) {
+        val markerTexts = st?.optJSONArray("markerLabels")
+        fun dot(px: Float, on: Boolean, sh: String = shape, label: String? = null) {
             val s = pointSize * PX
             val col = if (on) dotColor else track
             when (sh) {
@@ -171,7 +173,17 @@ object CardBitmaps {
                 "rounded" -> c.drawRoundRect(RectF(px - s / 2, cy - s / 2, px + s / 2, cy + s / 2), s / 3, s / 3, paint(col))
                 else -> c.drawCircle(px, cy, s / 2, paint(col))
             }
+            if (label != null) {
+                val tp = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                    color = 0xFF111111.toInt()
+                    textSize = pointSize * PX * .58f
+                    typeface = Typeface.DEFAULT_BOLD
+                    textAlign = Paint.Align.CENTER
+                }
+                c.drawText(label, px, cy + tp.textSize * .35f, tp)
+            }
         }
+
         if (stages.isNotEmpty()) {
             stages.forEachIndexed { k, (pending, reached) ->
                 val bm = if (k.toFloat() / tracks <= vf + 1e-6f) reached else pending
@@ -183,7 +195,7 @@ object CardBitmaps {
         st?.optJSONArray("markers")?.let { a ->
             val ms = (0 until a.length()).map { a.getDouble(it).toFloat().coerceIn(0f, 1f) }.sorted()
             val next = ms.indexOfFirst { it > vf + 1e-6f }
-            ms.forEachIndexed { i, m -> dot(x0 + (xTrack1 - x0) * m, next == -1 || i <= next) }
+            ms.forEachIndexed { i, m -> dot(x0 + (xTrack1 - x0) * m, next == -1 || i <= next, label = markerTexts?.optString(i)?.takeIf { it.isNotEmpty() }) }
         }
         if (mS > 0f) dot(xTrack1 + mS / 2, true, endMarker)
 

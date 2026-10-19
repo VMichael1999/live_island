@@ -387,4 +387,11 @@ void main() {
       RidePinPreset(driverPhoto: run('avatar.png', 200, 205, size: 52)),
     ], height: 800);
   });
+
+  testWidgets('golden: parada previa y rumbo al destino', (tester) async {
+    await designsGolden(tester, 'parada_destino', const [
+      RideStopPreset(),
+      RideDestinationPreset(),
+    ], height: 1100);
+  });
 }

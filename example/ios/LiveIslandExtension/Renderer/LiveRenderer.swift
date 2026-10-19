@@ -292,6 +292,7 @@ enum LiveRenderer {
         var trackerSize: CGFloat? = nil
         var strokeWidth: CGFloat? = nil
         var markers: [Double] = []
+        var markerLabels: [String] = []
         var glow: CGFloat = 0
 
         init(_ n: LNode) {
@@ -308,6 +309,7 @@ enum LiveRenderer {
             endMarker = s.string("endMarker")
             glow = CGFloat(s.double("glow") ?? 0)
             markers = (s.d["markers"] as? [NSNumber])?.map { $0.doubleValue }.sorted() ?? []
+            markerLabels = s.d["markerLabels"] as? [String] ?? []
             dashed = (s.d["dashed"] as? Bool) ?? false
             if let l = s.double("labelSize") { labelSize = CGFloat(l) }
             trackerSize = s.double("trackerSize").map { CGFloat($0) }
@@ -531,6 +533,10 @@ struct LiveBarView: View {
                     LivePoint(shape: bar.pointShape, fill: on ? doneColor : style.pendingDot,
                               border: on ? doneColor : trackColor)
                         .frame(width: bar.pointSize, height: bar.pointSize)
+                        // Texto dentro del marcador (una parada numerada).
+                        .overlay(Text(i < bar.markerLabels.count ? bar.markerLabels[i] : "")
+                            .font(.system(size: bar.pointSize * 0.58, weight: .bold))
+                            .foregroundColor(Color(white: 0.07)))
                         .position(x: CGFloat(min(1, max(0, m))) * w, y: bar.height / 2)
                 }
                 if let m = bar.endMarker {

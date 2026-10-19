@@ -84,6 +84,18 @@ final catalog = <CatalogEntry>[
     ),
   ),
   CatalogEntry(
+    'ride_stop',
+    'Conductor con parada previa',
+    (a, b) => RideStopPreset(accent: _a(a, const RideStopPreset().accent)),
+  ),
+  CatalogEntry(
+    'ride_destination',
+    'Rumbo al destino',
+    (a, b) => RideDestinationPreset(
+      accent: _a(a, const RideDestinationPreset().accent),
+    ),
+  ),
+  CatalogEntry(
     'delivery_order',
     'Pedido a domicilio · cuatro etapas',
     (a, b) =>

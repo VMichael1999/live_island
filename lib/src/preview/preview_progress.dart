@@ -34,6 +34,7 @@ class LivePreviewBar extends StatelessWidget {
     this.glow = 0,
     this.endMarker,
     this.stageIcons = const [],
+    this.markerLabels = const [],
   });
 
   /// 0 a 1.
@@ -78,6 +79,9 @@ class LivePreviewBar extends StatelessWidget {
 
   /// Marcador pegado al final de la barra (de tamaño [pointSize]).
   final LivePointShape? endMarker;
+
+  /// Texto dentro de cada marcador de [markers], en el mismo orden.
+  final List<String> markerLabels;
 
   /// Un ícono por etapa (ya compuesto), en lugar de los puntos: `pending`
   /// mientras la etapa no llega y `reached` desde que llega.
@@ -348,11 +352,15 @@ class LivePreviewBar extends StatelessWidget {
     final next = sorted.indexWhere((m) => m > v + 1e-6);
     return [
       for (var i = 0; i < sorted.length; i++)
-        _dot(sorted[i].clamp(0.0, 1.0) * w, i <= next || next == -1),
+        _dot(
+          sorted[i].clamp(0.0, 1.0) * w,
+          i <= next || next == -1,
+          label: i < markerLabels.length ? markerLabels[i] : null,
+        ),
     ];
   }
 
-  Widget _dot(double x, bool done, {LivePointShape? shape}) {
+  Widget _dot(double x, bool done, {LivePointShape? shape, String? label}) {
     final doneColor = pointColor ?? _fill;
     final sh = shape ?? pointShape;
     final hollow =
@@ -387,6 +395,7 @@ class LivePreviewBar extends StatelessWidget {
                 : Container(
                   width: pointSize,
                   height: pointSize,
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
                     shape:
                         sh == LivePointShape.circle
@@ -402,6 +411,19 @@ class LivePreviewBar extends StatelessWidget {
                       width: 2,
                     ),
                   ),
+                  child:
+                      label == null
+                          ? null
+                          : Text(
+                            label,
+                            style: TextStyle(
+                              fontSize: pointSize * .58,
+                              fontWeight: FontWeight.w700,
+                              height: 1,
+                              color: const Color(0xFF111111),
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
                 ),
       ),
     );

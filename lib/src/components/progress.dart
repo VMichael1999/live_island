@@ -59,6 +59,7 @@ class LiveProgressStyle {
     this.markers,
     this.glow,
     this.endMarker,
+    this.markerLabels,
   });
 
   /// Grosor de la barra en pt (por defecto 6). En un anillo, el ancho del trazo (3).
@@ -109,6 +110,11 @@ class LiveProgressStyle {
   /// Android lo ignora.
   final LivePointShape? endMarker;
 
+  /// Texto dentro de cada marcador de [markers] (en el mismo orden, que debe
+  /// ser ascendente): por ejemplo `['1']` para una parada numerada. Android
+  /// Live Update lo ignora.
+  final List<String>? markerLabels;
+
   bool get isEmpty =>
       height == null &&
       color == null &&
@@ -123,7 +129,8 @@ class LiveProgressStyle {
       trackerSize == null &&
       markers == null &&
       glow == null &&
-      endMarker == null;
+      endMarker == null &&
+      markerLabels == null;
 
   LiveProgressStyle copyWith({
     double? height,
@@ -140,6 +147,7 @@ class LiveProgressStyle {
     List<double>? markers,
     double? glow,
     LivePointShape? endMarker,
+    List<String>? markerLabels,
   }) => LiveProgressStyle(
     height: height ?? this.height,
     color: color ?? this.color,
@@ -155,6 +163,7 @@ class LiveProgressStyle {
     markers: markers ?? this.markers,
     glow: glow ?? this.glow,
     endMarker: endMarker ?? this.endMarker,
+    markerLabels: markerLabels ?? this.markerLabels,
   );
 
   Map<String, Object?> toJson() => compact({
@@ -172,6 +181,7 @@ class LiveProgressStyle {
     'markers': markers,
     'glow': glow,
     'endMarker': endMarker?.name,
+    'markerLabels': markerLabels,
   });
 
   factory LiveProgressStyle.fromJson(Map<String, Object?> json) {
@@ -203,6 +213,11 @@ class LiveProgressStyle {
           json['endMarker'] == null
               ? null
               : LivePointShape.values.byName(json['endMarker']! as String),
+      markerLabels:
+          [
+            for (final l in (json['markerLabels'] as List? ?? const []))
+              l as String,
+          ].nullIfEmpty,
     );
   }
 

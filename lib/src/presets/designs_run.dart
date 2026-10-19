@@ -690,3 +690,279 @@ final class RidePinPreset extends LivePreset {
     ),
   );
 }
+
+/// El conductor aún tiene que dejar a otro pasajero antes de venir por ti:
+/// cuánto falta, el auto con su placa y una barra con una parada numerada antes
+/// del punto de recogida. Datos: `minutos`, `vehiculo`, `placa` y `progreso`.
+///
+/// La parada es el marcador «1» de la barra (la posición se fija con
+/// `stopAt`); el auto avanza hacia ella y luego hacia el final.
+final class RideStopPreset extends LivePreset {
+  const RideStopPreset({
+    this.accent = const Color(0xFFE6E6EA),
+    this.brand = 'Run',
+    this.stopAt = .82,
+    this.carImage,
+    this.trackerImage,
+    this.compactIcon,
+    this.chip,
+  });
+
+  /// Color de lo recorrido y de la parada.
+  final Color accent;
+
+  /// Nombre de la app, arriba a la izquierda.
+  final String brand;
+
+  /// Posición de la parada en la barra (0 a 1).
+  final double stopAt;
+
+  /// Imagen del auto, sin fondo. Por defecto es un sedán con su placa ya
+  /// dibujada; con una imagen propia la placa sale del campo `placa`.
+  final LiveImage? carImage;
+
+  /// Auto que avanza sobre la barra (vista desde arriba, sin fondo).
+  final LiveImage? trackerImage;
+
+  /// Ícono o imagen de la isla compacta y la mínima (por defecto un auto).
+  final LiveVisual? compactIcon;
+
+  /// Chip de Android; por defecto «En ruta».
+  final LiveChip? chip;
+
+  @override
+  LivePresetSpec get spec => LivePresetSpec(
+    id: 'ride_stop',
+    appName: brand,
+    accent: accent,
+    icon: presetIcon('car.fill', 'car'),
+    countdown: false,
+    progress: PresetProgress.bar,
+    buttons: const [],
+    chip: chip ?? const LiveChip.text('En ruta'),
+    sample: const PresetSample(
+      title: 'Quedan 20 min',
+      subtitle: 'Sedán negro',
+      name: 'Run',
+      highlight: '20 min',
+      progress: .18,
+    ),
+  );
+
+  @override
+  Map<String, Object?> sampleState({DateTime? now}) => {
+    'minutos': '20 min',
+    'vehiculo': 'Sedán negro',
+    'placa': 'PXR784',
+    'progreso': .18,
+  };
+
+  LiveVisual get _compact =>
+      compactIcon ?? presetIcon('car.fill', 'car', accent: true);
+
+  /// Con la imagen por defecto la placa ya viene dibujada; con una imagen
+  /// propia se dibuja la placa del estado (`placa`) encima del auto.
+  LiveNode _carWithPlate(double height) =>
+      carImage == null
+          ? LiveImage.asset(
+            liveDesignCarPlateAsset,
+            width: 560,
+            height: 258,
+            shape: LiveShape.square,
+          ).withHeight(height)
+          : LiveColumn(
+            [_plate('placa'), carImage!.withHeight(height * .6)],
+            gap: 2,
+            align: LiveAlign.end,
+          );
+
+  LiveNode get _bar => LiveProgress.bar(
+    value: const LiveBind('progreso'),
+    tracker: _tracker(trackerImage),
+    style: LiveProgressStyle(
+      height: 5,
+      color: accent,
+      trackColor: const Color(0xFF3A3A3F),
+      // La parada numerada y, al final, el punto de recogida.
+      markers: [stopAt],
+      markerLabels: const ['1'],
+      pointShape: LivePointShape.circle,
+      pointColor: accent,
+      endMarker: LivePointShape.target,
+      pointSize: 22,
+    ),
+  );
+
+  LiveNode get _brand =>
+      LiveText.literal(brand, size: 22, weight: 800, color: _white);
+
+  LiveNode get _titles => LiveColumn([
+    LiveText.format(
+      'Quedan {minutos}',
+      size: 22,
+      weight: 700,
+      color: _white,
+      lines: 1,
+    ),
+    _field('vehiculo', size: 15, color: _soft, lines: 1),
+  ], gap: 2);
+
+  @override
+  LiveLayout build() => LiveLayout(
+    theme: LiveTheme(accent: accent),
+    appLogo: presetIcon('car.fill', 'car'),
+    compactLeading: _compact,
+    compactTrailing: _field('minutos', size: 14, weight: 700, color: _white),
+    minimal: _compact,
+    // La marca y la placa junto al sensor; el resto abajo, a todo el ancho.
+    expanded: LiveExpanded(
+      leading: LivePadding(_brand, horizontal: 6),
+      // El auto con su placa va a la derecha del título, no pegado al sensor.
+      bottom: LiveColumn([
+        LiveRow([_titles, const LiveSpacer(), _carWithPlate(46)]),
+        _bar,
+      ], gap: 8),
+    ),
+    lockScreen: LiveLockScreen.custom(
+      LiveBox(
+        color: const Color(0xFF000000),
+        radius: 22,
+        child: LivePadding(
+          LiveColumn([
+            LiveRow([_brand, const LiveSpacer()]),
+            LiveRow([_titles, const LiveSpacer(), _carWithPlate(52)]),
+            _bar,
+          ], gap: 8),
+          horizontal: 16,
+          vertical: 12,
+        ),
+      ),
+    ),
+    android: LiveAndroid(
+      title: const LiveText.format('Quedan {minutos}'),
+      text: const LiveText.format('{vehiculo} · {placa}'),
+      chip: chip ?? const LiveChip.text('En ruta'),
+    ),
+  );
+}
+
+/// Rumbo al destino: la hora de llegada, hacia dónde va y una barra que termina
+/// en un cuadrado pegado. Datos: `hora`, `direccion` y `progreso`.
+///
+/// Es la fase que sigue a la entrega del PIN, y la versión más simple de un
+/// viaje con barra.
+final class RideDestinationPreset extends LivePreset {
+  const RideDestinationPreset({
+    this.accent = const Color(0xFFFFFFFF),
+    this.brand = 'Run',
+    this.trackerImage,
+    this.compactIcon,
+    this.chip,
+  });
+
+  /// Color de lo recorrido.
+  final Color accent;
+
+  /// Nombre de la app, arriba a la izquierda.
+  final String brand;
+
+  /// Auto que avanza sobre la barra (vista desde arriba, sin fondo).
+  final LiveImage? trackerImage;
+
+  /// Ícono o imagen de la isla compacta y la mínima (por defecto un auto).
+  final LiveVisual? compactIcon;
+
+  /// Chip de Android; por defecto «Destino».
+  final LiveChip? chip;
+
+  @override
+  LivePresetSpec get spec => LivePresetSpec(
+    id: 'ride_destination',
+    appName: brand,
+    accent: accent,
+    icon: presetIcon('car.fill', 'car'),
+    countdown: false,
+    progress: PresetProgress.bar,
+    buttons: const [],
+    chip: chip ?? const LiveChip.text('Destino'),
+    sample: const PresetSample(
+      title: 'Destino 8:37 PM',
+      subtitle: 'En camino a Av. Los Cedros 234',
+      name: 'Run',
+      highlight: '8:37 PM',
+      progress: .1,
+    ),
+  );
+
+  @override
+  Map<String, Object?> sampleState({DateTime? now}) => {
+    'hora': '8:37 PM',
+    'direccion': 'Av. Los Cedros 234',
+    'progreso': .1,
+  };
+
+  LiveVisual get _compact =>
+      compactIcon ?? presetIcon('car.fill', 'car', accent: true);
+
+  LiveNode get _bar => LiveProgress.bar(
+    value: const LiveBind('progreso'),
+    tracker: _tracker(trackerImage),
+    style: LiveProgressStyle(
+      height: 5,
+      color: accent,
+      trackColor: const Color(0xFF4A4A50),
+      endMarker: LivePointShape.targetSquare,
+      pointSize: 18,
+      pointColor: const Color(0xFF8A8D94),
+    ),
+  );
+
+  LiveNode get _brand =>
+      LiveText.literal(brand, size: 22, weight: 800, color: _white);
+
+  LiveNode _titles(double size) => LiveColumn([
+    LiveText.format(
+      'Destino {hora}',
+      size: size,
+      weight: 700,
+      color: _white,
+      lines: 1,
+    ),
+    LiveText.format(
+      'En camino a {direccion}',
+      size: size * .62,
+      color: _soft,
+      lines: 1,
+    ),
+  ], gap: 3);
+
+  @override
+  LiveLayout build() => LiveLayout(
+    theme: LiveTheme(accent: accent),
+    appLogo: presetIcon('car.fill', 'car'),
+    compactLeading: _compact,
+    compactTrailing: _field('hora', size: 14, weight: 700, color: _white),
+    minimal: _compact,
+    // La marca junto al sensor; el destino y la barra abajo, a todo el ancho.
+    expanded: LiveExpanded(
+      leading: LivePadding(_brand, horizontal: 6),
+      bottom: LiveColumn([_titles(20), _bar], gap: 10),
+    ),
+    lockScreen: LiveLockScreen.custom(
+      LiveBox(
+        color: const Color(0xFF000000),
+        radius: 22,
+        child: LivePadding(
+          LiveColumn([_brand, _titles(24), _bar], gap: 10),
+          horizontal: 16,
+          vertical: 12,
+        ),
+      ),
+    ),
+    android: LiveAndroid(
+      title: const LiveText.format('Destino {hora}'),
+      text: const LiveText.format('En camino a {direccion}'),
+      chip: chip ?? const LiveChip.text('Destino'),
+    ),
+  );
+}

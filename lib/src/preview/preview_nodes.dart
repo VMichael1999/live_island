@@ -637,6 +637,7 @@ Widget _bar(
     markers: style?.markers ?? const [],
     glow: style?.glow ?? 0,
     endMarker: style?.endMarker,
+    markerLabels: style?.markerLabels ?? const [],
   );
 }
 
