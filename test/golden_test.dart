@@ -344,4 +344,11 @@ void main() {
       OrbitPreset(),
     ], height: 1700);
   });
+
+  testWidgets('golden: cable luminoso y tarifa en tramos', (tester) async {
+    await designsGolden(tester, 'luz_y_tramos', const [
+      ChargePreset(),
+      FareSplitPreset(),
+    ], height: 1100);
+  });
 }

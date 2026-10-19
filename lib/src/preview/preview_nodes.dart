@@ -131,6 +131,23 @@ Widget buildLiveNode(
                   : ctx.style.accent.withValues(alpha: node.tint!)),
           borderRadius:
               node.radius == null ? null : BorderRadius.circular(node.radius!),
+          border:
+              node.border == null
+                  ? null
+                  : Border.all(
+                    color: node.border!,
+                    width: node.borderWidth ?? 1.5,
+                  ),
+          boxShadow:
+              node.glow == null
+                  ? null
+                  : [
+                    BoxShadow(
+                      color: (node.border ?? node.color ?? ctx.style.accent)
+                          .withValues(alpha: .55),
+                      blurRadius: node.glow!,
+                    ),
+                  ],
         ),
         child:
             node.child == null
@@ -172,6 +189,14 @@ Widget buildLiveNode(
         tracker: node.tracker,
         start: node.startIcon,
         end: node.endIcon,
+      );
+    case LiveSplitBar():
+      return LivePreviewSplit(
+        values: [for (final p in node.parts) _num(ctx.state[p.value.field])],
+        colors: [for (final p in node.parts) p.color],
+        height: node.height,
+        gap: node.gap,
+        radius: node.radius,
       );
     case LiveSparkline():
       return LivePreviewSparkline(
@@ -358,6 +383,7 @@ Widget _text(LiveText t, LiveRenderContext ctx, LiveAlign? inherited) {
     style: TextStyle(
       fontSize: size,
       fontWeight: _weight(t.weight),
+      fontStyle: t.italic ? FontStyle.italic : FontStyle.normal,
       height:
           size >= 20
               ? 1.1
@@ -573,6 +599,7 @@ Widget _bar(
     pointShape: style?.pointShape ?? LivePointShape.circle,
     dashed: style?.dashed ?? false,
     markers: style?.markers ?? const [],
+    glow: style?.glow ?? 0,
   );
 }
 

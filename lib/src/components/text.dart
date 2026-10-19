@@ -16,6 +16,7 @@ class LiveText extends LiveNode implements LiveTextSource {
     LiveBind this.source, {
     this.size,
     this.weight,
+    this.italic = false,
     this.muted = false,
     this.accent = false,
     this.color,
@@ -31,6 +32,7 @@ class LiveText extends LiveNode implements LiveTextSource {
     String this.literal, {
     this.size,
     this.weight,
+    this.italic = false,
     this.muted = false,
     this.accent = false,
     this.color,
@@ -46,6 +48,7 @@ class LiveText extends LiveNode implements LiveTextSource {
     String this.template, {
     this.size,
     this.weight,
+    this.italic = false,
     this.muted = false,
     this.accent = false,
     this.color,
@@ -61,6 +64,7 @@ class LiveText extends LiveNode implements LiveTextSource {
     LiveBind until, {
     this.size,
     this.weight,
+    this.italic = false,
     this.muted = false,
     this.accent = false,
     this.color,
@@ -77,6 +81,7 @@ class LiveText extends LiveNode implements LiveTextSource {
     LiveBind since, {
     this.size,
     this.weight,
+    this.italic = false,
     this.muted = false,
     this.accent = false,
     this.color,
@@ -93,6 +98,7 @@ class LiveText extends LiveNode implements LiveTextSource {
     LiveBind date, {
     this.size,
     this.weight,
+    this.italic = false,
     this.muted = false,
     this.accent = false,
     this.color,
@@ -109,6 +115,7 @@ class LiveText extends LiveNode implements LiveTextSource {
     LiveText other, {
     double? size,
     int? weight,
+    bool? italic,
     bool? muted,
     bool? accent,
     Color? color,
@@ -121,6 +128,7 @@ class LiveText extends LiveNode implements LiveTextSource {
        template = other.template,
        size = size ?? other.size,
        weight = weight ?? other.weight,
+       italic = italic ?? other.italic,
        muted = muted ?? other.muted,
        accent = accent ?? other.accent,
        color = color ?? other.color,
@@ -138,6 +146,9 @@ class LiveText extends LiveNode implements LiveTextSource {
 
   /// Peso de la fuente: 400, 600, 700…
   final int? weight;
+
+  /// Cursiva.
+  final bool italic;
   final bool muted;
   final bool accent;
   final Color? color;
@@ -177,6 +188,7 @@ class LiveText extends LiveNode implements LiveTextSource {
     'fmt': template,
     'size': size,
     'w': weight,
+    'i': italic ? true : null,
     'muted': muted ? true : null,
     'accent': accent ? true : null,
     'color': color == null ? null : colorToHex(color!),
@@ -188,6 +200,7 @@ class LiveText extends LiveNode implements LiveTextSource {
   factory LiveText.fromJson(Map<String, Object?> json) {
     final size = (json['size'] as num?)?.toDouble();
     final weight = (json['w'] as num?)?.toInt();
+    final italic = json['i'] == true;
     final muted = json['muted'] == true;
     final accent = json['accent'] == true;
     final color =
@@ -205,6 +218,7 @@ class LiveText extends LiveNode implements LiveTextSource {
           x,
           size: size,
           weight: weight,
+          italic: italic,
           muted: muted,
           accent: accent,
           color: color,
@@ -217,6 +231,7 @@ class LiveText extends LiveNode implements LiveTextSource {
           x,
           size: size,
           weight: weight,
+          italic: italic,
           muted: muted,
           accent: accent,
           color: color,
@@ -229,6 +244,7 @@ class LiveText extends LiveNode implements LiveTextSource {
           x,
           size: size,
           weight: weight,
+          italic: italic,
           muted: muted,
           accent: accent,
           color: color,
@@ -241,6 +257,7 @@ class LiveText extends LiveNode implements LiveTextSource {
           x,
           size: size,
           weight: weight,
+          italic: italic,
           muted: muted,
           accent: accent,
           color: color,
@@ -254,6 +271,7 @@ class LiveText extends LiveNode implements LiveTextSource {
         json['text']! as String,
         size: size,
         weight: weight,
+        italic: italic,
         muted: muted,
         accent: accent,
         color: color,
@@ -267,6 +285,7 @@ class LiveText extends LiveNode implements LiveTextSource {
         json['fmt']! as String,
         size: size,
         weight: weight,
+        italic: italic,
         muted: muted,
         accent: accent,
         color: color,

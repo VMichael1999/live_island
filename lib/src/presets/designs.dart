@@ -1280,3 +1280,256 @@ final class RideDriverPreset extends LivePreset {
     ),
   );
 }
+
+/// Carga de un auto eléctrico con el "cable luminoso": una barra con halo y
+/// una tarjeta con borde brillante.
+///
+/// Datos: `nivel` (texto, por ejemplo `72 %`), `estado`, `restante`,
+/// `potencia` y `progreso`.
+final class ChargePreset extends LivePreset {
+  const ChargePreset({
+    this.accent = const Color(0xFF30D158),
+    this.glow = 10,
+    this.compactIcon,
+    this.chip,
+  });
+
+  /// Color de la barra, del borde y del halo.
+  final Color accent;
+
+  /// Radio del halo en pt (0 = sin brillo).
+  final double glow;
+
+  /// Ícono o imagen de la isla compacta y la mínima (por defecto un rayo).
+  final LiveVisual? compactIcon;
+
+  final LiveChip? chip;
+
+  @override
+  LivePresetSpec get spec => LivePresetSpec(
+    id: 'charge_glow',
+    appName: 'Carga',
+    accent: accent,
+    icon: presetIcon('bolt.fill', 'zap'),
+    countdown: false,
+    progress: PresetProgress.bar,
+    chip: chip ?? const LiveChip.text('72 %'),
+    sample: const PresetSample(
+      title: '72 %',
+      subtitle: 'Cargando · faltan 38 min',
+      name: 'Carga',
+      highlight: '48 kW',
+      progress: 0.72,
+    ),
+  );
+
+  @override
+  Map<String, Object?> sampleState({DateTime? now}) => {
+    'nivel': '72 %',
+    'estado': 'Cargando',
+    'restante': 'Faltan 38 min',
+    'potencia': '48 kW',
+    'progreso': 0.72,
+  };
+
+  LiveVisual get _bolt =>
+      compactIcon ??
+      LiveIcon.symbol(
+        'bolt.fill',
+        android: presetIcon('bolt.fill', 'zap').android,
+        color: accent,
+      );
+
+  LiveNode get _cable => LiveProgress.bar(
+    value: const LiveBind('progreso'),
+    style: LiveProgressStyle(
+      height: 8,
+      color: accent,
+      trackColor: const Color(0xFF2A2D33),
+      glow: glow > 0 ? glow : null,
+    ),
+  );
+
+  @override
+  LiveLayout build() => LiveLayout(
+    theme: const LiveTheme(
+      accent: Color(0xFF0B0B0D),
+      background: LiveBackground.accent,
+    ),
+    appLogo: presetIcon('bolt.fill', 'zap'),
+    compactLeading: _bolt,
+    compactTrailing: _t('nivel', size: 15, weight: 700, color: accent),
+    minimal: _bolt,
+    expanded: LiveExpanded(
+      leading: _bolt,
+      center: LiveColumn(
+        [
+          _t('nivel', size: 30, weight: 800, color: _white),
+          _t('estado', size: 13, muted: true, lines: 1),
+        ],
+        align: LiveAlign.center,
+        gap: 0,
+      ),
+      trailing: _t('potencia', size: 15, weight: 700, color: accent),
+      bottom: LivePadding(_cable, vertical: 4),
+    ),
+    lockScreen: LiveLockScreen.custom(
+      LiveBox(
+        color: const Color(0xFF0B0B0D),
+        radius: 22,
+        border: glow > 0 ? accent : null,
+        glow: glow > 0 ? glow : null,
+        child: LivePadding(
+          LiveColumn([
+            LiveRow([
+              _bolt,
+              _t('estado', size: 13, color: const Color(0xFFB4B6BC)),
+              const LiveSpacer(),
+              _t('potencia', size: 13, weight: 700, color: accent),
+            ], gap: 6),
+            LiveRow([
+              _t('nivel', size: 40, weight: 800, color: _white),
+              const LiveSpacer(),
+              _t('restante', size: 14, color: _white),
+            ], align: LiveAlign.end),
+            _cable,
+          ], gap: 6),
+          horizontal: 14,
+          vertical: 10,
+        ),
+      ),
+    ),
+    android: LiveAndroid(
+      title: const LiveBind('estado'),
+      text: const LiveText.format('{nivel} · {restante}'),
+      chip: chip ?? const LiveChip.text('72 %'),
+    ),
+  );
+}
+
+/// Resumen de un viaje con la tarifa partida en tramos de color: base,
+/// servicio y propina.
+///
+/// Datos: `titulo`, `total`, `base`, `servicio`, `propina` (números que
+/// reparten la barra) y `baseTxt`, `servicioTxt`, `propinaTxt` (los mismos
+/// importes ya escritos).
+final class FareSplitPreset extends LivePreset {
+  const FareSplitPreset({
+    this.accent = const Color(0xFF30D158),
+    this.brand = 'Run',
+    this.chip,
+  });
+
+  /// Color de la propina.
+  final Color accent;
+
+  /// Nombre de la app, en cursiva arriba a la izquierda.
+  final String brand;
+
+  final LiveChip? chip;
+
+  @override
+  LivePresetSpec get spec => LivePresetSpec(
+    id: 'fare_split',
+    appName: brand,
+    accent: accent,
+    icon: presetIcon('car.fill', 'car'),
+    countdown: false,
+    progress: PresetProgress.none,
+    androidPromotable: false,
+    chip: chip ?? const LiveChip.text('S/ 21.50'),
+    sample: const PresetSample(
+      title: 'Viaje terminado',
+      subtitle: 'Total S/ 21.50',
+      name: 'Viaje',
+      highlight: 'S/ 21.50',
+    ),
+  );
+
+  @override
+  Map<String, Object?> sampleState({DateTime? now}) => {
+    'titulo': 'Viaje terminado',
+    'total': 'S/ 21.50',
+    'base': 16,
+    'servicio': 2.5,
+    'propina': 3,
+    'baseTxt': 'S/ 16.00',
+    'servicioTxt': 'S/ 2.50',
+    'propinaTxt': 'S/ 3.00',
+  };
+
+  static const _gray = Color(0xFF6B6E75);
+
+  LiveNode get _bar => LiveSplitBar([
+    const LiveSplitPart(LiveBind('base'), _white),
+    const LiveSplitPart(LiveBind('servicio'), _gray),
+    LiveSplitPart(const LiveBind('propina'), accent),
+  ]);
+
+  LiveNode _mark(Color c, double size) =>
+      LiveText.literal(brand, size: size, weight: 800, color: c, italic: true);
+
+  @override
+  LiveLayout build() => LiveLayout(
+    theme: const LiveTheme(
+      accent: Color(0xFF0B0B0D),
+      background: LiveBackground.accent,
+    ),
+    appLogo: presetIcon('car.fill', 'car'),
+    compactLeading: LiveIcon.symbol(
+      'car.fill',
+      android: presetIcon('car.fill', 'car').android,
+      color: accent,
+    ),
+    compactTrailing: _t('total', size: 15, weight: 700, color: _white),
+    minimal: LiveIcon.symbol(
+      'car.fill',
+      android: presetIcon('car.fill', 'car').android,
+      color: accent,
+    ),
+    expanded: LiveExpanded(
+      leading: _mark(_white, 20),
+      center: _t('titulo', size: 14, muted: true, lines: 1),
+      trailing: _t('total', size: 20, weight: 800, color: _white),
+      bottom: LiveColumn([
+        _bar,
+        LiveRow([
+          LiveText.format('Base {baseTxt}', size: 12, color: _white),
+          const LiveSpacer(),
+          LiveText.format('Propina {propinaTxt}', size: 12, color: accent),
+        ]),
+      ], gap: 6),
+    ),
+    lockScreen: LiveLockScreen.custom(
+      LiveColumn([
+        LiveRow([
+          _mark(_white, 20),
+          const LiveSpacer(),
+          _t('titulo', size: 13, color: const Color(0xFFB4B6BC)),
+        ]),
+        LiveRow([
+          _t('total', size: 32, weight: 800, color: _white),
+          const LiveSpacer(),
+          LiveText.literal('Total', size: 13, color: const Color(0xFFB4B6BC)),
+        ], align: LiveAlign.end),
+        _bar,
+        LiveRow([
+          LiveText.format('Base {baseTxt}', size: 12, color: _white),
+          const LiveSpacer(),
+          LiveText.format(
+            'Servicio {servicioTxt}',
+            size: 12,
+            color: const Color(0xFFB4B6BC),
+          ),
+          const LiveSpacer(),
+          LiveText.format('Propina {propinaTxt}', size: 12, color: accent),
+        ]),
+      ], gap: 6),
+    ),
+    android: LiveAndroid(
+      title: const LiveBind('titulo'),
+      text: const LiveText.format('Total {total} · propina {propinaTxt}'),
+      chip: chip ?? const LiveChip.text('S/ 21.50'),
+    ),
+  );
+}

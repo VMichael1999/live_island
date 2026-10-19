@@ -1,3 +1,5 @@
+import 'dart:ui' show Color;
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:live_island/live_island.dart';
 
@@ -12,6 +14,8 @@ void main() {
     'StockPreset': const StockPreset(),
     'FlightPathPreset': const FlightPathPreset(),
     'OrbitPreset': const OrbitPreset(),
+    'ChargePreset': const ChargePreset(),
+    'FareSplitPreset': const FareSplitPreset(),
   };
 
   for (final e in cases.entries) {
@@ -42,6 +46,11 @@ void main() {
           if (n is LiveSparkline) fields.add(n.series.field);
           if (n is LiveGauge) fields.add(n.value.field);
           if (n is LiveFlightPath) fields.add(n.value.field);
+          if (n is LiveSplitBar) {
+            for (final p in n.parts) {
+              fields.add(p.value.field);
+            }
+          }
           if (n is LiveIf) fields.add(n.when.field);
           n.children.forEach(walk);
         }
@@ -125,6 +134,8 @@ void main() {
       const StockPreset(),
       const FlightPathPreset(),
       const OrbitPreset(),
+      const ChargePreset(),
+      const FareSplitPreset(),
     ]) {
       final texts = [
         ...p.sampleState().values.whereType<String>(),
@@ -156,6 +167,41 @@ void main() {
         40,
         reason: 'withSize no pierde el alto',
       );
+    },
+  );
+
+  test(
+    'borde y brillo de la caja, brillo de la barra, tramos y cursiva viajan en el JSON',
+    () {
+      final box = LiveBox(
+        color: const Color(0xFF000000),
+        border: const Color(0xFF30D158),
+        borderWidth: 2,
+        glow: 12,
+      );
+      final back = LiveNode.fromJson(box.toJson()) as LiveBox;
+      expect(back.border, const Color(0xFF30D158));
+      expect(back.borderWidth, 2);
+      expect(back.glow, 12);
+
+      expect(
+        LiveProgressStyle.fromJson(LiveProgressStyle(glow: 8).toJson()).glow,
+        8,
+      );
+
+      const split = LiveSplitBar([
+        LiveSplitPart(LiveBind('a'), Color(0xFFFFFFFF)),
+        LiveSplitPart(LiveBind('b'), Color(0xFF30D158)),
+      ], height: 12);
+      final s2 = LiveNode.fromJson(split.toJson()) as LiveSplitBar;
+      expect(s2.parts, hasLength(2));
+      expect(s2.height, 12);
+      expect(s2.parts.last.color, const Color(0xFF30D158));
+
+      const t = LiveText.literal('Run', italic: true);
+      expect(t.toJson()['i'], true);
+      expect((LiveNode.fromJson(t.toJson()) as LiveText).italic, isTrue);
+      expect(const LiveText.literal('x').toJson().containsKey('i'), isFalse);
     },
   );
 }

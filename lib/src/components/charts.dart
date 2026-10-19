@@ -224,3 +224,64 @@ class LiveFlightPath extends LiveNode {
     style: progressStyleFromJson(json['style']),
   );
 }
+
+/// Un tramo de [LiveSplitBar]: cuánto vale (campo numérico del estado) y su
+/// color.
+class LiveSplitPart {
+  const LiveSplitPart(this.value, this.color);
+
+  /// Campo numérico del estado; los tramos se reparten en proporción a su valor.
+  final LiveBind value;
+  final Color color;
+
+  Map<String, Object?> toJson() => {
+    'bind': value.field,
+    'color': colorToHex(color),
+  };
+
+  factory LiveSplitPart.fromJson(Map<String, Object?> json) => LiveSplitPart(
+    LiveBind(json['bind']! as String),
+    colorFromHex(json['color']! as String),
+  );
+}
+
+/// Barra partida en tramos de distinto color, repartidos en proporción a sus
+/// valores: la tarifa y la propina, lo gastado y lo que queda…
+///
+/// Android la omite (una notificación no puede dibujarla).
+class LiveSplitBar extends LiveNode {
+  const LiveSplitBar(this.parts, {this.height = 10, this.gap = 3, this.radius});
+
+  final List<LiveSplitPart> parts;
+
+  /// Grosor en pt.
+  final double height;
+
+  /// Separación entre tramos en pt.
+  final double gap;
+
+  /// Esquinas (por defecto la mitad del grosor).
+  final double? radius;
+
+  @override
+  String get type => 'split';
+
+  @override
+  Map<String, Object?> toJson() => compact({
+    't': 'split',
+    'parts': [for (final p in parts) p.toJson()],
+    'h': height == 10 ? null : height,
+    'gap': gap == 3 ? null : gap,
+    'radius': radius,
+  });
+
+  factory LiveSplitBar.fromJson(Map<String, Object?> json) => LiveSplitBar(
+    [
+      for (final p in (json['parts']! as List))
+        LiveSplitPart.fromJson(asMap(p, 'split.parts')),
+    ],
+    height: (json['h'] as num?)?.toDouble() ?? 10,
+    gap: (json['gap'] as num?)?.toDouble() ?? 3,
+    radius: (json['radius'] as num?)?.toDouble(),
+  );
+}

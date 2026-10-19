@@ -167,7 +167,16 @@ class LivePadding extends LiveNode {
 /// Caja con tamaño, esquinas y fondo (por ejemplo el cuadro de 46 pt con
 /// acento al 22 % detrás del ícono de la isla expandida).
 class LiveBox extends LiveNode {
-  const LiveBox({this.child, this.size, this.radius, this.tint, this.color});
+  const LiveBox({
+    this.child,
+    this.size,
+    this.radius,
+    this.tint,
+    this.color,
+    this.border,
+    this.borderWidth,
+    this.glow,
+  });
 
   final LiveNode? child;
   final double? size;
@@ -176,6 +185,16 @@ class LiveBox extends LiveNode {
   /// Opacidad (0 a 1) del color de acento usada como fondo.
   final double? tint;
   final Color? color;
+
+  /// Color del borde (sin borde si falta).
+  final Color? border;
+
+  /// Grosor del borde en pt (1,5 por defecto).
+  final double? borderWidth;
+
+  /// Brillo alrededor de la caja: radio en pt del halo, del color del borde
+  /// (o del fondo si no hay borde).
+  final double? glow;
 
   @override
   String get type => 'box';
@@ -191,6 +210,9 @@ class LiveBox extends LiveNode {
     'radius': radius,
     'tint': tint,
     'color': color == null ? null : colorToHex(color!),
+    'border': border == null ? null : colorToHex(border!),
+    'bw': borderWidth,
+    'glow': glow,
   });
 
   factory LiveBox.fromJson(Map<String, Object?> json) => LiveBox(
@@ -203,6 +225,10 @@ class LiveBox extends LiveNode {
     tint: (json['tint'] as num?)?.toDouble(),
     color:
         json['color'] == null ? null : colorFromHex(json['color']! as String),
+    border:
+        json['border'] == null ? null : colorFromHex(json['border']! as String),
+    borderWidth: (json['bw'] as num?)?.toDouble(),
+    glow: (json['glow'] as num?)?.toDouble(),
   );
 }
 
