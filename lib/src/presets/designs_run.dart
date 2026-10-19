@@ -1119,8 +1119,15 @@ final class TrainPreset extends LivePreset {
         ),
         _field('subtitulo', size: 13, color: _soft, lines: 1),
       ], gap: 2),
+      const LiveSpacer(size: 8),
       const LiveSpacer(),
-      _field('destacado', size: titleSize + 2, weight: 800, color: accent),
+      _field(
+        'destacado',
+        size: titleSize - 2,
+        weight: 800,
+        color: accent,
+        lines: 1,
+      ),
     ]),
     _bar,
   ], gap: 10);
@@ -1141,7 +1148,7 @@ final class TrainPreset extends LivePreset {
         child: LivePadding(
           LiveColumn([
             LiveText.literal(brand, size: 20, weight: 800, color: _white),
-            _body(21),
+            _body(18),
           ], gap: 10),
           horizontal: 16,
           vertical: 12,
