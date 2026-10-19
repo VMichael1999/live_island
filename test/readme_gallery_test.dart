@@ -1,8 +1,14 @@
 // Imágenes de la galería del README: una por diseño, con la isla compacta,
-// la expandida y la tarjeta de la pantalla de bloqueo. Se regeneran con:
-//   flutter test test/readme_gallery_test.dart --update-goldens
-// y quedan en doc/assets/galeria/.
+// la expandida y la tarjeta de la pantalla de bloqueo. Todas miden lo mismo.
+// Solo se generan si pides la variable GENERAR_GALERIA (así una prueba normal
+// no toca los archivos):
+//   GENERAR_GALERIA=1 flutter test test/readme_gallery_test.dart
+// y quedan en doc/assets/galeria/ (la de carga se compone con
+// tool/compose_carga.py desde una captura del simulador).
 import 'dart:io';
+import 'dart:ui' as ui;
+
+import 'package:flutter/rendering.dart';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -54,56 +60,105 @@ void main() {
     'conductor': const RideDriverPreset(),
   };
 
-  for (final e in designs.entries) {
-    testWidgets('galería del README: ${e.key}', (tester) async {
-      final key = GlobalKey();
-      final p = e.value;
-      await tester.binding.setSurfaceSize(const Size(460, 520));
-      tester.view.devicePixelRatio = 2;
-      await tester.pumpWidget(const SizedBox());
-      await tester.runAsync(() async {
-        final ctx = tester.element(find.byType(SizedBox).first);
-        for (final img in images.values) {
-          await precacheImage(img, ctx);
-        }
-      });
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: MediaQuery(
-            data: const MediaQueryData(),
-            child: Center(
-              child: RepaintBoundary(
-                key: key,
-                child: DefaultTextStyle(
-                  style: const TextStyle(fontFamily: 'Roboto'),
-                  child: SizedBox(
-                    width: 420,
-                    child: LiveIslandPreview(
-                      layout: p.build(),
-                      state: p.sampleState(now: now),
-                      now: now,
-                      images: images,
-                      appName: p.appName,
-                      surfaces: const {
-                        LiveSurface.compact,
-                        LiveSurface.expanded,
-                        LiveSurface.lockScreen,
-                      },
-                      showLabels: false,
+  final generar = Platform.environment['GENERAR_GALERIA'] != null;
+
+  Future<void> render(
+    WidgetTester tester,
+    LivePreset p,
+    String out, {
+    Set<LiveSurface> surfaces = const {
+      LiveSurface.compact,
+      LiveSurface.expanded,
+      LiveSurface.lockScreen,
+    },
+    AlignmentGeometry align = Alignment.center,
+    EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 14),
+  }) async {
+    final key = GlobalKey();
+    await tester.binding.setSurfaceSize(const Size(460, 420));
+    tester.view.devicePixelRatio = 3;
+    await tester.pumpWidget(const SizedBox());
+    await tester.runAsync(() async {
+      final ctx = tester.element(find.byType(SizedBox).first);
+      for (final img in images.values) {
+        await precacheImage(img, ctx);
+      }
+    });
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: MediaQuery(
+          data: const MediaQueryData(),
+          child: Center(
+            child: RepaintBoundary(
+              key: key,
+              // Todas las imágenes miden lo mismo (420 x 380 pt): el diseño
+              // va sobre un fondo liso, para que en el README se vean del
+              // mismo tamaño.
+              child: DefaultTextStyle(
+                style: const TextStyle(fontFamily: 'Roboto'),
+                child: Container(
+                  width: 420,
+                  height: 380,
+                  alignment: align,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF2F4861), Color(0xFF0E1520)],
                     ),
+                  ),
+                  padding: padding,
+                  child: LiveIslandPreview(
+                    layout: p.build(),
+                    state: p.sampleState(now: now),
+                    now: now,
+                    images: images,
+                    appName: p.appName,
+                    surfaces: surfaces,
+                    showLabels: false,
                   ),
                 ),
               ),
             ),
           ),
         ),
-      );
-      await tester.pump();
-      await expectLater(
-        find.byKey(key),
-        matchesGoldenFile('../doc/assets/galeria/${e.key}.png'),
-      );
+      ),
+    );
+    await tester.pump();
+    // A 3x para que se vea nítida en el README.
+    final boundary = tester.renderObject<RenderRepaintBoundary>(
+      find.byKey(key),
+    );
+    await tester.runAsync(() async {
+      final img = await boundary.toImage(pixelRatio: 3);
+      final bytes = await img.toByteData(format: ui.ImageByteFormat.png);
+      final f = File(out)..createSync(recursive: true);
+      f.writeAsBytesSync(bytes!.buffer.asUint8List());
     });
   }
+
+  for (final e in designs.entries) {
+    testWidgets(
+      'galería del README: ${e.key}',
+      skip: !generar,
+      (tester) => render(tester, e.value, 'doc/assets/galeria/${e.key}.png'),
+    );
+  }
+
+  // Base de la imagen de carga: la isla compacta y la expandida de la vista
+  // previa; la tarjeta con brillo la añade tool/compose_carga.py desde una
+  // captura del simulador (la vista previa no dibuja el brillo).
+  testWidgets(
+    'galería del README: base de la carga',
+    skip: !generar,
+    (tester) => render(
+      tester,
+      const ChargePreset(),
+      'build/galeria/carga_base.png',
+      surfaces: const {LiveSurface.compact, LiveSurface.expanded},
+      align: Alignment.topCenter,
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 0),
+    ),
+  );
 }
