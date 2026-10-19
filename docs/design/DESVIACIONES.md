@@ -163,7 +163,10 @@ Idea y geometría tomadas de `rit3zh/expo-dynamic-notifications` (MIT): tres for
 | Un tamaño por superficie | `LiveImage.withSize(n)` usa la misma imagen grande en la tarjeta y pequeña en la isla compacta |
 | Imágenes anchas | Toda imagen se dibuja en un cuadrado de `size`. Para una imagen ancha sin fondo (un conductor con su auto) usa `LiveImage.withHeight(n)` o `fixedHeight`: alto fijo y ancho según su proporción, sin cuadrado vacío |
 | Altura de la tarjeta de bloqueo | iOS limita la tarjeta a unos 160 pt con el relleno del sistema, así que cada diseño tiene unos 125 pt útiles; lo que sobre se recorta. Los diseños de ejemplo están medidos para caber |
-| Pendiente | Cable luminoso (carga), tramos de color distinto (propina) y borde con brillo siguen sin nodo propio |
+| Cable luminoso | `LiveProgressStyle.glow`: halo del color de lo avanzado. Android lo ignora. En las pruebas de Flutter (`flutter test`) las sombras no se dibujan, así que los goldens no muestran el brillo; en la app y en iOS sí |
+| Borde con brillo | `LiveBox(border:, borderWidth:, glow:)`. El halo va solo en el fondo de la caja, no difumina el texto de dentro |
+| Tramos de color | `LiveSplitBar` (JSON `split`): tramos de distinto color repartidos en proporción a valores del estado (tarifa, servicio y propina). Android la omite |
+| Cursiva | `LiveText(italic: true)` (JSON `i`) |
 
 ## Gráficas: línea, arco y ruta curva
 
