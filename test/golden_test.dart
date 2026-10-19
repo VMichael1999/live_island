@@ -238,55 +238,45 @@ void main() {
     );
   });
 
-  testWidgets('diseños de referencia con las imágenes de la app de ejemplo', (
-    tester,
-  ) async {
+  LiveImage run(String f, int w, int h, {double? size, double? height}) =>
+      LiveImage.asset(
+        'assets/run/$f',
+        width: w,
+        height: h,
+        size: size,
+        fixedHeight: height,
+        shape: LiveShape.square,
+      );
+
+  Future<void> designsGolden(
+    WidgetTester tester,
+    String file,
+    List<LivePreset> presets, {
+    Set<LiveSurface> surfaces = const {
+      LiveSurface.compact,
+      LiveSurface.expanded,
+      LiveSurface.lockScreen,
+    },
+    double height = 1900,
+  }) async {
     final key = GlobalKey();
-    const names = [
-      'uber',
-      'uber_white',
-      'starbucks',
-      'nike',
-      'psg',
-      'chelsea',
-      'ride_head_light',
-      'ride_car_light',
-      'ride_head_dark',
-      'ride_car_dark',
-    ];
+    // Imágenes que traen los diseños (dibujos propios del paquete).
+    const files = {
+      liveDesignCarTopAsset: 'assets/presets/car_top.png',
+      liveDesignCarSideAsset: 'assets/presets/car_side.png',
+      liveDesignCrestAAsset: 'assets/presets/crest_a.png',
+      liveDesignCrestBAsset: 'assets/presets/crest_b.png',
+    };
     final images = <String, ImageProvider>{
-      for (final n in names)
-        'asset_assets_reference_${n}_png': MemoryImage(
-          File('example/assets/reference/$n.png').readAsBytesSync(),
+      for (final e in files.entries)
+        LiveImage.asset(e.key).id: MemoryImage(File(e.value).readAsBytesSync()),
+      // Imágenes de la app de ejemplo (conductor y auto sin fondo).
+      for (final n in ['header', 'avatar'])
+        LiveImage.asset('assets/run/$n.png').id: MemoryImage(
+          File('example/assets/run/$n.png').readAsBytesSync(),
         ),
     };
-    LiveImage ref(String f, double w, double h) => LiveImage.asset(
-      'assets/reference/$f',
-      width: w.round(),
-      height: h.round(),
-      size: w,
-      shape: LiveShape.square,
-    );
-    final presets = <LivePreset>[
-      RidePickupPreset(
-        brandLogo: ref('uber.png', 70, 24),
-        headerImage: ref('ride_head_light.png', 102, 42),
-        trackerImage: ref('ride_car_light.png', 46, 26),
-      ),
-      RidePickupPreset(
-        dark: true,
-        brandLogo: ref('uber_white.png', 64, 22),
-        headerImage: ref('ride_head_dark.png', 118, 47),
-        trackerImage: ref('ride_car_dark.png', 44, 24),
-      ),
-      StorePickupPreset(brandLogo: ref('starbucks.png', 28, 28)),
-      RunPreset(brandMark: ref('nike.png', 56, 20)),
-      MatchPreset(
-        homeCrest: ref('psg.png', 84, 84),
-        awayCrest: ref('chelsea.png', 84, 84),
-      ),
-    ];
-    await tester.binding.setSurfaceSize(const Size(900, 1900));
+    await tester.binding.setSurfaceSize(Size(900, height));
     tester.view.devicePixelRatio = 2;
     await tester.pumpWidget(const SizedBox());
     await tester.runAsync(() async {
@@ -312,10 +302,7 @@ void main() {
                   now: fx.now,
                   images: images,
                   appName: p.appName,
-                  surfaces: const {
-                    LiveSurface.expanded,
-                    LiveSurface.lockScreen,
-                  },
+                  surfaces: surfaces,
                   showLabels: false,
                 ),
               ),
@@ -324,53 +311,37 @@ void main() {
       ),
     );
     await tester.pump();
-    await expectLater(
-      find.byKey(key),
-      matchesGoldenFile('goldens/disenos_referencia.png'),
-    );
+    await expectLater(find.byKey(key), matchesGoldenFile('goldens/$file.png'));
+  }
+
+  testWidgets('golden: recogida y viaje del conductor', (tester) async {
+    await designsGolden(tester, 'recogida', [
+      RidePickupPreset(
+        headerImage: run('header.png', 760, 308, height: 40),
+        driverPhoto: run('avatar.png', 200, 205, size: 34),
+      ),
+      RidePickupPreset(
+        dark: true,
+        headerImage: run('header.png', 760, 308, height: 40),
+        driverPhoto: run('avatar.png', 200, 205, size: 34),
+      ),
+      const RideDriverPreset(),
+    ], height: 1600);
+  });
+
+  testWidgets('golden: tienda, carrera y marcador', (tester) async {
+    await designsGolden(tester, 'tienda_carrera_marcador', const [
+      StorePickupPreset(),
+      RunPreset(),
+      MatchPreset(),
+    ], height: 1500);
   });
 
   testWidgets('golden: gráficas (bolsa, vuelo y órbita)', (tester) async {
-    final key = GlobalKey();
-    final presets = <LivePreset>[
-      const StockPreset(),
-      const FlightPathPreset(),
-      const OrbitPreset(),
-    ];
-    await tester.binding.setSurfaceSize(const Size(900, 1200));
-    tester.view.devicePixelRatio = 2;
-    await tester.pumpWidget(
-      _harness(
-        key,
-        860,
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: [
-            for (final p in presets)
-              SizedBox(
-                width: 420,
-                child: LiveIslandPreview(
-                  layout: p.build(),
-                  state: p.sampleState(now: fx.now),
-                  now: fx.now,
-                  appName: p.appName,
-                  surfaces: const {
-                    LiveSurface.expanded,
-                    LiveSurface.lockScreen,
-                    LiveSurface.android,
-                  },
-                  showLabels: false,
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-    await tester.pump();
-    await expectLater(
-      find.byKey(key),
-      matchesGoldenFile('goldens/graficas.png'),
-    );
+    await designsGolden(tester, 'graficas', const [
+      StockPreset(),
+      FlightPathPreset(),
+      OrbitPreset(),
+    ], height: 1700);
   });
 }

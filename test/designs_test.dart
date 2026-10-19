@@ -5,6 +5,8 @@ void main() {
   final cases = <String, LivePreset>{
     'RidePickupPreset (clara)': const RidePickupPreset(),
     'RidePickupPreset (oscura)': const RidePickupPreset(dark: true),
+    'RideDriverPreset': const RideDriverPreset(),
+    'MatchPreset': const MatchPreset(),
     'StorePickupPreset': const StorePickupPreset(),
     'RunPreset': const RunPreset(),
     'StockPreset': const StockPreset(),
@@ -80,7 +82,7 @@ void main() {
     );
     expect(
       const RidePickupPreset(dark: true).build().theme.background,
-      LiveBackground.system,
+      LiveBackground.accent,
     );
   });
 
@@ -96,4 +98,64 @@ void main() {
     expect(s.toJson()['dashed'], true);
     expect(LiveProgressStyle.fromJson(s.toJson()), s);
   });
+
+  test('los marcadores viajan en el JSON y hacen ida y vuelta', () {
+    final style = LiveProgressStyle(
+      pointShape: LivePointShape.ring,
+      markers: const [.4, 1],
+    );
+    final back = LiveProgressStyle.fromJson(style.toJson());
+    expect(back.markers, [.4, 1]);
+    expect(back.pointShape, LivePointShape.ring);
+    expect(const LiveProgressStyle().isEmpty, isTrue);
+  });
+
+  test('ningún texto de ejemplo mezcla inglés y español', () {
+    final english = RegExp(
+      r'\b(until|pickup|arriving|soon|order|progress|handcrafting|miles|time|home|guest|stats|world cup|landing|on time)\b',
+      caseSensitive: false,
+    );
+    for (final p in <LivePreset>[
+      const RidePickupPreset(),
+      const RidePickupPreset(dark: true),
+      const RideDriverPreset(),
+      const StorePickupPreset(),
+      const RunPreset(),
+      const MatchPreset(),
+      const StockPreset(),
+      const FlightPathPreset(),
+      const OrbitPreset(),
+    ]) {
+      final texts = [
+        ...p.sampleState().values.whereType<String>(),
+        for (final n in p.build().allNodes)
+          if (n is LiveText) ...[
+            if (n.literal != null) n.literal!,
+            if (n.template != null) n.template!,
+          ],
+      ];
+      final text = texts.join(' | ');
+      expect(english.hasMatch(text), isFalse, reason: '${p.runtimeType}');
+    }
+  });
+
+  test(
+    'una imagen con alto fijo viaja en el JSON y conserva su ancho libre',
+    () {
+      final img = LiveImage.asset(
+        'assets/x.png',
+        width: 760,
+        height: 308,
+      ).withHeight(40);
+      expect(img.toJson()['h'], 40);
+      expect(img.toJson().containsKey('size'), isFalse);
+      final back = LiveImage.fromJson(img.toJson());
+      expect(back.fixedHeight, 40);
+      expect(
+        img.withSize(30).fixedHeight,
+        40,
+        reason: 'withSize no pierde el alto',
+      );
+    },
+  );
 }
