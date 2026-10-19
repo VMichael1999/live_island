@@ -7,6 +7,9 @@ void main() {
     'RidePickupPreset (oscura)': const RidePickupPreset(dark: true),
     'StorePickupPreset': const StorePickupPreset(),
     'RunPreset': const RunPreset(),
+    'StockPreset': const StockPreset(),
+    'FlightPathPreset': const FlightPathPreset(),
+    'OrbitPreset': const OrbitPreset(),
   };
 
   for (final e in cases.entries) {
@@ -34,6 +37,9 @@ void main() {
           if (n is LiveText && n.source != null) fields.add(n.source!.field);
           if (n is LiveProgress) fields.add(n.value.field);
           if (n is LiveSegments) fields.add(n.value.field);
+          if (n is LiveSparkline) fields.add(n.series.field);
+          if (n is LiveGauge) fields.add(n.value.field);
+          if (n is LiveFlightPath) fields.add(n.value.field);
           if (n is LiveIf) fields.add(n.when.field);
           n.children.forEach(walk);
         }

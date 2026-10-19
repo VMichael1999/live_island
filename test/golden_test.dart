@@ -329,4 +329,48 @@ void main() {
       matchesGoldenFile('goldens/disenos_referencia.png'),
     );
   });
+
+  testWidgets('golden: gráficas (bolsa, vuelo y órbita)', (tester) async {
+    final key = GlobalKey();
+    final presets = <LivePreset>[
+      const StockPreset(),
+      const FlightPathPreset(),
+      const OrbitPreset(),
+    ];
+    await tester.binding.setSurfaceSize(const Size(900, 1200));
+    tester.view.devicePixelRatio = 2;
+    await tester.pumpWidget(
+      _harness(
+        key,
+        860,
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            for (final p in presets)
+              SizedBox(
+                width: 420,
+                child: LiveIslandPreview(
+                  layout: p.build(),
+                  state: p.sampleState(now: fx.now),
+                  now: fx.now,
+                  appName: p.appName,
+                  surfaces: const {
+                    LiveSurface.expanded,
+                    LiveSurface.lockScreen,
+                    LiveSurface.android,
+                  },
+                  showLabels: false,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+    await tester.pump();
+    await expectLater(
+      find.byKey(key),
+      matchesGoldenFile('goldens/graficas.png'),
+    );
+  });
 }

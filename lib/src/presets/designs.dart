@@ -8,6 +8,7 @@
 import 'dart:ui' show Color;
 
 import '../components/actions.dart';
+import '../components/charts.dart';
 import '../components/layout_nodes.dart';
 import '../components/progress.dart';
 import '../components/text.dart';
@@ -627,4 +628,340 @@ final class MatchPreset extends LivePreset {
       ),
     );
   }
+}
+
+const _up = Color(0xFF30D158);
+
+/// Cotización de una acción: símbolo, precio, variación y gráfica de línea.
+///
+/// Datos: `simbolo`, `nombre`, `precio`, `cambio` (texto, por ejemplo
+/// `+1.24%`) y `serie` (los últimos precios con [liveSeries]).
+final class StockPreset extends LivePreset {
+  const StockPreset({this.accent = _up, this.brandLogo, this.chip});
+
+  /// Color de la línea y de la variación (verde si sube, rojo si baja).
+  final Color accent;
+
+  /// Logotipo de la empresa.
+  final LiveImage? brandLogo;
+
+  final LiveChip? chip;
+
+  @override
+  LivePresetSpec get spec => LivePresetSpec(
+    id: 'stock',
+    appName: 'Bolsa',
+    accent: accent,
+    icon: presetIcon('chart.line.uptrend.xyaxis', 'landmark'),
+    countdown: false,
+    progress: PresetProgress.none,
+    androidPromotable: false,
+    chip: chip ?? const LiveChip.text('+1.2%'),
+    sample: const PresetSample(
+      title: 'TSLA 219.40',
+      subtitle: 'Tesla, Inc.',
+      name: 'Bolsa',
+      highlight: '+1.24%',
+    ),
+  );
+
+  @override
+  Map<String, Object?> sampleState({DateTime? now}) => {
+    'simbolo': 'TSLA',
+    'nombre': 'Tesla, Inc.',
+    'precio': '219.40',
+    'cambio': '+1.24%',
+    'serie': liveSeries([
+      212,
+      213.5,
+      212.8,
+      214.9,
+      214.1,
+      216.3,
+      215.2,
+      217.8,
+      216.9,
+      218.5,
+      219.4,
+    ]),
+  };
+
+  LiveNode get _mark =>
+      brandLogo ??
+      presetIcon('chart.line.uptrend.xyaxis', 'landmark', accent: true);
+
+  LiveNode get _spark =>
+      LiveSparkline(series: const LiveBind('serie'), height: 44, color: accent);
+
+  @override
+  LiveLayout build() => LiveLayout(
+    theme: LiveTheme(accent: accent),
+    appLogo: presetIcon('chart.line.uptrend.xyaxis', 'landmark'),
+    compactLeading: _mark,
+    compactTrailing: _t('precio', size: 14, weight: 700, color: accent),
+    minimal: _mark,
+    expanded: LiveExpanded(
+      leading: LiveColumn([
+        _mark,
+        _t('simbolo', size: 15, weight: 700, color: _white),
+      ], gap: 4),
+      center: _t('nombre', size: 13, muted: true),
+      trailing: LiveColumn(
+        [
+          _t('precio', size: 24, weight: 700, color: _white),
+          _t('cambio', size: 14, weight: 600, color: accent),
+        ],
+        align: LiveAlign.end,
+        gap: 0,
+      ),
+      bottom: _spark,
+    ),
+    lockScreen: LiveLockScreen.custom(
+      LiveBox(
+        color: _ink,
+        radius: 28,
+        child: LivePadding(
+          LiveColumn([
+            LiveRow([
+              _mark,
+              LiveColumn([
+                _t('simbolo', size: 17, weight: 700, color: _white),
+                _t('nombre', size: 13, muted: true),
+              ], gap: 0),
+              const LiveSpacer(),
+              LiveColumn(
+                [
+                  _t('precio', size: 26, weight: 700, color: _white),
+                  _t('cambio', size: 14, weight: 600, color: accent),
+                ],
+                align: LiveAlign.end,
+                gap: 0,
+              ),
+            ]),
+            _spark,
+          ], gap: 8),
+          all: 14,
+        ),
+      ),
+    ),
+    android: LiveAndroid(
+      title: const LiveText.format('{simbolo}'),
+      text: const LiveBind('cambio'),
+      chip: chip ?? const LiveChip.text('+1.2%'),
+    ),
+  );
+}
+
+/// Vuelo con la ruta curva entre dos aeropuertos y el avión avanzando.
+///
+/// Datos: `vuelo`, `estado`, `origen`, `destino`, `aterriza` y `progreso`.
+final class FlightPathPreset extends LivePreset {
+  const FlightPathPreset({
+    this.accent = const Color(0xFF30D158),
+    this.carrier,
+    this.chip,
+  });
+
+  /// Color de lo recorrido, del avión y del estado.
+  final Color accent;
+
+  /// Logotipo de la aerolínea.
+  final LiveImage? carrier;
+
+  final LiveChip? chip;
+
+  @override
+  LivePresetSpec get spec => LivePresetSpec(
+    id: 'flightpath',
+    appName: 'Vuelo',
+    accent: accent,
+    icon: presetIcon('airplane', 'plane'),
+    countdown: false,
+    progress: PresetProgress.bar,
+    chip: chip ?? const LiveChip.text('55 min'),
+    sample: const PresetSample(
+      title: 'SFO → JFK',
+      subtitle: 'Landing in 55m',
+      name: 'FL234',
+      highlight: 'On time',
+      progress: 0.72,
+    ),
+  );
+
+  @override
+  Map<String, Object?> sampleState({DateTime? now}) => {
+    'vuelo': 'FL234',
+    'estado': 'On Time',
+    'origen': 'SFO',
+    'destino': 'JFK',
+    'aterriza': 'Landing in 55m',
+    'progreso': 0.72,
+  };
+
+  LiveNode get _route => LiveFlightPath(
+    value: const LiveBind('progreso'),
+    height: 46,
+    tracker: presetIcon('airplane', 'plane'),
+    style: LiveProgressStyle(
+      height: 3,
+      color: accent,
+      trackColor: const Color(0x4DFFFFFF),
+      dashed: true,
+      trackerSize: 26,
+    ),
+  );
+
+  @override
+  LiveLayout build() => LiveLayout(
+    theme: LiveTheme(accent: accent),
+    appLogo: presetIcon('airplane', 'plane'),
+    compactLeading: presetIcon('airplane', 'plane', accent: true),
+    compactTrailing: _t('destino', size: 14, weight: 700, color: accent),
+    minimal: presetIcon('airplane', 'plane', accent: true),
+    expanded: LiveExpanded(
+      leading: _t('origen', size: 26, weight: 700, color: _white),
+      center: _t('aterriza', size: 13, color: accent),
+      trailing: _t('destino', size: 26, weight: 700, color: _white),
+      bottom: _route,
+    ),
+    lockScreen: LiveLockScreen.custom(
+      LiveBox(
+        color: _ink,
+        radius: 28,
+        child: LivePadding(
+          LiveColumn([
+            LiveRow([
+              if (carrier != null) carrier!,
+              _t('vuelo', size: 15, weight: 700, color: _white),
+              const LiveSpacer(),
+              _t('estado', size: 13, weight: 600, color: accent),
+            ]),
+            LiveRow([
+              _t('origen', size: 34, weight: 700, color: _white),
+              const LiveSpacer(),
+              _t('destino', size: 34, weight: 700, color: _white),
+            ]),
+            _route,
+            _t('aterriza', size: 14, color: _white),
+          ], gap: 6),
+          all: 14,
+        ),
+      ),
+    ),
+    android: LiveAndroid(
+      title: const LiveText.format('{vuelo}'),
+      text: const LiveText.format('{origen} → {destino} · {aterriza}'),
+      chip: chip ?? const LiveChip.text('55 min'),
+      progress: LiveFlightPath(
+        value: const LiveBind('progreso'),
+        tracker: presetIcon('airplane', 'plane'),
+        style: LiveProgressStyle(color: accent),
+      ),
+    ),
+  );
+}
+
+/// Órbita: un arco con un punto que avanza (la ISS, un satélite, un
+/// parquímetro). El arco es un [LiveGauge], así que `sweep` lo cambia.
+///
+/// Datos: `titulo`, `lugar`, `tiempo` y `progreso`.
+final class OrbitPreset extends LivePreset {
+  const OrbitPreset({
+    this.accent = const Color(0xFF64D2FF),
+    this.sweep = 180,
+    this.chip,
+  });
+
+  final Color accent;
+
+  /// Grados que abarca el arco.
+  final double sweep;
+
+  final LiveChip? chip;
+
+  @override
+  LivePresetSpec get spec => LivePresetSpec(
+    id: 'orbit',
+    appName: 'Órbita',
+    accent: accent,
+    icon: presetIcon('globe.europe.africa.fill', 'upload'),
+    countdown: false,
+    progress: PresetProgress.bar,
+    chip: chip ?? const LiveChip.text('ISS'),
+    sample: const PresetSample(
+      title: 'ISS',
+      subtitle: 'Sobre el océano Pacífico',
+      name: 'Órbita',
+      highlight: '27 600 km/h',
+      progress: 0.38,
+    ),
+  );
+
+  @override
+  Map<String, Object?> sampleState({DateTime? now}) => {
+    'titulo': 'ISS',
+    'lugar': 'Sobre el océano Pacífico',
+    'tiempo': '27 600 km/h',
+    'progreso': 0.38,
+  };
+
+  LiveNode _arc(double size) => LiveGauge(
+    value: const LiveBind('progreso'),
+    size: size,
+    sweep: sweep,
+    style: LiveProgressStyle(
+      height: 4,
+      color: accent,
+      trackColor: const Color(0x40FFFFFF),
+      dashed: true,
+    ),
+    child: presetIcon('globe.europe.africa.fill', 'upload', accent: true),
+  );
+
+  @override
+  LiveLayout build() => LiveLayout(
+    theme: LiveTheme(accent: accent),
+    appLogo: presetIcon('globe.europe.africa.fill', 'upload'),
+    compactLeading: presetIcon(
+      'globe.europe.africa.fill',
+      'upload',
+      accent: true,
+    ),
+    compactTrailing: _t('titulo', size: 14, weight: 700, color: accent),
+    minimal: presetIcon('globe.europe.africa.fill', 'upload', accent: true),
+    expanded: LiveExpanded(
+      leading: _arc(96),
+      center: LiveColumn([
+        _t('titulo', size: 20, weight: 700, color: _white),
+        _t('lugar', size: 13, muted: true, lines: 2),
+      ], gap: 2),
+      trailing: _t('tiempo', size: 13, weight: 600, color: accent),
+    ),
+    lockScreen: LiveLockScreen.custom(
+      LiveBox(
+        color: _ink,
+        radius: 28,
+        child: LivePadding(
+          LiveRow([
+            _arc(120),
+            LiveColumn([
+              _t('titulo', size: 24, weight: 700, color: _white),
+              _t('lugar', size: 14, muted: true, lines: 2),
+              _t('tiempo', size: 14, weight: 600, color: accent),
+            ], gap: 2),
+          ], gap: 16),
+          all: 14,
+        ),
+      ),
+    ),
+    android: LiveAndroid(
+      title: const LiveText.literal('Órbita'),
+      text: const LiveText.format('{lugar} · {tiempo}'),
+      chip: chip ?? const LiveChip.text('ISS'),
+      progress: LiveGauge(
+        value: const LiveBind('progreso'),
+        style: LiveProgressStyle(color: accent),
+      ),
+    ),
+  );
 }

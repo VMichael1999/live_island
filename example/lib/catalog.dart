@@ -201,6 +201,24 @@ final catalog = <CatalogEntry>[
       awayCrest: _ref('chelsea.png', 84, 84),
     ),
   ),
+  CatalogEntry(
+    'stock',
+    'Bolsa · gráfica',
+    (a, b) => StockPreset(
+      accent: _a(a, const StockPreset().accent),
+      brandLogo: _ref('tesla.png', 28, 28),
+    ),
+  ),
+  CatalogEntry(
+    'flightpath',
+    'Vuelo · ruta curva',
+    (a, b) => FlightPathPreset(accent: _a(a, const FlightPathPreset().accent)),
+  ),
+  CatalogEntry(
+    'orbit',
+    'Órbita · arco',
+    (a, b) => OrbitPreset(accent: _a(a, const OrbitPreset().accent)),
+  ),
   // Un preset de la galería con la barra reestilizada: así queda una línea de tren.
   CatalogEntry(
     'train_line',
