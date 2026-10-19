@@ -26,6 +26,12 @@ const liveDesignCarTopAsset = 'packages/live_island/assets/presets/car_top.png';
 const liveDesignCarSideAsset =
     'packages/live_island/assets/presets/car_side.png';
 
+/// Escudo genérico azul y rojo (equipo local de ejemplo).
+const liveDesignCrestAAsset = 'packages/live_island/assets/presets/crest_a.png';
+
+/// Escudo genérico amarillo y azul marino (equipo visitante de ejemplo).
+const liveDesignCrestBAsset = 'packages/live_island/assets/presets/crest_b.png';
+
 const _ink = Color(0xFF0B0B0D);
 const _white = Color(0xFFFFFFFF);
 
@@ -49,32 +55,45 @@ LiveNode _t(
   align: align,
 );
 
-/// Recogida de un viaje: tiempo, conductor con su auto, matrícula y una barra
-/// de trazo discontinuo con el auto avanzando hacia el punto de recogida.
+/// Cómo se dibuja la barra de recogida.
+enum RideBar {
+  /// Línea continua de la salida al destino, con un marcador al final.
+  line,
+
+  /// Trazo discontinuo con marcadores intermedios.
+  dotted,
+}
+
+/// Recogida de un viaje: tiempo, conductor con su auto, placa y una barra con
+/// el auto avanzando hacia el punto de recogida.
 ///
-/// Con [dark] la tarjeta de bloqueo es oscura y la barra blanca; si no, clara
-/// con la barra del color de acento. Datos: `tiempo`, `titulo`, `subtitulo`,
-/// `placa`, `vehiculo`, `nombre`, `progreso`.
+/// La tarjeta clara usa la barra [RideBar.dotted] (punteada, con marcadores) y
+/// la oscura [RideBar.line] (continua, con marcador final); [bar] cambia
+/// cualquiera. Datos: `tiempo`, `titulo`, `subtitulo`, `placa`, `vehiculo`,
+/// `nombre`, `progreso`. En la oscura el título va antes del tiempo
+/// («Recogida en 2 min»); en la clara, después («2 min para la recogida»).
 final class RidePickupPreset extends LivePreset {
   const RidePickupPreset({
     this.dark = false,
     this.accent = const Color(0xFF1F5EFF),
-    this.brand = 'Rides',
+    this.brand = 'Run',
     this.driverInitials = 'A',
     this.driverPhoto,
     this.carImage,
     this.brandLogo,
     this.headerImage,
     this.trackerImage,
+    this.compactIcon,
+    this.bar,
     this.showCar = true,
     this.buttons,
     this.chip,
   });
 
-  /// Tarjeta oscura (barra blanca) en vez de clara (barra de acento).
+  /// Tarjeta oscura en vez de clara.
   final bool dark;
 
-  /// Color del tiempo y de la barra en la tarjeta clara.
+  /// Color del tiempo y de lo avanzado en la tarjeta clara; de la isla.
   final Color accent;
 
   /// Nombre de la app, arriba a la izquierda de la tarjeta.
@@ -92,12 +111,18 @@ final class RidePickupPreset extends LivePreset {
   /// Logotipo en lugar del nombre de la app, arriba a la izquierda.
   final LiveImage? brandLogo;
 
-  /// Una sola imagen con el conductor y su auto (reemplaza a [driverPhoto] y
-  /// [carImage] en la tarjeta de bloqueo).
+  /// Una sola imagen con el conductor y su auto, sin fondo (reemplaza a
+  /// [driverPhoto] y [carImage] en la tarjeta de bloqueo).
   final LiveImage? headerImage;
 
-  /// Imagen del auto que avanza sobre la barra (vista desde arriba).
+  /// Imagen del auto que avanza sobre la barra (vista desde arriba, sin fondo).
   final LiveImage? trackerImage;
+
+  /// Ícono o imagen de la isla compacta y la mínima (por defecto un auto).
+  final LiveVisual? compactIcon;
+
+  /// Estilo de la barra; por defecto punteada en la clara y continua en la oscura.
+  final RideBar? bar;
 
   /// Muestra al conductor y su auto arriba a la derecha.
   final bool showCar;
@@ -108,6 +133,8 @@ final class RidePickupPreset extends LivePreset {
   /// Chip de Android; por defecto el tiempo.
   final LiveChip? chip;
 
+  RideBar get _bar => bar ?? (dark ? RideBar.line : RideBar.dotted);
+
   @override
   LivePresetSpec get spec => LivePresetSpec(
     id: dark ? 'ride_pickup_dark' : 'ride_pickup',
@@ -117,31 +144,43 @@ final class RidePickupPreset extends LivePreset {
     countdown: false,
     progress: PresetProgress.bar,
     buttons: buttons ?? const [],
-    chip: chip ?? const LiveChip.text('1 min'),
+    chip: chip ?? const LiveChip.text('2 min'),
     sample: const PresetSample(
-      title: 'until pickup',
-      subtitle: 'Anderson is arriving soon',
-      name: 'Anderson',
-      highlight: '1 min',
+      title: 'para la recogida',
+      subtitle: 'Andrés llega en breve',
+      name: 'Andrés',
+      highlight: '2 min',
       progress: 0.34,
     ),
   );
 
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
-    'tiempo': '1 min',
-    'titulo': 'until pickup',
-    'subtitulo': 'Anderson is arriving soon',
-    'placa': '7NLR004',
-    'vehiculo': 'Silver Honda Civic',
-    'nombre': 'Anderson',
+    'tiempo': '2 min',
+    'titulo': dark ? 'Recogida en' : 'para la recogida',
+    'subtitulo': 'Andrés llega en breve',
+    'placa': 'A1B-234',
+    'vehiculo': 'Sedán plateado',
+    'nombre': 'Andrés',
     'progreso': 0.34,
   };
 
-  LiveVisual get _driver =>
+  // Iniciales sobre un círculo del color de acento (no del tema: en la tarjeta
+  // oscura el tema es casi negro).
+  LiveNode get _driver =>
       driverPhoto != null
-          ? LiveAvatar.photo(driverPhoto!, size: 38)
-          : LiveAvatar(driverInitials, size: 38);
+          ? LiveAvatar.photo(driverPhoto!, size: 34)
+          : LiveBox(
+            size: 34,
+            radius: 17,
+            color: accent,
+            child: LiveText.literal(
+              driverInitials,
+              size: 15,
+              weight: 700,
+              color: _white,
+            ),
+          );
 
   LiveImage get _car =>
       carImage ??
@@ -150,12 +189,19 @@ final class RidePickupPreset extends LivePreset {
         width: 110,
         height: 46,
         shape: LiveShape.square,
-        size: 92,
+        size: 74,
       );
 
-  LiveNode _progress(Color fill, Color track) => LiveProgress.bar(
-    value: const LiveBind('progreso'),
-    tracker: LiveTracker(
+  LiveVisual get _compact =>
+      compactIcon ??
+      LiveIcon.symbol(
+        'car.fill',
+        android: presetIcon('car.fill', 'car').android,
+        color: accent,
+      );
+
+  LiveNode _progress(Color fill, Color track) {
+    final tracker = LiveTracker(
       trackerImage ??
           LiveImage.asset(
             liveDesignCarTopAsset,
@@ -165,92 +211,133 @@ final class RidePickupPreset extends LivePreset {
           ),
       height: 24,
       background: LiveTrackerBackground.none,
-    ),
-    endIcon: presetIcon('mappin', 'mappin'),
-    style: LiveProgressStyle(
-      height: 4,
-      color: fill,
-      trackColor: track,
-      dashed: true,
-    ),
-  );
+    );
+    if (_bar == RideBar.line) {
+      return LiveProgress.bar(
+        value: const LiveBind('progreso'),
+        tracker: tracker,
+        endIcon: LiveIcon.symbol(
+          'record.circle',
+          android: presetIcon('mappin', 'mappin').android,
+          color: track,
+          size: 18,
+        ),
+        style: LiveProgressStyle(height: 4, color: fill, trackColor: track),
+      );
+    }
+    return LiveProgress.bar(
+      value: const LiveBind('progreso'),
+      tracker: tracker,
+      style: LiveProgressStyle(
+        height: 4,
+        color: fill,
+        trackColor: track,
+        dashed: true,
+        pointShape: LivePointShape.ring,
+        pointSize: 18,
+        markers: const [.62, 1],
+      ),
+    );
+  }
 
   @override
   LiveLayout build() {
     final ink = dark ? _white : _ink;
     final fill = dark ? _white : accent;
-    final track = dark ? const Color(0xFF66686E) : const Color(0xFFB4B4B9);
+    final track = dark ? const Color(0xFF6B6E75) : const Color(0xFFB4B4B9);
+    final subtle = dark ? const Color(0xFFB4B6BC) : _ink;
 
-    LiveNode card(Color text, Color timeColor) => LiveColumn([
+    LiveNode header() => LiveRow([
+      brandLogo ?? LiveText.literal(brand, size: 22, weight: 800, color: ink),
+      const LiveSpacer(),
+      if (showCar && headerImage != null)
+        headerImage!
+      else if (showCar)
+        LiveRow([_driver, _car], gap: 0),
+    ]);
+
+    // Oscura: «Recogida en 2 min» y, debajo, «placa • vehículo».
+    final darkBody = LiveColumn([
       LiveRow([
-        brandLogo ??
-            LiveText.literal(brand, size: 20, weight: 800, color: text),
-        const LiveSpacer(),
-        if (showCar && headerImage != null)
-          headerImage!
-        else if (showCar)
-          LiveRow([_driver, _car], gap: 0),
-      ]),
-      LiveRow([
-        LiveColumn([
-          LiveRow([
-            _t('tiempo', size: 22, weight: 700, color: timeColor),
-            _t('titulo', size: 22, weight: 700, color: text),
-          ], gap: 5),
-          _t('subtitulo', size: 14, color: text),
-        ], gap: 3),
-        const LiveSpacer(),
-        LiveColumn(
-          [
-            _t('placa', size: 20, weight: 700, color: text),
-            _t('vehiculo', size: 14, color: text),
-          ],
-          align: LiveAlign.end,
-          gap: 3,
-        ),
-      ], align: LiveAlign.end),
+        _t('titulo', size: 24, weight: 700, color: ink),
+        _t('tiempo', size: 24, weight: 700, color: ink),
+      ], gap: 6),
+      LiveText.format('{placa} • {vehiculo}', size: 15, color: subtle),
+    ], gap: 3);
+
+    // Clara: «2 min para la recogida», subtítulo y, a la derecha, placa y auto.
+    final lightBody = LiveRow([
+      LiveColumn([
+        LiveRow([
+          _t('tiempo', size: 21, weight: 700, color: accent),
+          _t('titulo', size: 21, weight: 700, color: ink),
+        ], gap: 6),
+        _t('subtitulo', size: 15, color: subtle),
+      ], gap: 3),
+      const LiveSpacer(),
+      LiveColumn(
+        [
+          _t('placa', size: 20, weight: 700, color: ink),
+          _t('vehiculo', size: 14, color: subtle),
+        ],
+        align: LiveAlign.end,
+        gap: 3,
+      ),
+    ], align: LiveAlign.end);
+
+    final card = LiveColumn([
+      header(),
+      dark ? darkBody : lightBody,
       _progress(fill, track),
       if ((buttons ?? const []).isNotEmpty) LiveRow(buttons!),
-    ], gap: 10);
+    ], gap: 6);
 
     return LiveLayout(
+      // La tarjeta oscura es de color sólido (acento oscuro): se ve igual con
+      // el sistema en claro o en oscuro. Los colores de la isla son explícitos.
       theme: LiveTheme(
-        accent: accent,
-        background: dark ? LiveBackground.system : LiveBackground.light,
+        accent: dark ? const Color(0xFF16181C) : accent,
+        background: dark ? LiveBackground.accent : LiveBackground.light,
       ),
       appLogo: presetIcon('car.fill', 'car'),
-      compactLeading: presetIcon('car.fill', 'car', accent: true),
-      compactTrailing: _t('tiempo', size: 15, weight: 600, accent: true),
-      minimal: presetIcon('car.fill', 'car', accent: true),
+      compactLeading: _compact,
+      compactTrailing: _t('tiempo', size: 15, weight: 700, color: _white),
+      minimal: _compact,
       expanded: LiveExpanded(
         leading: _driver,
         center: LiveColumn([
-          LiveRow([
-            _t('tiempo', size: 16, weight: 700, accent: true),
-            _t('titulo', size: 16, weight: 700),
-          ], gap: 5),
-          _t('subtitulo', size: 13, muted: true),
+          LiveRow(
+            dark
+                ? [
+                  _t('titulo', size: 17, weight: 700, color: _white, lines: 1),
+                  _t('tiempo', size: 17, weight: 700, color: _white),
+                ]
+                : [
+                  _t('tiempo', size: 17, weight: 700, color: accent),
+                  _t('titulo', size: 17, weight: 700, color: _white, lines: 1),
+                ],
+            gap: 5,
+          ),
+          const LiveText.format(
+            '{placa} · {vehiculo}',
+            size: 13,
+            muted: true,
+            lines: 1,
+          ),
         ], gap: 2),
-        trailing: _t('placa', size: 15, weight: 700),
         bottom: LiveColumn([
-          _progress(_white, const Color(0xFF66686E)),
+          _progress(_white, const Color(0xFF6B6E75)),
           if ((buttons ?? const []).isNotEmpty) LiveRow(buttons!),
         ], gap: 10),
       ),
-      lockScreen: LiveLockScreen.custom(
-        dark
-            // Tarjeta oscura propia: se ve igual con el sistema en claro o en oscuro.
-            ? LiveBox(
-              color: const Color(0xFF16181C),
-              radius: 20,
-              child: LivePadding(card(ink, _white), all: 4),
-            )
-            : card(ink, accent),
-      ),
+      lockScreen: LiveLockScreen.custom(card),
       android: LiveAndroid(
-        title: const LiveText.format('{tiempo} {titulo}'),
+        title:
+            dark
+                ? const LiveText.format('{titulo} {tiempo}')
+                : const LiveText.format('{tiempo} {titulo}'),
         text: const LiveText.format('{subtitulo} · {placa}'),
-        chip: chip ?? const LiveChip.text('1 min'),
+        chip: chip ?? const LiveChip.text('2 min'),
       ),
     );
   }
@@ -259,12 +346,13 @@ final class RidePickupPreset extends LivePreset {
 /// Pedido para recoger en tienda: tres pasos con íconos (recibido, preparando,
 /// listo) donde el paso actual crece y se pinta de blanco.
 ///
-/// Datos: `titulo`, `subtitulo`, `etapa` (0, 1 o 2), `progreso`.
+/// Datos: `titulo`, `subtitulo`, `corto` (una palabra para la isla compacta),
+/// `etapa` (0, 1 o 2), `progreso`.
 final class StorePickupPreset extends LivePreset {
   const StorePickupPreset({
     this.accent = const Color(0xFF1E3932),
     this.stepColor = const Color(0xFF00A862),
-    this.store = 'In store pickup',
+    this.store = 'Recogida en tienda',
     this.brandLogo,
     this.people,
     this.buttons,
@@ -300,17 +388,18 @@ final class StorePickupPreset extends LivePreset {
     buttons: buttons ?? const [],
     chip: chip ?? const LiveChip.text('Preparando'),
     sample: const PresetSample(
-      title: 'Order in progress',
-      subtitle: 'We are handcrafting your order',
-      name: 'Store',
+      title: 'Pedido en preparación',
+      subtitle: 'Estamos preparando tu pedido con cuidado',
+      name: 'Tienda',
       progress: 0.5,
     ),
   );
 
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
-    'titulo': 'Order in progress',
-    'subtitulo': 'We are handcrafting your order',
+    'titulo': 'Pedido en preparación',
+    'subtitulo': 'Estamos preparando tu pedido con cuidado',
+    'corto': 'Preparando',
     'nombre': store,
     'etapa': 1,
     'progreso': 0.5,
@@ -341,48 +430,61 @@ final class StorePickupPreset extends LivePreset {
             color: accent,
           ),
         ),
-    ], gap: 10);
+    ], gap: 12);
   }
 
   @override
   LiveLayout build() {
     final steps = _rail;
+    final mark = brandLogo ?? presetIcon('cup.and.saucer.fill', 'coffee');
     return LiveLayout(
       theme: LiveTheme(accent: accent, background: LiveBackground.accent),
       appLogo: presetIcon('cup.and.saucer.fill', 'coffee'),
-      compactLeading: presetIcon('cup.and.saucer.fill', 'coffee'),
-      compactTrailing: _t('titulo', size: 13, weight: 600, lines: 1),
-      minimal: presetIcon('cup.and.saucer.fill', 'coffee'),
+      compactLeading: mark,
+      compactTrailing: _t('corto', size: 13, weight: 600, lines: 1),
+      minimal: mark,
+      // Título y subtítulo ocupan todo el ancho; los pasos van debajo.
       expanded: LiveExpanded(
-        center: LiveColumn([
-          _t('titulo', size: 20, weight: 700),
-          _t('subtitulo', size: 13, muted: true),
-        ], gap: 3),
-        trailing: steps,
+        center: LiveColumn(
+          [
+            _t('titulo', size: 18, weight: 700, lines: 1),
+            _t('subtitulo', size: 13, muted: true, lines: 2),
+          ],
+          align: LiveAlign.center,
+          gap: 3,
+        ),
+        bottom: LiveRow([const LiveSpacer(), steps, const LiveSpacer()]),
       ),
       lockScreen: LiveLockScreen.custom(
         LiveColumn([
           LiveRow([
             LiveRow([
-              brandLogo ?? presetIcon('cup.and.saucer.fill', 'coffee'),
+              mark,
               LiveText.literal(store, size: 14, color: _white),
             ], gap: 8),
             const LiveSpacer(),
             LiveRow([
               for (final p in people ?? const ['S', 'D'])
-                LiveAvatar(p, size: 24),
+                LiveBox(
+                  size: 24,
+                  radius: 12,
+                  color: stepColor,
+                  child: LiveText.literal(
+                    p,
+                    size: 11,
+                    weight: 700,
+                    color: _white,
+                  ),
+                ),
             ], gap: 0),
           ]),
-          LiveRow([
-            LiveColumn([
-              _t('titulo', size: 24, weight: 700, color: _white),
-              _t('subtitulo', size: 13, color: const Color(0xFFB7CBC4)),
-            ], gap: 3),
-            const LiveSpacer(),
-            steps,
-          ]),
+          LiveColumn([
+            _t('titulo', size: 22, weight: 700, color: _white),
+            _t('subtitulo', size: 13, color: const Color(0xFFB7CBC4), lines: 1),
+          ], gap: 2),
+          LiveRow([steps, const LiveSpacer()]),
           if ((buttons ?? const []).isNotEmpty) LiveRow(buttons!),
-        ], gap: 12),
+        ], gap: 6),
       ),
       android: LiveAndroid(
         title: const LiveBind('titulo'),
@@ -399,9 +501,9 @@ final class StorePickupPreset extends LivePreset {
 final class RunPreset extends LivePreset {
   const RunPreset({
     this.accent = const Color(0xFF45C8FF),
-    this.unit = 'Miles',
-    this.timeLabel = 'Time',
-    this.brandMark,
+    this.unit = 'Kilómetros',
+    this.timeLabel = 'Tiempo',
+    this.brand = 'Sprint',
     this.buttons,
     this.chip,
   });
@@ -415,8 +517,8 @@ final class RunPreset extends LivePreset {
   /// Etiqueta bajo el tiempo.
   final String timeLabel;
 
-  /// Marca o logotipo arriba a la derecha de la tarjeta.
-  final LiveImage? brandMark;
+  /// Nombre de la app, arriba a la derecha de la tarjeta.
+  final String brand;
 
   final List<LiveButton>? buttons;
   final LiveChip? chip;
@@ -430,11 +532,11 @@ final class RunPreset extends LivePreset {
     countdown: false,
     progress: PresetProgress.bar,
     buttons: buttons ?? const [],
-    chip: chip ?? const LiveChip.text('2.94'),
+    chip: chip ?? const LiveChip.text('4,72'),
     sample: const PresetSample(
-      title: '2.94',
-      subtitle: 'Miles',
-      name: 'Time',
+      title: '4,72',
+      subtitle: 'Kilómetros',
+      name: 'Tiempo',
       highlight: '25:38',
       progress: 0.78,
     ),
@@ -442,7 +544,7 @@ final class RunPreset extends LivePreset {
 
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
-    'distancia': '2.94',
+    'distancia': '4,72',
     'tiempo': '25:38',
     'progreso': 0.78,
   };
@@ -485,7 +587,7 @@ final class RunPreset extends LivePreset {
           const LiveSpacer(),
           LiveColumn(
             [
-              if (brandMark != null) brandMark!,
+              LiveText.literal(brand, size: 16, weight: 800, color: _ink),
               _t('tiempo', size: 30, weight: 500, color: _ink),
               LiveText.literal(timeLabel, size: 13, color: _ink),
             ],
@@ -499,7 +601,7 @@ final class RunPreset extends LivePreset {
     ),
     android: LiveAndroid(
       title: const LiveText.format('{distancia} · {tiempo}'),
-      chip: chip ?? const LiveChip.text('2.94'),
+      chip: chip ?? const LiveChip.text('4,72'),
     ),
   );
 }
@@ -513,9 +615,9 @@ final class MatchPreset extends LivePreset {
     this.accent = const Color(0xFF1B5E20),
     this.homeCrest,
     this.awayCrest,
-    this.homeLabel = 'Home',
-    this.awayLabel = 'Guest',
-    this.link = 'See stats',
+    this.homeLabel = 'Local',
+    this.awayLabel = 'Visitante',
+    this.link = 'Ver estadísticas',
     this.chip,
   });
 
@@ -549,23 +651,41 @@ final class MatchPreset extends LivePreset {
     androidPromotable: false,
     chip: chip ?? const LiveChip.text('3–1'),
     sample: const PresetSample(
-      title: 'PSG 3 – 1 Chelsea',
-      subtitle: 'World cup',
-      name: 'Match',
+      title: 'Leones 3 – 1 Halcones',
+      subtitle: 'Copa del mundo',
+      name: 'Partido',
       highlight: '6:15',
     ),
   );
 
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
-    'local': 'PSG',
-    'visitante': 'Chelsea',
+    'local': 'Leones',
+    'visitante': 'Halcones',
     'golesLocal': '3',
     'golesVisitante': '1',
     'minuto': '6:15',
-    'torneo': 'World cup',
+    'torneo': 'Copa del mundo',
     'progreso': 0.07,
   };
+
+  LiveImage get _home =>
+      homeCrest ??
+      LiveImage.asset(
+        liveDesignCrestAAsset,
+        width: 240,
+        height: 280,
+        shape: LiveShape.square,
+      );
+
+  LiveImage get _away =>
+      awayCrest ??
+      LiveImage.asset(
+        liveDesignCrestBAsset,
+        width: 240,
+        height: 280,
+        shape: LiveShape.square,
+      );
 
   LiveNode _side(LiveImage? crest, String field, String label, double size) =>
       LiveColumn(
@@ -607,21 +727,17 @@ final class MatchPreset extends LivePreset {
     return LiveLayout(
       theme: LiveTheme(accent: accent),
       appLogo: presetIcon('trophy.fill', 'trophy'),
-      compactLeading:
-          homeCrest?.withSize(24) ??
-          presetIcon('trophy.fill', 'trophy', accent: true),
+      compactLeading: _home.withSize(24),
       compactTrailing: LiveRow([
         _t('golesLocal', size: 15, weight: 800, color: _white),
         LiveText.literal('–', size: 15, weight: 800, color: _white),
         _t('golesVisitante', size: 15, weight: 800, color: _white),
       ], gap: 2),
-      minimal:
-          homeCrest?.withSize(22) ??
-          presetIcon('trophy.fill', 'trophy', accent: true),
+      minimal: _home.withSize(22),
       expanded: LiveExpanded(
-        leading: _side(homeCrest, 'local', homeLabel, 52),
+        leading: _side(_home, 'local', homeLabel, 52),
         center: centre(size: 34, full: false),
-        trailing: _side(awayCrest, 'visitante', awayLabel, 52),
+        trailing: _side(_away, 'visitante', awayLabel, 52),
       ),
       // Tarjeta negra propia (como la isla), igual con el sistema en claro o en oscuro.
       lockScreen: LiveLockScreen.custom(
@@ -630,14 +746,14 @@ final class MatchPreset extends LivePreset {
           radius: 28,
           child: LivePadding(
             LiveRow([
-              _side(homeCrest, 'local', homeLabel, 72),
+              _side(_home, 'local', homeLabel, 56),
               const LiveSpacer(),
-              centre(size: 44, full: true),
+              centre(size: 38, full: true),
               const LiveSpacer(),
-              _side(awayCrest, 'visitante', awayLabel, 72),
+              _side(_away, 'visitante', awayLabel, 56),
             ], align: LiveAlign.center),
             horizontal: 16,
-            vertical: 12,
+            vertical: 8,
           ),
         ),
       ),
@@ -680,8 +796,8 @@ final class StockPreset extends LivePreset {
     androidPromotable: false,
     chip: chip ?? const LiveChip.text('+1.2%'),
     sample: const PresetSample(
-      title: 'TSLA 219.40',
-      subtitle: 'Tesla, Inc.',
+      title: 'VOLT 219.40',
+      subtitle: 'Voltio S.A.',
       name: 'Bolsa',
       highlight: '+1.24%',
     ),
@@ -689,8 +805,8 @@ final class StockPreset extends LivePreset {
 
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
-    'simbolo': 'TSLA',
-    'nombre': 'Tesla, Inc.',
+    'simbolo': 'VOLT',
+    'nombre': 'Voltio S.A.',
     'precio': '219.40',
     'cambio': '+1.24%',
     'serie': liveSeries([
@@ -761,8 +877,9 @@ final class StockPreset extends LivePreset {
               ),
             ]),
             _spark,
-          ], gap: 8),
-          all: 14,
+          ], gap: 4),
+          horizontal: 14,
+          vertical: 8,
         ),
       ),
     ),
@@ -802,27 +919,27 @@ final class FlightPathPreset extends LivePreset {
     progress: PresetProgress.bar,
     chip: chip ?? const LiveChip.text('55 min'),
     sample: const PresetSample(
-      title: 'SFO → JFK',
-      subtitle: 'Landing in 55m',
-      name: 'FL234',
-      highlight: 'On time',
+      title: 'LIM → MAD',
+      subtitle: 'Aterriza en 55 min',
+      name: 'RA234',
+      highlight: 'A tiempo',
       progress: 0.72,
     ),
   );
 
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
-    'vuelo': 'FL234',
-    'estado': 'On Time',
-    'origen': 'SFO',
-    'destino': 'JFK',
-    'aterriza': 'Landing in 55m',
+    'vuelo': 'RA 234',
+    'estado': 'A tiempo',
+    'origen': 'LIM',
+    'destino': 'MAD',
+    'aterriza': 'Aterriza en 55 min',
     'progreso': 0.72,
   };
 
   LiveNode get _route => LiveFlightPath(
     value: const LiveBind('progreso'),
-    height: 64,
+    height: 52,
     curve: .9,
     tracker: presetIcon('airplane', 'plane'),
     style: LiveProgressStyle(
@@ -854,20 +971,22 @@ final class FlightPathPreset extends LivePreset {
         child: LivePadding(
           LiveColumn([
             LiveRow([
+              _t('origen', size: 30, weight: 700, color: _white),
+              const LiveSpacer(),
               if (carrier != null) carrier!,
-              _t('vuelo', size: 15, weight: 700, color: _white),
+              _t('vuelo', size: 13, weight: 600, muted: true),
+              const LiveSpacer(),
+              _t('destino', size: 30, weight: 700, color: _white),
+            ]),
+            _route,
+            LiveRow([
+              _t('aterriza', size: 13, color: _white),
               const LiveSpacer(),
               _t('estado', size: 13, weight: 600, color: accent),
             ]),
-            LiveRow([
-              _t('origen', size: 34, weight: 700, color: _white),
-              const LiveSpacer(),
-              _t('destino', size: 34, weight: 700, color: _white),
-            ]),
-            _route,
-            _t('aterriza', size: 14, color: _white),
-          ], gap: 6),
-          all: 14,
+          ], gap: 2),
+          horizontal: 14,
+          vertical: 6,
         ),
       ),
     ),
@@ -985,6 +1104,179 @@ final class OrbitPreset extends LivePreset {
         value: const LiveBind('progreso'),
         style: LiveProgressStyle(color: accent),
       ),
+    ),
+  );
+}
+
+/// Viaje visto por el conductor: a quién recoger, la tarifa y cuánto falta.
+///
+/// Es la contraparte de [RidePickupPreset]: la misma barra con el auto, pero
+/// con la tarifa en grande y un botón «Llegué». Datos: `pasajero`, `ruta`,
+/// `tarifa`, `tiempo`, `distancia`, `progreso`.
+final class RideDriverPreset extends LivePreset {
+  const RideDriverPreset({
+    this.accent = const Color(0xFF30D158),
+    this.brand = 'Run Conductor',
+    this.passengerInitials = 'A',
+    this.passengerPhoto,
+    this.trackerImage,
+    this.compactIcon,
+    this.buttons,
+    this.chip,
+  });
+
+  /// Color de la tarifa y de lo avanzado.
+  final Color accent;
+
+  /// Nombre de la app, arriba a la izquierda de la tarjeta.
+  final String brand;
+
+  /// Iniciales del pasajero (si no hay [passengerPhoto]).
+  final String passengerInitials;
+
+  /// Foto circular del pasajero.
+  final LiveImage? passengerPhoto;
+
+  /// Imagen del auto que avanza sobre la barra (vista desde arriba, sin fondo).
+  final LiveImage? trackerImage;
+
+  /// Ícono o imagen de la isla compacta y la mínima (por defecto un auto).
+  final LiveVisual? compactIcon;
+
+  /// Botones de la tarjeta de bloqueo y de Android; por defecto «Llegué».
+  final List<LiveButton>? buttons;
+
+  /// Chip de Android; por defecto la tarifa.
+  final LiveChip? chip;
+
+  @override
+  LivePresetSpec get spec => LivePresetSpec(
+    id: 'ride_driver',
+    appName: brand,
+    accent: accent,
+    icon: presetIcon('car.fill', 'car'),
+    countdown: false,
+    progress: PresetProgress.bar,
+    buttons: _buttons,
+    chip: chip ?? const LiveChip.text('S/ 18.50'),
+    sample: const PresetSample(
+      title: 'Recoge a Ana R.',
+      subtitle: 'Av. Arequipa → Miraflores',
+      name: 'Ana',
+      highlight: 'S/ 18.50',
+      progress: 0.4,
+    ),
+  );
+
+  List<LiveButton> get _buttons =>
+      buttons ??
+      [presetButton('Llegué', presetIcon('mappin', 'mappin'), id: 'llegue')];
+
+  @override
+  Map<String, Object?> sampleState({DateTime? now}) => {
+    'pasajero': 'Ana R.',
+    'ruta': 'Av. Arequipa → Miraflores',
+    'tarifa': 'S/ 18.50',
+    'tiempo': '3 min',
+    'distancia': '0.8 km',
+    'progreso': 0.4,
+  };
+
+  LiveVisual get _passenger =>
+      passengerPhoto != null
+          ? LiveAvatar.photo(passengerPhoto!, size: 40)
+          : LiveAvatar(passengerInitials, size: 40);
+
+  LiveVisual get _compact =>
+      compactIcon ?? presetIcon('car.fill', 'car', accent: true);
+
+  LiveNode get _bar => LiveProgress.bar(
+    value: const LiveBind('progreso'),
+    tracker: LiveTracker(
+      trackerImage ??
+          LiveImage.asset(
+            liveDesignCarTopAsset,
+            width: 88,
+            height: 46,
+            shape: LiveShape.square,
+          ),
+      height: 26,
+      background: LiveTrackerBackground.none,
+    ),
+    endIcon: LiveIcon.symbol(
+      'record.circle',
+      android: presetIcon('mappin', 'mappin').android,
+      color: const Color(0xFF6B6E75),
+      size: 18,
+    ),
+    style: LiveProgressStyle(
+      height: 4,
+      color: accent,
+      trackColor: const Color(0xFF6B6E75),
+    ),
+  );
+
+  @override
+  LiveLayout build() => LiveLayout(
+    theme: LiveTheme(accent: accent),
+    appLogo: presetIcon('car.fill', 'car'),
+    compactLeading: _compact,
+    compactTrailing: _t('tarifa', size: 15, weight: 700, color: accent),
+    minimal: _compact,
+    expanded: LiveExpanded(
+      leading: _passenger,
+      center: LiveColumn([
+        LiveText.format(
+          'Recoge a {pasajero}',
+          size: 16,
+          weight: 700,
+          color: _white,
+          lines: 1,
+        ),
+        _t('ruta', size: 13, muted: true, lines: 1),
+      ], gap: 2),
+      trailing: _t('tarifa', size: 17, weight: 800, color: accent),
+      bottom: _bar,
+    ),
+    lockScreen: LiveLockScreen.custom(
+      LiveBox(
+        color: const Color(0xFF16181C),
+        radius: 22,
+        child: LivePadding(
+          LiveColumn([
+            LiveRow([
+              LiveText.literal(brand, size: 17, weight: 800, color: _white),
+              const LiveSpacer(),
+              ..._buttons,
+            ]),
+            LiveRow([
+              LiveColumn([
+                LiveText.format(
+                  'Recoge a {pasajero}',
+                  size: 21,
+                  weight: 700,
+                  color: _white,
+                ),
+                LiveText.format(
+                  '{tiempo} · {distancia}',
+                  size: 13,
+                  color: const Color(0xFFB4B6BC),
+                ),
+              ], gap: 2),
+              const LiveSpacer(),
+              _t('tarifa', size: 28, weight: 800, color: accent),
+            ], align: LiveAlign.end),
+            _bar,
+          ], gap: 6),
+          horizontal: 14,
+          vertical: 8,
+        ),
+      ),
+    ),
+    android: LiveAndroid(
+      title: const LiveText.format('Recoge a {pasajero}'),
+      text: const LiveText.format('{tiempo} · {distancia} · {tarifa}'),
+      chip: chip ?? const LiveChip.text('S/ 18.50'),
     ),
   );
 }
