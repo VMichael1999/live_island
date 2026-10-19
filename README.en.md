@@ -9,11 +9,11 @@
 
 | Ride pickup | Match score | Stock quote |
 | --- | --- | --- |
-| ![Ride pickup](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/recogida_clara.png) | ![Match score](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/marcador.png) | ![Stock quote](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/bolsa.png) |
+| <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/recogida_clara.png" width="300" alt="Ride pickup"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/marcador.png" width="300" alt="Match score"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/bolsa.png" width="300" alt="Stock quote"> |
 | **Store pickup** | **Medical waiting room** | **EV charging** |
-| ![Store pickup](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/tienda.png) | ![Medical waiting room](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/sala_medica.png) | ![Charging with glowing cable](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/carga.png) |
+| <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/tienda.png" width="300" alt="Store pickup"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/sala_medica.png" width="300" alt="Medical waiting room"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/carga.png" width="300" alt="Charging with glowing cable"> |
 | **Flight with curved route** | **Driver's trip** | **Fare and tip** |
-| ![Flight](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/vuelo.png) | ![Driver's trip](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/conductor.png) | ![Fare and tip](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/tarifa.png) |
+| <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/vuelo.png" width="300" alt="Flight"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/conductor.png" width="300" alt="Driver's trip"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/tarifa.png" width="300" alt="Fare and tip"> |
 
 *Each image shows the compact island, the expanded island and the Lock Screen card. They are the Flutter preview (`LiveIslandPreview`), except charging, which is an iOS Simulator capture (the preview does not draw the glow). All are example designs with made-up names and images; every text, color and image can be changed from Dart. The sample texts are in Spanish.*
 
