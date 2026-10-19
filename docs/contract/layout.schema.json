@@ -120,7 +120,8 @@
         "img": { "type": "string", "description": "Id en layout.images." },
         "fit": { "enum": ["contain", "cover"], "default": "contain" },
         "shape": { "enum": ["rounded", "circle", "square"], "default": "rounded" },
-        "size": { "type": "number", "minimum": 1 }
+        "size": { "type": "number", "minimum": 1 },
+        "h": { "type": "number", "exclusiveMinimum": 0, "description": "Alto fijo en pt con el ancho según la proporción, sin recortar ni dar forma (imágenes anchas sin fondo). Con h se ignora size." }
       }
     },
     "avatar": {
@@ -155,6 +156,7 @@
         { "$ref": "#/$defs/text" }, { "$ref": "#/$defs/countdown" }, { "$ref": "#/$defs/stopwatch" }, { "$ref": "#/$defs/relative" },
         { "$ref": "#/$defs/icon" }, { "$ref": "#/$defs/image" }, { "$ref": "#/$defs/avatar" },
         { "$ref": "#/$defs/bar" }, { "$ref": "#/$defs/ring" }, { "$ref": "#/$defs/segments" },
+        { "$ref": "#/$defs/spark" }, { "$ref": "#/$defs/gauge" }, { "$ref": "#/$defs/path" },
         { "$ref": "#/$defs/metric" }, { "$ref": "#/$defs/button" }, { "$ref": "#/$defs/toggle" }
       ]
     },
@@ -276,10 +278,11 @@
         "radius": { "type": "number", "minimum": 0, "description": "Esquinas. Por defecto la mitad del grosor." },
         "pointSize": { "type": "number", "exclusiveMinimum": 0, "default": 10, "description": "Diámetro de los puntos de etapa." },
         "dashed": { "type": "boolean", "default": false, "description": "Dibuja la parte que falta como trazo discontinuo (en vez de un tramo sólido). Android lo ignora." },
-        "pointShape": { "enum": ["circle", "square", "rounded"], "default": "circle", "description": "Forma de los puntos de etapa. Android no dibuja puntos propios, así que la ignora." },
+        "pointShape": { "enum": ["circle", "square", "rounded", "ring"], "default": "circle", "description": "Forma de los puntos de etapa (ring: círculo suave con un punto dentro, como un marcador de mapa). Android no dibuja puntos propios, así que la ignora." },
         "pointColor": { "$ref": "#/$defs/color", "description": "Color de los puntos completados. Por defecto el de lo avanzado." },
         "labelSize": { "type": "number", "exclusiveMinimum": 0, "default": 11.5, "description": "Tamaño de las etiquetas de etapas." },
-        "trackerSize": { "type": "number", "exclusiveMinimum": 0, "default": 26, "description": "Diámetro del círculo del ícono que avanza." }
+        "trackerSize": { "type": "number", "exclusiveMinimum": 0, "default": 26, "description": "Diámetro del círculo del ícono que avanza." },
+        "markers": { "type": "array", "items": { "type": "number", "minimum": 0, "maximum": 1 }, "description": "Posiciones (0 a 1) de marcadores sobre la barra, con la forma de pointShape. El ya recorrido y el siguiente usan el color de lo avanzado; los demás, el de lo que falta. Android los ignora." }
       }
     },
     "bar": {
@@ -308,6 +311,43 @@
         "labels": { "type": "array", "minItems": 2, "items": { "type": "string" } },
         "points": { "type": "boolean", "default": false },
         "showLabels": { "type": "boolean", "default": true, "description": "Mostrar las etiquetas de las etapas (con false quedan solo los tramos y los puntos)." },
+        "style": { "$ref": "#/$defs/progressStyle" },
+        "tracker": {"$ref": "#/$defs/progressEnds/properties/tracker"}, "start": {"$ref": "#/$defs/progressEnds/properties/start"}, "end": {"$ref": "#/$defs/progressEnds/properties/end"}
+      }
+    },
+
+    "spark": {
+      "type": "object", "required": ["t", "bind"], "additionalProperties": false,
+      "description": "Gráfica de línea. El campo del estado guarda la serie como texto de números separados por comas ('10,12.5,11'). Android la omite.",
+      "properties": {
+        "t": { "const": "spark" }, "bind": { "$ref": "#/$defs/binding", "description": "Campo de texto con la serie." },
+        "h": { "type": "number", "exclusiveMinimum": 0, "default": 36 },
+        "color": { "$ref": "#/$defs/color" },
+        "fill": { "type": "boolean", "default": true, "description": "Degradado bajo la línea." },
+        "w": { "type": "number", "exclusiveMinimum": 0, "default": 2, "description": "Grosor de la línea." },
+        "dot": { "type": "boolean", "default": true, "description": "Punto en el último valor." },
+        "min": { "type": "number" }, "max": { "type": "number" }
+      }
+    },
+    "gauge": {
+      "type": "object", "required": ["t", "bind"], "additionalProperties": false,
+      "description": "Medidor de arco con un punto que avanza. En Android se muestra como barra.",
+      "properties": {
+        "t": { "const": "gauge" }, "bind": { "$ref": "#/$defs/binding", "description": "Campo numérico 0..1." },
+        "size": { "type": "number", "exclusiveMinimum": 0, "default": 96, "description": "Ancho en pt." },
+        "sweep": { "type": "number", "minimum": 90, "maximum": 360, "default": 180, "description": "Grados que abarca el arco." },
+        "knob": { "type": "boolean", "default": true },
+        "style": { "$ref": "#/$defs/progressStyle" },
+        "child": { "$ref": "#/$defs/node", "description": "Contenido en el centro." }
+      }
+    },
+    "path": {
+      "type": "object", "required": ["t", "bind"], "additionalProperties": false,
+      "description": "Ruta curva con un ícono que avanza (vuelo, envío). En Android se muestra como barra.",
+      "properties": {
+        "t": { "const": "path" }, "bind": { "$ref": "#/$defs/binding", "description": "Campo numérico 0..1." },
+        "h": { "type": "number", "exclusiveMinimum": 0, "default": 44 },
+        "curve": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.55 },
         "style": { "$ref": "#/$defs/progressStyle" },
         "tracker": {"$ref": "#/$defs/progressEnds/properties/tracker"}, "start": {"$ref": "#/$defs/progressEnds/properties/start"}, "end": {"$ref": "#/$defs/progressEnds/properties/end"}
       }

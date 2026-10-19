@@ -11,7 +11,7 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(800, 4000));
     await tester.pumpWidget(const ExampleApp());
     expect(find.text('Editor'), findsOneWidget);
-    expect(catalog, hasLength(21));
+    expect(catalog, hasLength(25));
     for (final e in catalog) {
       expect(find.text(e.label), findsOneWidget);
     }

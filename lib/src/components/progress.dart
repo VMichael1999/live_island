@@ -37,6 +37,7 @@ class LiveProgressStyle {
     this.dashed,
     this.labelSize,
     this.trackerSize,
+    this.markers,
   });
 
   /// Grosor de la barra en pt (por defecto 6). En un anillo, el ancho del trazo (3).
@@ -72,6 +73,11 @@ class LiveProgressStyle {
   /// Diámetro del círculo del ícono que avanza (por defecto 26).
   final double? trackerSize;
 
+  /// Posiciones (0 a 1) de marcadores sobre la barra, con la forma de
+  /// [pointShape]. El marcador ya recorrido y el siguiente usan el color de
+  /// lo avanzado; los demás, el de lo que falta. Android los ignora.
+  final List<double>? markers;
+
   bool get isEmpty =>
       height == null &&
       color == null &&
@@ -83,7 +89,8 @@ class LiveProgressStyle {
       pointShape == null &&
       dashed == null &&
       labelSize == null &&
-      trackerSize == null;
+      trackerSize == null &&
+      markers == null;
 
   LiveProgressStyle copyWith({
     double? height,
@@ -97,6 +104,7 @@ class LiveProgressStyle {
     bool? dashed,
     double? labelSize,
     double? trackerSize,
+    List<double>? markers,
   }) => LiveProgressStyle(
     height: height ?? this.height,
     color: color ?? this.color,
@@ -109,6 +117,7 @@ class LiveProgressStyle {
     dashed: dashed ?? this.dashed,
     labelSize: labelSize ?? this.labelSize,
     trackerSize: trackerSize ?? this.trackerSize,
+    markers: markers ?? this.markers,
   );
 
   Map<String, Object?> toJson() => compact({
@@ -123,6 +132,7 @@ class LiveProgressStyle {
     'dashed': dashed == true ? true : null,
     'labelSize': labelSize,
     'trackerSize': trackerSize,
+    'markers': markers,
   });
 
   factory LiveProgressStyle.fromJson(Map<String, Object?> json) {
@@ -144,6 +154,11 @@ class LiveProgressStyle {
       dashed: json['dashed'] == true ? true : null,
       labelSize: d('labelSize'),
       trackerSize: d('trackerSize'),
+      markers:
+          [
+            for (final m in (json['markers'] as List? ?? const []))
+              (m as num).toDouble(),
+          ].nullIfEmpty,
     );
   }
 
@@ -155,10 +170,14 @@ class LiveProgressStyle {
   int get hashCode => '${toJson()}'.hashCode;
 }
 
-LiveProgressStyle? _styleFromJson(Object? raw) =>
+extension on List<double> {
+  List<double>? get nullIfEmpty => isEmpty ? null : this;
+}
+
+LiveProgressStyle? progressStyleFromJson(Object? raw) =>
     raw == null ? null : LiveProgressStyle.fromJson(asMap(raw, 'style'));
 
-Map<String, Object?>? _styleJson(LiveProgressStyle? s) =>
+Map<String, Object?>? progressStyleToJson(LiveProgressStyle? s) =>
     s == null || s.isEmpty ? null : s.toJson();
 
 /// Barra de progreso continua o anillo. El valor es un número de 0 a 1 que
@@ -212,7 +231,7 @@ class LiveProgress extends LiveNode {
   Map<String, Object?> toJson() => compact({
     't': type,
     'bind': value.field,
-    'style': _styleJson(style),
+    'style': progressStyleToJson(style),
     'tracker': tracker?.toJson(),
     'start': startIcon?.toJson(),
     'end': endIcon?.toJson(),
@@ -222,7 +241,7 @@ class LiveProgress extends LiveNode {
 
   factory LiveProgress.fromJson(Map<String, Object?> json) {
     final value = LiveBind(json['bind']! as String);
-    final style = _styleFromJson(json['style']);
+    final style = progressStyleFromJson(json['style']);
     if (json['t'] == 'ring') {
       return LiveProgress.ring(
         value: value,
@@ -293,7 +312,7 @@ class LiveSegments extends LiveNode {
     'labels': labels,
     'points': points,
     'showLabels': showLabels ? null : false,
-    'style': _styleJson(style),
+    'style': progressStyleToJson(style),
     'tracker': tracker?.toJson(),
     'start': startIcon?.toJson(),
     'end': endIcon?.toJson(),
@@ -310,7 +329,7 @@ class LiveSegments extends LiveNode {
             : LiveTracker.fromJson(asMap(json['tracker'], 'segments.tracker')),
     startIcon: _endFromJson(json['start'], 'segments.start'),
     endIcon: _endFromJson(json['end'], 'segments.end'),
-    style: _styleFromJson(json['style']),
+    style: progressStyleFromJson(json['style']),
   );
 }
 

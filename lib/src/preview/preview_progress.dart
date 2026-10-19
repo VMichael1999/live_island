@@ -30,6 +30,7 @@ class LivePreviewBar extends StatelessWidget {
     this.fillColor,
     this.trackColor,
     this.pointColor,
+    this.markers = const [],
   });
 
   /// 0 a 1.
@@ -65,6 +66,9 @@ class LivePreviewBar extends StatelessWidget {
 
   /// Colores propios; si faltan se usan los de la superficie.
   final Color? fillColor, trackColor, pointColor;
+
+  /// Posiciones (0 a 1) de marcadores sobre la barra.
+  final List<double> markers;
 
   bool get _hasStages => labels.length > 1;
   Color get _fill => fillColor ?? style.fill;
@@ -212,6 +216,7 @@ class LivePreviewBar extends StatelessWidget {
                     k / (labels.length - 1) * w,
                     k / (labels.length - 1) <= v + 1e-6,
                   ),
+              ..._markers(v, w),
               if (tracker != null)
                 Positioned(
                   left: v * w,
@@ -255,6 +260,16 @@ class LivePreviewBar extends StatelessWidget {
     ),
   );
 
+  /// Marcadores: el recorrido y el siguiente van de color; los demás, apagados.
+  List<Widget> _markers(double v, double w) {
+    final sorted = [...markers]..sort();
+    final next = sorted.indexWhere((m) => m > v + 1e-6);
+    return [
+      for (var i = 0; i < sorted.length; i++)
+        _dot(sorted[i].clamp(0.0, 1.0) * w, i <= next || next == -1),
+    ];
+  }
+
   Widget _dot(double x, bool done) {
     final doneColor = pointColor ?? _fill;
     return Positioned(
@@ -262,25 +277,47 @@ class LivePreviewBar extends StatelessWidget {
       top: height / 2,
       child: FractionalTranslation(
         translation: const Offset(-.5, -.5),
-        child: Container(
-          width: pointSize,
-          height: pointSize,
-          decoration: BoxDecoration(
-            shape:
-                pointShape == LivePointShape.circle
-                    ? BoxShape.circle
-                    : BoxShape.rectangle,
-            borderRadius:
-                pointShape == LivePointShape.rounded
-                    ? BorderRadius.circular(pointSize / 3)
-                    : null,
-            color: done ? doneColor : style.pendingDot,
-            border: Border.all(color: done ? doneColor : _track, width: 2),
-          ),
-        ),
+        child:
+            pointShape == LivePointShape.ring
+                ? _ring(done ? doneColor : _track)
+                : Container(
+                  width: pointSize,
+                  height: pointSize,
+                  decoration: BoxDecoration(
+                    shape:
+                        pointShape == LivePointShape.circle
+                            ? BoxShape.circle
+                            : BoxShape.rectangle,
+                    borderRadius:
+                        pointShape == LivePointShape.rounded
+                            ? BorderRadius.circular(pointSize / 3)
+                            : null,
+                    color: done ? doneColor : style.pendingDot,
+                    border: Border.all(
+                      color: done ? doneColor : _track,
+                      width: 2,
+                    ),
+                  ),
+                ),
       ),
     );
   }
+
+  /// Círculo suave con un punto dentro, como un marcador de mapa.
+  Widget _ring(Color c) => Container(
+    width: pointSize,
+    height: pointSize,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: c.withValues(alpha: .25),
+    ),
+    child: Container(
+      width: pointSize * .45,
+      height: pointSize * .45,
+      decoration: BoxDecoration(shape: BoxShape.circle, color: c),
+    ),
+  );
 }
 
 /// Anillo de progreso con contenido opcional en el centro.
