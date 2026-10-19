@@ -352,4 +352,11 @@ void main() {
       FareSplitPreset(),
     ], height: 1100);
   });
+
+  testWidgets('golden: viajes de Run (llegada y detalle)', (tester) async {
+    await designsGolden(tester, 'viajes_run', [
+      RideArrivalPreset(carImage: run('header.png', 760, 308, height: 34)),
+      RideTripPreset(driverPhoto: run('avatar.png', 200, 205, size: 46)),
+    ], height: 1100);
+  });
 }
