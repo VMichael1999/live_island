@@ -2,7 +2,7 @@
 // Se analizan con `flutter analyze`; no se ejecutan.
 import 'dart:ui' show Color;
 
-import 'package:live_island/live_island.dart';
+import 'package:live_island_kit/live_island_kit.dart';
 
 /// Nivel 1: un preset tal cual.
 Future<void> nivel1() async {

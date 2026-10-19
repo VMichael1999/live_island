@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:live_island/live_island.dart';
+import 'package:live_island_kit/live_island_kit.dart';
 
 import 'catalog.dart';
 import 'main.dart';
@@ -160,7 +160,7 @@ class _EditorScreenState extends State<EditorScreen> {
     ].join(', ');
     String q(Object? v) => "'${'$v'.replaceAll("'", "\\'")}'";
     return [
-      "import 'package:live_island/live_island.dart';",
+      "import 'package:live_island_kit/live_island_kit.dart';",
       '',
       'final preset = $cls($args);',
       'final layout = preset.build(); // o preset.override(compactTrailing: ...)',

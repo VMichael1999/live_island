@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:live_island/live_island.dart';
+import 'package:live_island_kit/live_island_kit.dart';
 
 import 'catalog.dart';
 import 'main.dart';

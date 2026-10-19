@@ -20,17 +20,20 @@ import '../core/node.dart';
 import 'preset.dart';
 
 /// Auto visto desde arriba, para avanzar sobre una barra.
-const liveDesignCarTopAsset = 'packages/live_island/assets/presets/car_top.png';
+const liveDesignCarTopAsset =
+    'packages/live_island_kit/assets/presets/car_top.png';
 
 /// Auto visto de lado, para acompañar al conductor.
 const liveDesignCarSideAsset =
-    'packages/live_island/assets/presets/car_side.png';
+    'packages/live_island_kit/assets/presets/car_side.png';
 
 /// Escudo genérico azul y rojo (equipo local de ejemplo).
-const liveDesignCrestAAsset = 'packages/live_island/assets/presets/crest_a.png';
+const liveDesignCrestAAsset =
+    'packages/live_island_kit/assets/presets/crest_a.png';
 
 /// Escudo genérico amarillo y azul marino (equipo visitante de ejemplo).
-const liveDesignCrestBAsset = 'packages/live_island/assets/presets/crest_b.png';
+const liveDesignCrestBAsset =
+    'packages/live_island_kit/assets/presets/crest_b.png';
 
 const _ink = Color(0xFF0B0B0D);
 const _white = Color(0xFFFFFFFF);

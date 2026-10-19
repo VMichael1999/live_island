@@ -21,7 +21,7 @@ class ExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-    title: 'live_island',
+    title: 'live_island_kit',
     theme: ThemeData(
       useMaterial3: true,
       colorSchemeSeed: const Color(0xFF1F6FEB),
@@ -42,7 +42,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('live_island')),
+    appBar: AppBar(title: const Text('live_island_kit')),
     body: ListView(
       children: [
         ListTile(

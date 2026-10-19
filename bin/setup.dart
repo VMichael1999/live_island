@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:isolate';
 
-/// Configura una app Flutter para usar live_island en iOS:
+/// Configura una app Flutter para usar live_island_kit en iOS:
 ///
-///     dart run live_island:setup [--app-group group.com.miapp] [--extension LiveIslandExtension]
+///     dart run live_island_kit:setup [--app-group group.com.miapp] [--extension LiveIslandExtension]
 ///
 /// Agrega el Widget Extension al proyecto de Xcode, el App Group y
 /// `NSSupportsLiveActivities` (con `--push`, también el permiso de push). Se puede repetir para actualizar el renderer.
@@ -45,11 +45,11 @@ Future<void> main(List<String> args) async {
   }
 
   final uri = await Isolate.resolvePackageUri(
-    Uri.parse('package:live_island/live_island.dart'),
+    Uri.parse('package:live_island_kit/live_island_kit.dart'),
   );
   if (uri == null) {
     stderr.writeln(
-      'No se encontró el paquete live_island. ¿Está en tu pubspec.yaml?',
+      'No se encontró el paquete live_island_kit. ¿Está en tu pubspec.yaml?',
     );
     exitCode = 66;
     return;
@@ -91,7 +91,7 @@ Luego: flutter run''');
 
 void _usage() {
   stdout.writeln('''
-Uso: dart run live_island:setup [opciones]
+Uso: dart run live_island_kit:setup [opciones]
 
   --app-group <id>     App Group (por defecto group.<bundle id>.liveisland)
   --push               Agrega el permiso de push (aps-environment) para actualizar
