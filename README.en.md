@@ -371,6 +371,22 @@ More elaborate than the presets, with their own island and Lock Screen card; use
 
 The [`example/`](example) app has one screen per preset and design, and an editor that starts from one of them.
 
+### Android: Live Update or card
+
+By default Android uses the native style (`LiveAndroidStyle.liveUpdate`): title, text, bar, one large image and the status-bar chip, and Android 16 **promotes it to a Live Update**. If you need more freedom (two crests face to face, a big score, a chart), ask for the **card**: it is drawn with your design, but Android **does not promote it or show a chip**.
+
+```dart
+LiveAndroid(
+  style: LiveAndroidStyle.card,   // default: LiveAndroidStyle.liveUpdate
+  card: myCard,                   // optional: falls back to the custom Lock Screen card
+  title: const LiveText.literal('Score'),
+)
+// or with a preset:
+MatchPreset(androidStyle: LiveAndroidStyle.liveUpdate)
+```
+
+The card needs Android 12 or later (the native style is used before that). Details in [`doc/design/DESVIACIONES.md`](doc/design/DESVIACIONES.md) (in Spanish).
+
 ## Compatibility
 
 | | iOS | Android 16+ |
@@ -383,6 +399,7 @@ The [`example/`](example) app has one screen per preset and design, and an edito
 | Ring and arc gauge | Yes | Shown as a bar |
 | Curved route | Yes | Bar with the same icon |
 | Line chart and split bar | Yes | Omitted |
+| Full custom design | Yes | With `style: card` (no chip or Live Update) |
 | Buttons | Lock Screen (iOS 17+); the island opens the app | In the notification |
 | Stale state | iOS 16.2+ | Always `false` |
 

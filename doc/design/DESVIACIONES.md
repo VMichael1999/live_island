@@ -193,3 +193,19 @@ Android 16 dibuja la tarjeta y no admite diseños propios (con `RemoteViews` dej
 | `chip` | Texto corto en la barra de estado. Con más de 7 caracteres se recorta, así que conviene escribirlo corto («S/21.50») |
 
 La gráfica de línea no tiene equivalente: se degrada a texto con una flecha de tendencia («▲ +1.24%»). El brillo, el trazo punteado y el borde se ignoran.
+
+## Android: modo tarjeta (`style: card`)
+
+`LiveAndroid(style: LiveAndroidStyle.card)` dibuja la notificación con **tu propio diseño** (el mismo árbol de componentes que la isla y la tarjeta de bloqueo), con `RemoteViews` y `DecoratedCustomViewStyle`. Sirve para lo que `ProgressStyle` no puede: dos imágenes (el escudo local y el visitante), un marcador grande, una gráfica…
+
+| | `liveUpdate` (por defecto) | `card` |
+| --- | --- | --- |
+| Diseño | Título, texto, barra, una imagen grande | Cualquier composición de componentes |
+| Chip en la barra de estado | Sí | **No** |
+| Promoción a Live Update (Android 16) | Sí | **No**: Android no promueve notificaciones con vistas propias |
+| Versión mínima | Android 8 (Live Update en 16) | Android 12 (API 31); antes se usa `liveUpdate` |
+
+* Qué se dibuja: filas, columnas, cajas con color y esquinas, texto (negrita, cursiva, color, tamaño), contadores (`countdown` y `stopwatch` con el cronómetro del sistema), íconos, imágenes y avatares; las barras, el anillo, el medidor, la ruta, la gráfica de línea y la barra partida se pintan como imagen.
+* Qué no: el borde y el brillo de `LiveBox` (solo el color y las esquinas más cercanas: 8, 12, 16, 20, 28 o cápsula) y los botones dentro de la tarjeta; los botones salen como acciones de la notificación.
+* Diseño de la tarjeta: `LiveAndroid.card` (expandida) y `cardCollapsed` (colapsada); si faltan, se usa la tarjeta de bloqueo propia (`LiveLockScreen.custom`). Los colores del texto sin color propio se adaptan al modo claro y oscuro del sistema; si pones una caja de color, da también color a sus textos.
+* Por defecto usan `card` el marcador (`MatchPreset`) y la bolsa (`StockPreset`); `androidStyle:` lo cambia en cada uno.
