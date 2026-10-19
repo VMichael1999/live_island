@@ -246,4 +246,53 @@ void main() {
       expect(const StockPreset().build().android!.largeIcon, isNull);
     },
   );
+
+  test(
+    'el estilo tarjeta de Android viaja en el JSON y entra en el manifiesto',
+    () {
+      final crest = LiveImage.asset('assets/escudo.png', size: 40);
+      final android = LiveAndroid(
+        title: const LiveText.literal('T'),
+        style: LiveAndroidStyle.card,
+        card: LiveRow([crest, const LiveText.literal('3 : 1')]),
+        cardCollapsed: const LiveText.literal('3 : 1'),
+      );
+      final json = android.toJson();
+      expect(json['style'], 'card');
+      final back = LiveAndroid.fromJson(json);
+      expect(back.style, LiveAndroidStyle.card);
+      expect(back.card, isA<LiveRow>());
+      expect(back.cardCollapsed, isA<LiveText>());
+      // Sin estilo tarjeta el campo no viaja.
+      expect(
+        const LiveAndroid(
+          title: LiveText.literal('T'),
+        ).toJson().containsKey('style'),
+        isFalse,
+      );
+      final layout = LiveLayout(
+        theme: const LiveTheme(accent: Color(0xFF000000)),
+        android: android,
+      );
+      expect(layout.images.map((i) => i.id), contains(crest.id));
+    },
+  );
+
+  test(
+    'el marcador y la bolsa usan la tarjeta en Android; la tarifa, el estilo nativo',
+    () {
+      expect(const MatchPreset().build().android!.style, LiveAndroidStyle.card);
+      expect(const StockPreset().build().android!.style, LiveAndroidStyle.card);
+      expect(
+        const FareSplitPreset().build().android!.style,
+        LiveAndroidStyle.liveUpdate,
+      );
+      expect(
+        const MatchPreset(
+          androidStyle: LiveAndroidStyle.liveUpdate,
+        ).build().android!.style,
+        LiveAndroidStyle.liveUpdate,
+      );
+    },
+  );
 }

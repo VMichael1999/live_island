@@ -625,6 +625,7 @@ final class MatchPreset extends LivePreset {
     this.homeLabel = 'Local',
     this.awayLabel = 'Visitante',
     this.link = 'Ver estadísticas',
+    this.androidStyle = LiveAndroidStyle.card,
     this.chip,
   });
 
@@ -644,6 +645,11 @@ final class MatchPreset extends LivePreset {
 
   /// Texto del enlace bajo el minuto.
   final String link;
+
+  /// En Android: `card` dibuja la tarjeta con los dos escudos y el marcador
+  /// (sin chip ni Live Update); `liveUpdate` usa el estilo nativo con el escudo
+  /// local y el chip.
+  final LiveAndroidStyle androidStyle;
 
   final LiveChip? chip;
 
@@ -769,6 +775,7 @@ final class MatchPreset extends LivePreset {
           '{local} {golesLocal} – {golesVisitante} {visitante}',
         ),
         text: const LiveBind('torneo'),
+        style: androidStyle,
         subText: const LiveBind('minuto'),
         largeIcon: _home.withSize(44),
         chip: chip ?? const LiveChip.text('3–1'),
@@ -784,13 +791,22 @@ const _up = Color(0xFF30D158);
 /// Datos: `simbolo`, `nombre`, `precio`, `cambio` (texto, por ejemplo
 /// `+1.24%`) y `serie` (los últimos precios con [liveSeries]).
 final class StockPreset extends LivePreset {
-  const StockPreset({this.accent = _up, this.brandLogo, this.chip});
+  const StockPreset({
+    this.accent = _up,
+    this.brandLogo,
+    this.androidStyle = LiveAndroidStyle.card,
+    this.chip,
+  });
 
   /// Color de la línea y de la variación (verde si sube, rojo si baja).
   final Color accent;
 
   /// Logotipo de la empresa.
   final LiveImage? brandLogo;
+
+  /// En Android: `card` dibuja la tarjeta con la gráfica de línea (sin chip ni
+  /// Live Update); `liveUpdate` usa el estilo nativo con texto y chip.
+  final LiveAndroidStyle androidStyle;
 
   final LiveChip? chip;
 
@@ -895,6 +911,7 @@ final class StockPreset extends LivePreset {
     ),
     android: LiveAndroid(
       title: const LiveText.format('{simbolo}'),
+      style: androidStyle,
       text: const LiveText.format('{tendencia} {cambio} · {nombre}'),
       largeIcon: brandLogo,
       chip: chip ?? const LiveChip.text('+1.2%'),
@@ -1432,6 +1449,7 @@ final class FareSplitPreset extends LivePreset {
   const FareSplitPreset({
     this.accent = const Color(0xFF30D158),
     this.brand = 'Run',
+    this.androidStyle = LiveAndroidStyle.liveUpdate,
     this.chip,
   });
 
@@ -1440,6 +1458,10 @@ final class FareSplitPreset extends LivePreset {
 
   /// Nombre de la app, en cursiva arriba a la izquierda.
   final String brand;
+
+  /// En Android: `liveUpdate` (por defecto) con la barra partida y el chip, o
+  /// `card` con la tarjeta completa.
+  final LiveAndroidStyle androidStyle;
 
   final LiveChip? chip;
 
@@ -1545,6 +1567,7 @@ final class FareSplitPreset extends LivePreset {
       text: const LiveText.format(
         'Base {baseTxt} · Servicio {servicioTxt} · Propina {propinaTxt}',
       ),
+      style: androidStyle,
       // En Android la barra usa colores que se leen sobre el fondo del sistema.
       progress: LiveSplitBar([
         const LiveSplitPart(LiveBind('base'), Color(0xFF5F6368)),
