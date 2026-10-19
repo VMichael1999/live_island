@@ -179,3 +179,17 @@ Idea y geometría tomadas de `rit3zh/expo-dynamic-notifications` (MIT): tres for
 * La serie de la gráfica viaja como texto de números separados por comas (`liveSeries([1, 2.5])` → `"1,2.5"`), así el estado sigue siendo de tipos simples.
 * El avión de `LiveFlightPath` no gira siguiendo la curva: queda horizontal.
 * Presets de ejemplo: `StockPreset`, `FlightPathPreset` y `OrbitPreset`.
+
+## Android: lo que se puede mejorar dentro de `ProgressStyle`
+
+Android 16 dibuja la tarjeta y no admite diseños propios (con `RemoteViews` dejaría de promoverla a Live Update). Lo que sí se controla, desde `LiveAndroid`:
+
+| Campo | Qué hace |
+| --- | --- |
+| `title`, `text` | Dos líneas con lo esencial. Android añade el dato destacado de la isla compacta al título («Recogida · 2 min») |
+| `subText` | Texto del encabezado (vehículo, ruta, tienda) |
+| `largeIcon` | Imagen grande a la derecha: foto, escudo o logo. Si falta, el avatar o la imagen de la isla expandida |
+| `progress` | Barra con color propio, marcadores (puntos) y tramos de distinto color (`LiveSplitBar`) |
+| `chip` | Texto corto en la barra de estado. Con más de 7 caracteres se recorta, así que conviene escribirlo corto («S/21.50») |
+
+La gráfica de línea no tiene equivalente: se degrada a texto con una flecha de tendencia («▲ +1.24%»). El brillo, el trazo punteado y el borde se ignoran.

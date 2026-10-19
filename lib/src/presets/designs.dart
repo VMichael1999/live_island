@@ -331,12 +331,14 @@ final class RidePickupPreset extends LivePreset {
         ], gap: 10),
       ),
       lockScreen: LiveLockScreen.custom(card),
+      // Android añade el tiempo al título («Recogida · 2 min»).
       android: LiveAndroid(
-        title:
-            dark
-                ? const LiveText.format('{titulo} {tiempo}')
-                : const LiveText.format('{tiempo} {titulo}'),
+        title: const LiveText.literal('Recogida'),
         text: const LiveText.format('{subtitulo} · {placa}'),
+        subText: const LiveBind('vehiculo'),
+        largeIcon: driverPhoto,
+        // En Android la barra va del color de acento (el fondo lo decide el sistema).
+        progress: _progress(accent, const Color(0xFFB4B4B9)),
         chip: chip ?? const LiveChip.text('2 min'),
       ),
     );
@@ -486,9 +488,12 @@ final class StorePickupPreset extends LivePreset {
           if ((buttons ?? const []).isNotEmpty) LiveRow(buttons!),
         ], gap: 6),
       ),
+      // Android añade la palabra corta al título («Tu pedido · Preparando»).
       android: LiveAndroid(
-        title: const LiveBind('titulo'),
+        title: const LiveText.literal('Tu pedido'),
         text: const LiveBind('subtitulo'),
+        subText: LiveText.literal(store),
+        largeIcon: brandLogo,
         chip: chip ?? const LiveChip.text('Preparando'),
       ),
     );
@@ -599,8 +604,10 @@ final class RunPreset extends LivePreset {
         if ((buttons ?? const []).isNotEmpty) LiveRow(buttons!),
       ], gap: 8),
     ),
+    // Android añade la distancia al título («Carrera · 4,72»).
     android: LiveAndroid(
-      title: const LiveText.format('{distancia} · {tiempo}'),
+      title: const LiveText.literal('Carrera'),
+      text: LiveText.format('{distancia} $unit · {tiempo}'),
       chip: chip ?? const LiveChip.text('4,72'),
     ),
   );
@@ -762,6 +769,8 @@ final class MatchPreset extends LivePreset {
           '{local} {golesLocal} – {golesVisitante} {visitante}',
         ),
         text: const LiveBind('torneo'),
+        subText: const LiveBind('minuto'),
+        largeIcon: _home.withSize(44),
         chip: chip ?? const LiveChip.text('3–1'),
       ),
     );
@@ -809,6 +818,7 @@ final class StockPreset extends LivePreset {
     'nombre': 'Voltio S.A.',
     'precio': '219.40',
     'cambio': '+1.24%',
+    'tendencia': '▲',
     'serie': liveSeries([
       212,
       213.5,
@@ -885,7 +895,8 @@ final class StockPreset extends LivePreset {
     ),
     android: LiveAndroid(
       title: const LiveText.format('{simbolo}'),
-      text: const LiveBind('cambio'),
+      text: const LiveText.format('{tendencia} {cambio} · {nombre}'),
+      largeIcon: brandLogo,
       chip: chip ?? const LiveChip.text('+1.2%'),
     ),
   );
@@ -993,6 +1004,8 @@ final class FlightPathPreset extends LivePreset {
     android: LiveAndroid(
       title: const LiveText.format('{vuelo}'),
       text: const LiveText.format('{origen} → {destino} · {aterriza}'),
+      subText: const LiveBind('estado'),
+      largeIcon: carrier,
       chip: chip ?? const LiveChip.text('55 min'),
       progress: LiveFlightPath(
         value: const LiveBind('progreso'),
@@ -1158,7 +1171,7 @@ final class RideDriverPreset extends LivePreset {
     countdown: false,
     progress: PresetProgress.bar,
     buttons: _buttons,
-    chip: chip ?? const LiveChip.text('S/ 18.50'),
+    chip: chip ?? const LiveChip.text('S/18.50'),
     sample: const PresetSample(
       title: 'Recoge a Ana R.',
       subtitle: 'Av. Arequipa → Miraflores',
@@ -1275,8 +1288,10 @@ final class RideDriverPreset extends LivePreset {
     ),
     android: LiveAndroid(
       title: const LiveText.format('Recoge a {pasajero}'),
-      text: const LiveText.format('{tiempo} · {distancia} · {tarifa}'),
-      chip: chip ?? const LiveChip.text('S/ 18.50'),
+      text: const LiveText.format('{tiempo} · {distancia}'),
+      subText: const LiveBind('ruta'),
+      largeIcon: passengerPhoto,
+      chip: chip ?? const LiveChip.text('S/18.50'),
     ),
   );
 }
@@ -1401,7 +1416,7 @@ final class ChargePreset extends LivePreset {
     ),
     android: LiveAndroid(
       title: const LiveBind('estado'),
-      text: const LiveText.format('{nivel} · {restante}'),
+      text: const LiveText.format('{restante} · {potencia}'),
       chip: chip ?? const LiveChip.text('72 %'),
     ),
   );
@@ -1436,8 +1451,7 @@ final class FareSplitPreset extends LivePreset {
     icon: presetIcon('car.fill', 'car'),
     countdown: false,
     progress: PresetProgress.none,
-    androidPromotable: false,
-    chip: chip ?? const LiveChip.text('S/ 21.50'),
+    chip: chip ?? const LiveChip.text('S/21.50'),
     sample: const PresetSample(
       title: 'Viaje terminado',
       subtitle: 'Total S/ 21.50',
@@ -1528,8 +1542,16 @@ final class FareSplitPreset extends LivePreset {
     ),
     android: LiveAndroid(
       title: const LiveBind('titulo'),
-      text: const LiveText.format('Total {total} · propina {propinaTxt}'),
-      chip: chip ?? const LiveChip.text('S/ 21.50'),
+      text: const LiveText.format(
+        'Base {baseTxt} · Servicio {servicioTxt} · Propina {propinaTxt}',
+      ),
+      // En Android la barra usa colores que se leen sobre el fondo del sistema.
+      progress: LiveSplitBar([
+        const LiveSplitPart(LiveBind('base'), Color(0xFF5F6368)),
+        const LiveSplitPart(LiveBind('servicio'), Color(0xFFB4B6BC)),
+        LiveSplitPart(const LiveBind('propina'), accent),
+      ]),
+      chip: chip ?? const LiveChip.text('S/21.50'),
     ),
   );
 }
