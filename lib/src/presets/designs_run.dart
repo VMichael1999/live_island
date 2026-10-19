@@ -130,7 +130,39 @@ final class RideArrivalPreset extends LivePreset {
             height: 80,
             shape: LiveShape.square,
           ))
-      .withHeight(34);
+      .withHeight(30);
+
+  /// Auto con su placa debajo, alineados a la derecha.
+  LiveNode get _carWithPlate =>
+      LiveColumn([_car, _plate('placa')], gap: 1, align: LiveAlign.end);
+
+  LiveNode get _brand =>
+      LiveText.literal(brand, size: 24, weight: 800, color: _white);
+
+  /// Hora de llegada a la izquierda y pago a la derecha.
+  LiveNode get _arrivalRow => LiveRow([
+    LiveColumn([
+      LiveText.literal(
+        'Llegarás aproximadamente',
+        size: 18,
+        weight: 600,
+        color: _white,
+        lines: 1,
+      ),
+      LiveText.format(
+        'a las {hora}',
+        size: 18,
+        weight: 600,
+        color: _white,
+        lines: 1,
+      ),
+    ], gap: 2),
+    const LiveSpacer(),
+    LiveColumn([
+      LiveText.literal('Pago', size: 18, weight: 600, color: _white),
+      _field('pago', size: 24, weight: 800, color: accent, lines: 1),
+    ], align: LiveAlign.end),
+  ], align: LiveAlign.end);
 
   @override
   LiveLayout build() => LiveLayout(
@@ -139,19 +171,13 @@ final class RideArrivalPreset extends LivePreset {
     compactLeading: _compact,
     compactTrailing: _field('pago', size: 15, weight: 700, color: accent),
     minimal: _compact,
+    // La marca y el auto van junto al sensor; el texto y el pago, abajo, en una
+    // sola pieza a todo el ancho: el pago nunca se corta.
     expanded: LiveExpanded(
-      leading: _compact,
-      center: LiveColumn([
-        LiveText.format(
-          'Llegarás a las {hora}',
-          size: 16,
-          weight: 700,
-          color: _white,
-          lines: 1,
-        ),
-        _field('placa', size: 13, color: _soft, lines: 1),
-      ], gap: 2),
-      trailing: _field('pago', size: 17, weight: 800, color: accent),
+      // 6 pt a cada lado para alinear con el texto de abajo.
+      leading: LivePadding(_brand, horizontal: 6),
+      trailing: LivePadding(_carWithPlate, horizontal: 6),
+      bottom: _arrivalRow,
     ),
     lockScreen: LiveLockScreen.custom(
       LiveBox(
@@ -160,34 +186,12 @@ final class RideArrivalPreset extends LivePreset {
         child: LivePadding(
           LiveColumn([
             LiveRow([
-              LiveText.literal(brand, size: 24, weight: 800, color: _white),
+              _brand,
               const LiveSpacer(),
-              LiveColumn([_car, _plate('placa')], gap: 2, align: LiveAlign.end),
-            ]),
-            LiveRow([
-              LiveColumn([
-                LiveText.literal(
-                  'Llegarás aproximadamente',
-                  size: 17,
-                  weight: 600,
-                  color: _white,
-                  lines: 1,
-                ),
-                LiveText.format(
-                  'a las {hora}',
-                  size: 17,
-                  weight: 600,
-                  color: _white,
-                  lines: 1,
-                ),
-              ], gap: 2),
-              const LiveSpacer(),
-              LiveColumn([
-                LiveText.literal('Pago', size: 17, weight: 600, color: _white),
-                _field('pago', size: 22, weight: 800, color: accent),
-              ], align: LiveAlign.end),
-            ], align: LiveAlign.end),
-          ], gap: 8),
+              _carWithPlate,
+            ], align: LiveAlign.start),
+            _arrivalRow,
+          ], gap: 6),
           horizontal: 16,
           vertical: 12,
         ),
@@ -293,6 +297,44 @@ final class RideTripPreset extends LivePreset {
     ),
   );
 
+  LiveNode get _pill => LiveBox(
+    tint: .18,
+    radius: 9,
+    child: LivePadding(
+      _field('fase', size: 12, weight: 700, color: accent, lines: 1),
+      horizontal: 10,
+      vertical: 4,
+    ),
+  );
+
+  /// Destino con dirección a la izquierda, categoría con pago a la derecha y
+  /// debajo la barra. La dirección es lo que se corta con «…», nunca el pago.
+  LiveNode get _tripBody => LiveColumn([
+    LiveRow([
+      _driver,
+      LiveColumn([
+        LiveText.format(
+          'Destino {hora}',
+          size: 19,
+          weight: 700,
+          color: _white,
+          lines: 1,
+        ),
+        _field('direccion', size: 13, color: _soft, lines: 1),
+      ], gap: 2),
+      const LiveSpacer(),
+      LiveColumn(
+        [
+          _field('categoria', size: 11, color: _soft, lines: 1),
+          _field('pago', size: 20, weight: 800, color: _white, lines: 1),
+        ],
+        gap: 2,
+        align: LiveAlign.end,
+      ),
+    ], gap: 10),
+    _bar,
+  ], gap: 8);
+
   @override
   LiveLayout build() => LiveLayout(
     theme: LiveTheme(accent: accent),
@@ -300,74 +342,16 @@ final class RideTripPreset extends LivePreset {
     compactLeading: _compact,
     compactTrailing: _field('hora', size: 14, weight: 700, color: accent),
     minimal: _compact,
-    expanded: LiveExpanded(
-      leading: _driver,
-      center: LiveColumn([
-        LiveText.format(
-          'Destino {hora}',
-          size: 16,
-          weight: 700,
-          color: _white,
-          lines: 1,
-        ),
-        _field('direccion', size: 13, color: _soft, lines: 1),
-      ], gap: 2),
-      trailing: _field('pago', size: 17, weight: 800, color: accent),
-      bottom: _bar,
-    ),
+    // La fase va junto al sensor y el resto abajo, a todo el ancho.
+    expanded: LiveExpanded(center: _pill, bottom: _tripBody),
     lockScreen: LiveLockScreen.custom(
       LiveBox(
         color: background,
         radius: 22,
         child: LivePadding(
           LiveColumn([
-            LiveRow([
-              LiveBox(
-                tint: .18,
-                radius: 9,
-                child: LivePadding(
-                  _field(
-                    'fase',
-                    size: 12,
-                    weight: 700,
-                    color: accent,
-                    lines: 1,
-                  ),
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-              ),
-              const LiveSpacer(),
-            ]),
-            LiveRow([
-              _driver,
-              LiveColumn([
-                LiveText.format(
-                  'Destino {hora}',
-                  size: 19,
-                  weight: 700,
-                  color: _white,
-                  lines: 1,
-                ),
-                _field('direccion', size: 13, color: _soft, lines: 1),
-              ], gap: 2),
-              const LiveSpacer(),
-              LiveColumn(
-                [
-                  _field('categoria', size: 11, color: _soft, lines: 1),
-                  _field(
-                    'pago',
-                    size: 20,
-                    weight: 800,
-                    color: _white,
-                    lines: 1,
-                  ),
-                ],
-                gap: 2,
-                align: LiveAlign.end,
-              ),
-            ], gap: 10),
-            _bar,
+            LiveRow([_pill, const LiveSpacer()]),
+            _tripBody,
           ], gap: 10),
           horizontal: 16,
           vertical: 12,
