@@ -4,4 +4,5 @@ doc/design/
 doc/PROMPT.md
 tool/
 test/goldens/
-doc/assets/
+doc/assets/*.gif
+doc/assets/banner.png
