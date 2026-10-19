@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://pub.dev/packages/live_island/contract/state.schema.json",
-  "title": "live_island state (estado)",
+  "$id": "https://pub.dev/packages/live_island_kit/contract/state.schema.json",
+  "title": "live_island_kit state (estado)",
   "description": "Los datos de la actividad. Es lo único que viaja en cada update() y en cada push. Las claves las elige el desarrollador y se enlazan desde el layout con 'bind'. Máximo 4 096 bytes serializado (límite de ActivityKit).",
   "type": "object",
   "maxProperties": 64,

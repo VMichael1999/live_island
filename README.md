@@ -1,6 +1,6 @@
-# live_island
+# live_island_kit
 
-<p align="center"><img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/banner.png" alt="live_island: Live Activities y Live Updates 100 % en Dart" width="100%"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/banner.png" alt="live_island_kit: Live Activities y Live Updates 100 % en Dart" width="100%"></p>
 
 [English](README.en.md)
 
@@ -19,7 +19,7 @@
 
 *Cada imagen muestra la isla compacta, la isla expandida y la tarjeta de la pantalla de bloqueo. Son la vista previa de Flutter (`LiveIslandPreview`), salvo la carga, que es una captura del simulador de iOS (la vista previa no dibuja el brillo). Todos son diseños de ejemplo, con nombres e imágenes inventados, y cada texto, color e imagen se cambia desde Dart.*
 
-## Por qué live_island
+## Por qué live_island_kit
 
 - **Una sola API.** `LiveIsland.start / update / end` hace lo mismo en iOS y en Android.
 - **Diseño en Dart.** Un diseño es un árbol de componentes (`LiveText`, `LiveRow`, `LiveProgress`, `LiveSparkline`…) que se enlaza a los datos con `bind('campo')`. Lo dibuja SwiftUI en iOS y `Notification.ProgressStyle` en Android.
@@ -41,8 +41,8 @@
 ## Instalación
 
 ```bash
-flutter pub add live_island
-dart run live_island:setup
+flutter pub add live_island_kit
+dart run live_island_kit:setup
 ```
 
 `setup` agrega a `ios/` el Widget Extension, el App Group y `NSSupportsLiveActivities`, y se puede repetir para actualizar el renderer. Solo falta, una vez, elegir tu equipo de desarrollo en los targets *Runner* y *LiveIslandExtension* de Xcode. Con `--push` también agrega el permiso de push (ver [doc/push.md](doc/push.md)).

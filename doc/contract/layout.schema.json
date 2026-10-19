@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://pub.dev/packages/live_island/contract/layout.schema.json",
-  "title": "live_island layout (diseño)",
+  "$id": "https://pub.dev/packages/live_island_kit/contract/layout.schema.json",
+  "title": "live_island_kit layout (diseño)",
   "description": "El diseño de una actividad. Viaja UNA vez, en LiveIsland.start(). En iOS se guarda como String JSON en los atributos estáticos de la actividad; en Android, en memoria del servicio. Nunca contiene datos que cambian: esos viven en el estado (state.schema.json) y se enlazan con 'bind'.",
   "type": "object",
   "required": ["v", "theme", "regions"],
