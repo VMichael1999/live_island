@@ -97,14 +97,34 @@ struct LiveLockScreenView: View {
 
     var body: some View {
         if let doc = LiveLayoutDoc.load(attributes.layoutId) {
-            content(doc)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 14)
-                .activityBackgroundTint(tint(doc))
-                .widgetURL(attributes.deepLink.flatMap { URL(string: $0) })
+            if let h = hoisted(doc) {
+                // Un solo contenedor: el color de la caja raíz es el fondo de
+                // toda la tarjeta y el diseño trae sus propios márgenes.
+                content(doc, override: h.child)
+                    .activityBackgroundTint(h.color)
+                    .widgetURL(attributes.deepLink.flatMap { URL(string: $0) })
+            } else {
+                content(doc)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 14)
+                    .activityBackgroundTint(tint(doc))
+                    .widgetURL(attributes.deepLink.flatMap { URL(string: $0) })
+            }
         } else {
             EmptyView()
         }
+    }
+
+    /// Si la raíz del diseño es una caja con color opaco (sin borde, halo ni
+    /// tamaño fijo), ese color pasa a ser el fondo de la tarjeta y se dibuja
+    /// solo su contenido: así no quedan dos contenedores uno dentro del otro.
+    private func hoisted(_ doc: LiveLayoutDoc) -> (color: Color, child: LNode)? {
+        guard let root = doc.lockCustom, root.t == "box",
+              let hex = root.string("color"),
+              root.string("border") == nil, root.double("glow") == nil,
+              root.double("size") == nil,
+              let child = root.node("child") else { return nil }
+        return (Color(hex: hex), child)
     }
 
     private func tone(_ doc: LiveLayoutDoc) -> LiveTone {
@@ -125,11 +145,11 @@ struct LiveLockScreenView: View {
     }
 
     @ViewBuilder
-    private func content(_ doc: LiveLayoutDoc) -> some View {
+    private func content(_ doc: LiveLayoutDoc, override: LNode? = nil) -> some View {
         let c = LiveCtx(doc: doc,
                         values: LiveIslandSurfaces.stateValues(state, stale: isStale),
                         style: LiveStyle(tone: tone(doc), accent: doc.accent))
-        if let custom = doc.lockCustom {
+        if let custom = override ?? doc.lockCustom {
             LiveRenderer.render(custom, c)
         } else {
             VStack(alignment: .leading, spacing: 12) {

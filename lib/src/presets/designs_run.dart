@@ -69,7 +69,7 @@ LiveTracker _tracker(LiveImage? image) => LiveTracker(
 final class RideArrivalPreset extends LivePreset {
   const RideArrivalPreset({
     this.accent = const Color(0xFF6FA8FF),
-    this.background = const Color(0xFF0B1B3F),
+    this.background = const Color(0xFF000000),
     this.brand = 'Run',
     this.carImage,
     this.compactIcon,
@@ -79,7 +79,8 @@ final class RideArrivalPreset extends LivePreset {
   /// Color del monto.
   final Color accent;
 
-  /// Fondo de la tarjeta de bloqueo (azul oscuro).
+  /// Fondo de toda la tarjeta de bloqueo (negro). El color del diseño está en
+  /// el texto: [accent].
   final Color background;
 
   /// Nombre de la app, arriba a la izquierda de la tarjeta.
@@ -189,11 +190,7 @@ final class RideArrivalPreset extends LivePreset {
         radius: 22,
         child: LivePadding(
           LiveColumn([
-            LiveRow([
-              _brand,
-              const LiveSpacer(),
-              _carWithPlate,
-            ], align: LiveAlign.start),
+            LiveRow([_brand, const LiveSpacer(), _carWithPlate]),
             _arrivalRow,
           ], gap: 6),
           horizontal: 16,
@@ -218,7 +215,7 @@ final class RideArrivalPreset extends LivePreset {
 final class RideTripPreset extends LivePreset {
   const RideTripPreset({
     this.accent = const Color(0xFFB794FF),
-    this.background = const Color(0xFF1B1230),
+    this.background = const Color(0xFF000000),
     this.brand = 'Run',
     this.driverInitials = 'A',
     this.driverPhoto,
@@ -230,7 +227,8 @@ final class RideTripPreset extends LivePreset {
   /// Color de la fase, del monto y de lo avanzado.
   final Color accent;
 
-  /// Fondo de la tarjeta de bloqueo (morado oscuro).
+  /// Fondo de toda la tarjeta de bloqueo (negro). El color del diseño está en
+  /// el texto y la barra: [accent].
   final Color background;
 
   /// Nombre de la app.

@@ -300,9 +300,22 @@ class LiveLockScreenPreview extends StatelessWidget {
       final ctx = LiveRenderContext(config: config, now: now, style: style);
 
       final custom = l.lockScreen?.custom;
+      // Como en iOS: una caja raíz con color opaco es el fondo de toda la
+      // tarjeta y se dibuja solo su contenido (un único contenedor).
+      final hoist =
+          custom is LiveBox &&
+                  custom.color != null &&
+                  custom.border == null &&
+                  custom.glow == null &&
+                  custom.size == null &&
+                  custom.child != null
+              ? custom
+              : null;
       final e = l.expanded ?? const LiveExpanded();
       final content =
-          custom != null
+          hoist != null
+              ? buildLiveNode(hoist.child!, ctx)
+              : custom != null
               ? buildLiveNode(custom, ctx)
               : _topAndBottom(
                 ctx: ctx,
@@ -314,13 +327,19 @@ class LiveLockScreenPreview extends StatelessWidget {
               );
 
       final card = Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding:
+            hoist != null
+                ? EdgeInsets.zero
+                : const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: switch (tone) {
-            LiveTone.dark => const Color(0xC7161618),
-            LiveTone.light => const Color(0xDBFAFAFC),
-            LiveTone.accent => l.theme.accent,
-          },
+          color:
+              hoist != null
+                  ? hoist.color
+                  : switch (tone) {
+                    LiveTone.dark => const Color(0xC7161618),
+                    LiveTone.light => const Color(0xDBFAFAFC),
+                    LiveTone.accent => l.theme.accent,
+                  },
         ),
         child: content,
       );
