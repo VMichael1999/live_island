@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:live_island/live_island.dart';
+import 'package:live_island_kit/live_island_kit.dart';
 
 import 'catalog.dart';
 

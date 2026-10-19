@@ -16,7 +16,7 @@ Todo se controla con **una sola API en Dart**. La idea central es que el paquete
 
 Vamos a trabajar **en paralelo**: yo (Michael) reviso, pruebo en equipos reales y trabajo en algunas ramas; tú implementas por fases y te detienes en cada punto de control para que revise.
 
-**Esto es un paquete de Flutter.** Se publica en pub.dev, se instala con `flutter pub add live_island` y quien lo usa **solo escribe Dart**. El Swift y el Kotlin existen únicamente **dentro del plugin**, porque Apple obliga a que la isla sea SwiftUI en un Widget Extension y Android obliga a construir la notificación con su API nativa. El desarrollador nunca abre esos archivos; el comando `dart run live_island:setup` agrega lo necesario al proyecto.
+**Esto es un paquete de Flutter.** Se publica en pub.dev, se instala con `flutter pub add live_island_kit` y quien lo usa **solo escribe Dart**. El Swift y el Kotlin existen únicamente **dentro del plugin**, porque Apple obliga a que la isla sea SwiftUI en un Widget Extension y Android obliga a construir la notificación con su API nativa. El desarrollador nunca abre esos archivos; el comando `dart run live_island_kit:setup` agrega lo necesario al proyecto.
 
 ## 2. Documentos de referencia
 
@@ -59,7 +59,7 @@ El archivo **`doc/design/live_island_prototipos.html`** es la referencia visual 
 - Núcleo en Dart con modelo de datos libre, componentes de diseño, bindings, validación y serialización.
 - Renderer SwiftUI genérico dentro de un Widget Extension que el desarrollador **no** tiene que editar.
 - Traductor Kotlin del modelo a estilos nativos de notificación (no `RemoteViews` para la notificación promovida).
-- Comando de configuración `dart run live_island:setup`.
+- Comando de configuración `dart run live_island_kit:setup`.
 - Push: tokens de actualización y push-to-start en iOS (17.2+); en Android, un handler de FCM que recibe el mismo formato de datos.
 - Ejemplos listos (presets) construidos con el núcleo, uno por cada caso de la galería del HTML.
 - Widget de vista previa en Flutter (`LiveIslandPreview`) que dibuja las superficies igual que el HTML, para probar sin compilar el extension.
@@ -229,7 +229,7 @@ live_island/
   ios/Classes/                  (plugin)
   ios/LiveIslandExtension/      (plantilla del Widget Extension + renderer)
   android/src/main/kotlin/...   (plugin + traductor de estilos)
-  bin/setup.dart                (dart run live_island:setup)
+  bin/setup.dart                (dart run live_island_kit:setup)
   example/                      (una pantalla por preset + editor parecido al HTML)
   doc/design/live_island_prototipos.html
   doc/design/LECTURA_DEL_HTML.md

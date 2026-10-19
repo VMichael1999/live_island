@@ -14,7 +14,7 @@ import '../core/layout.dart';
 import 'preset.dart';
 
 /// Imagen de un auto que trae el paquete (la usa [TripPreset] para el tracker).
-const livePresetCarAsset = 'packages/live_island/assets/presets/car.png';
+const livePresetCarAsset = 'packages/live_island_kit/assets/presets/car.png';
 
 /// Viaje en taxi o similar: conductor, cuenta regresiva de llegada y avance por etapas con la imagen de un auto.
 ///

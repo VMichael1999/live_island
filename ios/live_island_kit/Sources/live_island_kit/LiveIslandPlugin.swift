@@ -201,7 +201,7 @@ enum LiveActivities {
     /// lo usa con `attributes.layoutId = "tpl_<nombre>"`.
     static func registerLayout(_ args: [String: Any], _ result: @escaping FlutterResult) {
         guard LiveStorage.appGroup != nil else {
-            return fail(result, "not_configured", "Falta el App Group. Ejecuta `dart run live_island:setup` y vuelve a compilar.")
+            return fail(result, "not_configured", "Falta el App Group. Ejecuta `dart run live_island_kit:setup` y vuelve a compilar.")
         }
         guard let name = args["name"] as? String, let layoutText = args["layout"] as? String else {
             return fail(result, "bad_arguments", "Faltan name y layout.")
@@ -223,7 +223,7 @@ enum LiveActivities {
         }
         guard LiveStorage.appGroup != nil else {
             return fail(result, "not_configured",
-                        "Falta el App Group. Ejecuta `dart run live_island:setup` y vuelve a compilar.")
+                        "Falta el App Group. Ejecuta `dart run live_island_kit:setup` y vuelve a compilar.")
         }
         guard ActivityAuthorizationInfo().areActivitiesEnabled else {
             return fail(result, "disabled", "El usuario desactivó las Live Activities para esta app.")

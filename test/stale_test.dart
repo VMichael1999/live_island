@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:live_island/live_island.dart';
+import 'package:live_island_kit/live_island_kit.dart';
 
 LiveLayout _layout() => LiveLayout(
   theme: const LiveTheme(accent: Color(0xFF1F6FEB)),

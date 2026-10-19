@@ -12,7 +12,7 @@ import 'package:flutter/rendering.dart';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:live_island/live_island.dart';
+import 'package:live_island_kit/live_island_kit.dart';
 
 LiveImage _run(String f, int w, int h, {double? size, double? height}) =>
     LiveImage.asset(

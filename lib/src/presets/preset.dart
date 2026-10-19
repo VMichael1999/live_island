@@ -11,7 +11,7 @@ import '../core/layout.dart';
 import '../core/node.dart';
 
 /// Carpeta de los PNG de íconos de Android que trae el paquete.
-const _iconDir = 'packages/live_island/assets/icons';
+const _iconDir = 'packages/live_island_kit/assets/icons';
 
 /// Un ícono del sistema con su PNG de Android: `presetIcon('car.fill', 'car')`.
 ///

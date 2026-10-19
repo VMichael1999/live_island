@@ -1,6 +1,6 @@
 import 'dart:ui' show Color;
 
-import 'package:live_island/live_island.dart';
+import 'package:live_island_kit/live_island_kit.dart';
 
 /// Un preset del catálogo, con la forma de construirlo cambiando su acento y
 /// el fondo de la tarjeta de bloqueo.

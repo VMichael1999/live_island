@@ -1,6 +1,6 @@
 // swift-tools-version: 5.9
 // Soporte de Swift Package Manager para Flutter. CocoaPods sigue funcionando con
-// ../live_island.podspec; ambos leen las mismas fuentes de Sources/live_island.
+// ../live_island_kit.podspec; ambos leen las mismas fuentes de Sources/live_island_kit.
 
 import Foundation
 import PackageDescription
@@ -13,19 +13,19 @@ let flutterFrameworkDir = packageDir.deletingLastPathComponent().appendingPathCo
 let hasFlutterFramework = FileManager.default.fileExists(atPath: flutterFrameworkDir.path)
 
 let package = Package(
-    name: "live_island",
+    name: "live_island_kit",
     platforms: [
         .iOS("15.0")
     ],
     products: [
-        .library(name: "live-island", targets: ["live_island"])
+        .library(name: "live-island-kit", targets: ["live_island_kit"])
     ],
     dependencies: hasFlutterFramework
         ? [.package(name: "FlutterFramework", path: "../FlutterFramework")]
         : [],
     targets: [
         .target(
-            name: "live_island",
+            name: "live_island_kit",
             dependencies: hasFlutterFramework
                 ? [.product(name: "FlutterFramework", package: "FlutterFramework")]
                 : [],

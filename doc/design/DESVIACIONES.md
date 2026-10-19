@@ -59,7 +59,7 @@ Verificado en el simulador de iPhone 17 Pro (iOS 26.5) con los casos Taxi, Deliv
 | Minimal | Junto a una segunda actividad ficticia | Solo lo muestra iOS cuando hay dos actividades de apps distintas | — |
 | Fondo de la tarjeta de bloqueo `system` | Oscuro translúcido | Lo pone el sistema (claro u oscuro según el modo) | `activityBackgroundTint(nil)` |
 | Permiso | — | La primera vez iOS pregunta "¿Permitir actividades de <app>?" en la pantalla de bloqueo | Lo muestra el sistema; no se puede evitar |
-| Destino mínimo de la app | — | Xcode 27 solo compila para iOS 15.0 o superior; el plugin pide 15.0 | `live_island.podspec` |
+| Destino mínimo de la app | — | Xcode 27 solo compila para iOS 15.0 o superior; el plugin pide 15.0 | `live_island_kit.podspec` |
 
 ## Android real frente al HTML (Fase 4)
 
@@ -143,8 +143,8 @@ Idea y geometría tomadas de `rit3zh/expo-dynamic-notifications` (MIT): tres for
 
 | Tema | Detalle |
 | --- | --- |
-| Estructura | `ios/live_island/Package.swift` y `ios/live_island/Sources/live_island/` (plugin, `Shared/` y `PrivacyInfo.xcprivacy`). El podspec lee las mismas fuentes |
-| Extensión | `Renderer/` y `Widget/` siguen en `ios/LiveIslandExtension/`; `dart run live_island:setup` copia `Shared/` desde las fuentes del plugin |
+| Estructura | `ios/live_island_kit/Package.swift` y `ios/live_island_kit/Sources/live_island_kit/` (plugin, `Shared/` y `PrivacyInfo.xcprivacy`). El podspec lee las mismas fuentes |
+| Extensión | `Renderer/` y `Widget/` siguen en `ios/LiveIslandExtension/`; `dart run live_island_kit:setup` copia `Shared/` desde las fuentes del plugin |
 | `FlutterFramework` | Flutter 3.38+ pide depender de él; el manifiesto lo enlaza solo si existe junto al paquete, así las versiones anteriores no fallan al resolver |
 | Frameworks débiles | `ActivityKit` y `AppIntents` se enlazan con `-weak_framework` (como `weak_frameworks` del podspec), por eso hay `unsafeFlags`: es válido en paquetes locales, que es lo que usa Flutter |
 | Destino mínimo | iOS 15.0 |

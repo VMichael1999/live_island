@@ -6,7 +6,7 @@ enum LiveStorage {
     /// Los diseños con nombre (`registerLayout`) se guardan como `tpl_<nombre>` y no se borran.
     static let templatePrefix = "tpl_"
 
-    /// Nombre del App Group, escrito por `dart run live_island:setup` en el
+    /// Nombre del App Group, escrito por `dart run live_island_kit:setup` en el
     /// Info.plist de la app y de la extensión (`LiveIslandAppGroup`).
     static var appGroup: String? {
         Bundle.main.object(forInfoDictionaryKey: "LiveIslandAppGroup") as? String

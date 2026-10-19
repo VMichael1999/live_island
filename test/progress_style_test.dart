@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:json_schema/json_schema.dart';
-import 'package:live_island/live_island.dart';
-import 'package:live_island/src/preview/preview_progress.dart'
+import 'package:live_island_kit/live_island_kit.dart';
+import 'package:live_island_kit/src/preview/preview_progress.dart'
     show LivePreviewBar;
 
 const _rojo = Color(0xFFC62828);

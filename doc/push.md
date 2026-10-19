@@ -12,7 +12,7 @@ El `id` de un botón (`LiveButton(id: 'llamar')`) es lo que llega a `LiveIsland.
 
 APNs llega directo a ActivityKit: no hace falta código en la app, solo los tokens.
 
-1. `dart run live_island:setup --push` agrega el permiso `aps-environment` (requiere una cuenta de desarrollador con la capacidad *Push Notifications*).
+1. `dart run live_island_kit:setup --push` agrega el permiso `aps-environment` (requiere una cuenta de desarrollador con la capacidad *Push Notifications*).
 2. Para **actualizar** una actividad: `LiveIsland.start(..., requestPushToken: true)` y envía a tu servidor `actividad.pushTokens` (hexadecimal).
 3. Para **iniciar** una actividad desde el servidor (iOS 17.2+): envía a tu servidor los tokens de `LiveIsland.pushTokens` que no tienen `activityId` (son los de push-to-start).
 

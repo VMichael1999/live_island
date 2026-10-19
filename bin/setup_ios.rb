@@ -1,4 +1,4 @@
-# Configura el proyecto de Xcode de la app para live_island:
+# Configura el proyecto de Xcode de la app para live_island_kit:
 #   - agrega el target "LiveIslandExtension" (Widget Extension) y lo incrusta en la app,
 #   - copia el renderer SwiftUI (plantilla de ios/LiveIslandExtension del paquete),
 #   - crea el App Group y los entitlements de la app y de la extensión,
@@ -30,7 +30,7 @@ ext_dir = File.join(ios_dir, ext_name)
 # --- 1. Archivos de la extensión -------------------------------------------
 # Shared vive en las fuentes del plugin (las usa también Swift Package Manager);
 # Renderer y Widget son solo de la extensión.
-plugin_sources = File.join(template_dir, '..', 'live_island', 'Sources', 'live_island')
+plugin_sources = File.join(template_dir, '..', 'live_island_kit', 'Sources', 'live_island_kit')
 swift_sources = %w[Shared Renderer Widget].flat_map do |sub|
   src = sub == 'Shared' ? File.join(plugin_sources, 'Shared') : File.join(template_dir, sub)
   dst = File.join(ext_dir, sub)
@@ -49,7 +49,7 @@ FileUtils.cp(privacy_src, File.join(ext_dir, 'PrivacyInfo.xcprivacy')) if File.e
 File.write(File.join(ext_dir, 'LEEME.md'), <<~MD)
   # #{ext_name}
 
-  Generado por `dart run live_island:setup`. No lo edites: el diseño de las
+  Generado por `dart run live_island_kit:setup`. No lo edites: el diseño de las
   actividades se define en Dart y estos archivos se reemplazan al volver a
   ejecutar el comando (por ejemplo, tras actualizar el paquete).
 MD

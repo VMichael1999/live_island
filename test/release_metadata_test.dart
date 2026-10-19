@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// queden atrás del paquete.
 void main() {
   final pubspec = File('pubspec.yaml').readAsStringSync();
-  final podspec = File('ios/live_island.podspec').readAsStringSync();
+  final podspec = File('ios/live_island_kit.podspec').readAsStringSync();
 
   test('el podspec tiene la misma versión que el pubspec', () {
     final pub = RegExp(
@@ -22,7 +22,7 @@ void main() {
   test('el manifiesto de privacidad declara el UserDefaults del App Group', () {
     final xml =
         File(
-          'ios/live_island/Sources/live_island/PrivacyInfo.xcprivacy',
+          'ios/live_island_kit/Sources/live_island_kit/PrivacyInfo.xcprivacy',
         ).readAsStringSync();
     expect(xml, contains('NSPrivacyAccessedAPICategoryUserDefaults'));
     expect(xml, contains('1C8F.1'));
@@ -36,7 +36,7 @@ void main() {
         .join('\n');
     expect(
       active,
-      contains('live_island/Sources/live_island/PrivacyInfo.xcprivacy'),
+      contains('live_island_kit/Sources/live_island_kit/PrivacyInfo.xcprivacy'),
     );
   });
 
@@ -47,17 +47,20 @@ void main() {
   });
 
   test('el paquete de Swift Package Manager apunta a las mismas fuentes', () {
-    final pkg = File('ios/live_island/Package.swift').readAsStringSync();
-    expect(pkg, contains('name: "live_island"'));
+    final pkg = File('ios/live_island_kit/Package.swift').readAsStringSync();
+    expect(pkg, contains('name: "live_island_kit"'));
     expect(pkg, contains('.process("PrivacyInfo.xcprivacy")'));
     expect(pkg, contains('-weak_framework'));
     expect(
       File(
-        'ios/live_island/Sources/live_island/LiveIslandPlugin.swift',
+        'ios/live_island_kit/Sources/live_island_kit/LiveIslandPlugin.swift',
       ).existsSync(),
       isTrue,
     );
     // El podspec lee las mismas fuentes que el paquete.
-    expect(podspec, contains("live_island/Sources/live_island/**/*.swift"));
+    expect(
+      podspec,
+      contains("live_island_kit/Sources/live_island_kit/**/*.swift"),
+    );
   });
 }

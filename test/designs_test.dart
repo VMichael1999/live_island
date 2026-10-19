@@ -1,7 +1,7 @@
 import 'dart:ui' show Color;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:live_island/live_island.dart';
+import 'package:live_island_kit/live_island_kit.dart';
 
 void main() {
   final cases = <String, LivePreset>{

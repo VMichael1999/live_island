@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:live_island/live_island.dart';
+import 'package:live_island_kit/live_island_kit.dart';
 
 import 'fixtures/html_presets.dart';
 
@@ -202,14 +202,17 @@ void main() {
     expect(
       images.keys,
       containsAll([
-        'packages/live_island/assets/icons/mappin.png',
-        'packages/live_island/assets/icons/phone.png',
+        'packages/live_island_kit/assets/icons/mappin.png',
+        'packages/live_island_kit/assets/icons/phone.png',
       ]),
     );
-    expect(images['packages/live_island/assets/icons/phone.png']!.maxWidth, 96);
     expect(
-      images['packages/live_island/assets/icons/phone.png']!.bytes,
-      'packages/live_island/assets/icons/phone.png'.codeUnits,
+      images['packages/live_island_kit/assets/icons/phone.png']!.maxWidth,
+      96,
+    );
+    expect(
+      images['packages/live_island_kit/assets/icons/phone.png']!.bytes,
+      'packages/live_island_kit/assets/icons/phone.png'.codeUnits,
     );
   });
 

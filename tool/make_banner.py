@@ -6,7 +6,7 @@ Usa las imágenes de doc/assets/galeria/ (que genera test/readme_gallery_test.da
 import sys
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-NAME = sys.argv[1] if len(sys.argv) > 1 else 'live_island'
+NAME = sys.argv[1] if len(sys.argv) > 1 else 'live_island_kit'
 W, H = 1600, 560
 GAL = 'doc/assets/galeria/'
 FONT = '/System/Library/Fonts/Avenir Next.ttc'
