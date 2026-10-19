@@ -4,13 +4,13 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'live_island_kit'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'Live Activities (iOS) y Live Updates (Android) con una sola API en Dart, sin Swift ni Kotlin.'
   s.description      = <<-DESC
 Live Activities (iOS) y Live Updates (Android) con una sola API en Dart. Isla dinámica,
 pantalla de bloqueo, 15 presets y vista previa; sin escribir Swift ni Kotlin.
                        DESC
-  s.homepage         = 'https://github.com/VMichael1999/live_island'
+  s.homepage         = 'https://github.com/VMichael1999/live_island_kit'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'VMichael1999' => 'https://github.com/VMichael1999' }
   s.source           = { :path => '.' }

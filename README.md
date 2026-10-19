@@ -1,6 +1,6 @@
 # live_island_kit
 
-<p align="center"><img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/banner.png" alt="live_island_kit: Live Activities y Live Updates 100 % en Dart" width="100%"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/banner.png" alt="live_island_kit: Live Activities y Live Updates 100 % en Dart" width="100%"></p>
 
 [English](README.en.md)
 
@@ -11,11 +11,11 @@
 
 | Recogida de viaje | Marcador de partido | Cotización en bolsa |
 | --- | --- | --- |
-| <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/recogida_clara.png" width="300" alt="Recogida de viaje"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/marcador.png" width="300" alt="Marcador de partido"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/bolsa.png" width="300" alt="Cotización en bolsa"> |
+| <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/recogida_clara.png" width="300" alt="Recogida de viaje"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/marcador.png" width="300" alt="Marcador de partido"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/bolsa.png" width="300" alt="Cotización en bolsa"> |
 | **Pedido en tienda** | **Sala de espera médica** | **Carga de auto eléctrico** |
-| <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/tienda.png" width="300" alt="Pedido en tienda"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/sala_medica.png" width="300" alt="Sala de espera médica"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/carga.png" width="300" alt="Carga con cable luminoso"> |
+| <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/tienda.png" width="300" alt="Pedido en tienda"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/sala_medica.png" width="300" alt="Sala de espera médica"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/carga.png" width="300" alt="Carga con cable luminoso"> |
 | **Vuelo con ruta curva** | **Viaje del conductor** | **Tarifa y propina** |
-| <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/vuelo.png" width="300" alt="Vuelo"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/conductor.png" width="300" alt="Viaje del conductor"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/tarifa.png" width="300" alt="Tarifa y propina"> |
+| <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/vuelo.png" width="300" alt="Vuelo"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/conductor.png" width="300" alt="Viaje del conductor"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/tarifa.png" width="300" alt="Tarifa y propina"> |
 
 *Cada imagen muestra la isla compacta, la isla expandida y la tarjeta de la pantalla de bloqueo. Son la vista previa de Flutter (`LiveIslandPreview`), salvo la carga, que es una captura del simulador de iOS (la vista previa no dibuja el brillo). Todos son diseños de ejemplo, con nombres e imágenes inventados, y cada texto, color e imagen se cambia desde Dart.*
 
@@ -315,7 +315,7 @@ La imagen se reduce al tamaño con que se muestra antes de copiarse al dispositi
 
 `LiveIslandMorph` dibuja la isla soltando una gota que se abre en tarjeta, con el contenido de tu diseño. Sirve en la vista previa y como aviso dentro de tu app; la isla real la dibuja el sistema y no se anima así.
 
-![Gota](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/gota.gif)
+![Gota](https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/gota.gif)
 
 ```dart
 LiveIslandMorph.preview(

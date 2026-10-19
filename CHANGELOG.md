@@ -1,3 +1,8 @@
+## 0.1.1
+
+* Sin avisos del analizador en Flutter 3.47 (imports de `dart:ui` marcados como innecesarios).
+* El repositorio pasa a llamarse `live_island_kit`: se actualizan `repository`, `issue_tracker` y los enlaces de las imágenes del README.
+
 ## 0.1.0
 
 Primera versión publicada.
