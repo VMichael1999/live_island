@@ -62,11 +62,6 @@ final catalog = <CatalogEntry>[
     ),
   ),
   CatalogEntry(
-    'ride_driver',
-    'Viaje · vista del conductor',
-    (a, b) => RideDriverPreset(accent: _a(a, const RideDriverPreset().accent)),
-  ),
-  CatalogEntry(
     'ride_arrival',
     'Llegada · azul oscuro',
     (a, b) =>

@@ -332,7 +332,7 @@ void main() {
     await expectLater(find.byKey(key), matchesGoldenFile('goldens/$file.png'));
   }
 
-  testWidgets('golden: recogida y viaje del conductor', (tester) async {
+  testWidgets('golden: recogida clara y oscura', (tester) async {
     await designsGolden(tester, 'recogida', [
       RidePickupPreset(
         headerImage: run('header.png', 760, 308, height: 40),
@@ -343,7 +343,6 @@ void main() {
         headerImage: run('header.png', 760, 308, height: 40),
         driverPhoto: run('avatar.png', 200, 205, size: 34),
       ),
-      const RideDriverPreset(),
     ], height: 1600);
   });
 

@@ -7,7 +7,6 @@ void main() {
   final cases = <String, LivePreset>{
     'RidePickupPreset (clara)': const RidePickupPreset(),
     'RidePickupPreset (oscura)': const RidePickupPreset(dark: true),
-    'RideDriverPreset': const RideDriverPreset(),
     'RideArrivalPreset': const RideArrivalPreset(),
     'RideTripPreset': const RideTripPreset(),
     'DeliveryOrderPreset': const DeliveryOrderPreset(),
@@ -167,7 +166,6 @@ void main() {
     for (final p in <LivePreset>[
       const RidePickupPreset(),
       const RidePickupPreset(dark: true),
-      const RideDriverPreset(),
       const RideArrivalPreset(),
       const RideTripPreset(),
       const DeliveryOrderPreset(),

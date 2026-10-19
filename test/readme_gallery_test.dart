@@ -66,7 +66,9 @@ void main() {
     'orbita': const OrbitPreset(),
     'tarifa': const FareSplitPreset(),
     'carrera': const RunPreset(),
-    'conductor': const RideDriverPreset(),
+    'viaje': RideTripPreset(
+      driverPhoto: _run('avatar.png', 200, 205, size: 46),
+    ),
   };
 
   final generar = Platform.environment['GENERAR_GALERIA'] != null;
