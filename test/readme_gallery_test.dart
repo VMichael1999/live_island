@@ -28,7 +28,17 @@ void main() {
   final now = DateTime.utc(2026, 10, 4, 15, 0);
   final files = {
     liveDesignCarTopAsset: 'assets/presets/car_top.png',
+    liveDesignTrainTopAsset: 'assets/presets/train_top.png',
     liveDesignCarSideAsset: 'assets/presets/car_side.png',
+    liveDesignCarPlateAsset: 'assets/presets/car_plate.png',
+    liveDesignOrderAsset(1, reached: false): 'assets/presets/pedido_1_gris.png',
+    liveDesignOrderAsset(1, reached: true): 'assets/presets/pedido_1_color.png',
+    liveDesignOrderAsset(2, reached: false): 'assets/presets/pedido_2_gris.png',
+    liveDesignOrderAsset(2, reached: true): 'assets/presets/pedido_2_color.png',
+    liveDesignOrderAsset(3, reached: false): 'assets/presets/pedido_3_gris.png',
+    liveDesignOrderAsset(3, reached: true): 'assets/presets/pedido_3_color.png',
+    liveDesignOrderAsset(4, reached: false): 'assets/presets/pedido_4_gris.png',
+    liveDesignOrderAsset(4, reached: true): 'assets/presets/pedido_4_color.png',
     liveDesignCrestAAsset: 'assets/presets/crest_a.png',
     liveDesignCrestBAsset: 'assets/presets/crest_b.png',
     'assets/run/header.png': 'example/assets/run/header.png',
@@ -57,7 +67,9 @@ void main() {
     'orbita': const OrbitPreset(),
     'tarifa': const FareSplitPreset(),
     'carrera': const RunPreset(),
-    'conductor': const RideDriverPreset(),
+    'viaje': RideTripPreset(
+      driverPhoto: _run('avatar.png', 200, 205, size: 46),
+    ),
   };
 
   final generar = Platform.environment['GENERAR_GALERIA'] != null;

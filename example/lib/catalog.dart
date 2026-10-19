@@ -62,9 +62,44 @@ final catalog = <CatalogEntry>[
     ),
   ),
   CatalogEntry(
-    'ride_driver',
-    'Viaje · vista del conductor',
-    (a, b) => RideDriverPreset(accent: _a(a, const RideDriverPreset().accent)),
+    'ride_arrival',
+    'Llegada · azul oscuro',
+    (a, b) =>
+        RideArrivalPreset(accent: _a(a, const RideArrivalPreset().accent)),
+  ),
+  CatalogEntry(
+    'ride_trip',
+    'Viaje · detalle en morado',
+    (a, b) => RideTripPreset(
+      accent: _a(a, const RideTripPreset().accent),
+      driverPhoto: _runAvatar,
+    ),
+  ),
+  CatalogEntry(
+    'ride_pin',
+    'Inicio de viaje · código PIN',
+    (a, b) => RidePinPreset(
+      accent: _a(a, const RidePinPreset().accent),
+      driverPhoto: _runAvatar,
+    ),
+  ),
+  CatalogEntry(
+    'ride_stop',
+    'Conductor con parada previa',
+    (a, b) => RideStopPreset(accent: _a(a, const RideStopPreset().accent)),
+  ),
+  CatalogEntry(
+    'ride_destination',
+    'Rumbo al destino',
+    (a, b) => RideDestinationPreset(
+      accent: _a(a, const RideDestinationPreset().accent),
+    ),
+  ),
+  CatalogEntry(
+    'delivery_order',
+    'Pedido a domicilio · cuatro etapas',
+    (a, b) =>
+        DeliveryOrderPreset(accent: _a(a, const DeliveryOrderPreset().accent)),
   ),
   CatalogEntry(
     'charge',
@@ -111,21 +146,7 @@ final catalog = <CatalogEntry>[
   CatalogEntry(
     'train_line',
     'Tren · línea verde',
-    (a, b) => TransitPreset(
-      accent: _a(a, const Color(0xFFA7F060)),
-      lockBackground: b ?? LiveBackground.system,
-      stages: const ['Harajuku', 'Shibuya', 'Ebisu'],
-      showTracker: false,
-      showEndIcon: false,
-      progressStyle: LiveProgressStyle(
-        height: 16,
-        color: _a(a, const Color(0xFFA7F060)),
-        trackColor: const Color(0xFF2F6A12),
-        pointSize: 12,
-        pointColor: const Color(0xFF000000),
-        gap: 0,
-      ),
-    ),
+    (a, b) => TrainPreset(accent: _a(a, const TrainPreset().accent)),
   ),
 
   // --- Los 15 presets de la galería ---

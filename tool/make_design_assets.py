@@ -79,7 +79,8 @@ def crest(top, bottom, accent, name):
 
 if __name__ == '__main__':
     os.makedirs(OUT, exist_ok=True)
-    top_car().save(os.path.join(OUT, 'car_top.png'), optimize=True)
+    # car_top.png es un dibujo propio de Michael (auto blanco visto desde arriba):
+    # no se regenera con este script.
     side_car().save(os.path.join(OUT, 'car_side.png'), optimize=True)
     crest((16, 58, 140, 255), (200, 30, 50, 255), (240, 240, 245, 255), 'a').save(
         os.path.join(OUT, 'crest_a.png'), optimize=True)

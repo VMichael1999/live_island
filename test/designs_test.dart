@@ -7,7 +7,13 @@ void main() {
   final cases = <String, LivePreset>{
     'RidePickupPreset (clara)': const RidePickupPreset(),
     'RidePickupPreset (oscura)': const RidePickupPreset(dark: true),
-    'RideDriverPreset': const RideDriverPreset(),
+    'RideArrivalPreset': const RideArrivalPreset(),
+    'RideTripPreset': const RideTripPreset(),
+    'RidePinPreset': const RidePinPreset(),
+    'RideStopPreset': const RideStopPreset(),
+    'RideDestinationPreset': const RideDestinationPreset(),
+    'TrainPreset': const TrainPreset(),
+    'DeliveryOrderPreset': const DeliveryOrderPreset(),
     'MatchPreset': const MatchPreset(),
     'StorePickupPreset': const StorePickupPreset(),
     'RunPreset': const RunPreset(),
@@ -119,6 +125,43 @@ void main() {
     expect(const LiveProgressStyle().isEmpty, isTrue);
   });
 
+  test('el marcador final pegado viaja en el JSON y hace ida y vuelta', () {
+    const style = LiveProgressStyle(
+      endMarker: LivePointShape.targetSquare,
+      pointSize: 16,
+    );
+    final back = LiveProgressStyle.fromJson(style.toJson());
+    expect(back.endMarker, LivePointShape.targetSquare);
+    expect(style.toJson()['endMarker'], 'targetSquare');
+    expect(
+      const LiveProgressStyle().toJson().containsKey('endMarker'),
+      isFalse,
+    );
+    expect(style.isEmpty, isFalse);
+  });
+
+  test('los íconos de etapa viajan en el JSON y hacen ida y vuelta', () {
+    final seg = LiveSegments(
+      value: const LiveBind('progreso'),
+      labels: const ['a', 'b'],
+      points: true,
+      stageIcons: [
+        LiveStageIcon(
+          pending: LiveImage.reference('p1'),
+          reached: LiveImage.reference('r1'),
+        ),
+        LiveStageIcon(
+          pending: LiveImage.reference('p2'),
+          reached: LiveImage.reference('r2'),
+        ),
+      ],
+    );
+    final back = LiveSegments.fromJson(seg.toJson());
+    expect(back.stageIcons, hasLength(2));
+    expect(back.stageIcons!.first.reached.id, 'r1');
+    expect(back.children.whereType<LiveImage>(), hasLength(4));
+  });
+
   test('ningún texto de ejemplo mezcla inglés y español', () {
     final english = RegExp(
       r'\b(until|pickup|arriving|soon|order|progress|handcrafting|miles|time|home|guest|stats|world cup|landing|on time)\b',
@@ -127,7 +170,13 @@ void main() {
     for (final p in <LivePreset>[
       const RidePickupPreset(),
       const RidePickupPreset(dark: true),
-      const RideDriverPreset(),
+      const RideArrivalPreset(),
+      const RideTripPreset(),
+      const RidePinPreset(),
+      const RideStopPreset(),
+      const RideDestinationPreset(),
+      const TrainPreset(),
+      const DeliveryOrderPreset(),
       const StorePickupPreset(),
       const RunPreset(),
       const MatchPreset(),
@@ -278,21 +327,25 @@ void main() {
     },
   );
 
-  test(
-    'el marcador y la bolsa usan la tarjeta en Android; la tarifa, el estilo nativo',
-    () {
-      expect(const MatchPreset().build().android!.style, LiveAndroidStyle.card);
-      expect(const StockPreset().build().android!.style, LiveAndroidStyle.card);
+  test('todos los diseños usan la tarjeta en Android y se puede cambiar', () {
+    for (final e in cases.entries) {
       expect(
-        const FareSplitPreset().build().android!.style,
-        LiveAndroidStyle.liveUpdate,
+        e.value.build().android!.style,
+        LiveAndroidStyle.card,
+        reason: '${e.key} debe dibujarse igual que en iOS',
       );
-      expect(
-        const MatchPreset(
-          androidStyle: LiveAndroidStyle.liveUpdate,
-        ).build().android!.style,
-        LiveAndroidStyle.liveUpdate,
-      );
-    },
-  );
+    }
+    expect(
+      const MatchPreset(
+        androidStyle: LiveAndroidStyle.liveUpdate,
+      ).build().android!.style,
+      LiveAndroidStyle.liveUpdate,
+    );
+    expect(
+      const RideArrivalPreset(
+        androidStyle: LiveAndroidStyle.liveUpdate,
+      ).build().android!.style,
+      LiveAndroidStyle.liveUpdate,
+    );
+  });
 }

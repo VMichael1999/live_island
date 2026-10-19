@@ -28,9 +28,8 @@ void main() {
       final base = preset.sampleState(now: t0);
       final start = (base['progreso']! as num).toDouble();
       final images = <String, ImageProvider>{
-        'asset_packages_live_island_kit_assets_presets_car_png': MemoryImage(
-          File('assets/presets/car.png').readAsBytesSync(),
-        ),
+        'asset_packages_live_island_kit_assets_presets_car_top_png':
+            MemoryImage(File('assets/presets/car_top.png').readAsBytesSync()),
       };
       await tester.binding.setSurfaceSize(const Size(620, 640));
       tester.view.devicePixelRatio = 2;
@@ -110,9 +109,8 @@ void main() {
         now: t0,
         appName: preset.appName,
         images: {
-          'asset_packages_live_island_kit_assets_presets_car_png': MemoryImage(
-            File('assets/presets/car.png').readAsBytesSync(),
-          ),
+          'asset_packages_live_island_kit_assets_presets_car_top_png':
+              MemoryImage(File('assets/presets/car_top.png').readAsBytesSync()),
         },
       );
       await tester.binding.setSurfaceSize(const Size(420, 330));

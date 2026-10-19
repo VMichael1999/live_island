@@ -25,8 +25,8 @@ screenshots:
     path: doc/assets/galeria/carga.png
   - description: "Vuelo con ruta curva"
     path: doc/assets/galeria/vuelo.png
-  - description: "El viaje visto por el conductor"
-    path: doc/assets/galeria/conductor.png
+  - description: "Viaje con fase, destino, categoría, pago y barra"
+    path: doc/assets/galeria/viaje.png
   - description: "Tarifa partida en tramos de color"
     path: doc/assets/galeria/tarifa.png
 

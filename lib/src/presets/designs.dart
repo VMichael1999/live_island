@@ -18,14 +18,29 @@ import '../core/enums.dart';
 import '../core/layout.dart';
 import '../core/node.dart';
 import 'preset.dart';
+import 'presets.dart' show livePresetCarAsset;
 
 /// Auto visto desde arriba, para avanzar sobre una barra.
-const liveDesignCarTopAsset =
-    'packages/live_island_kit/assets/presets/car_top.png';
+const liveDesignCarTopAsset = livePresetCarAsset;
 
 /// Auto visto de lado, para acompañar al conductor.
 const liveDesignCarSideAsset =
     'packages/live_island_kit/assets/presets/car_side.png';
+
+/// Sedán de frente con su placa (CSB488) dibujada, sin fondo.
+const liveDesignCarPlateAsset =
+    'packages/live_island_kit/assets/presets/car_plate.png';
+
+/// Ícono de una etapa de un pedido a domicilio (1 libreta, 2 olla, 3 mochila de
+/// reparto, 4 bolsa con ubicación), gris mientras no llega y de color desde que
+/// llega.
+String liveDesignOrderAsset(int stage, {required bool reached}) =>
+    'packages/live_island_kit/assets/presets/'
+    'pedido_${stage}_${reached ? 'color' : 'gris'}.png';
+
+/// Tren visto desde arriba, para avanzar sobre una barra (sin fondo).
+const liveDesignTrainTopAsset =
+    'packages/live_island_kit/assets/presets/train_top.png';
 
 /// Escudo genérico azul y rojo (equipo local de ejemplo).
 const liveDesignCrestAAsset =
@@ -77,6 +92,7 @@ enum RideBar {
 /// («Recogida en 2 min»); en la clara, después («2 min para la recogida»).
 final class RidePickupPreset extends LivePreset {
   const RidePickupPreset({
+    this.androidStyle = LiveAndroidStyle.card,
     this.dark = false,
     this.accent = const Color(0xFF1F5EFF),
     this.brand = 'Run',
@@ -138,6 +154,11 @@ final class RidePickupPreset extends LivePreset {
 
   RideBar get _bar => bar ?? (dark ? RideBar.line : RideBar.dotted);
 
+  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
+  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
+  /// Android 16 lo promueva a Live Update.
+  final LiveAndroidStyle androidStyle;
+
   @override
   LivePresetSpec get spec => LivePresetSpec(
     id: dark ? 'ride_pickup_dark' : 'ride_pickup',
@@ -170,16 +191,18 @@ final class RidePickupPreset extends LivePreset {
 
   // Iniciales sobre un círculo del color de acento (no del tema: en la tarjeta
   // oscura el tema es casi negro).
-  LiveNode get _driver =>
+  LiveNode get _driver => _driverAvatar(34);
+
+  LiveNode _driverAvatar(double size) =>
       driverPhoto != null
-          ? LiveAvatar.photo(driverPhoto!, size: 34)
+          ? LiveAvatar.photo(driverPhoto!, size: size)
           : LiveBox(
-            size: 34,
-            radius: 17,
+            size: size,
+            radius: size / 2,
             color: accent,
             child: LiveText.literal(
               driverInitials,
-              size: 15,
+              size: size * .44,
               weight: 700,
               color: _white,
             ),
@@ -208,8 +231,8 @@ final class RidePickupPreset extends LivePreset {
       trackerImage ??
           LiveImage.asset(
             liveDesignCarTopAsset,
-            width: 88,
-            height: 46,
+            width: 212,
+            height: 113,
             shape: LiveShape.square,
           ),
       height: 24,
@@ -219,13 +242,15 @@ final class RidePickupPreset extends LivePreset {
       return LiveProgress.bar(
         value: const LiveBind('progreso'),
         tracker: tracker,
-        endIcon: LiveIcon.symbol(
-          'record.circle',
-          android: presetIcon('mappin', 'mappin').android,
-          color: track,
-          size: 18,
+        // Marcador pegado a la barra; el auto lo cubre al llegar.
+        style: LiveProgressStyle(
+          height: 4,
+          color: fill,
+          trackColor: track,
+          endMarker: LivePointShape.target,
+          pointSize: 16,
+          pointColor: const Color(0xFFD9DADF),
         ),
-        style: LiveProgressStyle(height: 4, color: fill, trackColor: track),
       );
     }
     return LiveProgress.bar(
@@ -268,25 +293,19 @@ final class RidePickupPreset extends LivePreset {
       LiveText.format('{placa} • {vehiculo}', size: 15, color: subtle),
     ], gap: 3);
 
-    // Clara: «2 min para la recogida», subtítulo y, a la derecha, placa y auto.
-    final lightBody = LiveRow([
-      LiveColumn([
-        LiveRow([
-          _t('tiempo', size: 21, weight: 700, color: accent),
-          _t('titulo', size: 21, weight: 700, color: ink),
-        ], gap: 6),
-        _t('subtitulo', size: 15, color: subtle),
-      ], gap: 3),
-      const LiveSpacer(),
-      LiveColumn(
-        [
-          _t('placa', size: 20, weight: 700, color: ink),
-          _t('vehiculo', size: 14, color: subtle),
-        ],
-        align: LiveAlign.end,
-        gap: 3,
-      ),
-    ], align: LiveAlign.end);
+    // Clara: «2 min para la recogida» a todo el ancho y, debajo, el subtítulo con
+    // la placa a la derecha (así el título no compite por el ancho).
+    final lightBody = LiveColumn([
+      LiveRow([
+        _t('tiempo', size: 21, weight: 700, color: accent),
+        _t('titulo', size: 21, weight: 700, color: ink, lines: 1),
+      ], gap: 6),
+      LiveRow([
+        _t('subtitulo', size: 15, color: subtle, lines: 1),
+        const LiveSpacer(),
+        _t('placa', size: 16, weight: 700, color: ink),
+      ]),
+    ], gap: 3);
 
     final card = LiveColumn([
       header(),
@@ -306,36 +325,52 @@ final class RidePickupPreset extends LivePreset {
       compactLeading: _compact,
       compactTrailing: _t('tiempo', size: 15, weight: 700, color: _white),
       minimal: _compact,
+      // Todo en una sola pieza a todo el ancho: en la isla real iOS reparte las
+      // zonas laterales y el avatar quedaba suelto en la esquina.
       expanded: LiveExpanded(
-        leading: _driver,
-        center: LiveColumn([
-          LiveRow(
-            dark
-                ? [
-                  _t('titulo', size: 17, weight: 700, color: _white, lines: 1),
-                  _t('tiempo', size: 17, weight: 700, color: _white),
-                ]
-                : [
-                  _t('tiempo', size: 17, weight: 700, color: accent),
-                  _t('titulo', size: 17, weight: 700, color: _white, lines: 1),
-                ],
-            gap: 5,
-          ),
-          const LiveText.format(
-            '{placa} · {vehiculo}',
-            size: 13,
-            muted: true,
-            lines: 1,
-          ),
-        ], gap: 2),
         bottom: LiveColumn([
+          LiveRow([
+            _driverAvatar(44),
+            LiveColumn([
+              LiveRow(
+                dark
+                    ? [
+                      _t(
+                        'titulo',
+                        size: 19,
+                        weight: 700,
+                        color: _white,
+                        lines: 1,
+                      ),
+                      _t('tiempo', size: 19, weight: 700, color: _white),
+                    ]
+                    : [
+                      _t('tiempo', size: 19, weight: 700, color: accent),
+                      _t(
+                        'titulo',
+                        size: 19,
+                        weight: 700,
+                        color: _white,
+                        lines: 1,
+                      ),
+                    ],
+                gap: 5,
+              ),
+              LiveText.format(
+                '{placa} · {vehiculo}',
+                size: 14,
+                color: const Color(0xFFB4B6BC),
+                lines: 1,
+              ),
+            ], gap: 2),
+          ], gap: 10),
           _progress(_white, const Color(0xFF6B6E75)),
-          if ((buttons ?? const []).isNotEmpty) LiveRow(buttons!),
         ], gap: 10),
       ),
       lockScreen: LiveLockScreen.custom(card),
       // Android añade el tiempo al título («Recogida · 2 min»).
       android: LiveAndroid(
+        style: androidStyle,
         title: const LiveText.literal('Recogida'),
         text: const LiveText.format('{subtitulo} · {placa}'),
         subText: const LiveBind('vehiculo'),
@@ -355,6 +390,7 @@ final class RidePickupPreset extends LivePreset {
 /// `etapa` (0, 1 o 2), `progreso`.
 final class StorePickupPreset extends LivePreset {
   const StorePickupPreset({
+    this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFF1E3932),
     this.stepColor = const Color(0xFF00A862),
     this.store = 'Recogida en tienda',
@@ -381,6 +417,11 @@ final class StorePickupPreset extends LivePreset {
 
   final List<LiveButton>? buttons;
   final LiveChip? chip;
+
+  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
+  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
+  /// Android 16 lo promueva a Live Update.
+  final LiveAndroidStyle androidStyle;
 
   @override
   LivePresetSpec get spec => LivePresetSpec(
@@ -493,6 +534,7 @@ final class StorePickupPreset extends LivePreset {
       ),
       // Android añade la palabra corta al título («Tu pedido · Preparando»).
       android: LiveAndroid(
+        style: androidStyle,
         title: const LiveText.literal('Tu pedido'),
         text: const LiveBind('subtitulo'),
         subText: LiveText.literal(store),
@@ -508,6 +550,7 @@ final class StorePickupPreset extends LivePreset {
 /// Datos: `distancia`, `tiempo`, `progreso`.
 final class RunPreset extends LivePreset {
   const RunPreset({
+    this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFF45C8FF),
     this.unit = 'Kilómetros',
     this.timeLabel = 'Tiempo',
@@ -530,6 +573,11 @@ final class RunPreset extends LivePreset {
 
   final List<LiveButton>? buttons;
   final LiveChip? chip;
+
+  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
+  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
+  /// Android 16 lo promueva a Live Update.
+  final LiveAndroidStyle androidStyle;
 
   @override
   LivePresetSpec get spec => LivePresetSpec(
@@ -609,6 +657,7 @@ final class RunPreset extends LivePreset {
     ),
     // Android añade la distancia al título («Carrera · 4,72»).
     android: LiveAndroid(
+      style: androidStyle,
       title: const LiveText.literal('Carrera'),
       text: LiveText.format('{distancia} $unit · {tiempo}'),
       chip: chip ?? const LiveChip.text('4,72'),
@@ -927,6 +976,7 @@ final class StockPreset extends LivePreset {
 /// Datos: `vuelo`, `estado`, `origen`, `destino`, `aterriza` y `progreso`.
 final class FlightPathPreset extends LivePreset {
   const FlightPathPreset({
+    this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFF30D158),
     this.carrier,
     this.chip,
@@ -939,6 +989,11 @@ final class FlightPathPreset extends LivePreset {
   final LiveImage? carrier;
 
   final LiveChip? chip;
+
+  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
+  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
+  /// Android 16 lo promueva a Live Update.
+  final LiveAndroidStyle androidStyle;
 
   @override
   LivePresetSpec get spec => LivePresetSpec(
@@ -1022,6 +1077,7 @@ final class FlightPathPreset extends LivePreset {
       ),
     ),
     android: LiveAndroid(
+      style: androidStyle,
       title: const LiveText.format('{vuelo}'),
       text: const LiveText.format('{origen} → {destino} · {aterriza}'),
       subText: const LiveBind('estado'),
@@ -1042,6 +1098,7 @@ final class FlightPathPreset extends LivePreset {
 /// Datos: `titulo`, `lugar`, `tiempo` y `progreso`.
 final class OrbitPreset extends LivePreset {
   const OrbitPreset({
+    this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFF64D2FF),
     this.sweep = 180,
     this.chip,
@@ -1053,6 +1110,11 @@ final class OrbitPreset extends LivePreset {
   final double sweep;
 
   final LiveChip? chip;
+
+  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
+  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
+  /// Android 16 lo promueva a Live Update.
+  final LiveAndroidStyle androidStyle;
 
   @override
   LivePresetSpec get spec => LivePresetSpec(
@@ -1130,6 +1192,7 @@ final class OrbitPreset extends LivePreset {
       ),
     ),
     android: LiveAndroid(
+      style: androidStyle,
       title: const LiveText.literal('Órbita'),
       text: const LiveText.format('{lugar} · {tiempo}'),
       chip: chip ?? const LiveChip.text('ISS'),
@@ -1141,181 +1204,6 @@ final class OrbitPreset extends LivePreset {
   );
 }
 
-/// Viaje visto por el conductor: a quién recoger, la tarifa y cuánto falta.
-///
-/// Es la contraparte de [RidePickupPreset]: la misma barra con el auto, pero
-/// con la tarifa en grande y un botón «Llegué». Datos: `pasajero`, `ruta`,
-/// `tarifa`, `tiempo`, `distancia`, `progreso`.
-final class RideDriverPreset extends LivePreset {
-  const RideDriverPreset({
-    this.accent = const Color(0xFF30D158),
-    this.brand = 'Run Conductor',
-    this.passengerInitials = 'A',
-    this.passengerPhoto,
-    this.trackerImage,
-    this.compactIcon,
-    this.buttons,
-    this.chip,
-  });
-
-  /// Color de la tarifa y de lo avanzado.
-  final Color accent;
-
-  /// Nombre de la app, arriba a la izquierda de la tarjeta.
-  final String brand;
-
-  /// Iniciales del pasajero (si no hay [passengerPhoto]).
-  final String passengerInitials;
-
-  /// Foto circular del pasajero.
-  final LiveImage? passengerPhoto;
-
-  /// Imagen del auto que avanza sobre la barra (vista desde arriba, sin fondo).
-  final LiveImage? trackerImage;
-
-  /// Ícono o imagen de la isla compacta y la mínima (por defecto un auto).
-  final LiveVisual? compactIcon;
-
-  /// Botones de la tarjeta de bloqueo y de Android; por defecto «Llegué».
-  final List<LiveButton>? buttons;
-
-  /// Chip de Android; por defecto la tarifa.
-  final LiveChip? chip;
-
-  @override
-  LivePresetSpec get spec => LivePresetSpec(
-    id: 'ride_driver',
-    appName: brand,
-    accent: accent,
-    icon: presetIcon('car.fill', 'car'),
-    countdown: false,
-    progress: PresetProgress.bar,
-    buttons: _buttons,
-    chip: chip ?? const LiveChip.text('S/18.50'),
-    sample: const PresetSample(
-      title: 'Recoge a Ana R.',
-      subtitle: 'Av. Arequipa → Miraflores',
-      name: 'Ana',
-      highlight: 'S/ 18.50',
-      progress: 0.4,
-    ),
-  );
-
-  List<LiveButton> get _buttons =>
-      buttons ??
-      [presetButton('Llegué', presetIcon('mappin', 'mappin'), id: 'llegue')];
-
-  @override
-  Map<String, Object?> sampleState({DateTime? now}) => {
-    'pasajero': 'Ana R.',
-    'ruta': 'Av. Arequipa → Miraflores',
-    'tarifa': 'S/ 18.50',
-    'tiempo': '3 min',
-    'distancia': '0.8 km',
-    'progreso': 0.4,
-  };
-
-  LiveVisual get _passenger =>
-      passengerPhoto != null
-          ? LiveAvatar.photo(passengerPhoto!, size: 40)
-          : LiveAvatar(passengerInitials, size: 40);
-
-  LiveVisual get _compact =>
-      compactIcon ?? presetIcon('car.fill', 'car', accent: true);
-
-  LiveNode get _bar => LiveProgress.bar(
-    value: const LiveBind('progreso'),
-    tracker: LiveTracker(
-      trackerImage ??
-          LiveImage.asset(
-            liveDesignCarTopAsset,
-            width: 88,
-            height: 46,
-            shape: LiveShape.square,
-          ),
-      height: 26,
-      background: LiveTrackerBackground.none,
-    ),
-    endIcon: LiveIcon.symbol(
-      'record.circle',
-      android: presetIcon('mappin', 'mappin').android,
-      color: const Color(0xFF6B6E75),
-      size: 18,
-    ),
-    style: LiveProgressStyle(
-      height: 4,
-      color: accent,
-      trackColor: const Color(0xFF6B6E75),
-    ),
-  );
-
-  @override
-  LiveLayout build() => LiveLayout(
-    theme: LiveTheme(accent: accent),
-    appLogo: presetIcon('car.fill', 'car'),
-    compactLeading: _compact,
-    compactTrailing: _t('tarifa', size: 15, weight: 700, color: accent),
-    minimal: _compact,
-    expanded: LiveExpanded(
-      leading: _passenger,
-      center: LiveColumn([
-        LiveText.format(
-          'Recoge a {pasajero}',
-          size: 16,
-          weight: 700,
-          color: _white,
-          lines: 1,
-        ),
-        _t('ruta', size: 13, muted: true, lines: 1),
-      ], gap: 2),
-      trailing: _t('tarifa', size: 17, weight: 800, color: accent),
-      bottom: _bar,
-    ),
-    lockScreen: LiveLockScreen.custom(
-      LiveBox(
-        color: const Color(0xFF16181C),
-        radius: 22,
-        child: LivePadding(
-          LiveColumn([
-            LiveRow([
-              LiveText.literal(brand, size: 17, weight: 800, color: _white),
-              const LiveSpacer(),
-              ..._buttons,
-            ]),
-            LiveRow([
-              LiveColumn([
-                LiveText.format(
-                  'Recoge a {pasajero}',
-                  size: 21,
-                  weight: 700,
-                  color: _white,
-                ),
-                LiveText.format(
-                  '{tiempo} · {distancia}',
-                  size: 13,
-                  color: const Color(0xFFB4B6BC),
-                ),
-              ], gap: 2),
-              const LiveSpacer(),
-              _t('tarifa', size: 28, weight: 800, color: accent),
-            ], align: LiveAlign.end),
-            _bar,
-          ], gap: 6),
-          horizontal: 14,
-          vertical: 8,
-        ),
-      ),
-    ),
-    android: LiveAndroid(
-      title: const LiveText.format('Recoge a {pasajero}'),
-      text: const LiveText.format('{tiempo} · {distancia}'),
-      subText: const LiveBind('ruta'),
-      largeIcon: passengerPhoto,
-      chip: chip ?? const LiveChip.text('S/18.50'),
-    ),
-  );
-}
-
 /// Carga de un auto eléctrico con el "cable luminoso": una barra con halo y
 /// una tarjeta con borde brillante.
 ///
@@ -1323,6 +1211,7 @@ final class RideDriverPreset extends LivePreset {
 /// `potencia` y `progreso`.
 final class ChargePreset extends LivePreset {
   const ChargePreset({
+    this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFF30D158),
     this.glow = 10,
     this.compactIcon,
@@ -1339,6 +1228,11 @@ final class ChargePreset extends LivePreset {
   final LiveVisual? compactIcon;
 
   final LiveChip? chip;
+
+  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
+  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
+  /// Android 16 lo promueva a Live Update.
+  final LiveAndroidStyle androidStyle;
 
   @override
   LivePresetSpec get spec => LivePresetSpec(
@@ -1435,6 +1329,7 @@ final class ChargePreset extends LivePreset {
       ),
     ),
     android: LiveAndroid(
+      style: androidStyle,
       title: const LiveBind('estado'),
       text: const LiveText.format('{restante} · {potencia}'),
       chip: chip ?? const LiveChip.text('72 %'),
@@ -1452,7 +1347,7 @@ final class FareSplitPreset extends LivePreset {
   const FareSplitPreset({
     this.accent = const Color(0xFF30D158),
     this.brand = 'Run',
-    this.androidStyle = LiveAndroidStyle.liveUpdate,
+    this.androidStyle = LiveAndroidStyle.card,
     this.chip,
   });
 

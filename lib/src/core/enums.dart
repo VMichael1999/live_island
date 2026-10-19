@@ -24,7 +24,20 @@ enum LiveAndroidStyle {
 }
 
 /// Forma de los puntos de etapa de una barra.
-enum LivePointShape { circle, square, rounded, ring }
+enum LivePointShape {
+  circle,
+  square,
+  rounded,
+
+  /// Círculo suave con un punto dentro, como un marcador de mapa.
+  ring,
+
+  /// Aro grueso con el centro vacío (la «bolita» de destino).
+  target,
+
+  /// Cuadrado de esquinas suaves, grueso y con el centro vacío.
+  targetSquare,
+}
 
 /// Fondo del ícono que avanza sobre la barra.
 enum LiveTrackerBackground { accentCircle, none }

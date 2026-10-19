@@ -143,7 +143,7 @@ void main() {
     }
 
     test('la imagen del auto del Taxi existe', () {
-      expect(File('assets/presets/car.png').existsSync(), isTrue);
+      expect(File('assets/presets/car_top.png').existsSync(), isTrue);
     });
   });
 

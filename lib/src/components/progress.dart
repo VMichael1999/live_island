@@ -19,6 +19,25 @@ Iterable<LiveNode> _progressChildren(
   if (end != null) end,
 ];
 
+/// Ícono de una etapa de [LiveSegments]: [pending] mientras la etapa no se
+/// alcanza y [reached] desde que se alcanza. Sirve, por ejemplo, para un pedido
+/// cuyos pasos pasan de gris a color.
+class LiveStageIcon {
+  const LiveStageIcon({required this.pending, required this.reached});
+
+  final LiveImage pending, reached;
+
+  Map<String, Object?> toJson() => {
+    'pending': pending.toJson(),
+    'reached': reached.toJson(),
+  };
+
+  factory LiveStageIcon.fromJson(Map<String, Object?> json) => LiveStageIcon(
+    pending: LiveImage.fromJson(asMap(json['pending'], 'stageIcons.pending')),
+    reached: LiveImage.fromJson(asMap(json['reached'], 'stageIcons.reached')),
+  );
+}
+
 /// Estilo de una barra o un anillo de progreso. Todo es opcional: lo que no se
 /// indica toma su valor por defecto (los del prototipo).
 ///
@@ -39,6 +58,8 @@ class LiveProgressStyle {
     this.trackerSize,
     this.markers,
     this.glow,
+    this.endMarker,
+    this.markerLabels,
   });
 
   /// Grosor de la barra en pt (por defecto 6). En un anillo, el ancho del trazo (3).
@@ -83,6 +104,17 @@ class LiveProgressStyle {
   /// Android lo ignora.
   final double? glow;
 
+  /// Marcador del final de la barra, **pegado** a ella y con el ícono que
+  /// avanza encima al llegar al 100 %. Usa [pointSize] como tamaño y
+  /// [LivePointShape.target] o [LivePointShape.targetSquare] como forma.
+  /// Android lo ignora.
+  final LivePointShape? endMarker;
+
+  /// Texto dentro de cada marcador de [markers] (en el mismo orden, que debe
+  /// ser ascendente): por ejemplo `['1']` para una parada numerada. Android
+  /// Live Update lo ignora.
+  final List<String>? markerLabels;
+
   bool get isEmpty =>
       height == null &&
       color == null &&
@@ -96,7 +128,9 @@ class LiveProgressStyle {
       labelSize == null &&
       trackerSize == null &&
       markers == null &&
-      glow == null;
+      glow == null &&
+      endMarker == null &&
+      markerLabels == null;
 
   LiveProgressStyle copyWith({
     double? height,
@@ -112,6 +146,8 @@ class LiveProgressStyle {
     double? trackerSize,
     List<double>? markers,
     double? glow,
+    LivePointShape? endMarker,
+    List<String>? markerLabels,
   }) => LiveProgressStyle(
     height: height ?? this.height,
     color: color ?? this.color,
@@ -126,6 +162,8 @@ class LiveProgressStyle {
     trackerSize: trackerSize ?? this.trackerSize,
     markers: markers ?? this.markers,
     glow: glow ?? this.glow,
+    endMarker: endMarker ?? this.endMarker,
+    markerLabels: markerLabels ?? this.markerLabels,
   );
 
   Map<String, Object?> toJson() => compact({
@@ -142,6 +180,8 @@ class LiveProgressStyle {
     'trackerSize': trackerSize,
     'markers': markers,
     'glow': glow,
+    'endMarker': endMarker?.name,
+    'markerLabels': markerLabels,
   });
 
   factory LiveProgressStyle.fromJson(Map<String, Object?> json) {
@@ -169,6 +209,15 @@ class LiveProgressStyle {
               (m as num).toDouble(),
           ].nullIfEmpty,
       glow: d('glow'),
+      endMarker:
+          json['endMarker'] == null
+              ? null
+              : LivePointShape.values.byName(json['endMarker']! as String),
+      markerLabels:
+          [
+            for (final l in (json['markerLabels'] as List? ?? const []))
+              l as String,
+          ].nullIfEmpty,
     );
   }
 
@@ -180,8 +229,8 @@ class LiveProgressStyle {
   int get hashCode => '${toJson()}'.hashCode;
 }
 
-extension on List<double> {
-  List<double>? get nullIfEmpty => isEmpty ? null : this;
+extension<T> on List<T> {
+  List<T>? get nullIfEmpty => isEmpty ? null : this;
 }
 
 LiveProgressStyle? progressStyleFromJson(Object? raw) =>
@@ -291,10 +340,17 @@ class LiveSegments extends LiveNode {
     LiveTrackerSource? tracker,
     this.startIcon,
     this.endIcon,
+    this.stageIcons,
     this.style,
   }) : tracker = tracker?.asTracker();
 
   final LiveBind value;
+
+  /// Un ícono por etapa (uno por cada elemento de [labels]), en lugar de los
+  /// puntos: gris mientras la etapa no llega y de color desde que llega. Su
+  /// tamaño es `style.pointSize`; los tramos terminan antes de cada ícono según
+  /// `style.gap`. Android Live Update lo ignora.
+  final List<LiveStageIcon>? stageIcons;
 
   /// Una etiqueta por etapa (mínimo dos). Aunque no se muestren ([showLabels]
   /// en `false`) definen cuántos tramos hay.
@@ -312,8 +368,13 @@ class LiveSegments extends LiveNode {
   String get type => 'segments';
 
   @override
-  Iterable<LiveNode> get children =>
-      _progressChildren(tracker, startIcon, endIcon);
+  Iterable<LiveNode> get children => [
+    ..._progressChildren(tracker, startIcon, endIcon),
+    for (final s in stageIcons ?? const <LiveStageIcon>[]) ...[
+      s.pending,
+      s.reached,
+    ],
+  ];
 
   @override
   Map<String, Object?> toJson() => compact({
@@ -322,6 +383,8 @@ class LiveSegments extends LiveNode {
     'labels': labels,
     'points': points,
     'showLabels': showLabels ? null : false,
+    'stageIcons':
+        stageIcons == null ? null : [for (final s in stageIcons!) s.toJson()],
     'style': progressStyleToJson(style),
     'tracker': tracker?.toJson(),
     'start': startIcon?.toJson(),
@@ -339,6 +402,11 @@ class LiveSegments extends LiveNode {
             : LiveTracker.fromJson(asMap(json['tracker'], 'segments.tracker')),
     startIcon: _endFromJson(json['start'], 'segments.start'),
     endIcon: _endFromJson(json['end'], 'segments.end'),
+    stageIcons:
+        [
+          for (final s in (json['stageIcons'] as List? ?? const []))
+            LiveStageIcon.fromJson(asMap(s, 'segments.stageIcons')),
+        ].nullIfEmpty,
     style: progressStyleFromJson(json['style']),
   );
 }

@@ -32,6 +32,9 @@ class LivePreviewBar extends StatelessWidget {
     this.pointColor,
     this.markers = const [],
     this.glow = 0,
+    this.endMarker,
+    this.stageIcons = const [],
+    this.markerLabels = const [],
   });
 
   /// 0 a 1.
@@ -74,7 +77,24 @@ class LivePreviewBar extends StatelessWidget {
   /// Halo de lo avanzado (radio en pt).
   final double glow;
 
+  /// Marcador pegado al final de la barra (de tamaño [pointSize]).
+  final LivePointShape? endMarker;
+
+  /// Texto dentro de cada marcador de [markers], en el mismo orden.
+  final List<String> markerLabels;
+
+  /// Un ícono por etapa (ya compuesto), en lugar de los puntos: `pending`
+  /// mientras la etapa no llega y `reached` desde que llega.
+  final List<({Widget pending, Widget reached})> stageIcons;
+
   bool get _hasStages => labels.length > 1;
+
+  /// Alto de la fila: lo mayor entre la barra, los íconos de los extremos y los
+  /// íconos de etapa.
+  double _rowHeight(bool hasEnds) => math.max(
+    math.max(height, hasEnds ? 16.0 : 0),
+    stageIcons.isEmpty ? 0 : pointSize,
+  );
   Color get _fill => fillColor ?? style.fill;
   Color get _track => trackColor ?? style.trackBg;
   double get _radius => radius ?? height / 2;
@@ -86,7 +106,7 @@ class LivePreviewBar extends StatelessWidget {
     final labelsVisible = showLabels && _hasStages && (segmented || points);
 
     final bar = SizedBox(
-      height: hasEnds ? math.max(16.0, height) : height,
+      height: _rowHeight(hasEnds),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -191,66 +211,110 @@ class LivePreviewBar extends StatelessWidget {
   }
 
   Widget _track2(double v) {
-    return SizedBox(
-      height: height,
-      child: LayoutBuilder(
-        builder: (context, c) {
-          final w = c.maxWidth;
-          final n = _hasStages ? labels.length - 1 : 1;
-          final useSegs = segmented && _hasStages;
-          final tramos = useSegs ? n : 1;
-          return Stack(
-            clipBehavior: Clip.none,
-            children: [
-              if (glow > 0 && v > 0)
+    final rowH = _rowHeight(start != null || end != null);
+    final cy = rowH / 2;
+    // Con íconos de etapa, la mitad de cada extremo queda dentro del ancho.
+    final inset = stageIcons.isEmpty ? 0.0 : pointSize / 2;
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: inset),
+      child: SizedBox(
+        height: rowH,
+        child: LayoutBuilder(
+          builder: (context, c) {
+            final w = c.maxWidth;
+            // Con marcador final la barra termina donde empieza el marcador y el
+            // ícono que avanza recorre hasta el centro del marcador.
+            final s = endMarker == null ? 0.0 : pointSize;
+            final tw = w - s;
+            final travel = w - s / 2;
+            final f = endMarker == null ? v : math.min(1.0, v * travel / tw);
+            final n = _hasStages ? labels.length - 1 : 1;
+            final useSegs = segmented && _hasStages;
+            final tramos = useSegs ? n : 1;
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                if (glow > 0 && v > 0)
+                  Positioned(
+                    left: 0,
+                    top: cy - height / 2,
+                    width: f * tw,
+                    height: height,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(_radius),
+                        boxShadow: [
+                          BoxShadow(
+                            color: _fill.withValues(alpha: .7),
+                            blurRadius: glow,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 Positioned(
                   left: 0,
-                  top: 0,
-                  width: v * w,
+                  top: cy - height / 2,
+                  width: tw,
                   height: height,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(_radius),
-                      boxShadow: [
-                        BoxShadow(
-                          color: _fill.withValues(alpha: .7),
-                          blurRadius: glow,
-                        ),
+                  // Con íconos de etapa los tramos terminan antes de cada ícono,
+                  // también en los extremos.
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: stageIcons.isEmpty ? 0 : gap / 2,
+                    ),
+                    child: Row(
+                      children: [
+                        for (var i = 0; i < tramos; i++) ...[
+                          if (i > 0) SizedBox(width: gap),
+                          Expanded(
+                            child: _segment(
+                              useSegs ? ((f - i / n) * n).clamp(0.0, 1.0) : f,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
                 ),
-              Row(
-                children: [
-                  for (var i = 0; i < tramos; i++) ...[
-                    if (i > 0) SizedBox(width: gap),
-                    Expanded(
-                      child: _segment(
-                        useSegs ? ((v - i / n) * n).clamp(0.0, 1.0) : v,
+                if (stageIcons.isNotEmpty)
+                  for (
+                    var k = 0;
+                    k < stageIcons.length && k < labels.length;
+                    k++
+                  )
+                    Positioned(
+                      left: k / (labels.length - 1) * tw,
+                      top: cy,
+                      child: FractionalTranslation(
+                        translation: const Offset(-.5, -.5),
+                        child:
+                            k / (labels.length - 1) <= f + 1e-6
+                                ? stageIcons[k].reached
+                                : stageIcons[k].pending,
                       ),
+                    )
+                else if (points && _hasStages)
+                  for (var k = 0; k < labels.length; k++)
+                    _dot(
+                      k / (labels.length - 1) * tw,
+                      k / (labels.length - 1) <= f + 1e-6,
                     ),
-                  ],
-                ],
-              ),
-              if (points && _hasStages)
-                for (var k = 0; k < labels.length; k++)
-                  _dot(
-                    k / (labels.length - 1) * w,
-                    k / (labels.length - 1) <= v + 1e-6,
+                ..._markers(f, tw),
+                if (endMarker != null) _dot(tw + s / 2, true, shape: endMarker),
+                if (tracker != null)
+                  Positioned(
+                    left: v * travel,
+                    top: cy,
+                    child: FractionalTranslation(
+                      translation: const Offset(-.5, -.5),
+                      child: tracker,
+                    ),
                   ),
-              ..._markers(v, w),
-              if (tracker != null)
-                Positioned(
-                  left: v * w,
-                  top: height / 2,
-                  child: FractionalTranslation(
-                    translation: const Offset(-.5, -.5),
-                    child: tracker,
-                  ),
-                ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -288,30 +352,57 @@ class LivePreviewBar extends StatelessWidget {
     final next = sorted.indexWhere((m) => m > v + 1e-6);
     return [
       for (var i = 0; i < sorted.length; i++)
-        _dot(sorted[i].clamp(0.0, 1.0) * w, i <= next || next == -1),
+        _dot(
+          sorted[i].clamp(0.0, 1.0) * w,
+          i <= next || next == -1,
+          label: i < markerLabels.length ? markerLabels[i] : null,
+        ),
     ];
   }
 
-  Widget _dot(double x, bool done) {
+  Widget _dot(double x, bool done, {LivePointShape? shape, String? label}) {
     final doneColor = pointColor ?? _fill;
+    final sh = shape ?? pointShape;
+    final hollow =
+        sh == LivePointShape.target || sh == LivePointShape.targetSquare;
     return Positioned(
       left: x,
-      top: height / 2,
+      top: _rowHeight(start != null || end != null) / 2,
       child: FractionalTranslation(
         translation: const Offset(-.5, -.5),
         child:
-            pointShape == LivePointShape.ring
+            sh == LivePointShape.ring
                 ? _ring(done ? doneColor : _track)
-                : Container(
+                : hollow
+                ? Container(
                   width: pointSize,
                   height: pointSize,
                   decoration: BoxDecoration(
                     shape:
-                        pointShape == LivePointShape.circle
+                        sh == LivePointShape.target
                             ? BoxShape.circle
                             : BoxShape.rectangle,
                     borderRadius:
-                        pointShape == LivePointShape.rounded
+                        sh == LivePointShape.targetSquare
+                            ? BorderRadius.circular(pointSize * .22)
+                            : null,
+                    border: Border.all(
+                      color: done ? doneColor : style.pendingDot,
+                      width: pointSize * .22,
+                    ),
+                  ),
+                )
+                : Container(
+                  width: pointSize,
+                  height: pointSize,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape:
+                        sh == LivePointShape.circle
+                            ? BoxShape.circle
+                            : BoxShape.rectangle,
+                    borderRadius:
+                        sh == LivePointShape.rounded
                             ? BorderRadius.circular(pointSize / 3)
                             : null,
                     color: done ? doneColor : style.pendingDot,
@@ -320,6 +411,19 @@ class LivePreviewBar extends StatelessWidget {
                       width: 2,
                     ),
                   ),
+                  child:
+                      label == null
+                          ? null
+                          : Text(
+                            label,
+                            style: TextStyle(
+                              fontSize: pointSize * .58,
+                              fontWeight: FontWeight.w700,
+                              height: 1,
+                              color: const Color(0xFF111111),
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
                 ),
       ),
     );

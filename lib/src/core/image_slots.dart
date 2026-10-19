@@ -85,13 +85,13 @@ List<LiveImageSlot> imageSlots(LiveLayout layout) {
     _ => null,
   };
   if (tracker?.visual is LiveImage) {
-    // 56 pt de ancho máximo y 24 pt de alto, por 3.
+    // 130 pt de ancho máximo (un tren) y 24 pt de alto, por 3.
     slots.add(
       LiveImageSlot(
         'Imagen que avanza en la barra',
         '72 px de alto',
         tracker!.visual as LiveImage,
-        168,
+        390,
         72,
       ),
     );

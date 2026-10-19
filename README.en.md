@@ -14,8 +14,8 @@
 | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/recogida_clara.png" width="300" alt="Ride pickup"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/marcador.png" width="300" alt="Match score"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/bolsa.png" width="300" alt="Stock quote"> |
 | **Store pickup** | **Medical waiting room** | **EV charging** |
 | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/tienda.png" width="300" alt="Store pickup"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/sala_medica.png" width="300" alt="Medical waiting room"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/carga.png" width="300" alt="Charging with glowing cable"> |
-| **Flight with curved route** | **Driver's trip** | **Fare and tip** |
-| <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/vuelo.png" width="300" alt="Flight"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/conductor.png" width="300" alt="Driver's trip"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/tarifa.png" width="300" alt="Fare and tip"> |
+| **Flight with curved route** | **Trip with details** | **Fare and tip** |
+| <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/vuelo.png" width="300" alt="Flight"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/viaje.png" width="300" alt="Trip with details"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/tarifa.png" width="300" alt="Fare and tip"> |
 
 *Each image shows the compact island, the expanded island and the Lock Screen card. They are the Flutter preview (`LiveIslandPreview`), except charging, which is an iOS Simulator capture (the preview does not draw the glow). All are example designs with made-up names and images; every text, color and image can be changed from Dart. The sample texts are in Spanish.*
 
@@ -359,7 +359,9 @@ More elaborate than the presets, with their own island and Lock Screen card; use
 | Design | What it shows | Most customised |
 | --- | --- | --- |
 | `RidePickupPreset` | Ride pickup, light or dark card | `brand`, `headerImage`, `driverPhoto`, `trackerImage`, `compactIcon`, `bar` (`RideBar.dotted` or `.line`) |
-| `RideDriverPreset` | The trip as the driver sees it, with the fare | `brand`, `passengerPhoto`, `buttons` |
+| `RideArrivalPreset` | Arrival time, fare and the car with its plate | `brand`, `carImage`, `accent` |
+| `RideTripPreset` | Trip with phase, destination, category, fare and bar | `brand`, `driverPhoto`, `accent` |
+| `DeliveryOrderPreset` | Delivery order in four stages with icons | `brand`, `accent` |
 | `StorePickupPreset` | Order pickup, with three steps | `store`, `brandLogo`, `stepColor` |
 | `RunPreset` | Run: distance, time and goal | `brand`, `unit`, `timeLabel` |
 | `MatchPreset` | A match score | `homeCrest`, `awayCrest`, `homeLabel`, `link` |
@@ -373,7 +375,7 @@ The [`example/`](example) app has one screen per preset and design, and an edito
 
 ### Android: Live Update or card
 
-By default Android uses the native style (`LiveAndroidStyle.liveUpdate`): title, text, bar, one large image and the status-bar chip, and Android 16 **promotes it to a Live Update**. If you need more freedom (two crests face to face, a big score, a chart), ask for the **card**: it is drawn with your design, but Android **does not promote it or show a chip**.
+The example designs use the **card** by default so Android draws the same thing as iOS; pass `androidStyle: LiveAndroidStyle.liveUpdate` to go back to the native style. That style (`LiveAndroidStyle.liveUpdate`, the default of `LiveAndroid`): title, text, bar, one large image and the status-bar chip, and Android 16 **promotes it to a Live Update**. If you need more freedom (two crests face to face, a big score, a chart), ask for the **card**: it is drawn with your design, but Android **does not promote it or show a chip**.
 
 ```dart
 LiveAndroid(

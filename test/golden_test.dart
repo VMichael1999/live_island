@@ -262,9 +262,27 @@ void main() {
   }) async {
     final key = GlobalKey();
     // Imágenes que traen los diseños (dibujos propios del paquete).
-    const files = {
+    final files = {
       liveDesignCarTopAsset: 'assets/presets/car_top.png',
+      liveDesignTrainTopAsset: 'assets/presets/train_top.png',
       liveDesignCarSideAsset: 'assets/presets/car_side.png',
+      liveDesignCarPlateAsset: 'assets/presets/car_plate.png',
+      liveDesignOrderAsset(1, reached: false):
+          'assets/presets/pedido_1_gris.png',
+      liveDesignOrderAsset(1, reached: true):
+          'assets/presets/pedido_1_color.png',
+      liveDesignOrderAsset(2, reached: false):
+          'assets/presets/pedido_2_gris.png',
+      liveDesignOrderAsset(2, reached: true):
+          'assets/presets/pedido_2_color.png',
+      liveDesignOrderAsset(3, reached: false):
+          'assets/presets/pedido_3_gris.png',
+      liveDesignOrderAsset(3, reached: true):
+          'assets/presets/pedido_3_color.png',
+      liveDesignOrderAsset(4, reached: false):
+          'assets/presets/pedido_4_gris.png',
+      liveDesignOrderAsset(4, reached: true):
+          'assets/presets/pedido_4_color.png',
       liveDesignCrestAAsset: 'assets/presets/crest_a.png',
       liveDesignCrestBAsset: 'assets/presets/crest_b.png',
     };
@@ -315,7 +333,7 @@ void main() {
     await expectLater(find.byKey(key), matchesGoldenFile('goldens/$file.png'));
   }
 
-  testWidgets('golden: recogida y viaje del conductor', (tester) async {
+  testWidgets('golden: recogida clara y oscura', (tester) async {
     await designsGolden(tester, 'recogida', [
       RidePickupPreset(
         headerImage: run('header.png', 760, 308, height: 40),
@@ -326,7 +344,6 @@ void main() {
         headerImage: run('header.png', 760, 308, height: 40),
         driverPhoto: run('avatar.png', 200, 205, size: 34),
       ),
-      const RideDriverPreset(),
     ], height: 1600);
   });
 
@@ -351,5 +368,35 @@ void main() {
       ChargePreset(),
       FareSplitPreset(),
     ], height: 1100);
+  });
+
+  testWidgets('golden: viajes de Run (llegada y detalle)', (tester) async {
+    await designsGolden(tester, 'viajes_run', [
+      const RideArrivalPreset(),
+      RideTripPreset(driverPhoto: run('avatar.png', 200, 205, size: 46)),
+    ], height: 1100);
+  });
+
+  testWidgets('golden: pedido a domicilio', (tester) async {
+    await designsGolden(tester, 'pedido_domicilio', const [
+      DeliveryOrderPreset(),
+    ], height: 800);
+  });
+
+  testWidgets('golden: inicio de viaje con PIN', (tester) async {
+    await designsGolden(tester, 'pin', [
+      RidePinPreset(driverPhoto: run('avatar.png', 200, 205, size: 52)),
+    ], height: 800);
+  });
+
+  testWidgets('golden: parada previa y rumbo al destino', (tester) async {
+    await designsGolden(tester, 'parada_destino', const [
+      RideStopPreset(),
+      RideDestinationPreset(),
+    ], height: 1100);
+  });
+
+  testWidgets('golden: tren', (tester) async {
+    await designsGolden(tester, 'tren', const [TrainPreset()], height: 800);
   });
 }
