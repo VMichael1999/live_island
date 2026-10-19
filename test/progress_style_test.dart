@@ -131,7 +131,7 @@ void main() {
       'el esquema acepta el estilo y rechaza campos inventados o colores malos',
       () {
         final schema = JsonSchema.create(
-          File('docs/contract/layout.schema.json').readAsStringSync(),
+          File('doc/contract/layout.schema.json').readAsStringSync(),
           schemaVersion: SchemaVersion.draft2020_12,
         );
         Map<String, Object?> layout(Map<String, Object?> node) => {

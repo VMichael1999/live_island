@@ -72,7 +72,7 @@ data class LiveSpec(
 ) {
     /**
      * Android solo promueve a Live Update si tiene título y no está
-     * coloreada (docs/PROMPT.md §6).
+     * coloreada (doc/PROMPT.md §6).
      */
     val promotable: Boolean get() = !colorized && title.isNotEmpty()
 
@@ -139,7 +139,7 @@ data class LiveSpec(
                 else -> null
             }
 
-            // Ícono pequeño: silueta de un solo color (docs/PROMPT.md §5.1).
+            // Ícono pequeño: silueta de un solo color (doc/PROMPT.md §5.1).
             val smallNode = LiveJson.obj(layout, "androidSmallIcon") ?: appLogo
             val smallIcon = iconOf(smallNode)
 

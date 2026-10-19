@@ -2,20 +2,31 @@
 
 [Español](README.md)
 
-Live activities with **a single Dart API**:
+**iOS Live Activities and Android Live Updates with a single Dart API, 100 % editable from Dart.** You define the data and the design of the Dynamic Island, the Lock Screen and the Android notification (texts, colors, icons or images, bars, charts, buttons…) **without writing Swift or Kotlin**: the native code lives inside the plugin.
 
-- **iOS:** Live Activities in the Dynamic Island (compact, minimal and expanded), on the Lock Screen, StandBy, Apple Watch and CarPlay.
+- **iOS:** Dynamic Island (compact, minimal and expanded), Lock Screen, StandBy, Apple Watch and CarPlay.
 - **Android:** ongoing notifications that Android 16+ **promotes to a Live Update** (status-bar chip, top of the shade and lock screen).
 
-You define your data and your design (texts, colors, icons or images, progress bar, the icon that travels along the bar, stages, buttons, the Android chip) **without writing Swift or Kotlin**. The native code lives inside the plugin; `dart run live_island:setup` adds what the Xcode project needs.
-
-| Taxi | Parking | Delivery |
+| Ride pickup | Match score | Stock quote |
 | --- | --- | --- |
-| ![Taxi](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/taxi.gif) | ![Parking](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/estacionamiento.gif) | ![Delivery](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/delivery.gif) |
+| ![Ride pickup](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/recogida_clara.png) | ![Match score](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/marcador.png) | ![Stock quote](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/bolsa.png) |
+| **Store pickup** | **Medical waiting room** | **EV charging** |
+| ![Store pickup](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/tienda.png) | ![Medical waiting room](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/sala_medica.png) | ![Charging with glowing cable](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/carga.png) |
+| **Flight with curved route** | **Driver's trip** | **Fare and tip** |
+| ![Flight](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/vuelo.png) | ![Driver's trip](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/conductor.png) | ![Fare and tip](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/tarifa.png) |
 
-*Flutter preview (`LiveIslandPreview`) of each preset: the compact island and the lock-screen card, with progress and countdown.*
+*Each image shows the compact island, the expanded island and the Lock Screen card. They are the Flutter preview (`LiveIslandPreview`), except charging, which is an iOS Simulator capture (the preview does not draw the glow). All are example designs with made-up names and images; every text, color and image can be changed from Dart. The sample texts are in Spanish.*
 
-> **Status:** pre-release (0.1.0, unpublished). The API may change until it is published. The in-code documentation and the `docs/` folder are in Spanish.
+## Why live_island
+
+- **One API.** `LiveIsland.start / update / end` does the same on iOS and Android.
+- **Design in Dart.** A design is a tree of components (`LiveText`, `LiveRow`, `LiveProgress`, `LiveSparkline`…) bound to your data with `bind('field')`. SwiftUI draws it on iOS and `Notification.ProgressStyle` on Android.
+- **Presets and example designs.** 15 ready presets and 10 more elaborate designs (the ones above) as a starting point: use them as they are or change them.
+- **Preview without building.** `LiveIslandPreview` draws the same surfaces inside your Flutter app, and `LiveIsland.check()` warns about what does not fit or does not work on each platform.
+- **Light data.** The design travels once; each update only carries the state (under 4 KB, the iOS limit).
+- **Push.** Update and start activities from your server with APNs and FCM.
+
+> **Status:** 0.1.0, first release. The API may evolve before 1.0. The in-code documentation and the `doc/` folder are in Spanish.
 
 ## Requirements
 
@@ -32,7 +43,7 @@ flutter pub add live_island
 dart run live_island:setup
 ```
 
-`setup` adds the Widget Extension, the App Group and `NSSupportsLiveActivities` to `ios/`, and can be re-run to update the renderer. The only manual step is picking your development team on the *Runner* and *LiveIslandExtension* targets in Xcode. `--push` also adds the push entitlement (see [docs/push.md](docs/push.md)).
+`setup` adds the Widget Extension, the App Group and `NSSupportsLiveActivities` to `ios/`, and can be re-run to update the renderer. The only manual step is picking your development team on the *Runner* and *LiveIslandExtension* targets in Xcode. `--push` also adds the push entitlement (see [doc/push.md](doc/push.md)).
 
 On Android the plugin declares `POST_NOTIFICATIONS` and `POST_PROMOTED_NOTIFICATIONS`; ask for the notification permission with `LiveIsland.requestPermission()` before starting.
 
@@ -42,7 +53,7 @@ Three levels, from fastest to most flexible. All of them end in the same `LiveLa
 
 ### 1. A preset
 
-Fifteen ready-made cases (taxi, delivery, parking, flight…), each with sample data:
+Fifteen ready-made cases (taxi, delivery, parking, flight…) and ten more elaborate designs (see [Presets](#presets)), each with sample data:
 
 ```dart
 final activity = await LiveIsland.start(
@@ -215,6 +226,59 @@ final activity = await LiveIsland.start(
 
 `LiveBind.stale` exists on iOS 16.2+ and in the preview (`LiveIslandPreview(stale: true)`). On Android it is always `false`: update the state with `update` instead.
 
+## Charts and effects
+
+Besides texts, icons and bars, a design supports charts and effects. They all travel in the same JSON contract and render the same on iOS and in the preview. On Android they degrade as the [compatibility](#compatibility) table shows.
+
+```dart
+// Line chart: the series travels in the state as text ("212,214.5,213").
+LiveSparkline(series: bind('series'), height: 44, color: Color(0xFF30D158));
+update({'series': liveSeries([212, 214.5, 213.2, 219.4])});
+
+// Arc gauge with a dot that advances (an orbit, a parking meter…).
+LiveGauge(value: bind('progress'), size: 96, sweep: 180);
+
+// Curved route with an icon that advances (a flight, a shipment).
+LiveFlightPath(value: bind('progress'), tracker: LiveIcon.symbol('airplane'));
+
+// Bar split into colored parts, proportional to state values.
+LiveSplitBar([
+  LiveSplitPart(bind('base'), Color(0xFFFFFFFF)),
+  LiveSplitPart(bind('tip'), Color(0xFF30D158)),
+]);
+
+// Glowing cable, markers and dashed line on a bar.
+LiveProgress.bar(
+  value: bind('progress'),
+  style: LiveProgressStyle(
+    glow: 10, dashed: true, markers: [.6, 1], pointShape: LivePointShape.ring,
+  ),
+);
+
+// Glowing border and italics.
+LiveBox(border: Color(0xFF30D158), glow: 10, child: LiveText.literal('Run', italic: true));
+```
+
+### Your own images
+
+The example designs use drawings that ship with the package. Use yours (logo, driver photo, car, crests…) with `LiveImage.asset(...)`:
+
+```dart
+RidePickupPreset(
+  brand: 'My app',
+  // A wide image without background (driver + car): fixed height, width from its aspect ratio.
+  headerImage: LiveImage.asset('assets/driver_and_car.png', width: 760, height: 308, fixedHeight: 40),
+  driverPhoto: LiveImage.asset('assets/photo.png', size: 34, shape: LiveShape.circle),
+  trackerImage: LiveImage.asset('assets/top_car.png', width: 88, height: 46),
+);
+```
+
+Every image is drawn in a square of `size` unless you use `fixedHeight` (or `withHeight(n)`), which fixes the height and leaves the width free. Use PNGs with a transparent background so no box shows.
+
+### Lock Screen card size
+
+iOS limits the Lock Screen card to about **160 pt tall** including the system padding, so your design has roughly 125 pt: anything beyond is clipped. Reduce margins and sizes before adding rows, and check the result on a device or simulator as well as in the preview. In the compact island use one-word texts.
+
 ## Icons and images
 
 Wherever an icon goes you can use a system one or your own image (app or client logo, photo, illustration):
@@ -231,7 +295,7 @@ Images are downscaled to the size they are shown at before being copied to the d
 
 `LiveIslandMorph` draws the island dropping a blob that opens into a card holding your layout. Use it in the preview or as an in-app banner; the real island is drawn by the system and cannot be animated this way.
 
-![Drop](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/gota.gif)
+![Drop](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/gota.gif)
 
 ```dart
 LiveIslandMorph.preview(
@@ -254,7 +318,7 @@ Buttons appear on the **lock-screen card** (iOS 17+, without opening the app) an
 
 ## Push
 
-Updating and starting activities from your server, with APNs on iOS and FCM on Android: see [docs/push.md](docs/push.md).
+Updating and starting activities from your server, with APNs on iOS and FCM on Android: see [doc/push.md](doc/push.md).
 
 ## Try it without building the extension
 
@@ -286,7 +350,41 @@ LiveIslandPreview(layout: layout, state: state, appName: 'My app')
 | `WaitingRoomPreset` | Medical waiting room |
 | `ScorePreset` | Sports score |
 
-The [`example/`](example) app has one screen per preset and an editor that starts from one of them.
+### Example designs
+
+More elaborate than the presets, with their own island and Lock Screen card; used the same way (`.build()`, `.sampleState()`, `.override(...)`):
+
+| Design | What it shows | Most customised |
+| --- | --- | --- |
+| `RidePickupPreset` | Ride pickup, light or dark card | `brand`, `headerImage`, `driverPhoto`, `trackerImage`, `compactIcon`, `bar` (`RideBar.dotted` or `.line`) |
+| `RideDriverPreset` | The trip as the driver sees it, with the fare | `brand`, `passengerPhoto`, `buttons` |
+| `StorePickupPreset` | Order pickup, with three steps | `store`, `brandLogo`, `stepColor` |
+| `RunPreset` | Run: distance, time and goal | `brand`, `unit`, `timeLabel` |
+| `MatchPreset` | A match score | `homeCrest`, `awayCrest`, `homeLabel`, `link` |
+| `StockPreset` | Quote with a line chart | `brandLogo`, `accent` |
+| `FlightPathPreset` | Flight with the curved route | `carrier`, `accent` |
+| `OrbitPreset` | Arc with a dot that advances | `sweep`, `accent` |
+| `ChargePreset` | Charging with a glowing cable | `glow`, `accent` |
+| `FareSplitPreset` | Fare split into base, service and tip | `brand`, `accent` |
+
+The [`example/`](example) app has one screen per preset and design, and an editor that starts from one of them.
+
+## Compatibility
+
+| | iOS | Android 16+ |
+| --- | --- | --- |
+| Dynamic Island (compact, minimal, expanded) | Yes | Does not exist |
+| Custom Lock Screen design | Yes (`LiveLockScreen.custom`) | Standard notification |
+| Text, icons and images | Yes | Title, text, chip and icons |
+| Bar, stages and points | Yes, fully styled | Color and markers; the system decides thickness |
+| Dashed line, glowing cable, glowing border | Yes | Ignored |
+| Ring and arc gauge | Yes | Shown as a bar |
+| Curved route | Yes | Bar with the same icon |
+| Line chart and split bar | Yes | Omitted |
+| Buttons | Lock Screen (iOS 17+); the island opens the app | In the notification |
+| Stale state | iOS 16.2+ | Always `false` |
+
+If something cannot be shown on Android, `LiveIsland.check()` tells you before you ship.
 
 ## Out of scope
 
@@ -295,9 +393,9 @@ The [`example/`](example) app has one screen per preset and an editor that start
 
 ## More documentation
 
-- [`docs/contract/`](docs/contract): the JSON contract between Dart, Swift and Kotlin and its render rules.
-- [`docs/design/DESVIACIONES.md`](docs/design/DESVIACIONES.md): how iOS and Android differ from the prototype.
-- [`docs/push.md`](docs/push.md): APNs and FCM push formats.
+- [`doc/contract/`](doc/contract): the JSON contract between Dart, Swift and Kotlin and its render rules.
+- [`doc/design/DESVIACIONES.md`](doc/design/DESVIACIONES.md): how iOS and Android differ from the prototype.
+- [`doc/push.md`](doc/push.md): APNs and FCM push formats.
 
 ### Live bar: follow the driver's signal
 

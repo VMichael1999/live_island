@@ -2,20 +2,31 @@
 
 [English](README.en.md)
 
-Actividades en vivo con **una sola API en Dart**:
+**Live Activities de iOS y Live Updates de Android con una sola API en Dart, y 100 % editables desde Dart.** Tú defines los datos y el diseño de la isla dinámica, de la pantalla de bloqueo y de la notificación de Android (textos, colores, íconos o imágenes, barras, gráficas, botones…) **sin escribir Swift ni Kotlin**: el código nativo vive dentro del plugin.
 
-- **iOS:** Live Activities en la Dynamic Island (compacta, mínima y expandida), la pantalla de bloqueo, StandBy, el Apple Watch y CarPlay.
+- **iOS:** Dynamic Island (compacta, mínima y expandida), pantalla de bloqueo, StandBy, Apple Watch y CarPlay.
 - **Android:** notificaciones en curso que Android 16 o superior **promueve a Live Update** (chip en la barra de estado, arriba del panel y en la pantalla de bloqueo).
 
-Tú defines tus datos y tu diseño (textos, colores, íconos o imágenes, barra de progreso, el ícono que avanza sobre la barra, etapas, botones, el chip de Android) **sin escribir Swift ni Kotlin**. El código nativo vive dentro del plugin; `dart run live_island:setup` agrega lo necesario al proyecto de Xcode.
-
-| Taxi | Estacionamiento | Delivery |
+| Recogida de viaje | Marcador de partido | Cotización en bolsa |
 | --- | --- | --- |
-| ![Taxi](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/taxi.gif) | ![Estacionamiento](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/estacionamiento.gif) | ![Delivery](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/delivery.gif) |
+| ![Recogida de viaje](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/recogida_clara.png) | ![Marcador de partido](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/marcador.png) | ![Cotización en bolsa](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/bolsa.png) |
+| **Pedido en tienda** | **Sala de espera médica** | **Carga de auto eléctrico** |
+| ![Pedido en tienda](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/tienda.png) | ![Sala de espera médica](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/sala_medica.png) | ![Carga con cable luminoso](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/carga.png) |
+| **Vuelo con ruta curva** | **Viaje del conductor** | **Tarifa y propina** |
+| ![Vuelo](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/vuelo.png) | ![Viaje del conductor](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/conductor.png) | ![Tarifa y propina](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/tarifa.png) |
 
-*Vista previa de Flutter (`LiveIslandPreview`) de cada preset: la isla compacta y la tarjeta de la pantalla de bloqueo, con el avance y la cuenta regresiva.*
+*Cada imagen muestra la isla compacta, la isla expandida y la tarjeta de la pantalla de bloqueo. Son la vista previa de Flutter (`LiveIslandPreview`), salvo la carga, que es una captura del simulador de iOS (la vista previa no dibuja el brillo). Todos son diseños de ejemplo, con nombres e imágenes inventados, y cada texto, color e imagen se cambia desde Dart.*
 
-> **Estado:** versión previa (0.1.0 sin publicar). La API puede cambiar hasta publicarla.
+## Por qué live_island
+
+- **Una sola API.** `LiveIsland.start / update / end` hace lo mismo en iOS y en Android.
+- **Diseño en Dart.** Un diseño es un árbol de componentes (`LiveText`, `LiveRow`, `LiveProgress`, `LiveSparkline`…) que se enlaza a los datos con `bind('campo')`. Lo dibuja SwiftUI en iOS y `Notification.ProgressStyle` en Android.
+- **Presets y diseños de ejemplo.** 15 presets listos y 10 diseños más elaborados (los de arriba) como punto de partida: se usan tal cual o se modifican.
+- **Vista previa sin compilar.** `LiveIslandPreview` dibuja las mismas superficies dentro de tu app de Flutter, y `LiveIsland.check()` avisa de lo que no cabe o no funciona en cada plataforma.
+- **Datos ligeros.** El diseño viaja una vez; en cada actualización solo viaja el estado (menos de 4 KB, el límite de iOS).
+- **Push.** Actualizar e iniciar actividades desde el servidor con APNs y FCM.
+
+> **Estado:** 0.1.0, primera versión. La API puede evolucionar antes de la 1.0.
 
 ## Requisitos
 
@@ -32,7 +43,7 @@ flutter pub add live_island
 dart run live_island:setup
 ```
 
-`setup` agrega a `ios/` el Widget Extension, el App Group y `NSSupportsLiveActivities`, y se puede repetir para actualizar el renderer. Solo falta, una vez, elegir tu equipo de desarrollo en los targets *Runner* y *LiveIslandExtension* de Xcode. Con `--push` también agrega el permiso de push (ver [docs/push.md](docs/push.md)).
+`setup` agrega a `ios/` el Widget Extension, el App Group y `NSSupportsLiveActivities`, y se puede repetir para actualizar el renderer. Solo falta, una vez, elegir tu equipo de desarrollo en los targets *Runner* y *LiveIslandExtension* de Xcode. Con `--push` también agrega el permiso de push (ver [doc/push.md](doc/push.md)).
 
 En Android el plugin declara los permisos `POST_NOTIFICATIONS` y `POST_PROMOTED_NOTIFICATIONS`; pide el de notificaciones con `LiveIsland.requestPermission()` antes de iniciar.
 
@@ -42,7 +53,7 @@ Hay tres niveles, del más rápido al más libre. Los tres terminan en el mismo 
 
 ### 1. Un preset
 
-Quince casos listos (taxi, delivery, estacionamiento, vuelo…), cada uno con sus datos de ejemplo:
+Quince casos listos (taxi, delivery, estacionamiento, vuelo…) y diez diseños más elaborados (ver [Los presets](#los-presets)), cada uno con sus datos de ejemplo:
 
 ```dart
 final actividad = await LiveIsland.start(
@@ -214,6 +225,78 @@ final actividad = await LiveIsland.start(
 
 `LiveBind.stale` solo existe en iOS 16.2 o superior y en la vista previa (`LiveIslandPreview(stale: true)`). En Android siempre es `false`: ahí cambia el estado con `update`.
 
+### Barra en vivo: sigue la señal del conductor
+
+La barra lee `progreso` del estado, así que basta con actualizarlo. `LiveRoute` convierte una posición en avance y `follow` mantiene la actividad al día sin saturar al sistema:
+
+```dart
+final ruta = LiveRoute.straight(origen, destino); // o LiveRoute([a, b, c, ...])
+
+actividad.follow(
+  posicionesDelConductor, // Stream<LiveLatLng> de tu mapa, socket o servidor
+  (p) => {
+    'progreso': ruta.progressAt(p),
+    'etapa': ruta.stageAt(p, 4),
+  },
+  minInterval: const Duration(seconds: 5), // envía como máximo una cada 5 s
+);
+```
+
+Los puntos de etapa también son tuyos: cuántos (`stages`, con o sin texto: `''`), su forma (`LiveProgressStyle(pointShape: LivePointShape.square)`) y su tamaño. Para eventos (pedido confirmado, llegó) usa el mismo `follow` o `actividad.update({...})`.
+
+## Gráficas y efectos
+
+Además de textos, íconos y barras, el diseño admite gráficas y efectos. Todos viajan en el mismo contrato JSON y se dibujan igual en iOS y en la vista previa. En Android se degradan como indica la tabla de [compatibilidad](#compatibilidad).
+
+```dart
+// Gráfica de línea: la serie viaja en el estado como texto ("212,214.5,213").
+LiveSparkline(series: bind('serie'), height: 44, color: Color(0xFF30D158));
+update({'serie': liveSeries([212, 214.5, 213.2, 219.4])});
+
+// Medidor de arco con un punto que avanza (una órbita, un parquímetro…).
+LiveGauge(value: bind('progreso'), size: 96, sweep: 180);
+
+// Ruta curva con un ícono que avanza (un vuelo, un envío).
+LiveFlightPath(value: bind('progreso'), tracker: LiveIcon.symbol('airplane'));
+
+// Barra partida en tramos de color, en proporción a valores del estado.
+LiveSplitBar([
+  LiveSplitPart(bind('base'), Color(0xFFFFFFFF)),
+  LiveSplitPart(bind('propina'), Color(0xFF30D158)),
+]);
+
+// Cable luminoso, marcadores y trazo punteado en una barra.
+LiveProgress.bar(
+  value: bind('progreso'),
+  style: LiveProgressStyle(
+    glow: 10, dashed: true, markers: [.6, 1], pointShape: LivePointShape.ring,
+  ),
+);
+
+// Borde con brillo y cursiva.
+LiveBox(border: Color(0xFF30D158), glow: 10, child: LiveText.literal('Run', italic: true));
+```
+
+### Tus propias imágenes
+
+Los diseños de ejemplo usan dibujos propios del paquete. Pon los tuyos (logo, foto del conductor, auto, escudos…) con `LiveImage.asset(...)`:
+
+```dart
+RidePickupPreset(
+  brand: 'Mi app',
+  // Una imagen ancha sin fondo (conductor + auto): alto fijo, ancho según su proporción.
+  headerImage: LiveImage.asset('assets/conductor_y_auto.png', width: 760, height: 308, fixedHeight: 40),
+  driverPhoto: LiveImage.asset('assets/foto.png', size: 34, shape: LiveShape.circle),
+  trackerImage: LiveImage.asset('assets/auto_cenital.png', width: 88, height: 46),
+);
+```
+
+Toda imagen se dibuja en un cuadrado de `size` salvo que uses `fixedHeight` (o `withHeight(n)`), que fija el alto y deja libre el ancho. Usa PNG con fondo transparente para que no se vea un recuadro.
+
+### Medidas de la tarjeta de bloqueo
+
+iOS limita la tarjeta de la pantalla de bloqueo a unos **160 pt de alto** con el relleno del sistema, así que tu diseño dispone de unos 125 pt: lo que sobre se recorta. Reduce márgenes y tamaños antes que añadir filas, y revisa el resultado en un dispositivo o simulador además de la vista previa. En la isla compacta usa textos de una palabra.
+
 ## Íconos e imágenes
 
 Donde va un ícono puedes poner uno del sistema o una imagen tuya (logo de la app o del cliente, foto, ilustración):
@@ -230,7 +313,7 @@ La imagen se reduce al tamaño con que se muestra antes de copiarse al dispositi
 
 `LiveIslandMorph` dibuja la isla soltando una gota que se abre en tarjeta, con el contenido de tu diseño. Sirve en la vista previa y como aviso dentro de tu app; la isla real la dibuja el sistema y no se anima así.
 
-![Gota](https://raw.githubusercontent.com/VMichael1999/live_island/main/docs/assets/gota.gif)
+![Gota](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/gota.gif)
 
 ```dart
 LiveIslandMorph.preview(
@@ -253,7 +336,7 @@ Los botones aparecen en la **tarjeta de la pantalla de bloqueo** (iOS 17 o super
 
 ## Push
 
-Actualizar e iniciar actividades desde el servidor, con APNs en iOS y FCM en Android: ver [docs/push.md](docs/push.md).
+Actualizar e iniciar actividades desde el servidor, con APNs en iOS y FCM en Android: ver [doc/push.md](doc/push.md).
 
 ## Probar sin compilar la extensión
 
@@ -285,7 +368,41 @@ LiveIslandPreview(layout: layout, state: estado, appName: 'Mi app')
 | `WaitingRoomPreset` | Sala de espera médica |
 | `ScorePreset` | Marcador deportivo |
 
-La app de [`example/`](example) tiene una pantalla por preset y un editor que parte de uno de ellos.
+### Diseños de ejemplo
+
+Más elaborados que los presets, con isla y tarjeta de bloqueo propias; se usan igual (`.build()`, `.sampleState()`, `.override(...)`):
+
+| Diseño | Qué muestra | Lo que más se personaliza |
+| --- | --- | --- |
+| `RidePickupPreset` | Recogida de un viaje, tarjeta clara u oscura | `brand`, `headerImage`, `driverPhoto`, `trackerImage`, `compactIcon`, `bar` (`RideBar.dotted` o `.line`) |
+| `RideDriverPreset` | El viaje visto por el conductor, con la tarifa | `brand`, `passengerPhoto`, `buttons` |
+| `StorePickupPreset` | Pedido para recoger, con tres pasos | `store`, `brandLogo`, `stepColor` |
+| `RunPreset` | Carrera: distancia, tiempo y meta | `brand`, `unit`, `timeLabel` |
+| `MatchPreset` | Marcador de un partido | `homeCrest`, `awayCrest`, `homeLabel`, `link` |
+| `StockPreset` | Cotización con gráfica de línea | `brandLogo`, `accent` |
+| `FlightPathPreset` | Vuelo con la ruta curva | `carrier`, `accent` |
+| `OrbitPreset` | Arco con un punto que avanza | `sweep`, `accent` |
+| `ChargePreset` | Carga con cable luminoso | `glow`, `accent` |
+| `FareSplitPreset` | Tarifa partida en base, servicio y propina | `brand`, `accent` |
+
+La app de [`example/`](example) tiene una pantalla por preset y diseño, y un editor que parte de uno de ellos.
+
+## Compatibilidad
+
+| | iOS | Android 16+ |
+| --- | --- | --- |
+| Isla dinámica (compacta, mínima, expandida) | Sí | No existe |
+| Pantalla de bloqueo con diseño propio | Sí (`LiveLockScreen.custom`) | Notificación estándar |
+| Texto, íconos e imágenes | Sí | Título, texto, chip e íconos |
+| Barra, etapas y puntos | Sí, con todo su estilo | Color y marcadores; el grosor lo decide el sistema |
+| Trazo punteado, cable luminoso, borde con brillo | Sí | Se ignoran |
+| Anillo y medidor de arco | Sí | Se muestran como barra |
+| Ruta curva | Sí | Barra con el mismo ícono |
+| Gráfica de línea y barra partida | Sí | Se omiten |
+| Botones | Pantalla de bloqueo (iOS 17+); la isla abre la app | En la notificación |
+| Estado desactualizado (`stale`) | iOS 16.2+ | Siempre `false` |
+
+Si algo no se puede mostrar en Android, `LiveIsland.check()` lo avisa antes de publicar.
 
 ## Qué no entra
 
@@ -294,25 +411,6 @@ La app de [`example/`](example) tiene una pantalla por preset y un editor que pa
 
 ## Más documentación
 
-- [`docs/contract/`](docs/contract): el contrato JSON entre Dart, Swift y Kotlin y sus reglas de render.
-- [`docs/design/DESVIACIONES.md`](docs/design/DESVIACIONES.md): en qué se diferencian iOS y Android del prototipo.
-- [`docs/push.md`](docs/push.md): formato de los push de APNs y FCM.
-
-### Barra en vivo: sigue la señal del conductor
-
-La barra lee `progreso` del estado, así que basta con actualizarlo. `LiveRoute` convierte una posición en avance y `follow` mantiene la actividad al día sin saturar al sistema:
-
-```dart
-final ruta = LiveRoute.straight(origen, destino); // o LiveRoute([a, b, c, ...])
-
-actividad.follow(
-  posicionesDelConductor, // Stream<LiveLatLng> de tu mapa, socket o servidor
-  (p) => {
-    'progreso': ruta.progressAt(p),
-    'etapa': ruta.stageAt(p, 4),
-  },
-  minInterval: const Duration(seconds: 5), // envía como máximo una cada 5 s
-);
-```
-
-Los puntos de etapa también son tuyos: cuántos (`stages`, con o sin texto: `''`), su forma (`LiveProgressStyle(pointShape: LivePointShape.square)`) y su tamaño. Para eventos (pedido confirmado, llegó) usa el mismo `follow` o `actividad.update({...})`.
+- [`doc/contract/`](doc/contract): el contrato JSON entre Dart, Swift y Kotlin y sus reglas de render.
+- [`doc/design/DESVIACIONES.md`](doc/design/DESVIACIONES.md): en qué se diferencian iOS y Android del prototipo.
+- [`doc/push.md`](doc/push.md): formato de los push de APNs y FCM.

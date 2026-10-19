@@ -2,7 +2,7 @@
 
 Resumen de lo que entendí por superficie, sacado del `<script>` y del CSS del HTML (v0.2). Es el checklist de fidelidad: cada línea es un requisito, salvo que `DESVIACIONES.md` diga lo contrario.
 
-Capturas de referencia en `docs/design/capturas/` (se generan con Chrome headless a 2×):
+Capturas de referencia en `doc/design/capturas/` (se generan con Chrome headless a 2×):
 `<preset>_ios.png`, `<preset>_android.png`, `<preset>_validacion.png`, `<preset>_codigo.png` para los 15 presets, más `galeria.png`, `seccion_{editable,medidas,componentes,fidelidad}.png` y `pagina_completa.png`.
 
 ---

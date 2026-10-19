@@ -1,7 +1,7 @@
 # Prompt para Claude Code: paquete Flutter `live_island`
 
 > Copia todo este archivo como primer mensaje en Claude Code, dentro de la carpeta del repositorio del paquete.
-> Antes, coloca el archivo `live_island_prototipos.html` en `docs/design/` del repositorio.
+> Antes, coloca el archivo `live_island_prototipos.html` en `doc/design/` del repositorio.
 
 ---
 
@@ -20,21 +20,21 @@ Vamos a trabajar **en paralelo**: yo (Michael) reviso, pruebo en equipos reales 
 
 ## 2. Documentos de referencia
 
-- **`docs/investigacion.md`**: la investigación técnica (qué permiten iOS y Android, límites, competencia, catálogo de casos de uso y fuentes). Léela completa antes de empezar, para entender el **porqué** de cada decisión.
-- **`docs/design/live_island_prototipos.html`**: la referencia visual y de comportamiento (sección siguiente).
+- **`doc/investigacion.md`**: la investigación técnica (qué permiten iOS y Android, límites, competencia, catálogo de casos de uso y fuentes). Léela completa antes de empezar, para entender el **porqué** de cada decisión.
+- **`doc/design/live_island_prototipos.html`**: la referencia visual y de comportamiento (sección siguiente).
 - **Este prompt**: la especificación final.
 
 **Si hay contradicciones**, manda este orden: 1) este prompt, 2) el HTML, 3) la investigación. La investigación se escribió antes de algunas decisiones finales; por ejemplo, ahí aparecen nombres como `TripTemplate` que ahora son `TripPreset`, y una fase de React Native que por ahora queda fuera del alcance.
 
 ## 2.1 Fuente de verdad visual: el HTML de prototipos
 
-El archivo **`docs/design/live_island_prototipos.html`** es la referencia visual y funcional. Trátalo como si fuera **feedback de diseño detallado**: cada cosa que se ve ahí es un requisito.
+El archivo **`doc/design/live_island_prototipos.html`** es la referencia visual y funcional. Trátalo como si fuera **feedback de diseño detallado**: cada cosa que se ve ahí es un requisito.
 
 **Antes de escribir código:**
 
 1. Abre el HTML en un navegador (usa Playwright o Chromium headless) y toma capturas de: el editor en vivo con cada uno de los 15 ejemplos de la galería, y las secciones "Qué es editable", "Medidas", "Componentes" y "Reglas de fidelidad".
 2. Lee el `<script>` del HTML: las funciones `compactHTML`, `minimalHTML`, `expandedHTML`, `lockCardHTML`, `androidHTML`, `progress`, `chipInfo`, `renderChecks` y `renderCode` describen exactamente qué va en cada región, en qué orden, con qué tamaño y con qué color. El arreglo `PRESETS` tiene los datos de los 15 ejemplos.
-3. Escribe en `docs/design/LECTURA_DEL_HTML.md` un resumen de lo que entendiste por cada superficie (qué elemento, dónde, tamaño, color). Ese resumen es tu checklist de fidelidad.
+3. Escribe en `doc/design/LECTURA_DEL_HTML.md` un resumen de lo que entendiste por cada superficie (qué elemento, dónde, tamaño, color). Ese resumen es tu checklist de fidelidad.
 
 **Reglas de fidelidad (obligatorias):**
 
@@ -49,7 +49,7 @@ El archivo **`docs/design/live_island_prototipos.html`** es la referencia visual
 - **Chip de Android**: 7 caracteres o menos se ve completo; de 8 a 12 se recorta a 6 caracteres más "…"; más de 12 o vacío, solo ícono. En modo cuenta regresiva muestra los minutos ("6 min").
 - **Validación**: los mismos avisos del panel "Validación" del HTML deben salir en `LiveIsland.check()`, con el mismo criterio y textos equivalentes.
 - **Forma de la API**: el "Código Dart generado" del HTML es la forma esperada de la API pública. Si necesitas cambiar un nombre, **primero actualiza el HTML** (`renderCode`) y después el código, y avísame.
-- Si el sistema operativo impide algo que el HTML muestra, no lo inventes: documenta la diferencia en `docs/design/DESVIACIONES.md` con captura, motivo y alternativa.
+- Si el sistema operativo impide algo que el HTML muestra, no lo inventes: documenta la diferencia en `doc/design/DESVIACIONES.md` con captura, motivo y alternativa.
 
 ## 3. Alcance
 
@@ -87,9 +87,9 @@ StandBy, Watch, CarPlay         (chip, panel, bloqueo, always-on)
 
 **Regla clave:** el **diseño** (layout) viaja una vez al iniciar la actividad y se guarda en el App Group (iOS) o en memoria del servicio (Android). En cada actualización solo viaja el **estado** (los datos), para quedarse bajo los 4 KB de iOS.
 
-### Contrato JSON (defínelo primero, en `docs/contract/`)
+### Contrato JSON (defínelo primero, en `doc/contract/`)
 
-Antes de separar el trabajo de iOS y Android, crea `docs/contract/layout.schema.json` y `docs/contract/state.schema.json` con ejemplos. Los tres equipos (Dart, Swift, Kotlin) leen el mismo contrato. Forma orientativa:
+Antes de separar el trabajo de iOS y Android, crea `doc/contract/layout.schema.json` y `doc/contract/state.schema.json` con ejemplos. Los tres equipos (Dart, Swift, Kotlin) leen el mismo contrato. Forma orientativa:
 
 ```json
 {
@@ -231,10 +231,10 @@ live_island/
   android/src/main/kotlin/...   (plugin + traductor de estilos)
   bin/setup.dart                (dart run live_island:setup)
   example/                      (una pantalla por preset + editor parecido al HTML)
-  docs/design/live_island_prototipos.html
-  docs/design/LECTURA_DEL_HTML.md
-  docs/design/DESVIACIONES.md
-  docs/contract/*.schema.json
+  doc/design/live_island_prototipos.html
+  doc/design/LECTURA_DEL_HTML.md
+  doc/design/DESVIACIONES.md
+  doc/contract/*.schema.json
   test/
 ```
 
@@ -253,7 +253,7 @@ Trabaja en una rama por fase o por área. Al terminar cada fase **detente**, mu�
 | 6. Presets y ejemplo | 15 presets, app de ejemplo, README con GIFs | Cada preset coincide con su tarjeta de la galería |
 | 7. Publicación | `pana` sin avisos, CHANGELOG, versión 0.1.0 | Puntuación máxima posible en pana |
 
-**Trabajo en paralelo:** después de la fase 0 se pueden abrir a la vez `feat/core-dart`, `feat/ios` y `feat/android`, porque las tres partes dependen solo del contrato JSON. Si el contrato tiene que cambiar, se cambia en `docs/contract/` en un PR aparte y se avisa.
+**Trabajo en paralelo:** después de la fase 0 se pueden abrir a la vez `feat/core-dart`, `feat/ios` y `feat/android`, porque las tres partes dependen solo del contrato JSON. Si el contrato tiene que cambiar, se cambia en `doc/contract/` en un PR aparte y se avisa.
 
 ## 9. Pruebas
 

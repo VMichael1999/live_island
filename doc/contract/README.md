@@ -36,11 +36,11 @@ Se validan con JSON Schema 2020-12 (probado con `ajv`).
 
 ## Cómo se evalúa el espacio de 4 KB
 
-Solo cuenta `state`. Un taxi típico (ejemplo) pesa ~170 bytes. `LiveIsland.check()` lo mide con el mismo criterio (ver `docs/design/LECTURA_DEL_HTML.md` §8 y §12).
+Solo cuenta `state`. Un taxi típico (ejemplo) pesa ~170 bytes. `LiveIsland.check()` lo mide con el mismo criterio (ver `doc/design/LECTURA_DEL_HTML.md` §8 y §12).
 
 ## Reglas de render por defecto
 
-Estas reglas las comparten la vista previa de Flutter, el renderer SwiftUI y el traductor Kotlin. Salen del HTML de prototipos (`docs/design/LECTURA_DEL_HTML.md`); la vista previa (`lib/src/preview/`) es su implementación de referencia.
+Estas reglas las comparten la vista previa de Flutter, el renderer SwiftUI y el traductor Kotlin. Salen del HTML de prototipos (`doc/design/LECTURA_DEL_HTML.md`); la vista previa (`lib/src/preview/`) es su implementación de referencia.
 
 **Estilo.** Un texto sin `size` mide 15 pt, sin `w` pesa 400, sin `lines` ocupa una línea con elipsis. `muted` usa blanco al 62 % en la isla y al 68 % en la tarjeta de bloqueo (negro al 68 % en fondo claro). `accent` usa el acento, o blanco si la tarjeta de bloqueo tiene fondo `accent`. Los contadores (`countdown`, `stopwatch`) llevan cifras tabulares.
 

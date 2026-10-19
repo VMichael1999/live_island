@@ -1,5 +1,5 @@
 name: live_island
-description: "Live Activities (iOS) y Live Updates (Android) con una sola API en Dart, sin Swift ni Kotlin. Isla dinámica, pantalla de bloqueo, 15 presets y vista previa."
+description: "Live Activities (iOS) y Live Updates (Android) con una sola API en Dart, sin Swift ni Kotlin. Isla dinámica, pantalla de bloqueo, presets, gráficas y vista previa."
 version: 0.1.0
 repository: https://github.com/VMichael1999/live_island
 issue_tracker: https://github.com/VMichael1999/live_island/issues

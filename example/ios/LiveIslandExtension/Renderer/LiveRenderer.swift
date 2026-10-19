@@ -2,7 +2,7 @@ import SwiftUI
 import UIKit
 
 /// Dibuja un nodo del contrato. Es la implementación en SwiftUI de las reglas
-/// de `docs/contract/README.md` (la referencia es la vista previa de Flutter).
+/// de `doc/contract/README.md` (la referencia es la vista previa de Flutter).
 enum LiveRenderer {
     /// [slot] es el tamaño de la zona donde va (íconos, imágenes y avatares sin
     /// `size`); [iconSize] el glifo si es un ícono.

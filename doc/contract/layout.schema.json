@@ -9,7 +9,7 @@
   "properties": {
     "v": { "const": 1, "description": "Versión del contrato." },
     "theme": { "$ref": "#/$defs/theme" },
-    "appLogo": { "$ref": "#/$defs/visual", "description": "Pantalla de bloqueo (ícono de app de 40 pt) e ícono grande de Android. Ver docs/PROMPT.md §5.1." },
+    "appLogo": { "$ref": "#/$defs/visual", "description": "Pantalla de bloqueo (ícono de app de 40 pt) e ícono grande de Android. Ver doc/PROMPT.md §5.1." },
     "androidSmallIcon": { "$ref": "#/$defs/visual", "description": "Silueta de un solo color para la barra de estado, el chip y el encabezado de Android." },
     "images": {
       "type": "object",

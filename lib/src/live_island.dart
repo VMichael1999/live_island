@@ -235,7 +235,7 @@ abstract final class LiveIsland {
   }
 
   /// Procesa los datos de un mensaje de FCM (Android) para iniciar, actualizar
-  /// o terminar una actividad; ver `docs/push.md`. Llámalo desde tu handler de
+  /// o terminar una actividad; ver `doc/push.md`. Llámalo desde tu handler de
   /// `firebase_messaging`. Devuelve el id de la actividad afectada. En iOS no
   /// hace nada: APNs llega directo a ActivityKit.
   static Future<String?> handlePush(Map<String, Object?> data) =>
@@ -292,7 +292,7 @@ abstract final class LiveIsland {
   }
 
   /// Valida [layout] con [state] con el mismo criterio del panel "Validación"
-  /// del HTML de prototipos (`docs/design/live_island_prototipos.html`).
+  /// del HTML de prototipos (`doc/design/live_island_prototipos.html`).
   ///
   /// [androidPromotable] debe ser `false` para casos que Google no promueve a
   /// Live Update (publicidad, chats, actividades que no inició el usuario).

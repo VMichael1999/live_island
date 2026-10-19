@@ -1,5 +1,7 @@
 build/
 example/build/
-docs/design/
-docs/PROMPT.md
+doc/design/
+doc/PROMPT.md
 tool/
+test/goldens/
+doc/assets/

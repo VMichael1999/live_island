@@ -1,8 +1,8 @@
-// Genera las capturas de docs/design/capturas/ desde el HTML de prototipos.
+// Genera las capturas de doc/design/capturas/ desde el HTML de prototipos.
 // Uso: npm i playwright-core && node tool/capture_html.js  (necesita Google Chrome instalado)
 const { chromium } = require('playwright-core');
-const out = '/Users/entelgy/Documents/Flutter animaciones/live_island/docs/design/capturas';
-const url = 'file:///Users/entelgy/Documents/Flutter animaciones/live_island/docs/design/live_island_prototipos.html';
+const out = '/Users/entelgy/Documents/Flutter animaciones/live_island/doc/design/capturas';
+const url = 'file:///Users/entelgy/Documents/Flutter animaciones/live_island/doc/design/live_island_prototipos.html';
 (async () => {
   const browser = await chromium.launch({ executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' });
   const page = await browser.newPage({ viewport: { width: 1400, height: 1000 }, deviceScaleFactor: 2, colorScheme: 'light' });

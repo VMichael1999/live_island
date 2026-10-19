@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 
 const root = path.resolve(__dirname, '..');
-const html = 'file://' + path.join(root, 'docs/design/live_island_prototipos.html');
+const html = 'file://' + path.join(root, 'doc/design/live_island_prototipos.html');
 
 const r = (n) => String(Math.round(n * 1000) / 1000);
 
