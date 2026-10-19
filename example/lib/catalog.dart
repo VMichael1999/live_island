@@ -67,6 +67,16 @@ final catalog = <CatalogEntry>[
     (a, b) => RideDriverPreset(accent: _a(a, const RideDriverPreset().accent)),
   ),
   CatalogEntry(
+    'charge',
+    'Carga · cable luminoso',
+    (a, b) => ChargePreset(accent: _a(a, const ChargePreset().accent)),
+  ),
+  CatalogEntry(
+    'fare',
+    'Tarifa · tramos de color',
+    (a, b) => FareSplitPreset(accent: _a(a, const FareSplitPreset().accent)),
+  ),
+  CatalogEntry(
     'store',
     'Pedido en tienda',
     (a, b) =>
