@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' show Color;
 
-import 'package:live_island/live_island.dart';
+import 'package:live_island_kit/live_island_kit.dart';
 
 /// Un preset del HTML de prototipos, tal como lo dejó `tool/extract_html_checks.js`.
 class HtmlPreset {
@@ -80,7 +80,8 @@ class HtmlFixtures {
     final sfName = sf[name as String] ?? name;
     return LiveIcon.symbol(
       sfName,
-      android: 'packages/live_island/assets/icons/${name.toLowerCase()}.png',
+      android:
+          'packages/live_island_kit/assets/icons/${name.toLowerCase()}.png',
       accent: accent,
     );
   }

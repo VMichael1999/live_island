@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/painting.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:live_island/live_island.dart';
+import 'package:live_island_kit/live_island_kit.dart';
 
 class _Fake implements LiveIslandPlatform {
   final updates = <Map<String, Object?>>[];

@@ -4,8 +4,8 @@ import 'dart:ui' show Color;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:json_schema/json_schema.dart';
-import 'package:live_island/live_island.dart';
-import 'package:live_island/src/platform/image_loader.dart'
+import 'package:live_island_kit/live_island_kit.dart';
+import 'package:live_island_kit/src/platform/image_loader.dart'
     show androidIconPaths;
 
 import 'fixtures/html_presets.dart';
@@ -123,7 +123,7 @@ void main() {
       test('${e.key}: sus íconos de Android existen en el paquete', () {
         final layout = e.value.build();
         for (final path in androidIconPaths(layout)) {
-          final file = path.replaceFirst('packages/live_island/', '');
+          final file = path.replaceFirst('packages/live_island_kit/', '');
           expect(File(file).existsSync(), isTrue, reason: 'falta $file');
         }
         for (final img in layout.images) {

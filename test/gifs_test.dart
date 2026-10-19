@@ -5,7 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:live_island/live_island.dart';
+import 'package:live_island_kit/live_island_kit.dart';
 
 /// Genera los cuadros de los GIF del README. Solo corre con
 /// `LIVE_ISLAND_GIFS=<carpeta> flutter test test/gifs_test.dart`; luego
@@ -28,7 +28,7 @@ void main() {
       final base = preset.sampleState(now: t0);
       final start = (base['progreso']! as num).toDouble();
       final images = <String, ImageProvider>{
-        'asset_packages_live_island_assets_presets_car_png': MemoryImage(
+        'asset_packages_live_island_kit_assets_presets_car_png': MemoryImage(
           File('assets/presets/car.png').readAsBytesSync(),
         ),
       };
@@ -110,7 +110,7 @@ void main() {
         now: t0,
         appName: preset.appName,
         images: {
-          'asset_packages_live_island_assets_presets_car_png': MemoryImage(
+          'asset_packages_live_island_kit_assets_presets_car_png': MemoryImage(
             File('assets/presets/car.png').readAsBytesSync(),
           ),
         },
