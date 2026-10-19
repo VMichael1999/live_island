@@ -28,6 +28,7 @@ void main() {
   final now = DateTime.utc(2026, 10, 4, 15, 0);
   final files = {
     liveDesignCarTopAsset: 'assets/presets/car_top.png',
+    liveDesignTrainTopAsset: 'assets/presets/train_top.png',
     liveDesignCarSideAsset: 'assets/presets/car_side.png',
     liveDesignCarPlateAsset: 'assets/presets/car_plate.png',
     liveDesignOrderAsset(1, reached: false): 'assets/presets/pedido_1_gris.png',

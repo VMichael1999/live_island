@@ -270,7 +270,7 @@ enum LiveRenderer {
             let h = CGFloat(t.double("height") ?? 24)
             guard let id = v.string("img"), let ui = c.doc.image(id) else { return nil }
             return AnyView(Image(uiImage: ui).resizable().aspectRatio(contentMode: .fit)
-                .frame(height: h).frame(maxWidth: 56)
+                .frame(height: h).frame(maxWidth: 130)
                 .shadow(color: .black.opacity(0.55), radius: 1, x: 0, y: 1))
         }
         return nil

@@ -38,6 +38,10 @@ String liveDesignOrderAsset(int stage, {required bool reached}) =>
     'packages/live_island_kit/assets/presets/'
     'pedido_${stage}_${reached ? 'color' : 'gris'}.png';
 
+/// Tren visto desde arriba, para avanzar sobre una barra (sin fondo).
+const liveDesignTrainTopAsset =
+    'packages/live_island_kit/assets/presets/train_top.png';
+
 /// Escudo genérico azul y rojo (equipo local de ejemplo).
 const liveDesignCrestAAsset =
     'packages/live_island_kit/assets/presets/crest_a.png';

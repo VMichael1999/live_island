@@ -700,7 +700,7 @@ Widget _bareTracker(LiveImage img, double height, LiveRenderContext ctx) {
     errorBuilder: (_, __, ___) => SizedBox(height: height, width: height),
   );
   return ConstrainedBox(
-    constraints: const BoxConstraints(maxWidth: 56),
+    constraints: const BoxConstraints(maxWidth: 130),
     child: Stack(
       children: [
         Transform.translate(

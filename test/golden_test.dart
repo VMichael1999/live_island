@@ -264,6 +264,7 @@ void main() {
     // Imágenes que traen los diseños (dibujos propios del paquete).
     final files = {
       liveDesignCarTopAsset: 'assets/presets/car_top.png',
+      liveDesignTrainTopAsset: 'assets/presets/train_top.png',
       liveDesignCarSideAsset: 'assets/presets/car_side.png',
       liveDesignCarPlateAsset: 'assets/presets/car_plate.png',
       liveDesignOrderAsset(1, reached: false):
@@ -393,5 +394,9 @@ void main() {
       RideStopPreset(),
       RideDestinationPreset(),
     ], height: 1100);
+  });
+
+  testWidgets('golden: tren', (tester) async {
+    await designsGolden(tester, 'tren', const [TrainPreset()], height: 800);
   });
 }

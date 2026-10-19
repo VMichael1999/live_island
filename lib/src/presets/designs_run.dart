@@ -966,3 +966,144 @@ final class RideDestinationPreset extends LivePreset {
     ),
   );
 }
+
+/// Línea de tren: cuántas paradas faltan, hacia dónde va y una barra por
+/// estaciones con el tren encima. Datos: `titulo`, `subtitulo`, `destacado`,
+/// `nombre` y `progreso`.
+///
+/// El dato clave (`destacado`, «3 paradas») va a la derecha del título y
+/// nunca se corta; lo largo (el nombre del paradero) va en el texto de Android
+/// y no compite por el ancho de la isla.
+final class TrainPreset extends LivePreset {
+  const TrainPreset({
+    this.accent = const Color(0xFFA7F060),
+    this.brand = 'Ruta Lima',
+    this.stages = const ['El Ángel', 'Miguel Grau', 'Gamarra'],
+    this.trainImage,
+    this.compactIcon,
+    this.chip,
+  });
+
+  /// Color de lo recorrido y del dato clave.
+  final Color accent;
+
+  /// Nombre de la app.
+  final String brand;
+
+  /// Estaciones de la barra (mínimo dos).
+  final List<String> stages;
+
+  /// Tren visto desde arriba, sin fondo; por defecto el del paquete.
+  final LiveImage? trainImage;
+
+  /// Ícono o imagen de la isla compacta y la mínima (por defecto un bus).
+  final LiveVisual? compactIcon;
+
+  /// Chip de Android; por defecto «3 par.».
+  final LiveChip? chip;
+
+  @override
+  LivePresetSpec get spec => LivePresetSpec(
+    id: 'train_line',
+    appName: brand,
+    accent: accent,
+    icon: presetIcon('bus.fill', 'bus'),
+    countdown: false,
+    progress: PresetProgress.segments,
+    stages: stages,
+    buttons: const [],
+    chip: chip ?? const LiveChip.text('3 par.'),
+    sample: const PresetSample(
+      title: 'Bájate en 3 paradas',
+      subtitle: 'Línea 201 · Javier Prado',
+      name: 'Paradero Las Begonias',
+      highlight: '3 paradas',
+      progress: .55,
+    ),
+  );
+
+  @override
+  Map<String, Object?> sampleState({DateTime? now}) => {
+    'titulo': 'Bájate en 3 paradas',
+    'subtitulo': 'Línea 201 · Javier Prado',
+    'nombre': 'Paradero Las Begonias',
+    'destacado': '3 paradas',
+    'progreso': .55,
+  };
+
+  LiveVisual get _compact =>
+      compactIcon ?? presetIcon('bus.fill', 'bus', accent: true);
+
+  LiveNode get _bar => LiveSegments(
+    value: const LiveBind('progreso'),
+    labels: stages,
+    points: true,
+    tracker: LiveTracker(
+      trainImage ??
+          LiveImage.asset(
+            liveDesignTrainTopAsset,
+            width: 360,
+            height: 70,
+            shape: LiveShape.square,
+          ),
+      height: 22,
+      background: LiveTrackerBackground.none,
+    ),
+    style: LiveProgressStyle(
+      height: 14,
+      color: accent,
+      trackColor: const Color(0xFF2F6A12),
+      pointSize: 12,
+      pointColor: const Color(0xFF000000),
+      gap: 0,
+    ),
+  );
+
+  LiveNode _body(double titleSize) => LiveColumn([
+    LiveRow([
+      LiveColumn([
+        LiveText(
+          const LiveBind('titulo'),
+          size: titleSize,
+          weight: 700,
+          color: _white,
+          lines: 1,
+        ),
+        _field('subtitulo', size: 13, color: _soft, lines: 1),
+      ], gap: 2),
+      const LiveSpacer(),
+      _field('destacado', size: titleSize + 2, weight: 800, color: accent),
+    ]),
+    _bar,
+  ], gap: 10);
+
+  @override
+  LiveLayout build() => LiveLayout(
+    theme: LiveTheme(accent: accent),
+    appLogo: presetIcon('bus.fill', 'bus'),
+    compactLeading: _compact,
+    compactTrailing: _field('destacado', size: 14, weight: 700, color: accent),
+    minimal: _compact,
+    // Todo en una pieza a todo el ancho: nada compite con el dato clave.
+    expanded: LiveExpanded(bottom: _body(18)),
+    lockScreen: LiveLockScreen.custom(
+      LiveBox(
+        color: const Color(0xFF000000),
+        radius: 22,
+        child: LivePadding(
+          LiveColumn([
+            LiveText.literal(brand, size: 20, weight: 800, color: _white),
+            _body(21),
+          ], gap: 10),
+          horizontal: 16,
+          vertical: 12,
+        ),
+      ),
+    ),
+    android: LiveAndroid(
+      title: const LiveBind('titulo'),
+      text: const LiveText.format('{subtitulo} · {nombre}'),
+      chip: chip ?? const LiveChip.text('3 par.'),
+    ),
+  );
+}

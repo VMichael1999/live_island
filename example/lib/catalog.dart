@@ -146,21 +146,7 @@ final catalog = <CatalogEntry>[
   CatalogEntry(
     'train_line',
     'Tren · línea verde',
-    (a, b) => TransitPreset(
-      accent: _a(a, const Color(0xFFA7F060)),
-      lockBackground: b ?? LiveBackground.system,
-      stages: const ['Harajuku', 'Shibuya', 'Ebisu'],
-      showTracker: false,
-      showEndIcon: false,
-      progressStyle: LiveProgressStyle(
-        height: 16,
-        color: _a(a, const Color(0xFFA7F060)),
-        trackColor: const Color(0xFF2F6A12),
-        pointSize: 12,
-        pointColor: const Color(0xFF000000),
-        gap: 0,
-      ),
-    ),
+    (a, b) => TrainPreset(accent: _a(a, const TrainPreset().accent)),
   ),
 
   // --- Los 15 presets de la galería ---
