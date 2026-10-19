@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math' as math;
 
+import '../components/charts.dart';
 import '../components/progress.dart';
 import '../components/text.dart';
 import '../components/visuals.dart';
@@ -177,7 +178,8 @@ LiveReport checkLayout(
   final androidProgress =
       android?.progress ??
       firstProgress(layout.expanded?.nodes ?? const <LiveNode>[]);
-  if (androidProgress is LiveProgress && androidProgress.isRing) {
+  if ((androidProgress is LiveProgress && androidProgress.isRing ||
+      androidProgress is LiveGauge)) {
     rows.add(
       const LiveCheck(
         LiveSeverity.warn,

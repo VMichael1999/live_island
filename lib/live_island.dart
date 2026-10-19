@@ -3,7 +3,9 @@ library;
 
 export 'src/components/actions.dart';
 export 'src/components/layout_nodes.dart';
-export 'src/components/progress.dart';
+export 'src/components/charts.dart';
+export 'src/components/progress.dart'
+    hide progressStyleFromJson, progressStyleToJson;
 export 'src/components/text.dart';
 export 'src/components/visuals.dart';
 export 'src/core/bind.dart';

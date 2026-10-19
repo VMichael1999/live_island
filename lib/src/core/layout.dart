@@ -1,6 +1,7 @@
 import 'dart:ui' show Color;
 
 import '../components/actions.dart';
+import '../components/charts.dart';
 import '../components/progress.dart';
 import '../components/visuals.dart';
 import 'bind.dart';
@@ -349,7 +350,12 @@ class LiveLayout {
 LiveNode? firstProgress(Iterable<LiveNode> roots) {
   for (final root in roots) {
     for (final n in root.descendants) {
-      if (n is LiveProgress || n is LiveSegments) return n;
+      if (n is LiveProgress ||
+          n is LiveSegments ||
+          n is LiveGauge ||
+          n is LiveFlightPath) {
+        return n;
+      }
     }
   }
   return null;

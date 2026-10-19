@@ -155,10 +155,10 @@ class LiveProgressStyle {
   int get hashCode => '${toJson()}'.hashCode;
 }
 
-LiveProgressStyle? _styleFromJson(Object? raw) =>
+LiveProgressStyle? progressStyleFromJson(Object? raw) =>
     raw == null ? null : LiveProgressStyle.fromJson(asMap(raw, 'style'));
 
-Map<String, Object?>? _styleJson(LiveProgressStyle? s) =>
+Map<String, Object?>? progressStyleToJson(LiveProgressStyle? s) =>
     s == null || s.isEmpty ? null : s.toJson();
 
 /// Barra de progreso continua o anillo. El valor es un número de 0 a 1 que
@@ -212,7 +212,7 @@ class LiveProgress extends LiveNode {
   Map<String, Object?> toJson() => compact({
     't': type,
     'bind': value.field,
-    'style': _styleJson(style),
+    'style': progressStyleToJson(style),
     'tracker': tracker?.toJson(),
     'start': startIcon?.toJson(),
     'end': endIcon?.toJson(),
@@ -222,7 +222,7 @@ class LiveProgress extends LiveNode {
 
   factory LiveProgress.fromJson(Map<String, Object?> json) {
     final value = LiveBind(json['bind']! as String);
-    final style = _styleFromJson(json['style']);
+    final style = progressStyleFromJson(json['style']);
     if (json['t'] == 'ring') {
       return LiveProgress.ring(
         value: value,
@@ -293,7 +293,7 @@ class LiveSegments extends LiveNode {
     'labels': labels,
     'points': points,
     'showLabels': showLabels ? null : false,
-    'style': _styleJson(style),
+    'style': progressStyleToJson(style),
     'tracker': tracker?.toJson(),
     'start': startIcon?.toJson(),
     'end': endIcon?.toJson(),
@@ -310,7 +310,7 @@ class LiveSegments extends LiveNode {
             : LiveTracker.fromJson(asMap(json['tracker'], 'segments.tracker')),
     startIcon: _endFromJson(json['start'], 'segments.start'),
     endIcon: _endFromJson(json['end'], 'segments.end'),
-    style: _styleFromJson(json['style']),
+    style: progressStyleFromJson(json['style']),
   );
 }
 
