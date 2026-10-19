@@ -506,3 +506,187 @@ final class DeliveryOrderPreset extends LivePreset {
     ),
   );
 }
+
+/// Inicio de un viaje con el código PIN que se le dice al conductor: marca y
+/// cuatro casillas con el PIN, cuánto falta, a quién esperar y su foto, con la
+/// barra del auto hacia el punto de recogida. Datos: `minutos`, `conductor`,
+/// `pin1`, `pin2`, `pin3`, `pin4` y `progreso`.
+///
+/// El PIN va por dígitos (`pin1` a `pin4`) para dibujar una casilla por cada
+/// uno; se ve en la isla y en la pantalla de bloqueo aunque la app esté cerrada.
+final class RidePinPreset extends LivePreset {
+  const RidePinPreset({
+    this.accent = const Color(0xFF3B6CFF),
+    this.brand = 'Run',
+    this.driverInitials = 'M',
+    this.driverPhoto,
+    this.trackerImage,
+    this.compactIcon,
+    this.chip,
+  });
+
+  /// Color de las casillas del PIN.
+  final Color accent;
+
+  /// Nombre de la app, arriba a la izquierda.
+  final String brand;
+
+  /// Iniciales del conductor (si no hay [driverPhoto]).
+  final String driverInitials;
+
+  /// Foto circular del conductor.
+  final LiveImage? driverPhoto;
+
+  /// Auto que avanza sobre la barra (vista desde arriba, sin fondo).
+  final LiveImage? trackerImage;
+
+  /// Ícono o imagen de la isla compacta y la mínima (por defecto un auto).
+  final LiveVisual? compactIcon;
+
+  /// Chip de Android; por defecto «PIN».
+  final LiveChip? chip;
+
+  @override
+  LivePresetSpec get spec => LivePresetSpec(
+    id: 'ride_pin',
+    appName: brand,
+    accent: accent,
+    icon: presetIcon('car.fill', 'car'),
+    countdown: false,
+    progress: PresetProgress.bar,
+    buttons: const [],
+    chip: chip ?? const LiveChip.text('PIN'),
+    sample: const PresetSample(
+      title: 'Inicio de viaje en 1 min',
+      subtitle: 'Sal ahora para la llegada de MARCO PAREDES',
+      name: 'Marco',
+      highlight: '0249',
+      progress: .86,
+    ),
+  );
+
+  @override
+  Map<String, Object?> sampleState({DateTime? now}) => {
+    'minutos': '1 min',
+    'conductor': 'MARCO PAREDES',
+    'pin1': '0',
+    'pin2': '2',
+    'pin3': '4',
+    'pin4': '9',
+    'progreso': .86,
+  };
+
+  LiveVisual get _compact =>
+      compactIcon ?? presetIcon('car.fill', 'car', accent: true);
+
+  LiveNode _photo(double size) =>
+      driverPhoto != null
+          ? LiveAvatar.photo(driverPhoto!, size: size)
+          : LiveAvatar(driverInitials, size: size);
+
+  /// Una casilla por dígito del PIN.
+  LiveNode _pin(double size) => LiveRow([
+    for (final f in const ['pin1', 'pin2', 'pin3', 'pin4'])
+      LiveBox(
+        size: size,
+        radius: size * .26,
+        color: accent,
+        child: _field(f, size: size * .62, weight: 700, color: _white),
+      ),
+  ], gap: size * .14);
+
+  LiveNode get _bar => LiveProgress.bar(
+    value: const LiveBind('progreso'),
+    tracker: _tracker(trackerImage),
+    style: LiveProgressStyle(
+      height: 4,
+      color: _white,
+      trackColor: const Color(0xFF6B6E75),
+      endMarker: LivePointShape.target,
+      pointSize: 16,
+      pointColor: const Color(0xFFD9DADF),
+    ),
+  );
+
+  LiveNode get _walk => LiveIcon.symbol(
+    'figure.walk',
+    android: presetIcon('person.fill', 'user').android,
+    color: _soft,
+    size: 20,
+  );
+
+  /// «Inicio de viaje en 1 min» y, debajo, a quién esperar.
+  LiveNode _text(double titleSize) => LiveColumn([
+    LiveText.format(
+      'Inicio de viaje en {minutos}',
+      size: titleSize,
+      weight: 700,
+      color: _white,
+      lines: 1,
+    ),
+    LiveRow([
+      _walk,
+      LiveColumn([
+        LiveText.literal(
+          'Sal ahora para la llegada de',
+          size: 13,
+          color: _soft,
+          lines: 1,
+        ),
+        _field('conductor', size: 13, color: _soft, lines: 1),
+      ], gap: 0),
+    ], gap: 8),
+  ], gap: 4);
+
+  @override
+  LiveLayout build() => LiveLayout(
+    theme: LiveTheme(accent: accent),
+    appLogo: presetIcon('car.fill', 'car'),
+    compactLeading: _compact,
+    compactTrailing: LiveText.format(
+      '{pin1}{pin2}{pin3}{pin4}',
+      size: 14,
+      weight: 700,
+      color: _white,
+    ),
+    minimal: _compact,
+    // La marca y el PIN junto al sensor; el resto abajo, a todo el ancho.
+    expanded: LiveExpanded(
+      leading: LivePadding(
+        LiveText.literal(brand, size: 20, weight: 800, color: _white),
+        horizontal: 6,
+      ),
+      // La zona derecha de la isla es angosta: casillas de 20 pt para que quepan
+      // los cuatro dígitos.
+      trailing: LivePadding(_pin(20), horizontal: 8, vertical: 3),
+      bottom: LiveColumn([
+        LiveRow([_text(18), const LiveSpacer(), _photo(46)]),
+        _bar,
+      ], gap: 8),
+    ),
+    lockScreen: LiveLockScreen.custom(
+      LiveBox(
+        color: const Color(0xFF000000),
+        radius: 22,
+        child: LivePadding(
+          LiveColumn([
+            LiveRow([
+              LiveText.literal(brand, size: 22, weight: 800, color: _white),
+              const LiveSpacer(),
+              _pin(30),
+            ]),
+            LiveRow([_text(21), const LiveSpacer(), _photo(52)]),
+            _bar,
+          ], gap: 8),
+          horizontal: 16,
+          vertical: 12,
+        ),
+      ),
+    ),
+    android: LiveAndroid(
+      title: const LiveText.format('Inicio de viaje en {minutos}'),
+      text: const LiveText.format('Tu PIN: {pin1}{pin2}{pin3}{pin4}'),
+      chip: chip ?? const LiveChip.text('PIN'),
+    ),
+  );
+}

@@ -381,4 +381,10 @@ void main() {
       DeliveryOrderPreset(),
     ], height: 800);
   });
+
+  testWidgets('golden: inicio de viaje con PIN', (tester) async {
+    await designsGolden(tester, 'pin', [
+      RidePinPreset(driverPhoto: run('avatar.png', 200, 205, size: 52)),
+    ], height: 800);
+  });
 }

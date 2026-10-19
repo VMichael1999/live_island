@@ -76,6 +76,14 @@ final catalog = <CatalogEntry>[
     ),
   ),
   CatalogEntry(
+    'ride_pin',
+    'Inicio de viaje · código PIN',
+    (a, b) => RidePinPreset(
+      accent: _a(a, const RidePinPreset().accent),
+      driverPhoto: _runAvatar,
+    ),
+  ),
+  CatalogEntry(
     'delivery_order',
     'Pedido a domicilio · cuatro etapas',
     (a, b) =>
