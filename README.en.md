@@ -1,6 +1,6 @@
 # live_island_kit
 
-<p align="center"><img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/banner.png" alt="live_island_kit: iOS Live Activities and Android Live Updates, 100 % in Dart" width="100%"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/banner.png" alt="live_island_kit: iOS Live Activities and Android Live Updates, 100 % in Dart" width="100%"></p>
 
 [Español](README.md)
 
@@ -11,11 +11,11 @@
 
 | Ride pickup | Match score | Stock quote |
 | --- | --- | --- |
-| <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/recogida_clara.png" width="300" alt="Ride pickup"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/marcador.png" width="300" alt="Match score"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/bolsa.png" width="300" alt="Stock quote"> |
+| <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/recogida_clara.png" width="300" alt="Ride pickup"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/marcador.png" width="300" alt="Match score"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/bolsa.png" width="300" alt="Stock quote"> |
 | **Store pickup** | **Medical waiting room** | **EV charging** |
-| <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/tienda.png" width="300" alt="Store pickup"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/sala_medica.png" width="300" alt="Medical waiting room"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/carga.png" width="300" alt="Charging with glowing cable"> |
+| <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/tienda.png" width="300" alt="Store pickup"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/sala_medica.png" width="300" alt="Medical waiting room"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/carga.png" width="300" alt="Charging with glowing cable"> |
 | **Flight with curved route** | **Driver's trip** | **Fare and tip** |
-| <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/vuelo.png" width="300" alt="Flight"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/conductor.png" width="300" alt="Driver's trip"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/galeria/tarifa.png" width="300" alt="Fare and tip"> |
+| <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/vuelo.png" width="300" alt="Flight"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/conductor.png" width="300" alt="Driver's trip"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/tarifa.png" width="300" alt="Fare and tip"> |
 
 *Each image shows the compact island, the expanded island and the Lock Screen card. They are the Flutter preview (`LiveIslandPreview`), except charging, which is an iOS Simulator capture (the preview does not draw the glow). All are example designs with made-up names and images; every text, color and image can be changed from Dart. The sample texts are in Spanish.*
 
@@ -297,7 +297,7 @@ Images are downscaled to the size they are shown at before being copied to the d
 
 `LiveIslandMorph` draws the island dropping a blob that opens into a card holding your layout. Use it in the preview or as an in-app banner; the real island is drawn by the system and cannot be animated this way.
 
-![Drop](https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/gota.gif)
+![Drop](https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/gota.gif)
 
 ```dart
 LiveIslandMorph.preview(
