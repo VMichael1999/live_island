@@ -800,7 +800,8 @@ final class FlightPathPreset extends LivePreset {
 
   LiveNode get _route => LiveFlightPath(
     value: const LiveBind('progreso'),
-    height: 46,
+    height: 64,
+    curve: .9,
     tracker: presetIcon('airplane', 'plane'),
     style: LiveProgressStyle(
       height: 3,
@@ -934,8 +935,8 @@ final class OrbitPreset extends LivePreset {
       center: LiveColumn([
         _t('titulo', size: 20, weight: 700, color: _white),
         _t('lugar', size: 13, muted: true, lines: 2),
+        _t('tiempo', size: 13, weight: 600, color: accent),
       ], gap: 2),
-      trailing: _t('tiempo', size: 13, weight: 600, color: accent),
     ),
     lockScreen: LiveLockScreen.custom(
       LiveBox(
