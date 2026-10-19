@@ -19,6 +19,25 @@ Iterable<LiveNode> _progressChildren(
   if (end != null) end,
 ];
 
+/// Ícono de una etapa de [LiveSegments]: [pending] mientras la etapa no se
+/// alcanza y [reached] desde que se alcanza. Sirve, por ejemplo, para un pedido
+/// cuyos pasos pasan de gris a color.
+class LiveStageIcon {
+  const LiveStageIcon({required this.pending, required this.reached});
+
+  final LiveImage pending, reached;
+
+  Map<String, Object?> toJson() => {
+    'pending': pending.toJson(),
+    'reached': reached.toJson(),
+  };
+
+  factory LiveStageIcon.fromJson(Map<String, Object?> json) => LiveStageIcon(
+    pending: LiveImage.fromJson(asMap(json['pending'], 'stageIcons.pending')),
+    reached: LiveImage.fromJson(asMap(json['reached'], 'stageIcons.reached')),
+  );
+}
+
 /// Estilo de una barra o un anillo de progreso. Todo es opcional: lo que no se
 /// indica toma su valor por defecto (los del prototipo).
 ///
@@ -195,8 +214,8 @@ class LiveProgressStyle {
   int get hashCode => '${toJson()}'.hashCode;
 }
 
-extension on List<double> {
-  List<double>? get nullIfEmpty => isEmpty ? null : this;
+extension<T> on List<T> {
+  List<T>? get nullIfEmpty => isEmpty ? null : this;
 }
 
 LiveProgressStyle? progressStyleFromJson(Object? raw) =>
@@ -306,10 +325,17 @@ class LiveSegments extends LiveNode {
     LiveTrackerSource? tracker,
     this.startIcon,
     this.endIcon,
+    this.stageIcons,
     this.style,
   }) : tracker = tracker?.asTracker();
 
   final LiveBind value;
+
+  /// Un ícono por etapa (uno por cada elemento de [labels]), en lugar de los
+  /// puntos: gris mientras la etapa no llega y de color desde que llega. Su
+  /// tamaño es `style.pointSize`; los tramos terminan antes de cada ícono según
+  /// `style.gap`. Android Live Update lo ignora.
+  final List<LiveStageIcon>? stageIcons;
 
   /// Una etiqueta por etapa (mínimo dos). Aunque no se muestren ([showLabels]
   /// en `false`) definen cuántos tramos hay.
@@ -327,8 +353,13 @@ class LiveSegments extends LiveNode {
   String get type => 'segments';
 
   @override
-  Iterable<LiveNode> get children =>
-      _progressChildren(tracker, startIcon, endIcon);
+  Iterable<LiveNode> get children => [
+    ..._progressChildren(tracker, startIcon, endIcon),
+    for (final s in stageIcons ?? const <LiveStageIcon>[]) ...[
+      s.pending,
+      s.reached,
+    ],
+  ];
 
   @override
   Map<String, Object?> toJson() => compact({
@@ -337,6 +368,8 @@ class LiveSegments extends LiveNode {
     'labels': labels,
     'points': points,
     'showLabels': showLabels ? null : false,
+    'stageIcons':
+        stageIcons == null ? null : [for (final s in stageIcons!) s.toJson()],
     'style': progressStyleToJson(style),
     'tracker': tracker?.toJson(),
     'start': startIcon?.toJson(),
@@ -354,6 +387,11 @@ class LiveSegments extends LiveNode {
             : LiveTracker.fromJson(asMap(json['tracker'], 'segments.tracker')),
     startIcon: _endFromJson(json['start'], 'segments.start'),
     endIcon: _endFromJson(json['end'], 'segments.end'),
+    stageIcons:
+        [
+          for (final s in (json['stageIcons'] as List? ?? const []))
+            LiveStageIcon.fromJson(asMap(s, 'segments.stageIcons')),
+        ].nullIfEmpty,
     style: progressStyleFromJson(json['style']),
   );
 }

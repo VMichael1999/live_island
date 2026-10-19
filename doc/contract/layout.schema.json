@@ -317,6 +317,17 @@
         "labels": { "type": "array", "minItems": 2, "items": { "type": "string" } },
         "points": { "type": "boolean", "default": false },
         "showLabels": { "type": "boolean", "default": true, "description": "Mostrar las etiquetas de las etapas (con false quedan solo los tramos y los puntos)." },
+        "stageIcons": {
+          "type": "array",
+          "description": "Un ícono por etapa, en lugar de los puntos: pending mientras la etapa no llega y reached desde que llega. Su tamaño es style.pointSize y los tramos terminan antes de cada ícono según style.gap. Android Live Update los ignora.",
+          "items": {
+            "type": "object", "required": ["pending", "reached"], "additionalProperties": false,
+            "properties": {
+              "pending": { "type": "object", "description": "Nodo image." },
+              "reached": { "type": "object", "description": "Nodo image." }
+            }
+          }
+        },
         "style": { "$ref": "#/$defs/progressStyle" },
         "tracker": {"$ref": "#/$defs/progressEnds/properties/tracker"}, "start": {"$ref": "#/$defs/progressEnds/properties/start"}, "end": {"$ref": "#/$defs/progressEnds/properties/end"}
       }

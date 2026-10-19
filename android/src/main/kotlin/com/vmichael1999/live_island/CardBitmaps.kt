@@ -94,7 +94,17 @@ object CardBitmaps {
         val end = visual(LiveJson.obj(node, "end"), false)?.let { scaled(it, 16f) }
 
         val endMarker = st?.optString("endMarker").orEmpty()
-        val heightPt = max(max(max(h, trackerH), if (start != null || end != null) 16f else h), if (endMarker.isEmpty()) 0f else pointSize) + 2
+        // Íconos de etapa: gris mientras no llega la etapa y de color desde que llega.
+        val stages = LiveJson.array(node, "stageIcons").map { s ->
+            Pair(
+                visual(LiveJson.obj(s, "pending"), false)?.let { scaled(it, pointSize) },
+                visual(LiveJson.obj(s, "reached"), false)?.let { scaled(it, pointSize) },
+            )
+        }
+        val heightPt = max(
+            max(max(h, trackerH), if (start != null || end != null) 16f else h),
+            max(if (endMarker.isEmpty()) 0f else pointSize, if (stages.isEmpty()) 0f else pointSize),
+        ) + 2
         val bmp = Bitmap.createBitmap((WIDTH_PT * PX).toInt(), (heightPt * PX).toInt(), Bitmap.Config.ARGB_8888)
         val c = Canvas(bmp)
         val cy = bmp.height / 2f
@@ -104,6 +114,8 @@ object CardBitmaps {
         var x1 = bmp.width - inset
         if (start != null) { c.drawBitmap(start, x0, cy - start.height / 2f, null); x0 += start.width + 8 * PX }
         if (end != null) { x1 -= end.width + 8 * PX; c.drawBitmap(end, x1 + 8 * PX, cy - end.height / 2f, null) }
+        // Con íconos de etapa, la mitad de cada extremo queda dentro del ancho.
+        if (stages.isNotEmpty()) { x0 += pointSize * PX / 2; x1 -= pointSize * PX / 2 }
 
         // Con marcador final la barra termina donde empieza el marcador y el ícono
         // que avanza recorre hasta su centro.
@@ -116,10 +128,12 @@ object CardBitmaps {
         val segmented = node.optString("t") == "segments" && labels != null && labels.length() > 1
         val tracks = if (segmented) labels!!.length() - 1 else 1
         val gapPx = gap * PX
-        val segW = (xTrack1 - x0 - gapPx * (tracks - 1)) / tracks
+        // Con íconos de etapa los tramos terminan antes de cada ícono, también en los extremos.
+        val edge = if (stages.isEmpty()) 0f else gapPx / 2
+        val segW = (xTrack1 - x0 - edge * 2 - gapPx * (tracks - 1)) / tracks
         val hPx = h * PX
         for (i in 0 until tracks) {
-            val sx = x0 + i * (segW + gapPx)
+            val sx = x0 + edge + i * (segW + gapPx)
             val f = if (segmented) ((vf - i.toFloat() / tracks) * tracks).coerceIn(0f, 1f) else vf
             val rect = RectF(sx, cy - hPx / 2, sx + segW, cy + hPx / 2)
             val r = radius * PX
@@ -158,7 +172,12 @@ object CardBitmaps {
                 else -> c.drawCircle(px, cy, s / 2, paint(col))
             }
         }
-        if (segmented && node.optBoolean("points", false)) {
+        if (stages.isNotEmpty()) {
+            stages.forEachIndexed { k, (pending, reached) ->
+                val bm = if (k.toFloat() / tracks <= vf + 1e-6f) reached else pending
+                if (bm != null) c.drawBitmap(bm, x0 + (xTrack1 - x0) * k / tracks - bm.width / 2f, cy - bm.height / 2f, null)
+            }
+        } else if (segmented && node.optBoolean("points", false)) {
             for (k in 0..tracks) dot(x0 + (xTrack1 - x0) * k / tracks, k.toFloat() / tracks <= vf + 1e-6f)
         }
         st?.optJSONArray("markers")?.let { a ->

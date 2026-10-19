@@ -189,6 +189,7 @@ Widget buildLiveNode(
         tracker: node.tracker,
         start: node.startIcon,
         end: node.endIcon,
+        stageIcons: node.stageIcons,
       );
     case LiveSplitBar():
       return LivePreviewSplit(
@@ -597,11 +598,20 @@ Widget _bar(
   LiveTracker? tracker,
   LiveVisual? start,
   LiveVisual? end,
+  List<LiveStageIcon>? stageIcons,
 }) {
   final h = style?.height ?? 6;
+  final iconSize = style?.pointSize ?? 10;
   return LivePreviewBar(
     value: value,
     style: ctx.style,
+    stageIcons: [
+      for (final s in stageIcons ?? const <LiveStageIcon>[])
+        (
+          pending: liveImageBox(s.pending, iconSize, ctx),
+          reached: liveImageBox(s.reached, iconSize, ctx),
+        ),
+    ],
     labels: labels,
     segmented: segmented,
     points: points,

@@ -317,8 +317,14 @@ enum LiveRenderer {
     private static func barView(_ n: LNode, _ c: LiveCtx, labels: [String], segmented: Bool,
                                 points: Bool, showLabels: Bool) -> AnyView {
         let bs = BarStyle(n)
+        // Íconos de etapa: gris mientras no llega la etapa y de color desde que llega.
+        func image(_ d: Any?) -> UIImage? {
+            ((d as? [String: Any]).flatMap { LNode(d: $0).string("img") }).flatMap { c.doc.image($0) }
+        }
+        let icons: [(pending: UIImage?, reached: UIImage?)] =
+            (n.d["stageIcons"] as? [[String: Any]] ?? []).map { (pending: image($0["pending"]), reached: image($0["reached"])) }
         return AnyView(LiveBarView(value: value(n, c), labels: labels, segmented: segmented,
-                                   points: points, showLabels: showLabels,
+                                   points: points, showLabels: showLabels, stageIcons: icons,
                                    tracker: tracker(n.node("tracker"), c, bs),
                                    start: endView(n.node("start"), c), end: endView(n.node("end"), c),
                                    style: c.style, bar: bs))
@@ -438,6 +444,7 @@ struct LiveBarView: View {
     let segmented: Bool
     let points: Bool
     var showLabels: Bool = true
+    var stageIcons: [(pending: UIImage?, reached: UIImage?)] = []
     let tracker: AnyView?
     let start: AnyView?
     let end: AnyView?
@@ -455,10 +462,12 @@ struct LiveBarView: View {
         VStack(spacing: 6) {
             HStack(spacing: 8) {
                 if let s = start { s.opacity(0.9) }
-                track.frame(height: bar.height)
+                // Con íconos de etapa, la mitad de cada extremo queda dentro del ancho.
+                track.frame(height: bar.height).padding(.horizontal, stageIcons.isEmpty ? 0 : bar.pointSize / 2)
                 if let e = end { e.opacity(0.9) }
             }
             .frame(height: max(bar.height, bar.endMarker == nil ? 0 : bar.pointSize,
+                              stageIcons.isEmpty ? 0 : bar.pointSize,
                               (start != nil || end != nil) ? 16 : 0))
             if labelsVisible {
                 if labels.count > 3 { stageLine } else { stageLabels }
@@ -491,8 +500,19 @@ struct LiveBarView: View {
                         segment(f)
                     }
                 }
+                // Con íconos de etapa los tramos terminan antes de cada ícono, también en los extremos.
+                .padding(.horizontal, stageIcons.isEmpty ? 0 : bar.gap / 2)
                 .frame(width: w, alignment: .leading)
-                if points && hasStages {
+                if !stageIcons.isEmpty {
+                    ForEach(0..<min(stageIcons.count, labels.count), id: \.self) { k in
+                        let p = Double(k) / Double(max(1, labels.count - 1))
+                        if let ui = (p <= vf + 1e-6 ? stageIcons[k].reached : stageIcons[k].pending) {
+                            Image(uiImage: ui).resizable().scaledToFit()
+                                .frame(height: bar.pointSize)
+                                .position(x: CGFloat(p) * w, y: bar.height / 2)
+                        }
+                    }
+                } else if points && hasStages {
                     ForEach(0..<labels.count, id: \.self) { k in
                         let p = Double(k) / Double(labels.count - 1)
                         let done = p <= vf + 1e-6
