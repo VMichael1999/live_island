@@ -195,6 +195,10 @@ enum LiveRenderer {
             return AnyView(RoundedRectangle(cornerRadius: radius).fill(Color.gray.opacity(0.2))
                 .frame(width: size, height: size))
         }
+        // Alto fijo: el ancho sale de la proporción, sin recorte ni forma.
+        if let fixed = n.double("h") {
+            return AnyView(Image(uiImage: ui).resizable().scaledToFit().frame(height: CGFloat(fixed)))
+        }
         let cover = n.string("fit") == "cover"
         return AnyView(Image(uiImage: ui)
             .resizable()
@@ -271,6 +275,7 @@ enum LiveRenderer {
         var labelSize: CGFloat = 11.5
         var trackerSize: CGFloat? = nil
         var strokeWidth: CGFloat? = nil
+        var markers: [Double] = []
 
         init(_ n: LNode) {
             guard let s = n.node("style") else { return }
@@ -283,6 +288,7 @@ enum LiveRenderer {
             if let p = s.double("pointSize") { pointSize = CGFloat(p) }
             pointColor = hex("pointColor")
             if let sh = s.string("pointShape") { pointShape = sh }
+            markers = (s.d["markers"] as? [NSNumber])?.map { $0.doubleValue }.sorted() ?? []
             dashed = (s.d["dashed"] as? Bool) ?? false
             if let l = s.double("labelSize") { labelSize = CGFloat(l) }
             trackerSize = s.double("trackerSize").map { CGFloat($0) }
@@ -453,6 +459,16 @@ struct LiveBarView: View {
                             .position(x: CGFloat(p) * w, y: bar.height / 2)
                     }
                 }
+                // Marcadores: el recorrido y el siguiente van de color; los demás, apagados.
+                let next = bar.markers.firstIndex { $0 > value + 1e-6 }
+                ForEach(Array(bar.markers.enumerated()), id: \.offset) { i, m in
+                    let on = next == nil || i <= next!
+                    let doneColor = bar.pointColor ?? fill
+                    LivePoint(shape: bar.pointShape, fill: on ? doneColor : style.pendingDot,
+                              border: on ? doneColor : trackColor)
+                        .frame(width: bar.pointSize, height: bar.pointSize)
+                        .position(x: CGFloat(min(1, max(0, m))) * w, y: bar.height / 2)
+                }
                 if let t = tracker { t.position(x: CGFloat(value) * w, y: bar.height / 2) }
             }
             .frame(width: w, height: bar.height, alignment: .leading)
@@ -515,7 +531,7 @@ struct LiveBarView: View {
     }
 }
 
-/// Punto de etapa: círculo, cuadrado o cuadrado redondeado, con borde de 2 pt.
+/// Punto de etapa: círculo, cuadrado, cuadrado redondeado o marcador (ring).
 struct LivePoint: View {
     let shape: String
     let fill: Color
@@ -530,6 +546,11 @@ struct LivePoint: View {
             case "rounded":
                 RoundedRectangle(cornerRadius: r / 3).fill(fill)
                     .overlay(RoundedRectangle(cornerRadius: r / 3).strokeBorder(border, lineWidth: 2))
+            case "ring":
+                ZStack {
+                    Circle().fill(border.opacity(0.25))
+                    Circle().fill(border).frame(width: r * 0.45, height: r * 0.45)
+                }
             default:
                 Circle().fill(fill).overlay(Circle().strokeBorder(border, lineWidth: 2))
             }

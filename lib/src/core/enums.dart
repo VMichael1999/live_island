@@ -11,7 +11,7 @@ enum LiveBackground { system, light, accent }
 enum LiveAlign { start, center, end }
 
 /// Forma de los puntos de etapa de una barra.
-enum LivePointShape { circle, square, rounded }
+enum LivePointShape { circle, square, rounded, ring }
 
 /// Fondo del ícono que avanza sobre la barra.
 enum LiveTrackerBackground { accentCircle, none }

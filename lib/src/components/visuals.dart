@@ -92,6 +92,7 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
     this.fit = LiveFit.contain,
     this.shape = LiveShape.rounded,
     this.size,
+    this.fixedHeight,
     this.byteSize,
     this.width,
     this.height,
@@ -106,6 +107,7 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
     this.fit = LiveFit.contain,
     this.shape = LiveShape.rounded,
     this.size,
+    this.fixedHeight,
     this.byteSize,
     this.width,
     this.height,
@@ -120,6 +122,7 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
     this.fit = LiveFit.contain,
     this.shape = LiveShape.rounded,
     this.size,
+    this.fixedHeight,
     this.byteSize,
     this.width,
     this.height,
@@ -134,6 +137,7 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
     this.fit = LiveFit.contain,
     this.shape = LiveShape.rounded,
     this.size,
+    this.fixedHeight,
     this.width,
     this.height,
   }) : source = LiveImageSource.memory,
@@ -149,6 +153,7 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
     this.fit = LiveFit.contain,
     this.shape = LiveShape.rounded,
     this.size,
+    this.fixedHeight,
   }) : source = LiveImageSource.reference,
        key = id,
        bytes = null,
@@ -156,7 +161,7 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
        width = null,
        height = null;
 
-  LiveImage._copy(LiveImage o, {double? size})
+  LiveImage._copy(LiveImage o, {double? size, double? fixedHeight})
     : source = o.source,
       key = o.key,
       bytes = o.bytes,
@@ -164,6 +169,7 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
       fit = o.fit,
       shape = o.shape,
       size = size ?? o.size,
+      fixedHeight = fixedHeight ?? o.fixedHeight,
       byteSize = o.byteSize,
       width = o.width,
       height = o.height;
@@ -171,6 +177,10 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
   /// La misma imagen con otro tamaño: sirve para usar un escudo o logo en
   /// la isla compacta (pequeño) y en la expandida (grande).
   LiveImage withSize(double size) => LiveImage._copy(this, size: size);
+
+  /// La misma imagen con un alto fijo en pt (el ancho sale de su proporción).
+  LiveImage withHeight(double height) =>
+      LiveImage._copy(this, fixedHeight: height);
 
   final LiveImageSource source;
 
@@ -183,6 +193,11 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
   final LiveFit fit;
   final LiveShape shape;
   final double? size;
+
+  /// Alto fijo en pt con el ancho según la proporción de la imagen, sin
+  /// recortar ni dar forma: para imágenes anchas sin fondo (un conductor con
+  /// su auto). Con esto [size] se ignora.
+  final double? fixedHeight;
 
   /// Peso original en bytes, si se conoce (solo informa a `check()`).
   final int? byteSize;
@@ -204,6 +219,7 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
     'fit': fit == LiveFit.contain ? null : fit.name,
     'shape': shape == LiveShape.rounded ? null : shape.name,
     'size': size,
+    'h': fixedHeight,
   });
 
   factory LiveImage.fromJson(Map<String, Object?> json) => LiveImage.reference(
@@ -211,6 +227,7 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
     fit: enumByName(LiveFit.values, json['fit'], LiveFit.contain),
     shape: enumByName(LiveShape.values, json['shape'], LiveShape.rounded),
     size: (json['size'] as num?)?.toDouble(),
+    fixedHeight: (json['h'] as num?)?.toDouble(),
   );
 
   static String _slug(String path) => path

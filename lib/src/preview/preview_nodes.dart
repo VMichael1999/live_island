@@ -426,6 +426,19 @@ Widget liveImageBox(
   LiveRenderContext ctx, {
   LiveShape? shape,
 }) {
+  final fixed = img.fixedHeight;
+  if (fixed != null) {
+    final p = ctx.providerFor(img);
+    return p == null
+        ? SizedBox(height: fixed, width: fixed)
+        : Image(
+          image: p,
+          height: fixed,
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.medium,
+          errorBuilder: (_, __, ___) => SizedBox(height: fixed, width: fixed),
+        );
+  }
   final s = shape ?? img.shape;
   final radius = switch (s) {
     LiveShape.circle => size / 2,
@@ -559,6 +572,7 @@ Widget _bar(
     pointColor: style?.pointColor,
     pointShape: style?.pointShape ?? LivePointShape.circle,
     dashed: style?.dashed ?? false,
+    markers: style?.markers ?? const [],
   );
 }
 
