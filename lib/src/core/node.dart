@@ -1,5 +1,6 @@
 import 'json_util.dart';
 import '../components/actions.dart';
+import '../components/charts.dart';
 import '../components/layout_nodes.dart';
 import '../components/progress.dart';
 import '../components/text.dart';
@@ -57,6 +58,12 @@ abstract class LiveNode {
         return LiveProgress.fromJson(json);
       case 'segments':
         return LiveSegments.fromJson(json);
+      case 'spark':
+        return LiveSparkline.fromJson(json);
+      case 'gauge':
+        return LiveGauge.fromJson(json);
+      case 'path':
+        return LiveFlightPath.fromJson(json);
       case 'metric':
         return LiveMetric.fromJson(json);
       case 'button':

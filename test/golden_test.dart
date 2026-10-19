@@ -237,4 +237,111 @@ void main() {
       matchesGoldenFile('goldens/puntos_editables.png'),
     );
   });
+
+  LiveImage run(String f, int w, int h, {double? size, double? height}) =>
+      LiveImage.asset(
+        'assets/run/$f',
+        width: w,
+        height: h,
+        size: size,
+        fixedHeight: height,
+        shape: LiveShape.square,
+      );
+
+  Future<void> designsGolden(
+    WidgetTester tester,
+    String file,
+    List<LivePreset> presets, {
+    Set<LiveSurface> surfaces = const {
+      LiveSurface.compact,
+      LiveSurface.expanded,
+      LiveSurface.lockScreen,
+    },
+    double height = 1900,
+  }) async {
+    final key = GlobalKey();
+    // Imágenes que traen los diseños (dibujos propios del paquete).
+    const files = {
+      liveDesignCarTopAsset: 'assets/presets/car_top.png',
+      liveDesignCarSideAsset: 'assets/presets/car_side.png',
+      liveDesignCrestAAsset: 'assets/presets/crest_a.png',
+      liveDesignCrestBAsset: 'assets/presets/crest_b.png',
+    };
+    final images = <String, ImageProvider>{
+      for (final e in files.entries)
+        LiveImage.asset(e.key).id: MemoryImage(File(e.value).readAsBytesSync()),
+      // Imágenes de la app de ejemplo (conductor y auto sin fondo).
+      for (final n in ['header', 'avatar'])
+        LiveImage.asset('assets/run/$n.png').id: MemoryImage(
+          File('example/assets/run/$n.png').readAsBytesSync(),
+        ),
+    };
+    await tester.binding.setSurfaceSize(Size(900, height));
+    tester.view.devicePixelRatio = 2;
+    await tester.pumpWidget(const SizedBox());
+    await tester.runAsync(() async {
+      final ctx = tester.element(find.byType(SizedBox).first);
+      for (final p in images.values) {
+        await precacheImage(p, ctx);
+      }
+    });
+    await tester.pumpWidget(
+      _harness(
+        key,
+        860,
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            for (final p in presets)
+              SizedBox(
+                width: 420,
+                child: LiveIslandPreview(
+                  layout: p.build(),
+                  state: p.sampleState(now: fx.now),
+                  now: fx.now,
+                  images: images,
+                  appName: p.appName,
+                  surfaces: surfaces,
+                  showLabels: false,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+    await tester.pump();
+    await expectLater(find.byKey(key), matchesGoldenFile('goldens/$file.png'));
+  }
+
+  testWidgets('golden: recogida y viaje del conductor', (tester) async {
+    await designsGolden(tester, 'recogida', [
+      RidePickupPreset(
+        headerImage: run('header.png', 760, 308, height: 40),
+        driverPhoto: run('avatar.png', 200, 205, size: 34),
+      ),
+      RidePickupPreset(
+        dark: true,
+        headerImage: run('header.png', 760, 308, height: 40),
+        driverPhoto: run('avatar.png', 200, 205, size: 34),
+      ),
+      const RideDriverPreset(),
+    ], height: 1600);
+  });
+
+  testWidgets('golden: tienda, carrera y marcador', (tester) async {
+    await designsGolden(tester, 'tienda_carrera_marcador', const [
+      StorePickupPreset(),
+      RunPreset(),
+      MatchPreset(),
+    ], height: 1500);
+  });
+
+  testWidgets('golden: gráficas (bolsa, vuelo y órbita)', (tester) async {
+    await designsGolden(tester, 'graficas', const [
+      StockPreset(),
+      FlightPathPreset(),
+      OrbitPreset(),
+    ], height: 1700);
+  });
 }

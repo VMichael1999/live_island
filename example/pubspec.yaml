@@ -53,6 +53,10 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  # Imágenes propias de los diseños de ejemplo (conductor y auto, sin fondo).
+  assets:
+    - assets/run/
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

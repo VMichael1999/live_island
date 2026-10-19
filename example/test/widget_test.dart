@@ -7,11 +7,11 @@ import 'package:live_island_example/main.dart';
 void main() {
   iniciarDosCasos();
 
-  testWidgets('la lista muestra los 15 presets y el editor', (tester) async {
+  testWidgets('la lista muestra todos los presets y el editor', (tester) async {
     await tester.binding.setSurfaceSize(const Size(800, 4000));
     await tester.pumpWidget(const ExampleApp());
     expect(find.text('Editor'), findsOneWidget);
-    expect(catalog, hasLength(15));
+    expect(catalog, hasLength(25));
     for (final e in catalog) {
       expect(find.text(e.label), findsOneWidget);
     }

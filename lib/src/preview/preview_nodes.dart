@@ -3,6 +3,7 @@ import 'dart:io' show File;
 import 'package:flutter/widgets.dart';
 
 import '../components/actions.dart';
+import '../components/charts.dart';
 import '../components/layout_nodes.dart';
 import '../components/progress.dart';
 import '../components/text.dart';
@@ -11,6 +12,7 @@ import '../core/bind.dart';
 import '../core/countdown.dart';
 import '../core/enums.dart';
 import '../core/node.dart';
+import 'preview_charts.dart';
 import 'preview_config.dart';
 import 'preview_icon.dart';
 import 'preview_progress.dart';
@@ -170,6 +172,50 @@ Widget buildLiveNode(
         tracker: node.tracker,
         start: node.startIcon,
         end: node.endIcon,
+      );
+    case LiveSparkline():
+      return LivePreviewSparkline(
+        values: parseLiveSeries(ctx.state[node.series.field]),
+        height: node.height,
+        color: node.color ?? ctx.style.fill,
+        fill: node.fill,
+        strokeWidth: node.strokeWidth,
+        dot: node.dot,
+        min: node.min,
+        max: node.max,
+      );
+    case LiveGauge():
+      return LivePreviewGauge(
+        value: _num(ctx.state[node.value.field]),
+        size: node.size,
+        sweep: node.sweep,
+        color: node.style?.color ?? ctx.style.fill,
+        trackColor: node.style?.trackColor ?? ctx.style.trackBg,
+        stroke: node.style?.height ?? 5,
+        knob: node.knob,
+        dashed: node.style?.dashed ?? false,
+        child:
+            node.child == null
+                ? null
+                : buildLiveNode(node.child!, ctx, slot: 18, iconSize: 16),
+      );
+    case LiveFlightPath():
+      return LivePreviewPath(
+        value: _num(ctx.state[node.value.field]),
+        height: node.height,
+        curve: node.curve,
+        color: node.style?.color ?? ctx.style.fill,
+        trackColor: node.style?.trackColor ?? ctx.style.trackBg,
+        stroke: node.style?.height ?? 3,
+        dashed: node.style?.dashed ?? true,
+        tracker: _tracker(
+          node.tracker,
+          ctx,
+          size: node.style?.trackerSize ?? 26,
+          fill: node.style?.color,
+        ),
+        start: _endIcon(node.startIcon, ctx),
+        end: _endIcon(node.endIcon, ctx),
       );
     case LiveMetric():
       return _metric(node, ctx);
@@ -380,6 +426,19 @@ Widget liveImageBox(
   LiveRenderContext ctx, {
   LiveShape? shape,
 }) {
+  final fixed = img.fixedHeight;
+  if (fixed != null) {
+    final p = ctx.providerFor(img);
+    return p == null
+        ? SizedBox(height: fixed, width: fixed)
+        : Image(
+          image: p,
+          height: fixed,
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.medium,
+          errorBuilder: (_, __, ___) => SizedBox(height: fixed, width: fixed),
+        );
+  }
   final s = shape ?? img.shape;
   final radius = switch (s) {
     LiveShape.circle => size / 2,
@@ -512,6 +571,8 @@ Widget _bar(
     trackColor: style?.trackColor,
     pointColor: style?.pointColor,
     pointShape: style?.pointShape ?? LivePointShape.circle,
+    dashed: style?.dashed ?? false,
+    markers: style?.markers ?? const [],
   );
 }
 

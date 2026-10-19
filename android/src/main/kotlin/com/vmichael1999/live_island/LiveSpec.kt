@@ -158,7 +158,7 @@ data class LiveSpec(
             )
         }
 
-        private val PROGRESS_TYPES = setOf("bar", "ring", "segments")
+        private val PROGRESS_TYPES = setOf("bar", "ring", "segments", "gauge", "path")
 
         /** Texto de un nodo `text` o de un `{bind|fmt|text}` de Android. */
         fun textOf(node: JSONObject?, state: LiveState): String {

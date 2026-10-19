@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import '../components/actions.dart';
 import '../components/layout_nodes.dart';
+import '../components/charts.dart';
 import '../components/progress.dart';
 import '../components/text.dart';
 import '../components/visuals.dart';
@@ -476,6 +477,16 @@ Widget _android(LivePreviewConfig config, DateTime now) {
       a?.progress ?? firstProgress(l.expanded?.nodes ?? const <LiveNode>[]);
   if (progress is LiveProgress && progress.isRing) {
     progress = LiveProgress.bar(value: progress.value);
+  } else if (progress is LiveGauge) {
+    progress = LiveProgress.bar(value: progress.value, style: progress.style);
+  } else if (progress is LiveFlightPath) {
+    progress = LiveProgress.bar(
+      value: progress.value,
+      tracker: progress.tracker,
+      startIcon: progress.startIcon,
+      endIcon: progress.endIcon,
+      style: progress.style,
+    );
   }
 
   final buttons =

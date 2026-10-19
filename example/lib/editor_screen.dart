@@ -28,7 +28,7 @@ class _EditorScreenState extends State<EditorScreen> {
     Color(0xFF0277BD),
   ];
 
-  CatalogEntry entry = catalog.first;
+  CatalogEntry entry = catalog.firstWhere((e) => e.id == 'trip');
   Color? accent;
   LiveBackground background = LiveBackground.system;
   late Map<String, Object?> state = entry.preset.sampleState();

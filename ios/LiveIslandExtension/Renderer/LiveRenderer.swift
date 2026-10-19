@@ -32,6 +32,9 @@ enum LiveRenderer {
         case "bar": return bar(n, c)
         case "ring": return ring(n, c, slot: slot)
         case "segments": return segments(n, c)
+        case "spark": return spark(n, c)
+        case "gauge": return gauge(n, c)
+        case "path": return flightPath(n, c)
         case "metric": return metric(n, c)
         case "button" where c.island, "toggle" where c.island:
             return AnyView(EmptyView())
@@ -192,6 +195,10 @@ enum LiveRenderer {
             return AnyView(RoundedRectangle(cornerRadius: radius).fill(Color.gray.opacity(0.2))
                 .frame(width: size, height: size))
         }
+        // Alto fijo: el ancho sale de la proporción, sin recorte ni forma.
+        if let fixed = n.double("h") {
+            return AnyView(Image(uiImage: ui).resizable().scaledToFit().frame(height: CGFloat(fixed)))
+        }
         let cover = n.string("fit") == "cover"
         return AnyView(Image(uiImage: ui)
             .resizable()
@@ -264,9 +271,11 @@ enum LiveRenderer {
         var pointSize: CGFloat = 10
         var pointColor: Color? = nil
         var pointShape: String = "circle"
+        var dashed: Bool = false
         var labelSize: CGFloat = 11.5
         var trackerSize: CGFloat? = nil
         var strokeWidth: CGFloat? = nil
+        var markers: [Double] = []
 
         init(_ n: LNode) {
             guard let s = n.node("style") else { return }
@@ -279,6 +288,8 @@ enum LiveRenderer {
             if let p = s.double("pointSize") { pointSize = CGFloat(p) }
             pointColor = hex("pointColor")
             if let sh = s.string("pointShape") { pointShape = sh }
+            markers = (s.d["markers"] as? [NSNumber])?.map { $0.doubleValue }.sorted() ?? []
+            dashed = (s.d["dashed"] as? Bool) ?? false
             if let l = s.double("labelSize") { labelSize = CGFloat(l) }
             trackerSize = s.double("trackerSize").map { CGFloat($0) }
         }
@@ -318,6 +329,43 @@ enum LiveRenderer {
         }
         .padding(stroke / 2)
         .frame(width: size, height: size))
+    }
+
+    // MARK: gráficas
+
+    private static func spark(_ n: LNode, _ c: LiveCtx) -> AnyView {
+        let values = c.text(of: n.string("bind")).split(separator: ",")
+            .compactMap { Double($0.trimmingCharacters(in: .whitespaces)) }
+        let color = n.string("color").map { Color(hex: $0) } ?? c.style.fill
+        return AnyView(LiveSparkView(values: values, color: color,
+                                     fill: n.d["fill"] as? Bool ?? true,
+                                     lineWidth: CGFloat(n.double("w") ?? 2),
+                                     dot: n.d["dot"] as? Bool ?? true,
+                                     lo: n.double("min"), hi: n.double("max"))
+            .frame(height: CGFloat(n.double("h") ?? 36)))
+    }
+
+    private static func gauge(_ n: LNode, _ c: LiveCtx) -> AnyView {
+        let bs = BarStyle(n)
+        let inner: AnyView = n.node("child").map { render($0, c, slot: 18, iconSize: 16) } ?? AnyView(EmptyView())
+        return AnyView(LiveGaugeView(value: value(n, c), size: CGFloat(n.double("size") ?? 96),
+                                     sweep: min(360, max(90, n.double("sweep") ?? 180)),
+                                     color: bs.color ?? c.style.fill,
+                                     trackColor: bs.trackColor ?? c.style.trackBg,
+                                     stroke: bs.strokeWidth ?? 5, knob: n.d["knob"] as? Bool ?? true,
+                                     dashed: bs.dashed, content: inner))
+    }
+
+    private static func flightPath(_ n: LNode, _ c: LiveCtx) -> AnyView {
+        let bs = BarStyle(n)
+        return AnyView(LivePathView(value: value(n, c), height: CGFloat(n.double("h") ?? 44),
+                                    curve: CGFloat(min(1, max(0, n.double("curve") ?? 0.55))),
+                                    color: bs.color ?? c.style.fill,
+                                    trackColor: bs.trackColor ?? c.style.trackBg,
+                                    stroke: bs.strokeWidth ?? 3,
+                                    dashed: n.node("style")?.d["dashed"] == nil ? true : bs.dashed,
+                                    tracker: tracker(n.node("tracker"), c, bs),
+                                    start: endView(n.node("start"), c), end: endView(n.node("end"), c)))
     }
 
     private static func metric(_ n: LNode, _ c: LiveCtx) -> AnyView {
@@ -411,6 +459,16 @@ struct LiveBarView: View {
                             .position(x: CGFloat(p) * w, y: bar.height / 2)
                     }
                 }
+                // Marcadores: el recorrido y el siguiente van de color; los demás, apagados.
+                let next = bar.markers.firstIndex { $0 > value + 1e-6 }
+                ForEach(Array(bar.markers.enumerated()), id: \.offset) { i, m in
+                    let on = next == nil || i <= next!
+                    let doneColor = bar.pointColor ?? fill
+                    LivePoint(shape: bar.pointShape, fill: on ? doneColor : style.pendingDot,
+                              border: on ? doneColor : trackColor)
+                        .frame(width: bar.pointSize, height: bar.pointSize)
+                        .position(x: CGFloat(min(1, max(0, m))) * w, y: bar.height / 2)
+                }
                 if let t = tracker { t.position(x: CGFloat(value) * w, y: bar.height / 2) }
             }
             .frame(width: w, height: bar.height, alignment: .leading)
@@ -420,7 +478,17 @@ struct LiveBarView: View {
     private func segment(_ f: Double) -> some View {
         GeometryReader { g in
             ZStack(alignment: .leading) {
-                Rectangle().fill(trackColor)
+                if bar.dashed {
+                    // Lo que falta, como trazo discontinuo.
+                    Path { p in
+                        p.move(to: CGPoint(x: 0, y: g.size.height / 2))
+                        p.addLine(to: CGPoint(x: g.size.width, y: g.size.height / 2))
+                    }
+                    .stroke(trackColor, style: StrokeStyle(lineWidth: bar.height, lineCap: .round,
+                                                           dash: [bar.height * 2.6, bar.height * 1.8]))
+                } else {
+                    Rectangle().fill(trackColor)
+                }
                 Rectangle().fill(fill).frame(width: g.size.width * CGFloat(f))
             }
         }
@@ -463,7 +531,7 @@ struct LiveBarView: View {
     }
 }
 
-/// Punto de etapa: círculo, cuadrado o cuadrado redondeado, con borde de 2 pt.
+/// Punto de etapa: círculo, cuadrado, cuadrado redondeado o marcador (ring).
 struct LivePoint: View {
     let shape: String
     let fill: Color
@@ -478,9 +546,176 @@ struct LivePoint: View {
             case "rounded":
                 RoundedRectangle(cornerRadius: r / 3).fill(fill)
                     .overlay(RoundedRectangle(cornerRadius: r / 3).strokeBorder(border, lineWidth: 2))
+            case "ring":
+                ZStack {
+                    Circle().fill(border.opacity(0.25))
+                    Circle().fill(border).frame(width: r * 0.45, height: r * 0.45)
+                }
             default:
                 Circle().fill(fill).overlay(Circle().strokeBorder(border, lineWidth: 2))
             }
         }
+    }
+}
+
+
+// MARK: - gráficas
+
+struct LiveSparkView: View {
+    let values: [Double]
+    let color: Color
+    let fill: Bool
+    let lineWidth: CGFloat
+    let dot: Bool
+    let lo: Double?
+    let hi: Double?
+
+    private func points(_ size: CGSize) -> [CGPoint] {
+        guard values.count > 1 else { return [] }
+        let lo = self.lo ?? values.min()!
+        var hi = self.hi ?? values.max()!
+        if hi - lo < 1e-9 { hi = lo + 1 }
+        let pad = lineWidth + (dot ? 3.5 : 0)
+        let w = size.width - pad * 2, h = size.height - pad * 2
+        return values.enumerated().map { i, v in
+            CGPoint(x: pad + w * CGFloat(i) / CGFloat(values.count - 1),
+                    y: pad + h * (1 - CGFloat(min(1, max(0, (v - lo) / (hi - lo))))))
+        }
+    }
+
+    private func line(_ pts: [CGPoint]) -> Path {
+        var p = Path()
+        guard let first = pts.first else { return p }
+        p.move(to: first)
+        for i in 1..<pts.count {
+            let mid = CGPoint(x: (pts[i - 1].x + pts[i].x) / 2, y: (pts[i - 1].y + pts[i].y) / 2)
+            if i == 1 { p.addLine(to: mid) } else { p.addQuadCurve(to: mid, control: pts[i - 1]) }
+        }
+        p.addLine(to: pts[pts.count - 1])
+        return p
+    }
+
+    private func area(_ pts: [CGPoint], _ bottom: CGFloat) -> Path {
+        var p = line(pts)
+        p.addLine(to: CGPoint(x: pts[pts.count - 1].x, y: bottom))
+        p.addLine(to: CGPoint(x: pts[0].x, y: bottom))
+        p.closeSubpath()
+        return p
+    }
+
+    var body: some View {
+        GeometryReader { geo in
+            let pts = points(geo.size)
+            if pts.count > 1 {
+                ZStack {
+                    if fill {
+                        area(pts, geo.size.height).fill(LinearGradient(colors: [color.opacity(0.35), color.opacity(0)],
+                                                 startPoint: .top, endPoint: .bottom))
+                    }
+                    line(pts).stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
+                    if dot {
+                        Circle().fill(color).frame(width: 7, height: 7)
+                            .position(pts[pts.count - 1])
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct LiveGaugeView: View {
+    let value: Double
+    let size: CGFloat
+    let sweep: Double
+    let color: Color
+    let trackColor: Color
+    let stroke: CGFloat
+    let knob: Bool
+    let dashed: Bool
+    let content: AnyView
+
+    private var pad: CGFloat { max(stroke / 2, knob ? stroke * 0.9 : 0) + 1 }
+    private var radius: CGFloat { size / 2 - pad }
+    private var height: CGFloat { radius * (1 - CGFloat(cos(sweep * .pi / 360))) + pad * 2 }
+
+    private func arc(_ from: Double, _ to: Double) -> Path {
+        Path { p in
+            p.addArc(center: CGPoint(x: size / 2, y: pad + radius), radius: radius,
+                     startAngle: .radians(from), endAngle: .radians(to), clockwise: false)
+        }
+    }
+
+    var body: some View {
+        let sw = sweep * .pi / 180
+        let start = -Double.pi / 2 - sw / 2
+        let v = min(1, max(0, value))
+        ZStack(alignment: .bottom) {
+            arc(start, start + sw).stroke(trackColor, style: StrokeStyle(
+                lineWidth: stroke, lineCap: .round,
+                dash: dashed ? [max(stroke * 1.4, 5), max(stroke * 1.2, 4)] : []))
+            if v > 0 {
+                arc(start, start + sw * v).stroke(color, style: StrokeStyle(lineWidth: stroke, lineCap: .round))
+            }
+            if knob {
+                let a = start + sw * v
+                Circle().fill(color).frame(width: stroke * 1.8, height: stroke * 1.8)
+                    .position(x: size / 2 + CGFloat(cos(a)) * radius, y: pad + radius + CGFloat(sin(a)) * radius)
+            }
+            content.padding(.bottom, pad)
+        }
+        .frame(width: size, height: height)
+    }
+}
+
+struct LivePathView: View {
+    let value: Double
+    let height: CGFloat
+    let curve: CGFloat
+    let color: Color
+    let trackColor: Color
+    let stroke: CGFloat
+    let dashed: Bool
+    let tracker: AnyView?
+    let start: AnyView?
+    let end: AnyView?
+
+    private let inset: CGFloat = 14
+
+    private func point(_ size: CGSize, _ t: CGFloat) -> CGPoint {
+        let p0 = CGPoint(x: inset, y: size.height - inset)
+        let p2 = CGPoint(x: size.width - inset, y: size.height - inset)
+        let apex = curve * (size.height - inset * 2)
+        let p1 = CGPoint(x: size.width / 2, y: p0.y - 2 * apex)
+        let u = 1 - t
+        return CGPoint(x: u * u * p0.x + 2 * u * t * p1.x + t * t * p2.x,
+                       y: u * u * p0.y + 2 * u * t * p1.y + t * t * p2.y)
+    }
+
+    private func curvePath(_ size: CGSize, _ from: CGFloat, _ to: CGFloat) -> Path {
+        var p = Path()
+        for i in 0...48 {
+            let t = from + (to - from) * CGFloat(i) / 48
+            let pt = point(size, t)
+            if i == 0 { p.move(to: pt) } else { p.addLine(to: pt) }
+        }
+        return p
+    }
+
+    var body: some View {
+        GeometryReader { geo in
+            let v = CGFloat(min(1, max(0, value)))
+            ZStack {
+                curvePath(geo.size, v, 1).stroke(trackColor, style: StrokeStyle(
+                    lineWidth: stroke, lineCap: .round,
+                    dash: dashed ? [max(stroke * 2.2, 6), max(stroke * 1.8, 5)] : []))
+                if v > 0 {
+                    curvePath(geo.size, 0, v).stroke(color, style: StrokeStyle(lineWidth: stroke, lineCap: .round))
+                }
+                if let s = start { s.position(point(geo.size, 0)) }
+                if let e = end { e.position(point(geo.size, 1)) }
+                if let t = tracker { t.position(point(geo.size, v)) }
+            }
+        }
+        .frame(height: height)
     }
 }

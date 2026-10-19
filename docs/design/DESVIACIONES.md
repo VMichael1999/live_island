@@ -148,3 +148,31 @@ Idea y geometría tomadas de `rit3zh/expo-dynamic-notifications` (MIT): tres for
 | `FlutterFramework` | Flutter 3.38+ pide depender de él; el manifiesto lo enlaza solo si existe junto al paquete, así las versiones anteriores no fallan al resolver |
 | Frameworks débiles | `ActivityKit` y `AppIntents` se enlazan con `-weak_framework` (como `weak_frameworks` del podspec), por eso hay `unsafeFlags`: es válido en paquetes locales, que es lo que usa Flutter |
 | Destino mínimo | iOS 15.0 |
+
+## Diseños de referencia, barra punteada y marcadores
+
+| Tema | Detalle |
+| --- | --- |
+| Origen | Ideas de tarjetas de recogida de viaje, pedido en tienda, carrera, marcador, bolsa, vuelo y órbita, rehechas con nodos del contrato |
+| Marcas e imágenes | Ningún diseño usa marcas ni fotos de terceros. El paquete trae dibujos propios (`car_top.png`, `car_side.png`, `crest_a.png`, `crest_b.png`, generados con `tool/make_design_assets.py`) y los nombres son inventados («Run», «Sprint», «Voltio S.A.»). Quien lo use pasa sus propias imágenes con `LiveImage.asset(...)` |
+| Idioma | Los textos de ejemplo están en español y son parámetros o campos del estado; un test impide que se mezclen con inglés |
+| Isla y tarjeta | La isla es siempre negra; la tarjeta de bloqueo es propia (`LiveLockScreen.custom`), clara, oscura o de color |
+| Barra de recogida | `RideBar.dotted` (trazo punteado y marcadores) o `RideBar.line` (línea continua y marcador final) |
+| `dashed` | iOS y vista previa dibujan lo que falta como trazo discontinuo. Android lo ignora: `ProgressStyle` usa tramos sólidos |
+| `markers` | Posiciones 0 a 1 de marcadores sobre la barra, con la forma de `pointShape` (`ring` es un círculo suave con un punto). El ya recorrido y el siguiente van de color; los demás, apagados. Android los ignora |
+| Un tamaño por superficie | `LiveImage.withSize(n)` usa la misma imagen grande en la tarjeta y pequeña en la isla compacta |
+| Imágenes anchas | Toda imagen se dibuja en un cuadrado de `size`. Para una imagen ancha sin fondo (un conductor con su auto) usa `LiveImage.withHeight(n)` o `fixedHeight`: alto fijo y ancho según su proporción, sin cuadrado vacío |
+| Altura de la tarjeta de bloqueo | iOS limita la tarjeta a unos 160 pt con el relleno del sistema, así que cada diseño tiene unos 125 pt útiles; lo que sobre se recorta. Los diseños de ejemplo están medidos para caber |
+| Pendiente | Cable luminoso (carga), tramos de color distinto (propina) y borde con brillo siguen sin nodo propio |
+
+## Gráficas: línea, arco y ruta curva
+
+| Nodo | Dart | JSON | Android |
+| --- | --- | --- | --- |
+| Gráfica de línea | `LiveSparkline` | `spark` | Se omite |
+| Medidor de arco | `LiveGauge` | `gauge` | Barra de progreso |
+| Ruta curva con ícono | `LiveFlightPath` | `path` | Barra con el mismo ícono |
+
+* La serie de la gráfica viaja como texto de números separados por comas (`liveSeries([1, 2.5])` → `"1,2.5"`), así el estado sigue siendo de tipos simples.
+* El avión de `LiveFlightPath` no gira siguiendo la curva: queda horizontal.
+* Presets de ejemplo: `StockPreset`, `FlightPathPreset` y `OrbitPreset`.
