@@ -600,6 +600,7 @@ Widget _bar(
     dashed: style?.dashed ?? false,
     markers: style?.markers ?? const [],
     glow: style?.glow ?? 0,
+    endMarker: style?.endMarker,
   );
 }
 

@@ -39,6 +39,7 @@ class LiveProgressStyle {
     this.trackerSize,
     this.markers,
     this.glow,
+    this.endMarker,
   });
 
   /// Grosor de la barra en pt (por defecto 6). En un anillo, el ancho del trazo (3).
@@ -83,6 +84,12 @@ class LiveProgressStyle {
   /// Android lo ignora.
   final double? glow;
 
+  /// Marcador del final de la barra, **pegado** a ella y con el ícono que
+  /// avanza encima al llegar al 100 %. Usa [pointSize] como tamaño y
+  /// [LivePointShape.target] o [LivePointShape.targetSquare] como forma.
+  /// Android lo ignora.
+  final LivePointShape? endMarker;
+
   bool get isEmpty =>
       height == null &&
       color == null &&
@@ -96,7 +103,8 @@ class LiveProgressStyle {
       labelSize == null &&
       trackerSize == null &&
       markers == null &&
-      glow == null;
+      glow == null &&
+      endMarker == null;
 
   LiveProgressStyle copyWith({
     double? height,
@@ -112,6 +120,7 @@ class LiveProgressStyle {
     double? trackerSize,
     List<double>? markers,
     double? glow,
+    LivePointShape? endMarker,
   }) => LiveProgressStyle(
     height: height ?? this.height,
     color: color ?? this.color,
@@ -126,6 +135,7 @@ class LiveProgressStyle {
     trackerSize: trackerSize ?? this.trackerSize,
     markers: markers ?? this.markers,
     glow: glow ?? this.glow,
+    endMarker: endMarker ?? this.endMarker,
   );
 
   Map<String, Object?> toJson() => compact({
@@ -142,6 +152,7 @@ class LiveProgressStyle {
     'trackerSize': trackerSize,
     'markers': markers,
     'glow': glow,
+    'endMarker': endMarker?.name,
   });
 
   factory LiveProgressStyle.fromJson(Map<String, Object?> json) {
@@ -169,6 +180,10 @@ class LiveProgressStyle {
               (m as num).toDouble(),
           ].nullIfEmpty,
       glow: d('glow'),
+      endMarker:
+          json['endMarker'] == null
+              ? null
+              : LivePointShape.values.byName(json['endMarker']! as String),
     );
   }
 

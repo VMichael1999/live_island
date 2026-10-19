@@ -119,6 +119,21 @@ void main() {
     expect(const LiveProgressStyle().isEmpty, isTrue);
   });
 
+  test('el marcador final pegado viaja en el JSON y hace ida y vuelta', () {
+    const style = LiveProgressStyle(
+      endMarker: LivePointShape.targetSquare,
+      pointSize: 16,
+    );
+    final back = LiveProgressStyle.fromJson(style.toJson());
+    expect(back.endMarker, LivePointShape.targetSquare);
+    expect(style.toJson()['endMarker'], 'targetSquare');
+    expect(
+      const LiveProgressStyle().toJson().containsKey('endMarker'),
+      isFalse,
+    );
+    expect(style.isEmpty, isFalse);
+  });
+
   test('ningún texto de ejemplo mezcla inglés y español', () {
     final english = RegExp(
       r'\b(until|pickup|arriving|soon|order|progress|handcrafting|miles|time|home|guest|stats|world cup|landing|on time)\b',

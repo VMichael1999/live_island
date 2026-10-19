@@ -286,6 +286,7 @@ enum LiveRenderer {
         var pointSize: CGFloat = 10
         var pointColor: Color? = nil
         var pointShape: String = "circle"
+        var endMarker: String? = nil
         var dashed: Bool = false
         var labelSize: CGFloat = 11.5
         var trackerSize: CGFloat? = nil
@@ -304,6 +305,7 @@ enum LiveRenderer {
             if let p = s.double("pointSize") { pointSize = CGFloat(p) }
             pointColor = hex("pointColor")
             if let sh = s.string("pointShape") { pointShape = sh }
+            endMarker = s.string("endMarker")
             glow = CGFloat(s.double("glow") ?? 0)
             markers = (s.d["markers"] as? [NSNumber])?.map { $0.doubleValue }.sorted() ?? []
             dashed = (s.d["dashed"] as? Bool) ?? false
@@ -456,7 +458,8 @@ struct LiveBarView: View {
                 track.frame(height: bar.height)
                 if let e = end { e.opacity(0.9) }
             }
-            .frame(height: (start != nil || end != nil) ? max(16, bar.height) : bar.height)
+            .frame(height: max(bar.height, bar.endMarker == nil ? 0 : bar.pointSize,
+                              (start != nil || end != nil) ? 16 : 0))
             if labelsVisible {
                 if labels.count > 3 { stageLine } else { stageLabels }
             }
@@ -465,7 +468,13 @@ struct LiveBarView: View {
 
     private var track: some View {
         GeometryReader { geo in
-            let w = geo.size.width
+            let full = geo.size.width
+            // Con marcador final la barra termina donde empieza el marcador y el
+            // ícono que avanza recorre hasta su centro.
+            let s: CGFloat = bar.endMarker == nil ? 0 : bar.pointSize
+            let w = full - s
+            let travel = full - s / 2
+            let vf = bar.endMarker == nil ? value : min(1, value * Double(travel / w))
             let n = hasStages ? labels.count - 1 : 1
             let useSegs = segmented && hasStages
             ZStack(alignment: .leading) {
@@ -473,19 +482,20 @@ struct LiveBarView: View {
                     // Halo de lo avanzado: el "cable luminoso".
                     RoundedRectangle(cornerRadius: radius)
                         .fill(fill)
-                        .frame(width: max(bar.height, w * CGFloat(value)), height: bar.height)
+                        .frame(width: max(bar.height, w * CGFloat(vf)), height: bar.height)
                         .shadow(color: fill.opacity(0.7), radius: bar.glow / 2)
                 }
                 HStack(spacing: bar.gap) {
                     ForEach(0..<(useSegs ? n : 1), id: \.self) { i in
-                        let f = useSegs ? min(1, max(0, (value - Double(i) / Double(n)) * Double(n))) : value
+                        let f = useSegs ? min(1, max(0, (vf - Double(i) / Double(n)) * Double(n))) : vf
                         segment(f)
                     }
                 }
+                .frame(width: w, alignment: .leading)
                 if points && hasStages {
                     ForEach(0..<labels.count, id: \.self) { k in
                         let p = Double(k) / Double(labels.count - 1)
-                        let done = p <= value + 1e-6
+                        let done = p <= vf + 1e-6
                         let doneColor = bar.pointColor ?? fill
                         LivePoint(shape: bar.pointShape, fill: done ? doneColor : style.pendingDot,
                                   border: done ? doneColor : trackColor)
@@ -494,7 +504,7 @@ struct LiveBarView: View {
                     }
                 }
                 // Marcadores: el recorrido y el siguiente van de color; los demás, apagados.
-                let next = bar.markers.firstIndex { $0 > value + 1e-6 }
+                let next = bar.markers.firstIndex { $0 > vf + 1e-6 }
                 ForEach(Array(bar.markers.enumerated()), id: \.offset) { i, m in
                     let on = next == nil || i <= next!
                     let doneColor = bar.pointColor ?? fill
@@ -503,9 +513,14 @@ struct LiveBarView: View {
                         .frame(width: bar.pointSize, height: bar.pointSize)
                         .position(x: CGFloat(min(1, max(0, m))) * w, y: bar.height / 2)
                 }
-                if let t = tracker { t.position(x: CGFloat(value) * w, y: bar.height / 2) }
+                if let m = bar.endMarker {
+                    LivePoint(shape: m, fill: bar.pointColor ?? fill, border: bar.pointColor ?? fill)
+                        .frame(width: bar.pointSize, height: bar.pointSize)
+                        .position(x: w + s / 2, y: bar.height / 2)
+                }
+                if let t = tracker { t.position(x: CGFloat(value) * travel, y: bar.height / 2) }
             }
-            .frame(width: w, height: bar.height, alignment: .leading)
+            .frame(width: full, height: bar.height, alignment: .leading)
         }
     }
 
@@ -580,6 +595,10 @@ struct LivePoint: View {
             case "rounded":
                 RoundedRectangle(cornerRadius: r / 3).fill(fill)
                     .overlay(RoundedRectangle(cornerRadius: r / 3).strokeBorder(border, lineWidth: 2))
+            case "target":
+                Circle().strokeBorder(border, lineWidth: r * 0.22)
+            case "targetSquare":
+                RoundedRectangle(cornerRadius: r * 0.22).strokeBorder(border, lineWidth: r * 0.22)
             case "ring":
                 ZStack {
                     Circle().fill(border.opacity(0.25))
