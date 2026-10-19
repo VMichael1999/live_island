@@ -181,16 +181,18 @@ final class RidePickupPreset extends LivePreset {
 
   // Iniciales sobre un círculo del color de acento (no del tema: en la tarjeta
   // oscura el tema es casi negro).
-  LiveNode get _driver =>
+  LiveNode get _driver => _driverAvatar(34);
+
+  LiveNode _driverAvatar(double size) =>
       driverPhoto != null
-          ? LiveAvatar.photo(driverPhoto!, size: 34)
+          ? LiveAvatar.photo(driverPhoto!, size: size)
           : LiveBox(
-            size: 34,
-            radius: 17,
+            size: size,
+            radius: size / 2,
             color: accent,
             child: LiveText.literal(
               driverInitials,
-              size: 15,
+              size: size * .44,
               weight: 700,
               color: _white,
             ),
@@ -319,31 +321,46 @@ final class RidePickupPreset extends LivePreset {
       compactLeading: _compact,
       compactTrailing: _t('tiempo', size: 15, weight: 700, color: _white),
       minimal: _compact,
+      // Todo en una sola pieza a todo el ancho: en la isla real iOS reparte las
+      // zonas laterales y el avatar quedaba suelto en la esquina.
       expanded: LiveExpanded(
-        leading: _driver,
-        center: LiveColumn([
-          LiveRow(
-            dark
-                ? [
-                  _t('titulo', size: 17, weight: 700, color: _white, lines: 1),
-                  _t('tiempo', size: 17, weight: 700, color: _white),
-                ]
-                : [
-                  _t('tiempo', size: 17, weight: 700, color: accent),
-                  _t('titulo', size: 17, weight: 700, color: _white, lines: 1),
-                ],
-            gap: 5,
-          ),
-          const LiveText.format(
-            '{placa} · {vehiculo}',
-            size: 13,
-            muted: true,
-            lines: 1,
-          ),
-        ], gap: 2),
         bottom: LiveColumn([
+          LiveRow([
+            _driverAvatar(44),
+            LiveColumn([
+              LiveRow(
+                dark
+                    ? [
+                      _t(
+                        'titulo',
+                        size: 19,
+                        weight: 700,
+                        color: _white,
+                        lines: 1,
+                      ),
+                      _t('tiempo', size: 19, weight: 700, color: _white),
+                    ]
+                    : [
+                      _t('tiempo', size: 19, weight: 700, color: accent),
+                      _t(
+                        'titulo',
+                        size: 19,
+                        weight: 700,
+                        color: _white,
+                        lines: 1,
+                      ),
+                    ],
+                gap: 5,
+              ),
+              LiveText.format(
+                '{placa} · {vehiculo}',
+                size: 14,
+                color: const Color(0xFFB4B6BC),
+                lines: 1,
+              ),
+            ], gap: 2),
+          ], gap: 10),
           _progress(_white, const Color(0xFF6B6E75)),
-          if ((buttons ?? const []).isNotEmpty) LiveRow(buttons!),
         ], gap: 10),
       ),
       lockScreen: LiveLockScreen.custom(card),
