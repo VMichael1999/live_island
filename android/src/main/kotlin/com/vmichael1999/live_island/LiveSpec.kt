@@ -48,6 +48,10 @@ data class ProgressSpec(
     val color: Int? = null,
     /** Color de los puntos (`style.pointColor`); `null` = el de los tramos. */
     val pointColor: Int? = null,
+    /** Color de cada tramo (barra partida); `null` = todos del color de [color]. */
+    val segmentColors: List<Int>? = null,
+    /** Con `false` los tramos conservan su color aunque no estén "avanzados" (barra partida). */
+    val styledByProgress: Boolean = true,
 )
 
 /**
@@ -132,7 +136,11 @@ data class LiveSpec(
             val leading = LiveJson.obj(LiveJson.obj(regions, "expanded"), "leading")
                 ?: LiveJson.obj(regions, "compactLeading")
             val appLogo = LiveJson.obj(layout, "appLogo")
+            // Imagen grande: la que pide el bloque Android y, si no, la de la isla o el logo.
+            val explicitLarge = LiveJson.obj(android, "largeIcon")
             val largeIcon: IconRef? = when {
+                explicitLarge?.optString("t") == "avatar" -> avatarOf(explicitLarge, state)
+                explicitLarge != null -> iconOf(explicitLarge)
                 leading?.optString("t") == "avatar" -> avatarOf(leading, state)
                 appLogo?.optString("t") == "image" -> IconRef.Image(appLogo.optString("img"))
                 leading?.optString("t") == "image" -> IconRef.Image(leading.optString("img"))
@@ -146,7 +154,8 @@ data class LiveSpec(
             return LiveSpec(
                 title = title,
                 text = text,
-                subText = progress?.stage,
+                subText = LiveJson.obj(android, "subText")?.let { textOf(it, state) }?.takeIf { it.isNotEmpty() }
+                    ?: progress?.stage,
                 accent = accent,
                 colorized = android?.optBoolean("colorized", false) ?: false,
                 chip = chip,
@@ -158,7 +167,7 @@ data class LiveSpec(
             )
         }
 
-        private val PROGRESS_TYPES = setOf("bar", "ring", "segments", "gauge", "path")
+        private val PROGRESS_TYPES = setOf("bar", "ring", "segments", "gauge", "path", "split")
 
         /** Texto de un nodo `text` o de un `{bind|fmt|text}` de Android. */
         fun textOf(node: JSONObject?, state: LiveState): String {
@@ -190,7 +199,32 @@ data class LiveSpec(
             else -> null
         }
 
+        /** Barra partida: un tramo por valor, en proporción, cada uno de su color. */
+        private fun splitOf(node: JSONObject, state: LiveState): ProgressSpec {
+            val parts = LiveJson.array(node, "parts")
+            val values = parts.map { (LiveJson.number(state[it.optString("bind")]) ?: 0.0).coerceAtLeast(0.0) }
+            val kept = parts.indices.filter { values[it] > 0 }
+            val total = kept.sumOf { values[it] }
+            // 1000 unidades repartidas por proporción; el último tramo absorbe el redondeo.
+            val lengths = kept.map { maxOf(1, (values[it] / total * SPLIT_MAX).roundToInt()) }.toMutableList()
+            if (lengths.isNotEmpty()) lengths[lengths.size - 1] += SPLIT_MAX - lengths.sum()
+            val max = lengths.sum().coerceAtLeast(1)
+            return ProgressSpec(
+                max = max,
+                progress = max,
+                segments = lengths.ifEmpty { listOf(max) },
+                points = emptyList(),
+                stage = null,
+                tracker = null,
+                start = null,
+                end = null,
+                segmentColors = kept.map { parseColor(parts[it].optString("color", "#FFFFFF")) },
+                styledByProgress = false,
+            )
+        }
+
         private fun progressOf(node: JSONObject, state: LiveState): ProgressSpec {
+            if (node.optString("t") == "split") return splitOf(node, state)
             val v = (LiveJson.number(state[node.optString("bind")]) ?: 0.0).coerceIn(0.0, 1.0)
             val labels = node.optJSONArray("labels")?.let { a -> (0 until a.length()).map { a.getString(it) } }
                 ?: emptyList()
@@ -198,7 +232,11 @@ data class LiveSpec(
             val n = if (segmented) labels.size - 1 else 1
             val max = SEGMENT * n
             val stage = if (segmented) labels[minOf(labels.size - 1, floor(v * (labels.size - 1) + 1e-6).toInt())] else null
-            val points = if (segmented && node.optBoolean("points", false)) (0..n).map { it * SEGMENT } else emptyList()
+            // Puntos: los de las etapas o, si no hay, los marcadores del estilo (posiciones de 0 a 1).
+            val markers = LiveJson.obj(node, "style")?.optJSONArray("markers")
+                ?.let { a -> (0 until a.length()).map { (a.getDouble(it).coerceIn(0.0, 1.0) * max).roundToInt() } }
+                ?: emptyList()
+            val points = if (segmented && node.optBoolean("points", false)) (0..n).map { it * SEGMENT } else markers
             val tracker = LiveJson.obj(node, "tracker")
             return ProgressSpec(
                 max = max,
@@ -215,5 +253,6 @@ data class LiveSpec(
         }
 
         private const val SEGMENT = 100
+        private const val SPLIT_MAX = 1000
     }
 }

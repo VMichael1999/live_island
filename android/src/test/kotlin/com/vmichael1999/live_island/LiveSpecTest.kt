@@ -240,6 +240,69 @@ class LiveSpecTest {
         assertEquals("x · 2", LiveSpec.from(l, mapOf("a" to "x", "b" to 2.0)).title)
     }
 
+    // --- estética de Android: barra partida, marcadores, imagen grande y subtexto ---
+
+    @Test
+    fun `la barra partida se traduce a tramos de colores en proporcion`() {
+        val progress = """{"t":"split","parts":[
+            {"bind":"base","color":"#FFFFFF"},
+            {"bind":"servicio","color":"#6B6E75"},
+            {"bind":"propina","color":"#30D158"}]}"""
+        val l = layout("""{"title":{"text":"T"},"progress":$progress}""")
+        val p = LiveSpec.from(l, mapOf("base" to 16.0, "servicio" to 2.5, "propina" to 3.0)).progress!!
+
+        assertEquals(1000, p.segments.sum())
+        assertEquals(p.max, p.progress, "la barra partida va completa")
+        assertEquals(3, p.segments.size)
+        assertTrue(p.segments[0] > p.segments[1] && p.segments[1] < p.segments[2])
+        assertEquals(
+            listOf(0xFFFFFFFF.toInt(), 0xFF6B6E75.toInt(), 0xFF30D158.toInt()),
+            p.segmentColors,
+        )
+        assertFalse(p.styledByProgress)
+    }
+
+    @Test
+    fun `un tramo sin valor no se dibuja`() {
+        val progress = """{"t":"split","parts":[
+            {"bind":"a","color":"#FFFFFF"},{"bind":"b","color":"#30D158"}]}"""
+        val l = layout("""{"title":{"text":"T"},"progress":$progress}""")
+        val p = LiveSpec.from(l, mapOf("a" to 5.0, "b" to 0.0)).progress!!
+        assertEquals(1, p.segments.size)
+        assertEquals(listOf(0xFFFFFFFF.toInt()), p.segmentColors)
+    }
+
+    @Test
+    fun `los marcadores del estilo se vuelven puntos de la barra`() {
+        val bar = """{"t":"bar","bind":"p","style":{"markers":[0.6,1]}}"""
+        val l = layout("""{"title":{"text":"T"},"progress":$bar}""")
+        val p = LiveSpec.from(l, mapOf("p" to 0.3)).progress!!
+        assertEquals(listOf(60, 100), p.points)
+    }
+
+    @Test
+    fun `la imagen grande y el subtexto salen del bloque Android`() {
+        val l = layout(
+            """{"title":{"text":"T"},"subText":{"bind":"vehiculo"},
+                "largeIcon":{"t":"image","img":"asset_foto_png","size":44}}""",
+            """{"expanded":{"leading":{"t":"avatar","text":"X"}}}""",
+        )
+        val spec = LiveSpec.from(l, mapOf("vehiculo" to "Sedán plateado"))
+        assertEquals(IconRef.Image("asset_foto_png"), spec.largeIcon, "gana a la de la isla")
+        assertEquals("Sedán plateado", spec.subText)
+    }
+
+    @Test
+    fun `sin largeIcon ni subText se mantiene el comportamiento anterior`() {
+        val l = layout(
+            """{"title":{"text":"T"}}""",
+            """{"expanded":{"leading":{"t":"avatar","text":"X"}}}""",
+        )
+        val spec = LiveSpec.from(l, emptyMap())
+        assertEquals(IconRef.Initials("X"), spec.largeIcon)
+        assertNull(spec.subText)
+    }
+
     // --- utilidades -------------------------------------------------------------
 
     @Test

@@ -414,9 +414,14 @@
         "chip": { "$ref": "#/$defs/chip" },
         "colorized": { "type": "boolean", "default": false, "description": "Si es true Android NO promueve la notificación." },
         "progress": {
-          "oneOf": [ { "$ref": "#/$defs/bar" }, { "$ref": "#/$defs/segments" }, { "$ref": "#/$defs/ring" } ],
-          "description": "Si falta, se toma el primer nodo de progreso encontrado en expanded.bottom."
+          "oneOf": [ { "$ref": "#/$defs/bar" }, { "$ref": "#/$defs/segments" }, { "$ref": "#/$defs/ring" }, { "$ref": "#/$defs/gauge" }, { "$ref": "#/$defs/path" }, { "$ref": "#/$defs/split" } ],
+          "description": "Si falta, se toma el primer nodo de progreso encontrado en expanded.bottom. El anillo, el medidor y la ruta se muestran como barra; la barra partida (split) como tramos de distinto color."
         },
+        "largeIcon": {
+          "oneOf": [ { "$ref": "#/$defs/image" }, { "$ref": "#/$defs/avatar" }, { "$ref": "#/$defs/icon" } ],
+          "description": "Imagen grande de la notificación (foto, escudo, logo). Si falta, Android usa el avatar o la imagen de la isla expandida o el logo de la app."
+        },
+        "subText": { "$ref": "#/$defs/androidText", "description": "Texto pequeño del encabezado, junto al nombre de la app. Si falta, la etapa de la barra." },
         "actions": {
           "type": "array", "maxItems": 3, "items": { "$ref": "#/$defs/button" },
           "description": "Si falta, se toman los botones de expanded.bottom."

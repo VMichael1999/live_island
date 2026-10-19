@@ -418,6 +418,7 @@ Widget _android(LivePreviewConfig config, DateTime now) {
   final accent = l.theme.accent;
 
   final baseTitle = _androidText(a?.title, ctx);
+  final subText = a?.subText == null ? '' : _androidText(a?.subText, ctx);
   var title = baseTitle;
   final trailing = l.compactTrailing;
   final highlightText =
@@ -463,6 +464,11 @@ Widget _android(LivePreviewConfig config, DateTime now) {
   }
 
   Widget? largeIcon() {
+    final explicit = a?.largeIcon;
+    if (explicit is LiveAvatar) return liveAvatar(explicit, 44, ctx);
+    if (explicit is LiveImage) {
+      return liveImageBox(explicit, 44, ctx, shape: LiveShape.rounded);
+    }
     final lead = l.expanded?.leading ?? l.compactLeading;
     if (lead is LiveAvatar) return liveAvatar(lead, 40, ctx);
     if (l.appLogo is LiveImage) {
@@ -563,7 +569,11 @@ Widget _android(LivePreviewConfig config, DateTime now) {
                       const SizedBox(width: 8),
                       Flexible(
                         child: Text(
-                          '${config.appName} · $when',
+                          [
+                            config.appName,
+                            if (subText.isNotEmpty) subText,
+                            when,
+                          ].join(' · '),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(

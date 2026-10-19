@@ -204,4 +204,46 @@ void main() {
       expect(const LiveText.literal('x').toJson().containsKey('i'), isFalse);
     },
   );
+
+  test('el bloque Android admite imagen grande, subtexto y barra partida', () {
+    final foto = LiveImage.asset('assets/foto.png', size: 44);
+    final android = LiveAndroid(
+      title: const LiveText.literal('T'),
+      subText: const LiveBind('vehiculo'),
+      largeIcon: foto,
+      progress: const LiveSplitBar([
+        LiveSplitPart(LiveBind('a'), Color(0xFFFFFFFF)),
+      ]),
+    );
+    final back = LiveAndroid.fromJson(android.toJson());
+    expect(back.largeIcon, isA<LiveImage>());
+    expect((back.largeIcon! as LiveImage).id, foto.id);
+    expect(back.progress, isA<LiveSplitBar>());
+    expect(back.toJson()['subText'], {'bind': 'vehiculo'});
+
+    // La imagen grande entra en el manifiesto de imágenes del diseño.
+    final layout = LiveLayout(
+      theme: const LiveTheme(accent: Color(0xFF000000)),
+      android: android,
+    );
+    expect(layout.images.map((i) => i.id), contains(foto.id));
+  });
+
+  test(
+    'en Android la tarifa viaja como barra partida y los demás ponen su imagen',
+    () {
+      expect(
+        const FareSplitPreset().build().android!.progress,
+        isA<LiveSplitBar>(),
+      );
+      final crest = const MatchPreset().build().android!.largeIcon;
+      expect(crest, isA<LiveImage>());
+      final withLogo =
+          StockPreset(
+            brandLogo: LiveImage.asset('assets/logo.png', size: 28),
+          ).build().android!.largeIcon;
+      expect(withLogo, isA<LiveImage>());
+      expect(const StockPreset().build().android!.largeIcon, isNull);
+    },
+  );
 }
