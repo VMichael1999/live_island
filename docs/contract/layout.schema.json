@@ -156,7 +156,7 @@
         { "$ref": "#/$defs/text" }, { "$ref": "#/$defs/countdown" }, { "$ref": "#/$defs/stopwatch" }, { "$ref": "#/$defs/relative" },
         { "$ref": "#/$defs/icon" }, { "$ref": "#/$defs/image" }, { "$ref": "#/$defs/avatar" },
         { "$ref": "#/$defs/bar" }, { "$ref": "#/$defs/ring" }, { "$ref": "#/$defs/segments" },
-        { "$ref": "#/$defs/spark" }, { "$ref": "#/$defs/gauge" }, { "$ref": "#/$defs/path" },
+        { "$ref": "#/$defs/spark" }, { "$ref": "#/$defs/split" }, { "$ref": "#/$defs/gauge" }, { "$ref": "#/$defs/path" },
         { "$ref": "#/$defs/metric" }, { "$ref": "#/$defs/button" }, { "$ref": "#/$defs/toggle" }
       ]
     },
@@ -201,7 +201,10 @@
         "t": { "const": "box" }, "child": { "$ref": "#/$defs/node" },
         "size": { "type": "number" }, "radius": { "type": "number" },
         "tint": { "type": "number", "minimum": 0, "maximum": 1, "description": "Opacidad del color de acento como fondo (0.22 en el HTML)." },
-        "color": { "$ref": "#/$defs/color" }
+        "color": { "$ref": "#/$defs/color" },
+        "border": { "$ref": "#/$defs/color", "description": "Color del borde." },
+        "bw": { "type": "number", "exclusiveMinimum": 0, "default": 1.5, "description": "Grosor del borde en pt." },
+        "glow": { "type": "number", "exclusiveMinimum": 0, "description": "Brillo: radio en pt del halo, del color del borde (o del fondo)." }
       }
     },
     "if": {
@@ -214,6 +217,7 @@
       "properties": {
         "size": { "type": "number", "description": "pt. Por defecto 15." },
         "w": { "type": "integer", "minimum": 100, "maximum": 900, "description": "Peso de fuente (400, 600, 700…)." },
+        "i": { "type": "boolean", "default": false, "description": "Cursiva." },
         "muted": { "type": "boolean", "default": false },
         "accent": { "type": "boolean", "default": false },
         "color": { "$ref": "#/$defs/color" },
@@ -230,7 +234,7 @@
         "bind": { "$ref": "#/$defs/binding" },
         "text": { "type": "string" },
         "fmt": { "type": "string", "description": "Ej.: \"{subtitulo} · {nombre}\"." },
-        "size": {"$ref": "#/$defs/textStyle/properties/size"}, "w": {"$ref": "#/$defs/textStyle/properties/w"}, "muted": {"$ref": "#/$defs/textStyle/properties/muted"}, "accent": {"$ref": "#/$defs/textStyle/properties/accent"}, "color": {"$ref": "#/$defs/textStyle/properties/color"}, "lines": {"$ref": "#/$defs/textStyle/properties/lines"}, "align": {"$ref": "#/$defs/textStyle/properties/align"}, "tabular": {"$ref": "#/$defs/textStyle/properties/tabular"}
+        "size": {"$ref": "#/$defs/textStyle/properties/size"}, "w": {"$ref": "#/$defs/textStyle/properties/w"}, "i": {"$ref": "#/$defs/textStyle/properties/i"}, "muted": {"$ref": "#/$defs/textStyle/properties/muted"}, "accent": {"$ref": "#/$defs/textStyle/properties/accent"}, "color": {"$ref": "#/$defs/textStyle/properties/color"}, "lines": {"$ref": "#/$defs/textStyle/properties/lines"}, "align": {"$ref": "#/$defs/textStyle/properties/align"}, "tabular": {"$ref": "#/$defs/textStyle/properties/tabular"}
       },
       "oneOf": [ { "required": ["bind"] }, { "required": ["text"] }, { "required": ["fmt"] } ]
     },
@@ -239,7 +243,7 @@
       "description": "Cuenta regresiva hasta la fecha ISO 8601 del campo 'bind'. Corre sola en iOS (Text(timerInterval:)) y Android (cronómetro).",
       "properties": {
         "t": { "const": "countdown" }, "bind": { "$ref": "#/$defs/binding" },
-        "size": {"$ref": "#/$defs/textStyle/properties/size"}, "w": {"$ref": "#/$defs/textStyle/properties/w"}, "muted": {"$ref": "#/$defs/textStyle/properties/muted"}, "accent": {"$ref": "#/$defs/textStyle/properties/accent"}, "color": {"$ref": "#/$defs/textStyle/properties/color"}, "lines": {"$ref": "#/$defs/textStyle/properties/lines"}, "align": {"$ref": "#/$defs/textStyle/properties/align"}, "tabular": {"$ref": "#/$defs/textStyle/properties/tabular"}
+        "size": {"$ref": "#/$defs/textStyle/properties/size"}, "w": {"$ref": "#/$defs/textStyle/properties/w"}, "i": {"$ref": "#/$defs/textStyle/properties/i"}, "muted": {"$ref": "#/$defs/textStyle/properties/muted"}, "accent": {"$ref": "#/$defs/textStyle/properties/accent"}, "color": {"$ref": "#/$defs/textStyle/properties/color"}, "lines": {"$ref": "#/$defs/textStyle/properties/lines"}, "align": {"$ref": "#/$defs/textStyle/properties/align"}, "tabular": {"$ref": "#/$defs/textStyle/properties/tabular"}
       }
     },
     "stopwatch": {
@@ -247,7 +251,7 @@
       "description": "Cronómetro desde la fecha ISO 8601 del campo 'bind'.",
       "properties": {
         "t": { "const": "stopwatch" }, "bind": { "$ref": "#/$defs/binding" },
-        "size": {"$ref": "#/$defs/textStyle/properties/size"}, "w": {"$ref": "#/$defs/textStyle/properties/w"}, "muted": {"$ref": "#/$defs/textStyle/properties/muted"}, "accent": {"$ref": "#/$defs/textStyle/properties/accent"}, "color": {"$ref": "#/$defs/textStyle/properties/color"}, "lines": {"$ref": "#/$defs/textStyle/properties/lines"}, "align": {"$ref": "#/$defs/textStyle/properties/align"}, "tabular": {"$ref": "#/$defs/textStyle/properties/tabular"}
+        "size": {"$ref": "#/$defs/textStyle/properties/size"}, "w": {"$ref": "#/$defs/textStyle/properties/w"}, "i": {"$ref": "#/$defs/textStyle/properties/i"}, "muted": {"$ref": "#/$defs/textStyle/properties/muted"}, "accent": {"$ref": "#/$defs/textStyle/properties/accent"}, "color": {"$ref": "#/$defs/textStyle/properties/color"}, "lines": {"$ref": "#/$defs/textStyle/properties/lines"}, "align": {"$ref": "#/$defs/textStyle/properties/align"}, "tabular": {"$ref": "#/$defs/textStyle/properties/tabular"}
       }
     },
     "relative": {
@@ -255,7 +259,7 @@
       "description": "Tiempo relativo (\"hace 3 min\", \"en 5 min\") respecto a la fecha del campo 'bind'.",
       "properties": {
         "t": { "const": "relative" }, "bind": { "$ref": "#/$defs/binding" },
-        "size": {"$ref": "#/$defs/textStyle/properties/size"}, "w": {"$ref": "#/$defs/textStyle/properties/w"}, "muted": {"$ref": "#/$defs/textStyle/properties/muted"}, "accent": {"$ref": "#/$defs/textStyle/properties/accent"}, "color": {"$ref": "#/$defs/textStyle/properties/color"}, "lines": {"$ref": "#/$defs/textStyle/properties/lines"}, "align": {"$ref": "#/$defs/textStyle/properties/align"}, "tabular": {"$ref": "#/$defs/textStyle/properties/tabular"}
+        "size": {"$ref": "#/$defs/textStyle/properties/size"}, "w": {"$ref": "#/$defs/textStyle/properties/w"}, "i": {"$ref": "#/$defs/textStyle/properties/i"}, "muted": {"$ref": "#/$defs/textStyle/properties/muted"}, "accent": {"$ref": "#/$defs/textStyle/properties/accent"}, "color": {"$ref": "#/$defs/textStyle/properties/color"}, "lines": {"$ref": "#/$defs/textStyle/properties/lines"}, "align": {"$ref": "#/$defs/textStyle/properties/align"}, "tabular": {"$ref": "#/$defs/textStyle/properties/tabular"}
       }
     },
 
@@ -282,6 +286,7 @@
         "pointColor": { "$ref": "#/$defs/color", "description": "Color de los puntos completados. Por defecto el de lo avanzado." },
         "labelSize": { "type": "number", "exclusiveMinimum": 0, "default": 11.5, "description": "Tamaño de las etiquetas de etapas." },
         "trackerSize": { "type": "number", "exclusiveMinimum": 0, "default": 26, "description": "Diámetro del círculo del ícono que avanza." },
+        "glow": { "type": "number", "exclusiveMinimum": 0, "description": "Brillo de lo avanzado (radio del halo en pt): el cable luminoso. Android lo ignora." },
         "markers": { "type": "array", "items": { "type": "number", "minimum": 0, "maximum": 1 }, "description": "Posiciones (0 a 1) de marcadores sobre la barra, con la forma de pointShape. El ya recorrido y el siguiente usan el color de lo avanzado; los demás, el de lo que falta. Android los ignora." }
       }
     },
@@ -327,6 +332,17 @@
         "w": { "type": "number", "exclusiveMinimum": 0, "default": 2, "description": "Grosor de la línea." },
         "dot": { "type": "boolean", "default": true, "description": "Punto en el último valor." },
         "min": { "type": "number" }, "max": { "type": "number" }
+      }
+    },
+    "split": {
+      "type": "object", "required": ["t", "parts"], "additionalProperties": false,
+      "description": "Barra partida en tramos de color, repartidos en proporción a los valores. Android la omite.",
+      "properties": {
+        "t": { "const": "split" },
+        "parts": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["bind", "color"], "additionalProperties": false, "properties": { "bind": { "$ref": "#/$defs/binding", "description": "Campo numérico." }, "color": { "$ref": "#/$defs/color" } } } },
+        "h": { "type": "number", "exclusiveMinimum": 0, "default": 10 },
+        "gap": { "type": "number", "minimum": 0, "default": 3 },
+        "radius": { "type": "number", "minimum": 0 }
       }
     },
     "gauge": {

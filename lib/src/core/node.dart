@@ -58,6 +58,8 @@ abstract class LiveNode {
         return LiveProgress.fromJson(json);
       case 'segments':
         return LiveSegments.fromJson(json);
+      case 'split':
+        return LiveSplitBar.fromJson(json);
       case 'spark':
         return LiveSparkline.fromJson(json);
       case 'gauge':

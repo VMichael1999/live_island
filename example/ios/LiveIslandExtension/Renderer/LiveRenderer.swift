@@ -32,6 +32,7 @@ enum LiveRenderer {
         case "bar": return bar(n, c)
         case "ring": return ring(n, c, slot: slot)
         case "segments": return segments(n, c)
+        case "split": return split(n, c)
         case "spark": return spark(n, c)
         case "gauge": return gauge(n, c)
         case "path": return flightPath(n, c)
@@ -101,9 +102,22 @@ enum LiveRenderer {
         let inner: AnyView = n.node("child").map {
             render($0, c, slot: size.map { $0 * 0.52 }, iconSize: size.map { $0 * 0.52 })
         } ?? AnyView(EmptyView())
-        return AnyView(inner
+        let border: Color? = n.string("border").map { Color(hex: $0) }
+        let bw = CGFloat(n.double("bw") ?? 1.5)
+        let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
+        // El halo va solo en el fondo: así no difumina el texto de dentro.
+        var backdrop = AnyView(shape.fill(fill))
+        if let g = n.double("glow") {
+            let halo = (border ?? (fill == .clear ? c.style.accent : fill)).opacity(0.55)
+            backdrop = AnyView(shape.fill(fill).shadow(color: halo, radius: CGFloat(g) / 2))
+        }
+        var boxed = AnyView(inner
             .frame(width: size.map { CGFloat($0) }, height: size.map { CGFloat($0) })
-            .background(RoundedRectangle(cornerRadius: radius, style: .continuous).fill(fill)))
+            .background(backdrop))
+        if let b = border {
+            boxed = AnyView(boxed.overlay(shape.strokeBorder(b, lineWidth: bw)))
+        }
+        return boxed
     }
 
     // MARK: texto
@@ -158,6 +172,7 @@ enum LiveRenderer {
         func style(_ t: Text) -> Text {
             var out = t.font(.system(size: size, weight: weight(n.int("w")))).foregroundColor(color)
             if tabular { out = out.monospacedDigit() }
+            if n.bool("i") { out = out.italic() }
             return out
         }
         let textAlign: TextAlignment = align == "end" ? .trailing : (align == "center" ? .center : .leading)
@@ -276,6 +291,7 @@ enum LiveRenderer {
         var trackerSize: CGFloat? = nil
         var strokeWidth: CGFloat? = nil
         var markers: [Double] = []
+        var glow: CGFloat = 0
 
         init(_ n: LNode) {
             guard let s = n.node("style") else { return }
@@ -288,6 +304,7 @@ enum LiveRenderer {
             if let p = s.double("pointSize") { pointSize = CGFloat(p) }
             pointColor = hex("pointColor")
             if let sh = s.string("pointShape") { pointShape = sh }
+            glow = CGFloat(s.double("glow") ?? 0)
             markers = (s.d["markers"] as? [NSNumber])?.map { $0.doubleValue }.sorted() ?? []
             dashed = (s.d["dashed"] as? Bool) ?? false
             if let l = s.double("labelSize") { labelSize = CGFloat(l) }
@@ -332,6 +349,16 @@ enum LiveRenderer {
     }
 
     // MARK: gráficas
+
+    private static func split(_ n: LNode, _ c: LiveCtx) -> AnyView {
+        let parts = (n.d["parts"] as? [[String: Any]]) ?? []
+        let vals = parts.map { max(0, c.values[$0["bind"] as? String ?? ""]?.number ?? 0) }
+        let cols = parts.map { Color(hex: ($0["color"] as? String) ?? "#FFFFFF") }
+        let h = CGFloat(n.double("h") ?? 10)
+        return AnyView(LiveSplitView(values: vals, colors: cols, height: h,
+                                     gap: CGFloat(n.double("gap") ?? 3),
+                                     radius: n.double("radius").map { CGFloat($0) }))
+    }
 
     private static func spark(_ n: LNode, _ c: LiveCtx) -> AnyView {
         let values = c.text(of: n.string("bind")).split(separator: ",")
@@ -442,6 +469,13 @@ struct LiveBarView: View {
             let n = hasStages ? labels.count - 1 : 1
             let useSegs = segmented && hasStages
             ZStack(alignment: .leading) {
+                if bar.glow > 0 && value > 0 {
+                    // Halo de lo avanzado: el "cable luminoso".
+                    RoundedRectangle(cornerRadius: radius)
+                        .fill(fill)
+                        .frame(width: max(bar.height, w * CGFloat(value)), height: bar.height)
+                        .shadow(color: fill.opacity(0.7), radius: bar.glow / 2)
+                }
                 HStack(spacing: bar.gap) {
                     ForEach(0..<(useSegs ? n : 1), id: \.self) { i in
                         let f = useSegs ? min(1, max(0, (value - Double(i) / Double(n)) * Double(n))) : value
@@ -714,6 +748,30 @@ struct LivePathView: View {
                 if let s = start { s.position(point(geo.size, 0)) }
                 if let e = end { e.position(point(geo.size, 1)) }
                 if let t = tracker { t.position(point(geo.size, v)) }
+            }
+        }
+        .frame(height: height)
+    }
+}
+
+struct LiveSplitView: View {
+    let values: [Double]
+    let colors: [Color]
+    let height: CGFloat
+    let gap: CGFloat
+    let radius: CGFloat?
+
+    var body: some View {
+        GeometryReader { g in
+            let shown = values.indices.filter { values[$0] > 0 }
+            let total = shown.reduce(0.0) { $0 + values[$1] }
+            let room = g.size.width - gap * CGFloat(max(0, shown.count - 1))
+            HStack(spacing: gap) {
+                ForEach(shown, id: \.self) { i in
+                    RoundedRectangle(cornerRadius: radius ?? height / 2)
+                        .fill(colors[i])
+                        .frame(width: max(height, room * CGFloat(values[i] / max(total, 0.0001))))
+                }
             }
         }
         .frame(height: height)

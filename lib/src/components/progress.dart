@@ -38,6 +38,7 @@ class LiveProgressStyle {
     this.labelSize,
     this.trackerSize,
     this.markers,
+    this.glow,
   });
 
   /// Grosor de la barra en pt (por defecto 6). En un anillo, el ancho del trazo (3).
@@ -78,6 +79,10 @@ class LiveProgressStyle {
   /// lo avanzado; los demás, el de lo que falta. Android los ignora.
   final List<double>? markers;
 
+  /// Brillo de lo avanzado (radio del halo en pt): el "cable luminoso".
+  /// Android lo ignora.
+  final double? glow;
+
   bool get isEmpty =>
       height == null &&
       color == null &&
@@ -90,7 +95,8 @@ class LiveProgressStyle {
       dashed == null &&
       labelSize == null &&
       trackerSize == null &&
-      markers == null;
+      markers == null &&
+      glow == null;
 
   LiveProgressStyle copyWith({
     double? height,
@@ -105,6 +111,7 @@ class LiveProgressStyle {
     double? labelSize,
     double? trackerSize,
     List<double>? markers,
+    double? glow,
   }) => LiveProgressStyle(
     height: height ?? this.height,
     color: color ?? this.color,
@@ -118,6 +125,7 @@ class LiveProgressStyle {
     labelSize: labelSize ?? this.labelSize,
     trackerSize: trackerSize ?? this.trackerSize,
     markers: markers ?? this.markers,
+    glow: glow ?? this.glow,
   );
 
   Map<String, Object?> toJson() => compact({
@@ -133,6 +141,7 @@ class LiveProgressStyle {
     'labelSize': labelSize,
     'trackerSize': trackerSize,
     'markers': markers,
+    'glow': glow,
   });
 
   factory LiveProgressStyle.fromJson(Map<String, Object?> json) {
@@ -159,6 +168,7 @@ class LiveProgressStyle {
             for (final m in (json['markers'] as List? ?? const []))
               (m as num).toDouble(),
           ].nullIfEmpty,
+      glow: d('glow'),
     );
   }
 

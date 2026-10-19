@@ -374,3 +374,47 @@ class _PathPainter extends CustomPainter {
       old.w.stroke != w.stroke ||
       old.w.dashed != w.dashed;
 }
+
+/// Barra partida en tramos de color, en proporción a sus valores.
+class LivePreviewSplit extends StatelessWidget {
+  const LivePreviewSplit({
+    super.key,
+    required this.values,
+    required this.colors,
+    required this.height,
+    required this.gap,
+    this.radius,
+  });
+
+  final List<double> values;
+  final List<Color> colors;
+  final double height;
+  final double gap;
+  final double? radius;
+
+  @override
+  Widget build(BuildContext context) {
+    final total = values.fold<double>(0, (a, b) => a + (b > 0 ? b : 0));
+    return SizedBox(
+      height: height,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < values.length; i++)
+            if (values[i] > 0) ...[
+              if (i > 0 && gap > 0) SizedBox(width: gap),
+              Expanded(
+                flex: math.max(1, (values[i] / total * 1000).round()),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: colors[i],
+                    borderRadius: BorderRadius.circular(radius ?? height / 2),
+                  ),
+                ),
+              ),
+            ],
+        ],
+      ),
+    );
+  }
+}

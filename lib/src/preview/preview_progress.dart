@@ -31,6 +31,7 @@ class LivePreviewBar extends StatelessWidget {
     this.trackColor,
     this.pointColor,
     this.markers = const [],
+    this.glow = 0,
   });
 
   /// 0 a 1.
@@ -69,6 +70,9 @@ class LivePreviewBar extends StatelessWidget {
 
   /// Posiciones (0 a 1) de marcadores sobre la barra.
   final List<double> markers;
+
+  /// Halo de lo avanzado (radio en pt).
+  final double glow;
 
   bool get _hasStages => labels.length > 1;
   Color get _fill => fillColor ?? style.fill;
@@ -198,6 +202,24 @@ class LivePreviewBar extends StatelessWidget {
           return Stack(
             clipBehavior: Clip.none,
             children: [
+              if (glow > 0 && v > 0)
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  width: v * w,
+                  height: height,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(_radius),
+                      boxShadow: [
+                        BoxShadow(
+                          color: _fill.withValues(alpha: .7),
+                          blurRadius: glow,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               Row(
                 children: [
                   for (var i = 0; i < tramos; i++) ...[
