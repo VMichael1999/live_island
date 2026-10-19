@@ -123,7 +123,21 @@ class LiveAndroid {
     this.actions,
     this.largeIcon,
     this.subText,
+    this.style = LiveAndroidStyle.liveUpdate,
+    this.card,
+    this.cardCollapsed,
   });
+
+  /// [LiveAndroidStyle.liveUpdate] (por defecto) o [LiveAndroidStyle.card].
+  final LiveAndroidStyle style;
+
+  /// Diseño de la tarjeta expandida con [LiveAndroidStyle.card]: el mismo árbol
+  /// de componentes que la isla (fila, columna, texto, imagen, barra…). Si falta,
+  /// se usa la tarjeta de bloqueo propia (`LiveLockScreen.custom`).
+  final LiveNode? card;
+
+  /// Diseño de la tarjeta colapsada. Si falta, se usa [card].
+  final LiveNode? cardCollapsed;
 
   /// Obligatorio para que Android promueva a Live Update.
   final LiveTextSource? title;
@@ -156,6 +170,9 @@ class LiveAndroid {
     'progress': progress?.toJson(),
     'actions': actions == null ? null : [for (final a in actions!) a.toJson()],
     'largeIcon': largeIcon?.toJson(),
+    'style': style == LiveAndroidStyle.card ? 'card' : null,
+    'card': card?.toJson(),
+    'cardCollapsed': cardCollapsed?.toJson(),
     'subText': subText?.toAndroidTextJson(),
   });
 
@@ -172,6 +189,20 @@ class LiveAndroid {
       title: t('title'),
       text: t('text'),
       subText: t('subText'),
+      style:
+          json['style'] == 'card'
+              ? LiveAndroidStyle.card
+              : LiveAndroidStyle.liveUpdate,
+      card:
+          json['card'] == null
+              ? null
+              : LiveNode.fromJson(asMap(json['card'], 'android.card')),
+      cardCollapsed:
+          json['cardCollapsed'] == null
+              ? null
+              : LiveNode.fromJson(
+                asMap(json['cardCollapsed'], 'android.cardCollapsed'),
+              ),
       largeIcon:
           json['largeIcon'] == null
               ? null
@@ -285,6 +316,10 @@ class LiveLayout {
     if (lockScreen?.custom != null) yield* lockScreen!.custom!.descendants;
     if (android?.progress != null) yield* android!.progress!.descendants;
     if (android?.largeIcon != null) yield* android!.largeIcon!.descendants;
+    if (android?.card != null) yield* android!.card!.descendants;
+    if (android?.cardCollapsed != null) {
+      yield* android!.cardCollapsed!.descendants;
+    }
     for (final a in android?.actions ?? const <LiveButton>[]) {
       yield* a.descendants;
     }

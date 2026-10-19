@@ -417,6 +417,9 @@
           "oneOf": [ { "$ref": "#/$defs/bar" }, { "$ref": "#/$defs/segments" }, { "$ref": "#/$defs/ring" }, { "$ref": "#/$defs/gauge" }, { "$ref": "#/$defs/path" }, { "$ref": "#/$defs/split" } ],
           "description": "Si falta, se toma el primer nodo de progreso encontrado en expanded.bottom. El anillo, el medidor y la ruta se muestran como barra; la barra partida (split) como tramos de distinto color."
         },
+        "style": { "enum": ["liveUpdate", "card"], "default": "liveUpdate", "description": "liveUpdate: estilo nativo (ProgressStyle), Android 16+ lo promueve a Live Update. card: tarjeta con tu diseño (RemoteViews), sin Live Update ni chip; pide Android 12+ y en versiones anteriores se usa liveUpdate." },
+        "card": { "$ref": "#/$defs/node", "description": "Con style card: diseño de la tarjeta expandida (mismo árbol de componentes que la isla). Si falta, regions.lockScreen.custom." },
+        "cardCollapsed": { "$ref": "#/$defs/node", "description": "Con style card: diseño de la tarjeta colapsada. Si falta, card." },
         "largeIcon": {
           "oneOf": [ { "$ref": "#/$defs/image" }, { "$ref": "#/$defs/avatar" }, { "$ref": "#/$defs/icon" } ],
           "description": "Imagen grande de la notificación (foto, escudo, logo). Si falta, Android usa el avatar o la imagen de la isla expandida o el logo de la app."

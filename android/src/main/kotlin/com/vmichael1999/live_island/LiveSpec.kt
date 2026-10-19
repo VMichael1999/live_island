@@ -30,6 +30,9 @@ sealed class Chip {
     data class Countdown(val endMillis: Long) : Chip()
 }
 
+/** Tarjeta con diseño propio (`style: card`): lo que dibuja [CardRenderer]. */
+data class CardSpec(val collapsed: JSONObject, val expanded: JSONObject, val state: LiveState)
+
 data class ActionSpec(val id: String, val label: String, val icon: IconRef?)
 
 data class ProgressSpec(
@@ -73,6 +76,8 @@ data class LiveSpec(
     val largeIcon: IconRef?,
     /** Ícono pequeño; `null` = ícono de la app. */
     val smallIcon: IconRef?,
+    /** Con `style: card`, el diseño de la tarjeta; sin él, el estilo nativo (Live Update). */
+    val card: CardSpec? = null,
 ) {
     /**
      * Android solo promueve a Live Update si tiene título y no está
@@ -163,8 +168,17 @@ data class LiveSpec(
                 progress = progress,
                 actions = actions,
                 largeIcon = largeIcon,
+                card = cardOf(layout, android, state),
                 smallIcon = smallIcon,
             )
+        }
+
+        /** La tarjeta, si el bloque Android pide `style: card`: `android.card`, o la tarjeta de bloqueo propia. */
+        private fun cardOf(layout: JSONObject, android: JSONObject?, state: LiveState): CardSpec? {
+            if (android?.optString("style") != "card") return null
+            val lock = LiveJson.obj(LiveJson.obj(layout, "regions"), "lockScreen")?.takeIf { it.has("t") }
+            val expanded = LiveJson.obj(android, "card") ?: lock ?: return null
+            return CardSpec(LiveJson.obj(android, "cardCollapsed") ?: expanded, expanded, state)
         }
 
         private val PROGRESS_TYPES = setOf("bar", "ring", "segments", "gauge", "path", "split")

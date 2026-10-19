@@ -10,6 +10,19 @@ enum LiveBackground { system, light, accent }
 /// Alineación de hijos en filas, columnas y textos.
 enum LiveAlign { start, center, end }
 
+/// Cómo se dibuja la notificación de Android.
+enum LiveAndroidStyle {
+  /// Estilo nativo (`Notification.ProgressStyle`): título, texto, barra, imagen
+  /// grande y chip. Android 16+ la promueve a Live Update.
+  liveUpdate,
+
+  /// Tarjeta con tu propio diseño (`RemoteViews`): dos imágenes, un marcador
+  /// grande, cualquier composición. Android NO la promueve a Live Update, así
+  /// que no hay chip en la barra de estado. Pide Android 12 (API 31) o más; en
+  /// versiones anteriores se usa [liveUpdate].
+  card,
+}
+
 /// Forma de los puntos de etapa de una barra.
 enum LivePointShape { circle, square, rounded, ring }
 
