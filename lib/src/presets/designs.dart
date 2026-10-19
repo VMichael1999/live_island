@@ -221,8 +221,8 @@ final class RidePickupPreset extends LivePreset {
       trackerImage ??
           LiveImage.asset(
             liveDesignCarTopAsset,
-            width: 88,
-            height: 46,
+            width: 212,
+            height: 113,
             shape: LiveShape.square,
           ),
       height: 24,

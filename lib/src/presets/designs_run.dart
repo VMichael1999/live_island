@@ -53,8 +53,8 @@ LiveTracker _tracker(LiveImage? image) => LiveTracker(
   image ??
       LiveImage.asset(
         liveDesignCarTopAsset,
-        width: 88,
-        height: 46,
+        width: 212,
+        height: 113,
         shape: LiveShape.square,
       ),
   height: 26,
