@@ -13,8 +13,10 @@ import '../core/enums.dart';
 import '../core/layout.dart';
 import 'preset.dart';
 
-/// Imagen de un auto que trae el paquete (la usa [TripPreset] para el tracker).
-const livePresetCarAsset = 'packages/live_island_kit/assets/presets/car.png';
+/// El auto visto desde arriba que trae el paquete: es el mismo de todos los
+/// diseños con barra (`liveDesignCarTopAsset`) y lo usa [TripPreset] como ícono que avanza.
+const livePresetCarAsset =
+    'packages/live_island_kit/assets/presets/car_top.png';
 
 /// Viaje en taxi o similar: conductor, cuenta regresiva de llegada y avance por etapas con la imagen de un auto.
 ///
@@ -113,7 +115,7 @@ final class TripPreset extends LivePreset {
             ? null
             : tracker ??
                 LiveTracker(
-                  LiveImage.asset(livePresetCarAsset, width: 400, height: 180),
+                  LiveImage.asset(livePresetCarAsset, width: 212, height: 113),
                   background: LiveTrackerBackground.none,
                 ),
     endIcon: !showEndIcon ? null : endIcon ?? presetIcon('mappin', 'mappin'),

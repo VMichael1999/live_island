@@ -18,10 +18,10 @@ import '../core/enums.dart';
 import '../core/layout.dart';
 import '../core/node.dart';
 import 'preset.dart';
+import 'presets.dart' show livePresetCarAsset;
 
 /// Auto visto desde arriba, para avanzar sobre una barra.
-const liveDesignCarTopAsset =
-    'packages/live_island_kit/assets/presets/car_top.png';
+const liveDesignCarTopAsset = livePresetCarAsset;
 
 /// Auto visto de lado, para acompañar al conductor.
 const liveDesignCarSideAsset =
