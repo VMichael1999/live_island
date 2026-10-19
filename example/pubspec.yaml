@@ -53,10 +53,9 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # Imágenes de referencia de los diseños (logotipos y recortes de terceros): solo
-  # para esta app de ejemplo; no van en el paquete publicado (ver .pubignore).
+  # Imágenes propias de los diseños de ejemplo (conductor y auto, sin fondo).
   assets:
-    - assets/reference/
+    - assets/run/
 
 
   # To add assets to your application, add an assets section, like this:
