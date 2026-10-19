@@ -1,3 +1,6 @@
+// En Flutter 3.29 `Brightness` solo sale de dart:ui; las versiones nuevas ya
+// la reexportan desde widgets.dart y marcarían el import como innecesario.
+// ignore: unnecessary_import
 import 'dart:ui' show Brightness, FontFeature;
 
 import 'package:flutter/widgets.dart';
