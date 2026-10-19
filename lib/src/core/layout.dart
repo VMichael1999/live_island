@@ -121,6 +121,8 @@ class LiveAndroid {
     this.colorized = false,
     this.progress,
     this.actions,
+    this.largeIcon,
+    this.subText,
   });
 
   /// Obligatorio para que Android promueva a Live Update.
@@ -137,6 +139,15 @@ class LiveAndroid {
   /// Hasta tres botones. Si faltan, se toman de `expanded.bottom`.
   final List<LiveButton>? actions;
 
+  /// Imagen grande a la derecha de la notificación (foto del conductor, escudo,
+  /// logo…): una [LiveImage] o un [LiveAvatar]. Si falta, Android usa el avatar
+  /// o la imagen de la isla expandida o el logo de la app.
+  final LiveVisual? largeIcon;
+
+  /// Texto pequeño del encabezado, junto al nombre de la app (por ejemplo el
+  /// vehículo o la ruta). Si falta, Android muestra la etapa de la barra.
+  final LiveTextSource? subText;
+
   Map<String, Object?> toJson() => compact({
     'title': title?.toAndroidTextJson(),
     'text': text?.toAndroidTextJson(),
@@ -144,6 +155,8 @@ class LiveAndroid {
     'colorized': colorized,
     'progress': progress?.toJson(),
     'actions': actions == null ? null : [for (final a in actions!) a.toJson()],
+    'largeIcon': largeIcon?.toJson(),
+    'subText': subText?.toAndroidTextJson(),
   });
 
   factory LiveAndroid.fromJson(Map<String, Object?> json) {
@@ -158,6 +171,13 @@ class LiveAndroid {
     return LiveAndroid(
       title: t('title'),
       text: t('text'),
+      subText: t('subText'),
+      largeIcon:
+          json['largeIcon'] == null
+              ? null
+              : LiveVisual.fromJson(
+                asMap(json['largeIcon'], 'android.largeIcon'),
+              ),
       chip:
           json['chip'] == null
               ? null
@@ -264,6 +284,7 @@ class LiveLayout {
     }
     if (lockScreen?.custom != null) yield* lockScreen!.custom!.descendants;
     if (android?.progress != null) yield* android!.progress!.descendants;
+    if (android?.largeIcon != null) yield* android!.largeIcon!.descendants;
     for (final a in android?.actions ?? const <LiveButton>[]) {
       yield* a.descendants;
     }
@@ -353,7 +374,8 @@ LiveNode? firstProgress(Iterable<LiveNode> roots) {
       if (n is LiveProgress ||
           n is LiveSegments ||
           n is LiveGauge ||
-          n is LiveFlightPath) {
+          n is LiveFlightPath ||
+          n is LiveSplitBar) {
         return n;
       }
     }
