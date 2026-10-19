@@ -149,14 +149,14 @@ final class RideArrivalPreset extends LivePreset {
     LiveColumn([
       LiveText.literal(
         'Llegarás aproximadamente',
-        size: 18,
+        size: 16,
         weight: 600,
         color: _white,
         lines: 1,
       ),
       LiveText.format(
         'a las {hora}',
-        size: 18,
+        size: 16,
         weight: 600,
         color: _white,
         lines: 1,
