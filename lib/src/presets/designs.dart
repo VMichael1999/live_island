@@ -219,13 +219,15 @@ final class RidePickupPreset extends LivePreset {
       return LiveProgress.bar(
         value: const LiveBind('progreso'),
         tracker: tracker,
-        endIcon: LiveIcon.symbol(
-          'record.circle',
-          android: presetIcon('mappin', 'mappin').android,
-          color: track,
-          size: 18,
+        // Marcador pegado a la barra; el auto lo cubre al llegar.
+        style: LiveProgressStyle(
+          height: 4,
+          color: fill,
+          trackColor: track,
+          endMarker: LivePointShape.target,
+          pointSize: 16,
+          pointColor: const Color(0xFFD9DADF),
         ),
-        style: LiveProgressStyle(height: 4, color: fill, trackColor: track),
       );
     }
     return LiveProgress.bar(
@@ -1236,16 +1238,13 @@ final class RideDriverPreset extends LivePreset {
       height: 26,
       background: LiveTrackerBackground.none,
     ),
-    endIcon: LiveIcon.symbol(
-      'record.circle',
-      android: presetIcon('mappin', 'mappin').android,
-      color: const Color(0xFF6B6E75),
-      size: 18,
-    ),
     style: LiveProgressStyle(
       height: 4,
       color: accent,
       trackColor: const Color(0xFF6B6E75),
+      endMarker: LivePointShape.targetSquare,
+      pointSize: 16,
+      pointColor: const Color(0xFF8A8D94),
     ),
   );
 
