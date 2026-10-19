@@ -24,5 +24,6 @@ Primera versión publicada.
 * `LiveIsland.check()` valida el diseño y el estado con los mismos avisos que el HTML de prototipos.
 * `LiveIslandPreview`: vista previa en Flutter de la isla, la pantalla de bloqueo y la notificación de Android.
 * 15 presets listos (`TripPreset`, `DeliveryPreset`, `CourierPreset`…) y app de ejemplo.
+* Gráficas: `LiveSparkline` (línea con área y punto final), `LiveGauge` (arco con punto que avanza) y `LiveFlightPath` (ruta curva con ícono que avanza), con `StockPreset`, `FlightPathPreset` y `OrbitPreset`. En Android el arco y la ruta son una barra y la línea se omite.
 
 Limitaciones conocidas: en Android el grosor, la separación y las etiquetas de la barra los decide el sistema; los botones no se dibujan en la isla expandida de iOS; sin snapshot tests de SwiftUI.

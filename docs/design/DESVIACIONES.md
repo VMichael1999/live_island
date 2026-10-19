@@ -158,4 +158,16 @@ Idea y geometría tomadas de `rit3zh/expo-dynamic-notifications` (MIT): tres for
 | Isla y tarjeta | La isla es siempre negra; la tarjeta de bloqueo es propia (`LiveLockScreen.custom`), clara, oscura o de color |
 | `dashed` | iOS y vista previa dibujan lo que falta como trazo discontinuo. Android lo ignora: `ProgressStyle` usa tramos sólidos |
 | Imágenes | `car_top.png` y `car_side.png` son dibujos propios; cámbialos con `LiveImage.asset(...)` |
-| Pendiente | Gráfica de línea (bolsa, pulso), arco (ISS), ruta curva (vuelo) y cable luminoso (carga) necesitan nodos nuevos |
+| Pendiente | Cable luminoso (carga), tramos de color distinto (propina) y borde con brillo siguen sin nodo propio |
+
+## Gráficas: línea, arco y ruta curva
+
+| Nodo | Dart | JSON | Android |
+| --- | --- | --- | --- |
+| Gráfica de línea | `LiveSparkline` | `spark` | Se omite |
+| Medidor de arco | `LiveGauge` | `gauge` | Barra de progreso |
+| Ruta curva con ícono | `LiveFlightPath` | `path` | Barra con el mismo ícono |
+
+* La serie de la gráfica viaja como texto de números separados por comas (`liveSeries([1, 2.5])` → `"1,2.5"`), así el estado sigue siendo de tipos simples.
+* El avión de `LiveFlightPath` no gira siguiendo la curva: queda horizontal.
+* Presets de ejemplo: `StockPreset`, `FlightPathPreset` y `OrbitPreset`.
