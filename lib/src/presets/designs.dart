@@ -293,25 +293,19 @@ final class RidePickupPreset extends LivePreset {
       LiveText.format('{placa} • {vehiculo}', size: 15, color: subtle),
     ], gap: 3);
 
-    // Clara: «2 min para la recogida», subtítulo y, a la derecha, placa y auto.
-    final lightBody = LiveRow([
-      LiveColumn([
-        LiveRow([
-          _t('tiempo', size: 21, weight: 700, color: accent),
-          _t('titulo', size: 21, weight: 700, color: ink),
-        ], gap: 6),
-        _t('subtitulo', size: 15, color: subtle),
-      ], gap: 3),
-      const LiveSpacer(),
-      LiveColumn(
-        [
-          _t('placa', size: 20, weight: 700, color: ink),
-          _t('vehiculo', size: 14, color: subtle),
-        ],
-        align: LiveAlign.end,
-        gap: 3,
-      ),
-    ], align: LiveAlign.end);
+    // Clara: «2 min para la recogida» a todo el ancho y, debajo, el subtítulo con
+    // la placa a la derecha (así el título no compite por el ancho).
+    final lightBody = LiveColumn([
+      LiveRow([
+        _t('tiempo', size: 21, weight: 700, color: accent),
+        _t('titulo', size: 21, weight: 700, color: ink, lines: 1),
+      ], gap: 6),
+      LiveRow([
+        _t('subtitulo', size: 15, color: subtle, lines: 1),
+        const LiveSpacer(),
+        _t('placa', size: 16, weight: 700, color: ink),
+      ]),
+    ], gap: 3);
 
     final card = LiveColumn([
       header(),

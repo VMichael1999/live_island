@@ -177,8 +177,25 @@ data class LiveSpec(
         private fun cardOf(layout: JSONObject, android: JSONObject?, state: LiveState): CardSpec? {
             if (android?.optString("style") != "card") return null
             val lock = LiveJson.obj(LiveJson.obj(layout, "regions"), "lockScreen")?.takeIf { it.has("t") }
-            val expanded = LiveJson.obj(android, "card") ?: lock ?: return null
-            return CardSpec(LiveJson.obj(android, "cardCollapsed") ?: expanded, expanded, state)
+            val expanded = withBackground(layout, LiveJson.obj(android, "card") ?: lock ?: return null)
+            return CardSpec(LiveJson.obj(android, "cardCollapsed")?.let { withBackground(layout, it) } ?: expanded, expanded, state)
+        }
+
+        /**
+         * `theme.background` `accent` o `light` pinta toda la tarjeta (como la tarjeta de
+         * bloqueo de iOS); con `system` se deja el fondo de la notificación. Si el diseño
+         * ya tiene una caja de color como raíz no se vuelve a pintar.
+         */
+        private fun withBackground(layout: JSONObject, node: JSONObject): JSONObject {
+            val theme = LiveJson.obj(layout, "theme")
+            val fill = when (theme?.optString("background")) {
+                "accent" -> theme.optString("accent").ifEmpty { null }
+                "light" -> "#FAFAFC"
+                else -> null
+            } ?: return node
+            if (node.optString("t") == "box" && node.has("color")) return node
+            val padded = JSONObject().put("t", "padding").put("h", 16).put("v", 14).put("child", node)
+            return JSONObject().put("t", "box").put("color", fill).put("radius", 22).put("child", padded)
         }
 
         private val PROGRESS_TYPES = setOf("bar", "ring", "segments", "gauge", "path", "split")

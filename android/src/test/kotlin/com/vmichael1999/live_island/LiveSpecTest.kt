@@ -306,6 +306,19 @@ class LiveSpecTest {
     // --- utilidades -------------------------------------------------------------
 
     @Test
+    fun `la tarjeta pinta el fondo del tema accent y light, y no el system`() {
+        fun card(bg: String) = LiveSpec.from(
+            JSONObject("""{"v":1,"theme":{"accent":"#16181C","background":"$bg"},"regions":{"lockScreen":{"t":"text","text":"Hola"}},"android":{"style":"card"}}"""),
+            emptyMap(),
+        ).card!!.expanded
+        val accent = card("accent")
+        assertEquals("box", accent.getString("t"))
+        assertEquals("#16181C", accent.getString("color"))
+        assertEquals("box", card("light").getString("t"))
+        assertEquals("text", card("system").getString("t"))
+    }
+
+    @Test
     fun `LiveJson convierte numeros, fechas y mezcla estados`() {
         assertEquals("2", LiveJson.text(2.0))
         assertEquals("0.5", LiveJson.text(0.5))
