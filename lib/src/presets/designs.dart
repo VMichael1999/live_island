@@ -31,6 +31,13 @@ const liveDesignCarSideAsset =
 const liveDesignCarPlateAsset =
     'packages/live_island_kit/assets/presets/car_plate.png';
 
+/// Ícono de una etapa de un pedido a domicilio (1 libreta, 2 olla, 3 mochila de
+/// reparto, 4 bolsa con ubicación), gris mientras no llega y de color desde que
+/// llega.
+String liveDesignOrderAsset(int stage, {required bool reached}) =>
+    'packages/live_island_kit/assets/presets/'
+    'pedido_${stage}_${reached ? 'color' : 'gris'}.png';
+
 /// Escudo genérico azul y rojo (equipo local de ejemplo).
 const liveDesignCrestAAsset =
     'packages/live_island_kit/assets/presets/crest_a.png';

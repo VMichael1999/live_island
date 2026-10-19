@@ -367,3 +367,142 @@ final class RideTripPreset extends LivePreset {
     ),
   );
 }
+
+/// Seguimiento de un pedido a domicilio en cuatro etapas: la tienda lo recibe,
+/// lo prepara, el repartidor lo recoge y llega al cliente. Datos: `titulo`,
+/// `hora` y `progreso` (0 a 1: 0 recibido, 1/3 preparando, 2/3 en camino, 1
+/// entregado).
+///
+/// Cada etapa tiene su ícono en gris mientras no llega y de color desde que
+/// llega; los tramos entre íconos se pintan igual. El título cambia con lo que
+/// mande el servidor («Pedido recibido», «Preparando tu pedido»…).
+final class DeliveryOrderPreset extends LivePreset {
+  const DeliveryOrderPreset({
+    this.accent = const Color(0xFFFF8A1F),
+    this.brand = 'Run',
+    this.compactIcon,
+    this.chip,
+  });
+
+  /// Color de los tramos ya recorridos y de la hora.
+  final Color accent;
+
+  /// Nombre de la app, arriba a la izquierda.
+  final String brand;
+
+  /// Ícono de la isla compacta y la mínima (por defecto la mochila de reparto).
+  final LiveVisual? compactIcon;
+
+  /// Chip de Android; por defecto «Pedido».
+  final LiveChip? chip;
+
+  static const _stages = ['Recibido', 'Preparando', 'En camino', 'Entregado'];
+  static const _gray = Color(0xFF4A4A50);
+
+  @override
+  LivePresetSpec get spec => LivePresetSpec(
+    id: 'delivery_order',
+    appName: brand,
+    accent: accent,
+    icon: presetIcon('shippingbox.fill', 'package'),
+    countdown: false,
+    progress: PresetProgress.segments,
+    buttons: const [],
+    chip: chip ?? const LiveChip.text('Pedido'),
+    sample: const PresetSample(
+      title: 'En camino a tu ubicación',
+      subtitle: '9:45 PM Llegada estimada',
+      name: 'Run',
+      highlight: '9:45 PM',
+      progress: 2 / 3,
+    ),
+  );
+
+  @override
+  Map<String, Object?> sampleState({DateTime? now}) => {
+    'titulo': 'En camino a tu ubicación',
+    'hora': '9:45 PM',
+    'progreso': 2 / 3,
+  };
+
+  LiveImage _icon(int stage, bool reached) => LiveImage.asset(
+    liveDesignOrderAsset(stage, reached: reached),
+    width: 144,
+    height: 144,
+    shape: LiveShape.square,
+  ).withHeight(40);
+
+  LiveVisual get _compact => compactIcon ?? _icon(3, true).withHeight(20);
+
+  LiveNode get _stagesBar => LiveSegments(
+    value: const LiveBind('progreso'),
+    labels: _stages,
+    points: true,
+    showLabels: false,
+    stageIcons: [
+      for (var i = 1; i <= 4; i++)
+        LiveStageIcon(pending: _icon(i, false), reached: _icon(i, true)),
+    ],
+    style: LiveProgressStyle(
+      height: 3,
+      color: accent,
+      trackColor: _gray,
+      // Los tramos terminan antes de cada ícono.
+      gap: 52,
+      pointSize: 40,
+    ),
+  );
+
+  LiveNode get _brand =>
+      LiveText.literal(brand, size: 20, weight: 800, color: _white);
+
+  @override
+  LiveLayout build() => LiveLayout(
+    theme: LiveTheme(accent: accent),
+    appLogo: presetIcon('shippingbox.fill', 'package'),
+    compactLeading: _compact,
+    compactTrailing: _field('hora', size: 14, weight: 700, color: accent),
+    minimal: _compact,
+    // La marca y la hora junto al sensor; el título y las etapas abajo, a todo
+    // el ancho.
+    expanded: LiveExpanded(
+      leading: LivePadding(_brand, horizontal: 6),
+      trailing: LivePadding(
+        _field('hora', size: 15, weight: 700, color: accent, lines: 1),
+        horizontal: 6,
+      ),
+      bottom: LiveColumn([
+        _field('titulo', size: 18, weight: 700, color: _white, lines: 1),
+        _stagesBar,
+      ], gap: 8),
+    ),
+    lockScreen: LiveLockScreen.custom(
+      LiveBox(
+        color: const Color(0xFF000000),
+        radius: 22,
+        child: LivePadding(
+          LiveColumn([
+            _brand,
+            LiveColumn([
+              _field('titulo', size: 22, weight: 700, color: _white, lines: 1),
+              LiveText.format(
+                '{hora} Llegada estimada',
+                size: 14,
+                color: _soft,
+                lines: 1,
+              ),
+            ], gap: 3),
+            _stagesBar,
+          ], gap: 10),
+          horizontal: 16,
+          vertical: 12,
+        ),
+      ),
+    ),
+    android: LiveAndroid(
+      title: const LiveText.format('{titulo}'),
+      text: const LiveText.format('{hora} Llegada estimada'),
+      chip: chip ?? const LiveChip.text('Pedido'),
+    ),
+  );
+}

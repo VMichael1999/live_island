@@ -10,6 +10,7 @@ void main() {
     'RideDriverPreset': const RideDriverPreset(),
     'RideArrivalPreset': const RideArrivalPreset(),
     'RideTripPreset': const RideTripPreset(),
+    'DeliveryOrderPreset': const DeliveryOrderPreset(),
     'MatchPreset': const MatchPreset(),
     'StorePickupPreset': const StorePickupPreset(),
     'RunPreset': const RunPreset(),
@@ -136,6 +137,28 @@ void main() {
     expect(style.isEmpty, isFalse);
   });
 
+  test('los íconos de etapa viajan en el JSON y hacen ida y vuelta', () {
+    final seg = LiveSegments(
+      value: const LiveBind('progreso'),
+      labels: const ['a', 'b'],
+      points: true,
+      stageIcons: [
+        LiveStageIcon(
+          pending: LiveImage.reference('p1'),
+          reached: LiveImage.reference('r1'),
+        ),
+        LiveStageIcon(
+          pending: LiveImage.reference('p2'),
+          reached: LiveImage.reference('r2'),
+        ),
+      ],
+    );
+    final back = LiveSegments.fromJson(seg.toJson());
+    expect(back.stageIcons, hasLength(2));
+    expect(back.stageIcons!.first.reached.id, 'r1');
+    expect(back.children.whereType<LiveImage>(), hasLength(4));
+  });
+
   test('ningún texto de ejemplo mezcla inglés y español', () {
     final english = RegExp(
       r'\b(until|pickup|arriving|soon|order|progress|handcrafting|miles|time|home|guest|stats|world cup|landing|on time)\b',
@@ -147,6 +170,7 @@ void main() {
       const RideDriverPreset(),
       const RideArrivalPreset(),
       const RideTripPreset(),
+      const DeliveryOrderPreset(),
       const StorePickupPreset(),
       const RunPreset(),
       const MatchPreset(),

@@ -81,6 +81,12 @@ final catalog = <CatalogEntry>[
     ),
   ),
   CatalogEntry(
+    'delivery_order',
+    'Pedido a domicilio · cuatro etapas',
+    (a, b) =>
+        DeliveryOrderPreset(accent: _a(a, const DeliveryOrderPreset().accent)),
+  ),
+  CatalogEntry(
     'charge',
     'Carga · cable luminoso',
     (a, b) => ChargePreset(accent: _a(a, const ChargePreset().accent)),
