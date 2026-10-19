@@ -389,6 +389,22 @@ Más elaborados que los presets, con isla y tarjeta de bloqueo propias; se usan 
 
 La app de [`example/`](example) tiene una pantalla por preset y diseño, y un editor que parte de uno de ellos.
 
+### Android: Live Update o tarjeta
+
+Por defecto Android usa el estilo nativo (`LiveAndroidStyle.liveUpdate`): título, texto, barra, una imagen grande y el chip de la barra de estado, y Android 16 lo **promueve a Live Update**. Si necesitas más libertad (dos escudos enfrentados, un marcador grande, una gráfica), pide la **tarjeta**: se dibuja con tu diseño, pero Android **no la promueve ni muestra chip**.
+
+```dart
+LiveAndroid(
+  style: LiveAndroidStyle.card,   // por defecto: LiveAndroidStyle.liveUpdate
+  card: miTarjeta,                // opcional: si falta, la tarjeta de bloqueo propia
+  title: const LiveText.literal('Marcador'),
+)
+// o con un preset:
+MatchPreset(androidStyle: LiveAndroidStyle.liveUpdate)
+```
+
+La tarjeta pide Android 12 o más (antes se usa el estilo nativo). Detalles en [`doc/design/DESVIACIONES.md`](doc/design/DESVIACIONES.md).
+
 ## Compatibilidad
 
 | | iOS | Android 16+ |
@@ -401,6 +417,7 @@ La app de [`example/`](example) tiene una pantalla por preset y diseño, y un ed
 | Anillo y medidor de arco | Sí | Se muestran como barra |
 | Ruta curva | Sí | Barra con el mismo ícono |
 | Gráfica de línea y barra partida | Sí | Se omiten |
+| Diseño propio completo | Sí | Con `style: card` (sin chip ni Live Update) |
 | Botones | Pantalla de bloqueo (iOS 17+); la isla abre la app | En la notificación |
 | Estado desactualizado (`stale`) | iOS 16.2+ | Siempre `false` |
 

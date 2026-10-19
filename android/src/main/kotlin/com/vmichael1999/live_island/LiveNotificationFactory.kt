@@ -93,6 +93,20 @@ class LiveNotificationFactory(private val context: Context, private val store: L
             b.addAction(Notification.Action.Builder(icon, a.label, pi).build())
         }
 
+        // Tarjeta con diseño propio (Android 12+): RemoteViews, sin chip ni Live Update.
+        val card = spec.card
+        if (card != null && Build.VERSION.SDK_INT >= 31) {
+            val r = CardRenderer(context, store, id, spec.accent, card.state)
+            // La tarjeta ocupa todo el ancho: sin imagen grande ni subtexto del sistema.
+            b.setLargeIcon(null as Icon?)
+            b.setSubText(null)
+            b.setStyle(Notification.DecoratedCustomViewStyle())
+            b.setCustomContentView(r.render(card.collapsed))
+            b.setCustomBigContentView(r.render(card.expanded))
+            b.setCategory(Notification.CATEGORY_EVENT)
+            return b.build()
+        }
+
         // Progreso
         val progress = spec.progress
         if (progress != null) {

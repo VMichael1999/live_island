@@ -433,8 +433,16 @@ Widget _android(LivePreviewConfig config, DateTime now) {
           )
           : 'ahora';
 
+  // Con el estilo tarjeta (RemoteViews) Android no promueve a Live Update.
+  final cardNode =
+      a?.style == LiveAndroidStyle.card
+          ? (a?.card ?? l.lockScreen?.custom)
+          : null;
   final promoted =
-      !colorized && config.androidPromotable && baseTitle.isNotEmpty;
+      cardNode == null &&
+      !colorized &&
+      config.androidPromotable &&
+      baseTitle.isNotEmpty;
 
   // Ícono pequeño: silueta de un solo color (ver doc/PROMPT.md §5.1).
   Widget smallIcon(double size) {
@@ -550,113 +558,126 @@ Widget _android(LivePreviewConfig config, DateTime now) {
                 color: cardBg,
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 22,
-                        height: 22,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: colorized ? const Color(0x40FFFFFF) : accent,
-                        ),
-                        child: smallIcon(13),
-                      ),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          [
-                            config.appName,
-                            if (subText.isNotEmpty) subText,
-                            when,
-                          ].join(' · '),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: colorized ? const Color(0xFFFFFFFF) : t.body,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              title,
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                                color: titleColor,
-                              ),
-                            ),
-                            Text(
-                              _androidText(a?.text, ctx),
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: bodyColor,
-                                height: 1.35,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (large != null) ...[const SizedBox(width: 12), large],
-                    ],
-                  ),
-                  if (progress != null) ...[
-                    const SizedBox(height: 10),
-                    buildLiveNode(progress, ctx),
-                  ],
-                  if (buttons.isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    Wrap(
-                      spacing: 16,
-                      runSpacing: 4,
-                      children: [
-                        for (final b in buttons)
+              child:
+                  cardNode != null
+                      // Tu diseño dentro de la tarjeta del sistema.
+                      ? buildLiveNode(cardNode, ctx)
+                      : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
                           Row(
-                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              if (b.icon is LiveIcon) ...[
-                                liveSymbol(
-                                  b.icon! as LiveIcon,
-                                  16,
-                                  ctx,
+                              Container(
+                                width: 22,
+                                height: 22,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
                                   color:
                                       colorized
-                                          ? const Color(0xFFFFFFFF)
+                                          ? const Color(0x40FFFFFF)
                                           : accent,
                                 ),
-                                const SizedBox(width: 6),
-                              ],
-                              Text(
-                                b.label,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color:
-                                      colorized
-                                          ? const Color(0xFFFFFFFF)
-                                          : accent,
+                                child: smallIcon(13),
+                              ),
+                              const SizedBox(width: 8),
+                              Flexible(
+                                child: Text(
+                                  [
+                                    config.appName,
+                                    if (subText.isNotEmpty) subText,
+                                    when,
+                                  ].join(' · '),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color:
+                                        colorized
+                                            ? const Color(0xFFFFFFFF)
+                                            : t.body,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                      ],
-                    ),
-                  ],
-                ],
-              ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      title,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                        color: titleColor,
+                                      ),
+                                    ),
+                                    Text(
+                                      _androidText(a?.text, ctx),
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: bodyColor,
+                                        height: 1.35,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (large != null) ...[
+                                const SizedBox(width: 12),
+                                large,
+                              ],
+                            ],
+                          ),
+                          if (progress != null) ...[
+                            const SizedBox(height: 10),
+                            buildLiveNode(progress, ctx),
+                          ],
+                          if (buttons.isNotEmpty) ...[
+                            const SizedBox(height: 10),
+                            Wrap(
+                              spacing: 16,
+                              runSpacing: 4,
+                              children: [
+                                for (final b in buttons)
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (b.icon is LiveIcon) ...[
+                                        liveSymbol(
+                                          b.icon! as LiveIcon,
+                                          16,
+                                          ctx,
+                                          color:
+                                              colorized
+                                                  ? const Color(0xFFFFFFFF)
+                                                  : accent,
+                                        ),
+                                        const SizedBox(width: 6),
+                                      ],
+                                      Text(
+                                        b.label,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color:
+                                              colorized
+                                                  ? const Color(0xFFFFFFFF)
+                                                  : accent,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ],
+                      ),
             ),
           ),
           Padding(

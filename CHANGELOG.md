@@ -24,6 +24,7 @@ Primera versión publicada.
 * `LiveIsland.check()` valida el diseño y el estado con los mismos avisos que el HTML de prototipos.
 * `LiveIslandPreview`: vista previa en Flutter de la isla, la pantalla de bloqueo y la notificación de Android.
 * 15 presets listos (`TripPreset`, `DeliveryPreset`, `CourierPreset`…) y app de ejemplo.
+* Android: modo tarjeta (`LiveAndroidStyle.card`): tu diseño completo con `RemoteViews` (dos escudos, marcador grande, gráfica), sin chip ni Live Update; `MatchPreset` y `StockPreset` lo usan por defecto.
 * Android: `LiveAndroid(largeIcon, subText)`, barra partida como tramos de color y marcadores como puntos de `ProgressStyle`; los diseños de ejemplo ponen su imagen, subtexto y textos propios.
 * Efectos: `LiveProgressStyle.glow` (cable luminoso), `LiveBox(border, borderWidth, glow)` (borde con brillo), `LiveSplitBar` (tramos de color en proporción) y `LiveText(italic: true)`; con `ChargePreset` y `FareSplitPreset`.
 * Gráficas: `LiveSparkline` (línea con área y punto final), `LiveGauge` (arco con punto que avanza) y `LiveFlightPath` (ruta curva con ícono que avanza); con `StockPreset`, `FlightPathPreset` y `OrbitPreset`. En Android el arco y la ruta son una barra y la línea se omite.

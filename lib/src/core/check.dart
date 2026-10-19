@@ -7,6 +7,7 @@ import '../components/text.dart';
 import '../components/visuals.dart';
 import 'bind.dart';
 import 'countdown.dart';
+import 'enums.dart';
 import 'image_slots.dart';
 import 'layout.dart';
 import 'node.dart';
@@ -108,6 +109,15 @@ LiveReport checkLayout(
 
   // 3. Chip de Android.
   final android = layout.android;
+  if (android?.style == LiveAndroidStyle.card) {
+    rows.add(
+      const LiveCheck(
+        LiveSeverity.warn,
+        'androidCard',
+        'Android: la tarjeta con tu diseño (style card) no se promueve a Live Update ni muestra chip en la barra de estado. Pide Android 12 o más; antes se usa el estilo nativo.',
+      ),
+    );
+  }
   final chip = _chip(android?.chip, data, clock);
   if (chip != null) {
     final len = chip.length;
