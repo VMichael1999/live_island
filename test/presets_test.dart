@@ -92,7 +92,7 @@ void main() {
 
   group('con sus valores por defecto', () {
     final schema = JsonSchema.create(
-      File('docs/contract/layout.schema.json').readAsStringSync(),
+      File('doc/contract/layout.schema.json').readAsStringSync(),
       schemaVersion: SchemaVersion.draft2020_12,
     );
     final all = <String, LivePreset>{

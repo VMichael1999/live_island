@@ -30,7 +30,7 @@ void main() {
       'los ejemplos del contrato se leen y se reescriben de forma estable',
       () {
         for (final name in ['taxi', 'score']) {
-          final src = _json('docs/contract/examples/$name.layout.json');
+          final src = _json('doc/contract/examples/$name.layout.json');
           final once = LiveLayout.fromJson(src);
           final out = once.toJson(
             resolved: {
@@ -146,7 +146,7 @@ void main() {
 
   group('lectura de JSON', () {
     test('rechaza una versión de contrato distinta', () {
-      final src = _json('docs/contract/examples/score.layout.json')..['v'] = 2;
+      final src = _json('doc/contract/examples/score.layout.json')..['v'] = 2;
       expect(() => LiveLayout.fromJson(src), throwsFormatException);
     });
 

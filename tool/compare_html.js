@@ -1,5 +1,5 @@
 // Pone lado a lado la tarjeta de la galería del HTML y el golden de Flutter de
-// cada preset, para revisar la fidelidad (docs/PROMPT.md §9).
+// cada preset, para revisar la fidelidad (doc/PROMPT.md §9).
 // Uso: npm i playwright-core && node tool/compare_html.js
 // Antes: flutter test test/golden_test.dart --update-goldens
 const { chromium } = require('playwright-core');
@@ -7,9 +7,9 @@ const fs = require('fs');
 const path = require('path');
 
 const root = path.resolve(__dirname, '..');
-const html = 'file://' + path.join(root, 'docs/design/live_island_prototipos.html');
+const html = 'file://' + path.join(root, 'doc/design/live_island_prototipos.html');
 const goldens = path.join(root, 'test/goldens');
-const out = path.join(root, 'docs/design/comparaciones');
+const out = path.join(root, 'doc/design/comparaciones');
 const NOW = '2026-10-04T15:00:00.000Z';
 
 (async () => {

@@ -9,7 +9,7 @@ import kotlin.math.floor
 /** Estado de una actividad: valores simples (texto, número, booleano o nulo). */
 typealias LiveState = Map<String, Any?>
 
-/** Utilidades para leer el contrato JSON (`docs/contract/`) sin depender de Android. */
+/** Utilidades para leer el contrato JSON (`doc/contract/`) sin depender de Android. */
 object LiveJson {
     fun state(json: JSONObject): LiveState {
         val out = LinkedHashMap<String, Any?>()

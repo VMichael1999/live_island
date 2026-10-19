@@ -20,7 +20,7 @@ sealed class PushCommand {
 }
 
 /**
- * Formato de los mensajes de FCM (ver `docs/push.md`). Los datos de FCM son
+ * Formato de los mensajes de FCM (ver `doc/push.md`). Los datos de FCM son
  * texto, así que todo viaja en el campo `live_island` como JSON:
  *
  * `{"event":"update","id":"…","state":{"progreso":0.8}}`

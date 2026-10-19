@@ -8,7 +8,7 @@ import '../core/json_util.dart';
 import '../core/node.dart';
 
 /// Un ícono del sistema, una imagen propia o un avatar: todo lo que puede ir
-/// donde va un ícono (ver docs/PROMPT.md §5.1).
+/// donde va un ícono (ver doc/PROMPT.md §5.1).
 sealed class LiveVisual extends LiveNode {
   const LiveVisual();
 

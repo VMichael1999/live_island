@@ -8,7 +8,7 @@ import 'package:live_island/live_island.dart';
 import 'fixtures/html_presets.dart';
 
 JsonSchema _schema(String name) => JsonSchema.create(
-  File('docs/contract/$name.schema.json').readAsStringSync(),
+  File('doc/contract/$name.schema.json').readAsStringSync(),
   schemaVersion: SchemaVersion.draft2020_12,
 );
 
@@ -47,13 +47,13 @@ void main() {
       test('$name es válido', () {
         expect(
           layoutSchema
-              .validate(_json('docs/contract/examples/$name.layout.json'))
+              .validate(_json('doc/contract/examples/$name.layout.json'))
               .isValid,
           isTrue,
         );
         expect(
           stateSchema
-              .validate(_json('docs/contract/examples/$name.state.json'))
+              .validate(_json('doc/contract/examples/$name.state.json'))
               .isValid,
           isTrue,
         );
@@ -63,7 +63,7 @@ void main() {
 
   group('lo inválido se rechaza', () {
     Map<String, Object?> taxi() =>
-        _json('docs/contract/examples/taxi.layout.json');
+        _json('doc/contract/examples/taxi.layout.json');
 
     test('color de acento mal escrito', () {
       final j = taxi();

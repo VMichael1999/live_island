@@ -154,7 +154,7 @@ struct LiveLockScreenView: View {
 }
 
 /// Ícono de la app en la tarjeta de bloqueo (40 pt): logo, avatar o ícono
-/// sobre un cuadro de acento (ver docs/contract/README.md).
+/// sobre un cuadro de acento (ver doc/contract/README.md).
 enum LiveLockLeading {
     static func view(_ doc: LiveLayoutDoc, _ c: LiveCtx) -> AnyView? {
         let logo = doc.appLogo

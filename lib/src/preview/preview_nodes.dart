@@ -32,7 +32,7 @@ class LiveRenderContext {
   final LiveToneStyle style;
 
   /// `true` en la isla expandida: no dibuja botones, porque tocar la isla
-  /// siempre abre la app (ver docs/design/DESVIACIONES.md).
+  /// siempre abre la app (ver doc/design/DESVIACIONES.md).
   final bool island;
 
   int _buttons = 0;

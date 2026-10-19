@@ -43,7 +43,7 @@ final class LiveCtx {
     let values: [String: LiveValue]
     let style: LiveStyle
     /// `true` en la isla expandida: no dibuja botones. Tocar la isla siempre
-    /// abre la app, así que ahí no tienen función (ver docs/design/DESVIACIONES.md).
+    /// abre la app, así que ahí no tienen función (ver doc/design/DESVIACIONES.md).
     let island: Bool
 
     init(doc: LiveLayoutDoc, values: [String: LiveValue], style: LiveStyle, island: Bool = false) {

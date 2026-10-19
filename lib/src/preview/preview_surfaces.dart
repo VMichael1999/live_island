@@ -435,7 +435,7 @@ Widget _android(LivePreviewConfig config, DateTime now) {
   final promoted =
       !colorized && config.androidPromotable && baseTitle.isNotEmpty;
 
-  // Ícono pequeño: silueta de un solo color (ver docs/PROMPT.md §5.1).
+  // Ícono pequeño: silueta de un solo color (ver doc/PROMPT.md §5.1).
   Widget smallIcon(double size) {
     final src = l.androidSmallIcon ?? l.appLogo;
     if (src is LiveImage) {

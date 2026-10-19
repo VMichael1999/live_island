@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 
-/** Formato de los mensajes de FCM (docs/push.md). */
+/** Formato de los mensajes de FCM (doc/push.md). */
 class LivePushTest {
     private fun cmd(json: String) = LivePush.parse(mapOf("live_island" to json))
 

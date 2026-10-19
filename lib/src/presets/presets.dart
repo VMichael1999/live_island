@@ -1,5 +1,5 @@
 // Los 15 presets de la galería del HTML de prototipos
-// (docs/design/live_island_prototipos.html), con sus datos de ejemplo.
+// (doc/design/live_island_prototipos.html), con sus datos de ejemplo.
 //
 // Cada uno es un `LivePreset`: `.build()` devuelve el `LiveLayout`,
 // `.override(...)` reemplaza regiones y `.sampleState()` trae datos de prueba.

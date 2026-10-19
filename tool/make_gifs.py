@@ -1,4 +1,4 @@
-"""Une los cuadros de test/gifs_test.dart en GIF (docs/assets/).
+"""Une los cuadros de test/gifs_test.dart en GIF (doc/assets/).
 
 Uso: LIVE_ISLAND_GIFS=/tmp/frames flutter test test/gifs_test.dart
      python3 tool/make_gifs.py /tmp/frames

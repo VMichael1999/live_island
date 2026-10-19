@@ -12,10 +12,10 @@ import kotlin.test.assertTrue
 /** Qué estilo, qué flags y si es promovible, sin necesitar Android. */
 class LiveSpecTest {
     private fun example(name: String) =
-        JSONObject(File("../docs/contract/examples/$name.layout.json").readText())
+        JSONObject(File("../doc/contract/examples/$name.layout.json").readText())
 
     private fun state(name: String) =
-        LiveJson.state(JSONObject(File("../docs/contract/examples/$name.state.json").readText()))
+        LiveJson.state(JSONObject(File("../doc/contract/examples/$name.state.json").readText()))
 
     private fun layout(android: String, regions: String = "{}", extra: String = "") =
         JSONObject("""{"v":1,"theme":{"accent":"#1F6FEB"},"regions":$regions,"android":$android$extra}""")

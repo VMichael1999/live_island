@@ -1,6 +1,6 @@
 # Desviaciones respecto al HTML
 
-Aquí se documenta cada cosa que el HTML dibuja y que iOS o Android no permiten (con captura, motivo y alternativa). Ver `docs/PROMPT.md` §2.1.
+Aquí se documenta cada cosa que el HTML dibuja y que iOS o Android no permiten (con captura, motivo y alternativa). Ver `doc/PROMPT.md` §2.1.
 
 Vacío por ahora (Fase 0). Las candidatas que ya se ven desde la lectura:
 
@@ -18,21 +18,21 @@ Con el estado y el diseño de los 15 presets, `check()` da los mismos avisos (mi
 | Tema | HTML | `check()` | Motivo |
 | --- | --- | --- | --- |
 | Estado de más de 4 096 bytes | Siempre `ok` | `bad` | El límite de ActivityKit es duro; avisar solo cuando sobra espacio no sirve |
-| Aviso de silueta de Android | Se muestra siempre que hay logo, aunque el código generado ya incluya `androidSmallIcon` | Solo si hay logo propio **y no hay** `androidSmallIcon` | `docs/PROMPT.md` §5.1 lo pide solo en los casos 3 y 4. Los tests usan `withSmallIcon: false` para reproducir el caso del HTML |
+| Aviso de silueta de Android | Se muestra siempre que hay logo, aunque el código generado ya incluya `androidSmallIcon` | Solo si hay logo propio **y no hay** `androidSmallIcon` | `doc/PROMPT.md` §5.1 lo pide solo en los casos 3 y 4. Los tests usan `withSmallIcon: false` para reproducir el caso del HTML |
 | Tracker sin barra visible | `warn` | No existe | En Dart el tracker es un parámetro de la barra: no puede haber tracker sin barra |
-| Caso que Google no promueve | Campo `androidOk` del preset | Parámetro `androidPromotable` de `check()` (por defecto `true`) | El contrato JSON v1 no lleva ese dato. Si se quiere guardar en el diseño habrá que proponer un campo nuevo en `docs/contract/` |
+| Caso que Google no promueve | Campo `androidOk` del preset | Parámetro `androidPromotable` de `check()` (por defecto `true`) | El contrato JSON v1 no lleva ese dato. Si se quiere guardar en el diseño habrá que proponer un campo nuevo en `doc/contract/` |
 | Qué se mide como "estado" | Un objeto que incluye `etapa` aunque `renderCode` no lo envía | El estado real que recibe `check()` | Mide lo que de verdad viaja |
 
 ## Vista previa de Flutter frente al HTML (Fase 2)
 
-`LiveIslandPreview` dibuja las mismas superficies a partir de un `LiveLayout`. La comparación lado a lado de los 15 presets está en `docs/design/comparaciones/` (se genera con `tool/compare_html.js`). Estructura, jerarquía, tamaños y colores coinciden; estas son las diferencias:
+`LiveIslandPreview` dibuja las mismas superficies a partir de un `LiveLayout`. La comparación lado a lado de los 15 presets está en `doc/design/comparaciones/` (se genera con `tool/compare_html.js`). Estructura, jerarquía, tamaños y colores coinciden; estas son las diferencias:
 
 | Tema | HTML | Vista previa | Motivo |
 | --- | --- | --- | --- |
 | Tipografía | San Francisco en iOS y Roboto en Android | La fuente por defecto de la plataforma (Roboto en las pruebas) | SF Pro no se puede redistribuir. En un iPhone la vista previa usa SF; en las pruebas de golden usa Roboto, que pesa más: algunos textos se recortan antes |
 | Anillo en la tarjeta de bloqueo | Anillo de 40 pt con el dato debajo | Anillo de 46 pt a la derecha y el dato en la línea de abajo | Con `lockScreen: sameAsExpanded` la tarjeta reutiliza la zona derecha de la isla expandida; el HTML tiene un diseño propio para ese caso |
 | Nombre bajo el dato en la tarjeta de bloqueo | 13 pt | 12 pt | Mismo motivo: reutiliza el 12 pt de la expandida |
-| Modo claro | Solo dibuja modo oscuro | `brightness: Brightness.light` aclara la tarjeta `system` y la notificación de Android | Lo pide `docs/PROMPT.md` §9 (goldens en claro y oscuro). La isla sigue negra |
+| Modo claro | Solo dibuja modo oscuro | `brightness: Brightness.light` aclara la tarjeta `system` y la notificación de Android | Lo pide `doc/PROMPT.md` §9 (goldens en claro y oscuro). La isla sigue negra |
 | Desenfoque de la tarjeta de bloqueo | `backdrop-filter` | `BackdropFilter` con el mismo radio | — |
 | SF Symbols | Íconos Lucide | Los 49 íconos del HTML se dibujan; un SF Symbol que no esté en esa lista muestra un recuadro, o lo que devuelva `symbolBuilder` | No hay forma de dibujar un SF Symbol arbitrario desde Flutter |
 | Tipo de `LiveText` en `compactTrailing` | `compact .trail` fijo | Estilo explícito (`size: 15, weight: 600, accent: true`) | El código generado del HTML ahora lo escribe así (ver abajo) |
@@ -89,7 +89,7 @@ Verificado en un emulador Android 17 (API 37, Pixel 10 Pro XL) con Taxi y Courie
 | Botones en iOS | Solo la tarjeta de bloqueo (iOS 17+, `LiveActivityIntent`). Antes de iOS 17 se dibujan sin acción. La isla expandida no tiene botones | Decisión de Michael (fase 3) |
 | Acciones con la app cerrada | Se guardan (App Group en iOS, disco en Android) y se entregan a Dart al empezar a escuchar `onAction`. No se arranca un motor de Flutter sin interfaz | Evita un motor en segundo plano; la lógica de la app corre al abrirla |
 | Id de botón | Es el de `LiveButton(id:)`, no identifica la actividad | Con varias actividades hay que usar ids distintos |
-| Push en Android | `LiveIsland.handlePush` o `LiveIslandPush.handle` desde tu `FirebaseMessagingService`; formato en `docs/push.md` | El plugin no depende de Firebase |
+| Push en Android | `LiveIsland.handlePush` o `LiveIslandPush.handle` desde tu `FirebaseMessagingService`; formato en `doc/push.md` | El plugin no depende de Firebase |
 | Iniciar por push | Solo con un diseño registrado (`registerLayout`) | Un push no lleva el diseño |
 | `staleAfter` | Se envía pero Android lo ignora | Android no tiene equivalente |
 
@@ -128,7 +128,7 @@ Idea y geometría tomadas de `rit3zh/expo-dynamic-notifications` (MIT): tres for
 | `LiveAlert` | `AlertConfiguration` (16.2+): la isla se expande, banner y sonido con `title` y `body` | Sonido y aviso emergente del canal `live_island_alerts` (importancia alta). No muestra `title` ni `body`: se ve el contenido de la actividad |
 | Sonido propio | `sound: 'x.caf'` del paquete de la app | El del canal; no se cambia por aviso (Android fija el sonido al crear el canal) |
 | `LiveBind.stale` | `ActivityViewContext.isStale` (16.2+); lo dispara el sistema al llegar `staleAfter` | **Siempre `false`**: Android no tiene el concepto. Usa `update` para cambiar el estado |
-| Push | `alert` del `aps` (documentado en `docs/push.md`) | `"alert": true` en `update` |
+| Push | `alert` del `aps` (documentado en `doc/push.md`) | `"alert": true` en `update` |
 
 ## Fin programado (`scheduleEnd`)
 
