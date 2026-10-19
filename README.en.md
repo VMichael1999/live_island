@@ -375,7 +375,7 @@ The [`example/`](example) app has one screen per preset and design, and an edito
 
 ### Android: Live Update or card
 
-By default Android uses the native style (`LiveAndroidStyle.liveUpdate`): title, text, bar, one large image and the status-bar chip, and Android 16 **promotes it to a Live Update**. If you need more freedom (two crests face to face, a big score, a chart), ask for the **card**: it is drawn with your design, but Android **does not promote it or show a chip**.
+The example designs use the **card** by default so Android draws the same thing as iOS; pass `androidStyle: LiveAndroidStyle.liveUpdate` to go back to the native style. That style (`LiveAndroidStyle.liveUpdate`, the default of `LiveAndroid`): title, text, bar, one large image and the status-bar chip, and Android 16 **promotes it to a Live Update**. If you need more freedom (two crests face to face, a big score, a chart), ask for the **card**: it is drawn with your design, but Android **does not promote it or show a chip**.
 
 ```dart
 LiveAndroid(

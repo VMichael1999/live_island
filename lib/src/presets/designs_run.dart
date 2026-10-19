@@ -68,6 +68,7 @@ LiveTracker _tracker(LiveImage? image) => LiveTracker(
 /// arriba, la hora de llegada a la izquierda y el pago a la derecha.
 final class RideArrivalPreset extends LivePreset {
   const RideArrivalPreset({
+    this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFF6FA8FF),
     this.background = const Color(0xFF000000),
     this.brand = 'Run',
@@ -95,6 +96,11 @@ final class RideArrivalPreset extends LivePreset {
 
   /// Chip de Android; por defecto el monto.
   final LiveChip? chip;
+
+  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
+  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
+  /// Android 16 lo promueva a Live Update.
+  final LiveAndroidStyle androidStyle;
 
   @override
   LivePresetSpec get spec => LivePresetSpec(
@@ -199,6 +205,7 @@ final class RideArrivalPreset extends LivePreset {
       ),
     ),
     android: LiveAndroid(
+      style: androidStyle,
       title: const LiveText.format('Llegarás a las {hora}'),
       text: const LiveText.format('Pago {pago} · {placa}'),
       chip: chip ?? const LiveChip.text('S/14'),
@@ -214,6 +221,7 @@ final class RideArrivalPreset extends LivePreset {
 /// «EL CONDUCTOR LLEGÓ»…) sin cambiar el diseño.
 final class RideTripPreset extends LivePreset {
   const RideTripPreset({
+    this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFFB794FF),
     this.background = const Color(0xFF000000),
     this.brand = 'Run',
@@ -248,6 +256,11 @@ final class RideTripPreset extends LivePreset {
 
   /// Chip de Android; por defecto «En ruta».
   final LiveChip? chip;
+
+  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
+  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
+  /// Android 16 lo promueva a Live Update.
+  final LiveAndroidStyle androidStyle;
 
   @override
   LivePresetSpec get spec => LivePresetSpec(
@@ -361,6 +374,7 @@ final class RideTripPreset extends LivePreset {
       ),
     ),
     android: LiveAndroid(
+      style: androidStyle,
       title: const LiveText.format('Destino {hora}'),
       text: const LiveText.format('{direccion}'),
       chip: chip ?? const LiveChip.text('En ruta'),
@@ -378,6 +392,7 @@ final class RideTripPreset extends LivePreset {
 /// mande el servidor («Pedido recibido», «Preparando tu pedido»…).
 final class DeliveryOrderPreset extends LivePreset {
   const DeliveryOrderPreset({
+    this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFFFF8A1F),
     this.brand = 'Run',
     this.compactIcon,
@@ -398,6 +413,11 @@ final class DeliveryOrderPreset extends LivePreset {
 
   static const _stages = ['Recibido', 'Preparando', 'En camino', 'Entregado'];
   static const _gray = Color(0xFF4A4A50);
+
+  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
+  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
+  /// Android 16 lo promueva a Live Update.
+  final LiveAndroidStyle androidStyle;
 
   @override
   LivePresetSpec get spec => LivePresetSpec(
@@ -500,6 +520,7 @@ final class DeliveryOrderPreset extends LivePreset {
       ),
     ),
     android: LiveAndroid(
+      style: androidStyle,
       title: const LiveText.format('{titulo}'),
       text: const LiveText.format('{hora} Llegada estimada'),
       chip: chip ?? const LiveChip.text('Pedido'),
@@ -516,6 +537,7 @@ final class DeliveryOrderPreset extends LivePreset {
 /// uno; se ve en la isla y en la pantalla de bloqueo aunque la app esté cerrada.
 final class RidePinPreset extends LivePreset {
   const RidePinPreset({
+    this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFF3B6CFF),
     this.brand = 'Run',
     this.driverInitials = 'M',
@@ -545,6 +567,11 @@ final class RidePinPreset extends LivePreset {
 
   /// Chip de Android; por defecto «PIN».
   final LiveChip? chip;
+
+  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
+  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
+  /// Android 16 lo promueva a Live Update.
+  final LiveAndroidStyle androidStyle;
 
   @override
   LivePresetSpec get spec => LivePresetSpec(
@@ -684,6 +711,7 @@ final class RidePinPreset extends LivePreset {
       ),
     ),
     android: LiveAndroid(
+      style: androidStyle,
       title: const LiveText.format('Inicio de viaje en {minutos}'),
       text: const LiveText.format('Tu PIN: {pin1}{pin2}{pin3}{pin4}'),
       chip: chip ?? const LiveChip.text('PIN'),
@@ -699,6 +727,7 @@ final class RidePinPreset extends LivePreset {
 /// `stopAt`); el auto avanza hacia ella y luego hacia el final.
 final class RideStopPreset extends LivePreset {
   const RideStopPreset({
+    this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFFE6E6EA),
     this.brand = 'Run',
     this.stopAt = .82,
@@ -729,6 +758,11 @@ final class RideStopPreset extends LivePreset {
 
   /// Chip de Android; por defecto «En ruta».
   final LiveChip? chip;
+
+  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
+  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
+  /// Android 16 lo promueva a Live Update.
+  final LiveAndroidStyle androidStyle;
 
   @override
   LivePresetSpec get spec => LivePresetSpec(
@@ -839,6 +873,7 @@ final class RideStopPreset extends LivePreset {
       ),
     ),
     android: LiveAndroid(
+      style: androidStyle,
       title: const LiveText.format('Quedan {minutos}'),
       text: const LiveText.format('{vehiculo} · {placa}'),
       chip: chip ?? const LiveChip.text('En ruta'),
@@ -853,6 +888,7 @@ final class RideStopPreset extends LivePreset {
 /// viaje con barra.
 final class RideDestinationPreset extends LivePreset {
   const RideDestinationPreset({
+    this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFFFFFFFF),
     this.brand = 'Run',
     this.trackerImage,
@@ -874,6 +910,11 @@ final class RideDestinationPreset extends LivePreset {
 
   /// Chip de Android; por defecto «Destino».
   final LiveChip? chip;
+
+  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
+  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
+  /// Android 16 lo promueva a Live Update.
+  final LiveAndroidStyle androidStyle;
 
   @override
   LivePresetSpec get spec => LivePresetSpec(
@@ -960,6 +1001,7 @@ final class RideDestinationPreset extends LivePreset {
       ),
     ),
     android: LiveAndroid(
+      style: androidStyle,
       title: const LiveText.format('Destino {hora}'),
       text: const LiveText.format('En camino a {direccion}'),
       chip: chip ?? const LiveChip.text('Destino'),
@@ -976,6 +1018,7 @@ final class RideDestinationPreset extends LivePreset {
 /// y no compite por el ancho de la isla.
 final class TrainPreset extends LivePreset {
   const TrainPreset({
+    this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFFA7F060),
     this.brand = 'Ruta Lima',
     this.stages = const ['El Ángel', 'Miguel Grau', 'Gamarra'],
@@ -1001,6 +1044,11 @@ final class TrainPreset extends LivePreset {
 
   /// Chip de Android; por defecto «3 par.».
   final LiveChip? chip;
+
+  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
+  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
+  /// Android 16 lo promueva a Live Update.
+  final LiveAndroidStyle androidStyle;
 
   @override
   LivePresetSpec get spec => LivePresetSpec(
@@ -1101,6 +1149,7 @@ final class TrainPreset extends LivePreset {
       ),
     ),
     android: LiveAndroid(
+      style: androidStyle,
       title: const LiveBind('titulo'),
       text: const LiveText.format('{subtitulo} · {nombre}'),
       chip: chip ?? const LiveChip.text('3 par.'),

@@ -327,21 +327,25 @@ void main() {
     },
   );
 
-  test(
-    'el marcador y la bolsa usan la tarjeta en Android; la tarifa, el estilo nativo',
-    () {
-      expect(const MatchPreset().build().android!.style, LiveAndroidStyle.card);
-      expect(const StockPreset().build().android!.style, LiveAndroidStyle.card);
+  test('todos los diseños usan la tarjeta en Android y se puede cambiar', () {
+    for (final e in cases.entries) {
       expect(
-        const FareSplitPreset().build().android!.style,
-        LiveAndroidStyle.liveUpdate,
+        e.value.build().android!.style,
+        LiveAndroidStyle.card,
+        reason: '${e.key} debe dibujarse igual que en iOS',
       );
-      expect(
-        const MatchPreset(
-          androidStyle: LiveAndroidStyle.liveUpdate,
-        ).build().android!.style,
-        LiveAndroidStyle.liveUpdate,
-      );
-    },
-  );
+    }
+    expect(
+      const MatchPreset(
+        androidStyle: LiveAndroidStyle.liveUpdate,
+      ).build().android!.style,
+      LiveAndroidStyle.liveUpdate,
+    );
+    expect(
+      const RideArrivalPreset(
+        androidStyle: LiveAndroidStyle.liveUpdate,
+      ).build().android!.style,
+      LiveAndroidStyle.liveUpdate,
+    );
+  });
 }

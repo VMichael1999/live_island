@@ -393,7 +393,7 @@ La app de [`example/`](example) tiene una pantalla por preset y diseño, y un ed
 
 ### Android: Live Update o tarjeta
 
-Por defecto Android usa el estilo nativo (`LiveAndroidStyle.liveUpdate`): título, texto, barra, una imagen grande y el chip de la barra de estado, y Android 16 lo **promueve a Live Update**. Si necesitas más libertad (dos escudos enfrentados, un marcador grande, una gráfica), pide la **tarjeta**: se dibuja con tu diseño, pero Android **no la promueve ni muestra chip**.
+Los diseños de ejemplo usan la **tarjeta** por defecto, para que Android dibuje lo mismo que iOS; con `androidStyle: LiveAndroidStyle.liveUpdate` vuelves al estilo nativo. Ese estilo (`LiveAndroidStyle.liveUpdate`, el de `LiveAndroid` si no indicas otro): título, texto, barra, una imagen grande y el chip de la barra de estado, y Android 16 lo **promueve a Live Update**. Si necesitas más libertad (dos escudos enfrentados, un marcador grande, una gráfica), pide la **tarjeta**: se dibuja con tu diseño, pero Android **no la promueve ni muestra chip**.
 
 ```dart
 LiveAndroid(
