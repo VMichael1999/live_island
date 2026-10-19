@@ -10,6 +10,26 @@ topics:
   - ios
   - android
 
+screenshots:
+  - description: "Marcador de partido: isla compacta, expandida y pantalla de bloqueo"
+    path: doc/assets/galeria/marcador.png
+  - description: "Recogida de un viaje con barra punteada y marcadores"
+    path: doc/assets/galeria/recogida_clara.png
+  - description: "Cotización en bolsa con gráfica de línea"
+    path: doc/assets/galeria/bolsa.png
+  - description: "Pedido en tienda con tres pasos"
+    path: doc/assets/galeria/tienda.png
+  - description: "Sala de espera médica"
+    path: doc/assets/galeria/sala_medica.png
+  - description: "Carga de un auto eléctrico con cable luminoso"
+    path: doc/assets/galeria/carga.png
+  - description: "Vuelo con ruta curva"
+    path: doc/assets/galeria/vuelo.png
+  - description: "El viaje visto por el conductor"
+    path: doc/assets/galeria/conductor.png
+  - description: "Tarifa partida en tramos de color"
+    path: doc/assets/galeria/tarifa.png
+
 executables:
   setup:
 
