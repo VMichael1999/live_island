@@ -291,11 +291,37 @@ Widget _row(LiveRow node, LiveRenderContext ctx) {
       ],
     );
   }
+  // Como en SwiftUI: lo que va justo antes del espaciador cede espacio (el
+  // texto se corta con «…») y el espaciador absorbe lo que sobre.
+  final spacerAt = node.items.indexWhere(
+    (c) => c is LiveSpacer && c.size == null,
+  );
+  final spacers =
+      node.items.where((c) => c is LiveSpacer && c.size == null).length;
+  final yields =
+      spacers == 1 &&
+      spacerAt > 0 &&
+      (node.items[spacerAt - 1] is LiveColumn ||
+          node.items[spacerAt - 1] is LiveText);
+  // Sin espaciador solo el último texto cede espacio; los demás miden lo suyo.
+  final lastText = node.items.lastIndexWhere((c) => c is LiveText);
   final children = [
-    for (final c in node.items)
-      c is LiveText && !hasSpacer
-          ? Flexible(child: buildLiveNode(c, ctx, axis: Axis.horizontal))
-          : buildLiveNode(c, ctx, axis: Axis.horizontal),
+    for (var i = 0; i < node.items.length; i++)
+      if (yields && i == spacerAt - 1)
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: buildLiveNode(node.items[i], ctx, axis: Axis.horizontal),
+          ),
+        )
+      else if (yields && i == spacerAt)
+        const SizedBox.shrink()
+      else if (node.items[i] is LiveText && !hasSpacer && i == lastText)
+        Flexible(
+          child: buildLiveNode(node.items[i], ctx, axis: Axis.horizontal),
+        )
+      else
+        buildLiveNode(node.items[i], ctx, axis: Axis.horizontal),
   ];
   return Row(
     mainAxisSize: hasSpacer ? MainAxisSize.max : MainAxisSize.min,
