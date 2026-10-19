@@ -567,40 +567,61 @@ final class MatchPreset extends LivePreset {
     'progreso': 0.07,
   };
 
-  LiveNode _side(LiveImage? crest, String field, String label) => LiveColumn([
-    crest ?? presetIcon('trophy.fill', 'trophy', accent: true),
-    _t(field, size: 18, weight: 700, color: _white),
-    LiveText.literal(label, size: 14, weight: 700, color: _white),
-  ], gap: 2);
+  LiveNode _side(LiveImage? crest, String field, String label, double size) =>
+      LiveColumn(
+        [
+          crest?.withSize(size) ??
+              presetIcon('trophy.fill', 'trophy', accent: true),
+          _t(field, size: 17, weight: 700, color: _white),
+          LiveText.literal(label, size: 13, weight: 700, color: _white),
+        ],
+        align: LiveAlign.center,
+        gap: 2,
+      );
 
   @override
   LiveLayout build() {
-    final score = LiveRow([
-      _t('golesLocal', size: 46, weight: 800, color: _white),
-      LiveText.literal(':', size: 46, weight: 800, color: _white),
-      _t('golesVisitante', size: 46, weight: 800, color: _white),
-    ], gap: 6);
-    final centre = LiveColumn([
-      LiveBox(child: score, radius: 12, color: const Color(0xFF202020)),
-      _t('minuto', size: 16, color: _white),
-      LiveText.literal(link, size: 16, color: _white),
-      _t('torneo', size: 14, color: _white),
-    ], gap: 4);
+    LiveNode score(double size, double radius) => LiveBox(
+      radius: radius,
+      color: const Color(0xFF202020),
+      child: LivePadding(
+        LiveRow([
+          _t('golesLocal', size: size, weight: 800, color: _white),
+          LiveText.literal(':', size: size, weight: 800, color: _white),
+          _t('golesVisitante', size: size, weight: 800, color: _white),
+        ], gap: 6),
+        horizontal: 10,
+        vertical: 2,
+      ),
+    );
+    LiveNode centre({required double size, required bool full}) => LiveColumn(
+      [
+        score(size, 12),
+        _t('minuto', size: 15, weight: 600, color: _white),
+        if (full) LiveText.literal(link, size: 14, color: _white),
+        _t('torneo', size: 13, color: _white),
+      ],
+      align: LiveAlign.center,
+      gap: 3,
+    );
     return LiveLayout(
       theme: LiveTheme(accent: accent),
       appLogo: presetIcon('trophy.fill', 'trophy'),
       compactLeading:
-          homeCrest ?? presetIcon('trophy.fill', 'trophy', accent: true),
+          homeCrest?.withSize(24) ??
+          presetIcon('trophy.fill', 'trophy', accent: true),
       compactTrailing: LiveRow([
-        _t('golesLocal', size: 15, weight: 700, accent: true),
-        LiveText.literal('–', size: 15, weight: 700, accent: true),
-        _t('golesVisitante', size: 15, weight: 700, accent: true),
+        _t('golesLocal', size: 15, weight: 800, color: _white),
+        LiveText.literal('–', size: 15, weight: 800, color: _white),
+        _t('golesVisitante', size: 15, weight: 800, color: _white),
       ], gap: 2),
-      minimal: presetIcon('trophy.fill', 'trophy', accent: true),
+      minimal:
+          homeCrest?.withSize(22) ??
+          presetIcon('trophy.fill', 'trophy', accent: true),
       expanded: LiveExpanded(
-        leading: _side(homeCrest, 'local', homeLabel),
-        center: centre,
-        trailing: _side(awayCrest, 'visitante', awayLabel),
+        leading: _side(homeCrest, 'local', homeLabel, 52),
+        center: centre(size: 34, full: false),
+        trailing: _side(awayCrest, 'visitante', awayLabel, 52),
       ),
       // Tarjeta negra propia (como la isla), igual con el sistema en claro o en oscuro.
       lockScreen: LiveLockScreen.custom(
@@ -609,13 +630,14 @@ final class MatchPreset extends LivePreset {
           radius: 28,
           child: LivePadding(
             LiveRow([
-              _side(homeCrest, 'local', homeLabel),
+              _side(homeCrest, 'local', homeLabel, 72),
               const LiveSpacer(),
-              centre,
+              centre(size: 44, full: true),
               const LiveSpacer(),
-              _side(awayCrest, 'visitante', awayLabel),
-            ], align: LiveAlign.end),
-            all: 8,
+              _side(awayCrest, 'visitante', awayLabel, 72),
+            ], align: LiveAlign.center),
+            horizontal: 16,
+            vertical: 12,
           ),
         ),
       ),

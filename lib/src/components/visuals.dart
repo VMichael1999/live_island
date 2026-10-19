@@ -156,6 +156,22 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
        width = null,
        height = null;
 
+  LiveImage._copy(LiveImage o, {double? size})
+    : source = o.source,
+      key = o.key,
+      bytes = o.bytes,
+      id = o.id,
+      fit = o.fit,
+      shape = o.shape,
+      size = size ?? o.size,
+      byteSize = o.byteSize,
+      width = o.width,
+      height = o.height;
+
+  /// La misma imagen con otro tamaño: sirve para usar un escudo o logo en
+  /// la isla compacta (pequeño) y en la expandida (grande).
+  LiveImage withSize(double size) => LiveImage._copy(this, size: size);
+
   final LiveImageSource source;
 
   /// Ruta, URL o ruta de archivo según [source].
