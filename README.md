@@ -1,5 +1,7 @@
 # live_island
 
+<p align="center"><img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/banner.png" alt="live_island: Live Activities y Live Updates 100 % en Dart" width="100%"></p>
+
 [English](README.en.md)
 
 **Live Activities de iOS y Live Updates de Android con una sola API en Dart, y 100 % editables desde Dart.** Tú defines los datos y el diseño de la isla dinámica, de la pantalla de bloqueo y de la notificación de Android (textos, colores, íconos o imágenes, barras, gráficas, botones…) **sin escribir Swift ni Kotlin**: el código nativo vive dentro del plugin.

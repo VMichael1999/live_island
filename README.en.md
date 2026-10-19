@@ -1,5 +1,7 @@
 # live_island
 
+<p align="center"><img src="https://raw.githubusercontent.com/VMichael1999/live_island/main/doc/assets/banner.png" alt="live_island: iOS Live Activities and Android Live Updates, 100 % in Dart" width="100%"></p>
+
 [Español](README.md)
 
 **iOS Live Activities and Android Live Updates with a single Dart API, 100 % editable from Dart.** You define the data and the design of the Dynamic Island, the Lock Screen and the Android notification (texts, colors, icons or images, bars, charts, buttons…) **without writing Swift or Kotlin**: the native code lives inside the plugin.
