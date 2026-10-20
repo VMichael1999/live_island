@@ -1,5 +1,6 @@
 ## Sin publicar
 
+* iOS: la zona derecha de la isla expandida lleva 4 pt de margen, para que la curva de la isla no recorte el «78'» del marcador deportivo.
 * iOS: en la isla expandida, un texto de una línea se encoge hasta un 65 % antes de cortarse con «…» (Transporte público, Sala de espera y Subida de archivo ya no pierden «3 paradas», «Te llaman pronto» ni «3 min restantes»).
 * iOS: se corrige un cierre de la app al iniciar una actividad (carrera de datos al vigilar los tokens de push de ActivityKit).
 * Diseños nuevos de «Run»: `RideArrivalPreset` (llegada, con un sedán y su placa), `RideTripPreset` (viaje con fase, destino y pago) y `DeliveryOrderPreset` (pedido a domicilio en cuatro etapas con íconos).
