@@ -13,14 +13,14 @@ import '../core/enums.dart';
 import '../core/layout.dart';
 import 'preset.dart';
 
-/// El auto visto desde arriba que trae el paquete: es el mismo de todos los
-/// diseños con barra (`liveDesignCarTopAsset`) y lo usa [TripPreset] como ícono que avanza.
+/// The car seen from above that the package ships: it is the same one used by all
+/// designs with a bar (`liveDesignCarTopAsset`), and [TripPreset] uses it as the moving icon.
 const livePresetCarAsset =
     'packages/live_island_kit/assets/presets/car_top.png';
 
-/// Viaje en taxi o similar: conductor, cuenta regresiva de llegada y avance por etapas con la imagen de un auto.
+/// Taxi or similar ride: driver, arrival countdown and progress by stages with the image of a car.
 ///
-/// Datos de ejemplo: «Tu conductor está en camino».
+/// Sample data: "Tu conductor está en camino" ("Your driver is on the way").
 final class TripPreset extends LivePreset {
   const TripPreset({
     this.accent = const Color(0xFF1F6FEB),
@@ -42,55 +42,55 @@ final class TripPreset extends LivePreset {
     this.progressStyle,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
-  /// Etiquetas de las etapas.
+  /// Stage labels.
   final List<String> stages;
 
-  /// Marca cada etapa con un punto.
+  /// Marks each stage with a dot.
   final bool showPoints;
 
-  /// Ícono o imagen que avanza sobre la barra.
+  /// Icon or image that moves along the bar.
   final LiveTrackerSource? tracker;
 
-  /// Ícono al final de la barra.
+  /// Icon at the end of the bar.
   final LiveVisual? endIcon;
 
-  /// Iniciales del avatar.
+  /// Avatar initials.
   final String avatarText;
 
-  /// Foto del avatar (reemplaza a las iniciales).
+  /// Avatar photo (replaces the initials).
   final LiveImage? avatarPhoto;
 
-  /// Muestra las etiquetas de las etapas.
+  /// Shows the stage labels.
   final bool showLabels;
 
-  /// Muestra el ícono o imagen que avanza sobre la barra.
+  /// Shows the icon or image that moves along the bar.
   final bool showTracker;
 
-  /// Muestra el marcador al final de la barra.
+  /// Shows the marker at the end of the bar.
   final bool showEndIcon;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
 
   @override
@@ -139,9 +139,9 @@ final class TripPreset extends LivePreset {
   );
 }
 
-/// Pedido de comida a domicilio: etapas, cuenta regresiva y repartidor.
+/// Food delivery order: stages, countdown and courier.
 ///
-/// Datos de ejemplo: «Tu pedido va en camino».
+/// Sample data: "Tu pedido va en camino" ("Your order is on its way").
 final class DeliveryPreset extends LivePreset {
   const DeliveryPreset({
     this.accent = const Color(0xFFE4572E),
@@ -161,49 +161,49 @@ final class DeliveryPreset extends LivePreset {
     this.progressStyle,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
-  /// Etiquetas de las etapas.
+  /// Stage labels.
   final List<String> stages;
 
-  /// Marca cada etapa con un punto.
+  /// Marks each stage with a dot.
   final bool showPoints;
 
-  /// Ícono o imagen que avanza sobre la barra.
+  /// Icon or image that moves along the bar.
   final LiveTrackerSource? tracker;
 
-  /// Ícono al final de la barra.
+  /// Icon at the end of the bar.
   final LiveVisual? endIcon;
 
-  /// Muestra las etiquetas de las etapas.
+  /// Shows the stage labels.
   final bool showLabels;
 
-  /// Muestra el ícono o imagen que avanza sobre la barra.
+  /// Shows the icon or image that moves along the bar.
   final bool showTracker;
 
-  /// Muestra el marcador al final de la barra.
+  /// Shows the marker at the end of the bar.
   final bool showEndIcon;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
 
   @override
@@ -240,9 +240,9 @@ final class DeliveryPreset extends LivePreset {
   );
 }
 
-/// Paquete en ruta: paradas restantes y etapas del envío.
+/// Package on its way: remaining stops and shipping stages.
 ///
-/// Datos de ejemplo: «Tu paquete llega hoy».
+/// Sample data: "Tu paquete llega hoy" ("Your package arrives today").
 final class CourierPreset extends LivePreset {
   const CourierPreset({
     this.accent = const Color(0xFF6D4C41),
@@ -262,49 +262,49 @@ final class CourierPreset extends LivePreset {
     this.progressStyle,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
-  /// Etiquetas de las etapas.
+  /// Stage labels.
   final List<String> stages;
 
-  /// Marca cada etapa con un punto.
+  /// Marks each stage with a dot.
   final bool showPoints;
 
-  /// Ícono o imagen que avanza sobre la barra.
+  /// Icon or image that moves along the bar.
   final LiveTrackerSource? tracker;
 
-  /// Ícono al final de la barra.
+  /// Icon at the end of the bar.
   final LiveVisual? endIcon;
 
-  /// Muestra las etiquetas de las etapas.
+  /// Shows the stage labels.
   final bool showLabels;
 
-  /// Muestra el ícono o imagen que avanza sobre la barra.
+  /// Shows the icon or image that moves along the bar.
   final bool showTracker;
 
-  /// Muestra el marcador al final de la barra.
+  /// Shows the marker at the end of the bar.
   final bool showEndIcon;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
 
   @override
@@ -339,9 +339,9 @@ final class CourierPreset extends LivePreset {
   );
 }
 
-/// Pedido para recoger: etapas y código de retiro.
+/// Pickup order: stages and pickup code.
 ///
-/// Datos de ejemplo: «Tu pedido está casi listo».
+/// Sample data: "Tu pedido está casi listo" ("Your order is almost ready").
 final class PickupPreset extends LivePreset {
   const PickupPreset({
     this.accent = const Color(0xFF8D5B3A),
@@ -357,37 +357,37 @@ final class PickupPreset extends LivePreset {
     this.progressStyle,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
-  /// Etiquetas de las etapas.
+  /// Stage labels.
   final List<String> stages;
 
-  /// Marca cada etapa con un punto.
+  /// Marks each stage with a dot.
   final bool showPoints;
 
-  /// Muestra las etiquetas de las etapas.
+  /// Shows the stage labels.
   final bool showLabels;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
 
   @override
@@ -419,9 +419,9 @@ final class PickupPreset extends LivePreset {
   );
 }
 
-/// Turno en una cola (banco, trámites): posición y código de turno.
+/// Turn in a queue (bank, paperwork): position and ticket code.
 ///
-/// Datos de ejemplo: «Tu turno se acerca».
+/// Sample data: "Tu turno se acerca" ("Your turn is coming up").
 final class QueuePreset extends LivePreset {
   const QueuePreset({
     this.accent = const Color(0xFF00897B),
@@ -436,34 +436,34 @@ final class QueuePreset extends LivePreset {
     this.progressStyle,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
-  /// Ícono o imagen que avanza sobre la barra.
+  /// Icon or image that moves along the bar.
   final LiveTrackerSource? tracker;
 
-  /// Muestra el ícono o imagen que avanza sobre la barra.
+  /// Shows the icon or image that moves along the bar.
   final bool showTracker;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
 
   @override
@@ -493,9 +493,9 @@ final class QueuePreset extends LivePreset {
   );
 }
 
-/// Vuelo: check-in, embarque y despegue con cuenta regresiva.
+/// Flight: check-in, boarding and takeoff with a countdown.
 ///
-/// Datos de ejemplo: «Embarque en curso».
+/// Sample data: "Embarque en curso" ("Boarding in progress").
 final class FlightPreset extends LivePreset {
   const FlightPreset({
     this.accent = const Color(0xFF2D5BD7),
@@ -513,43 +513,43 @@ final class FlightPreset extends LivePreset {
     this.progressStyle,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
-  /// Etiquetas de las etapas.
+  /// Stage labels.
   final List<String> stages;
 
-  /// Marca cada etapa con un punto.
+  /// Marks each stage with a dot.
   final bool showPoints;
 
-  /// Ícono o imagen que avanza sobre la barra.
+  /// Icon or image that moves along the bar.
   final LiveTrackerSource? tracker;
 
-  /// Muestra las etiquetas de las etapas.
+  /// Shows the stage labels.
   final bool showLabels;
 
-  /// Muestra el ícono o imagen que avanza sobre la barra.
+  /// Shows the icon or image that moves along the bar.
   final bool showTracker;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
 
   @override
@@ -582,9 +582,9 @@ final class FlightPreset extends LivePreset {
   );
 }
 
-/// Estacionamiento con tiempo limitado: anillo y cuenta regresiva, con botones para ampliar o terminar.
+/// Time-limited parking: ring and countdown, with buttons to extend or end.
 ///
-/// Datos de ejemplo: «Estacionamiento activo».
+/// Sample data: "Estacionamiento activo" ("Parking active").
 final class ParkingPreset extends LivePreset {
   const ParkingPreset({
     this.accent = const Color(0xFF0277BD),
@@ -597,28 +597,28 @@ final class ParkingPreset extends LivePreset {
     this.progressStyle,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
 
   @override
@@ -650,9 +650,9 @@ final class ParkingPreset extends LivePreset {
   );
 }
 
-/// Carga de un auto eléctrico: porcentaje de batería y hora de término.
+/// Electric car charging: battery percentage and finish time.
 ///
-/// Datos de ejemplo: «Cargando tu auto».
+/// Sample data: "Cargando tu auto" ("Charging your car").
 final class EvChargingPreset extends LivePreset {
   const EvChargingPreset({
     this.accent = const Color(0xFF2E7D32),
@@ -667,34 +667,34 @@ final class EvChargingPreset extends LivePreset {
     this.progressStyle,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
-  /// Ícono o imagen que avanza sobre la barra.
+  /// Icon or image that moves along the bar.
   final LiveTrackerSource? tracker;
 
-  /// Muestra el ícono o imagen que avanza sobre la barra.
+  /// Shows the icon or image that moves along the bar.
   final bool showTracker;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
 
   @override
@@ -724,9 +724,9 @@ final class EvChargingPreset extends LivePreset {
   );
 }
 
-/// Descanso entre series de un entrenamiento: cuenta regresiva y número de serie.
+/// Rest between sets of a workout: countdown and set number.
 ///
-/// Datos de ejemplo: «Descanso».
+/// Sample data: "Descanso" ("Rest").
 final class WorkoutPreset extends LivePreset {
   const WorkoutPreset({
     this.accent = const Color(0xFFD81B60),
@@ -742,37 +742,37 @@ final class WorkoutPreset extends LivePreset {
     this.progressStyle,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
-  /// Etiquetas de las etapas.
+  /// Stage labels.
   final List<String> stages;
 
-  /// Marca cada etapa con un punto.
+  /// Marks each stage with a dot.
   final bool showPoints;
 
-  /// Muestra las etiquetas de las etapas.
+  /// Shows the stage labels.
   final bool showLabels;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
 
   @override
@@ -807,9 +807,9 @@ final class WorkoutPreset extends LivePreset {
   );
 }
 
-/// Temporizador de cocina: anillo y cuenta regresiva.
+/// Kitchen timer: ring and countdown.
 ///
-/// Datos de ejemplo: «Arroz en cocción».
+/// Sample data: "Arroz en cocción" ("Rice cooking").
 final class CookingTimerPreset extends LivePreset {
   const CookingTimerPreset({
     this.accent = const Color(0xFFF57C00),
@@ -822,28 +822,28 @@ final class CookingTimerPreset extends LivePreset {
     this.progressStyle,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
 
   @override
@@ -871,9 +871,9 @@ final class CookingTimerPreset extends LivePreset {
   );
 }
 
-/// Subida de un archivo: porcentaje y tiempo restante.
+/// File upload: percentage and time remaining.
 ///
-/// Datos de ejemplo: «Subiendo video».
+/// Sample data: "Subiendo video" ("Uploading video").
 final class UploadPreset extends LivePreset {
   const UploadPreset({
     this.accent = const Color(0xFF5E35B1),
@@ -886,28 +886,28 @@ final class UploadPreset extends LivePreset {
     this.progressStyle,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
 
   @override
@@ -935,9 +935,9 @@ final class UploadPreset extends LivePreset {
   );
 }
 
-/// Técnico a domicilio: avatar, cuenta regresiva y etapas del servicio.
+/// Technician at home: avatar, countdown and service stages.
 ///
-/// Datos de ejemplo: «Tu técnico está en camino».
+/// Sample data: "Tu técnico está en camino" ("Your technician is on the way").
 final class TechnicianPreset extends LivePreset {
   const TechnicianPreset({
     this.accent = const Color(0xFF00838F),
@@ -957,49 +957,49 @@ final class TechnicianPreset extends LivePreset {
     this.progressStyle,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
-  /// Etiquetas de las etapas.
+  /// Stage labels.
   final List<String> stages;
 
-  /// Marca cada etapa con un punto.
+  /// Marks each stage with a dot.
   final bool showPoints;
 
-  /// Ícono o imagen que avanza sobre la barra.
+  /// Icon or image that moves along the bar.
   final LiveTrackerSource? tracker;
 
-  /// Iniciales del avatar.
+  /// Avatar initials.
   final String avatarText;
 
-  /// Foto del avatar (reemplaza a las iniciales).
+  /// Avatar photo (replaces the initials).
   final LiveImage? avatarPhoto;
 
-  /// Muestra las etiquetas de las etapas.
+  /// Shows the stage labels.
   final bool showLabels;
 
-  /// Muestra el ícono o imagen que avanza sobre la barra.
+  /// Shows the icon or image that moves along the bar.
   final bool showTracker;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
 
   @override
@@ -1033,9 +1033,9 @@ final class TechnicianPreset extends LivePreset {
   );
 }
 
-/// Transporte público: paradas que faltan y etapas del recorrido.
+/// Public transport: stops left and stages of the route.
 ///
-/// Datos de ejemplo: «Bájate en 3 paradas».
+/// Sample data: "Bájate en 3 paradas" ("Get off in 3 stops").
 final class TransitPreset extends LivePreset {
   const TransitPreset({
     this.accent = const Color(0xFFC62828),
@@ -1055,49 +1055,49 @@ final class TransitPreset extends LivePreset {
     this.progressStyle,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
-  /// Etiquetas de las etapas.
+  /// Stage labels.
   final List<String> stages;
 
-  /// Marca cada etapa con un punto.
+  /// Marks each stage with a dot.
   final bool showPoints;
 
-  /// Ícono o imagen que avanza sobre la barra.
+  /// Icon or image that moves along the bar.
   final LiveTrackerSource? tracker;
 
-  /// Ícono al final de la barra.
+  /// Icon at the end of the bar.
   final LiveVisual? endIcon;
 
-  /// Muestra las etiquetas de las etapas.
+  /// Shows the stage labels.
   final bool showLabels;
 
-  /// Muestra el ícono o imagen que avanza sobre la barra.
+  /// Shows the icon or image that moves along the bar.
   final bool showTracker;
 
-  /// Muestra el marcador al final de la barra.
+  /// Shows the marker at the end of the bar.
   final bool showEndIcon;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
 
   @override
@@ -1131,9 +1131,9 @@ final class TransitPreset extends LivePreset {
   );
 }
 
-/// Sala de espera virtual: personas antes de tu turno.
+/// Virtual waiting room: people before your turn.
 ///
-/// Datos de ejemplo: «Sala de espera virtual».
+/// Sample data: "Sala de espera virtual" ("Virtual waiting room").
 final class WaitingRoomPreset extends LivePreset {
   const WaitingRoomPreset({
     this.accent = const Color(0xFF00796B),
@@ -1148,34 +1148,34 @@ final class WaitingRoomPreset extends LivePreset {
     this.progressStyle,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
-  /// Ícono o imagen que avanza sobre la barra.
+  /// Icon or image that moves along the bar.
   final LiveTrackerSource? tracker;
 
-  /// Muestra el ícono o imagen que avanza sobre la barra.
+  /// Shows the icon or image that moves along the bar.
   final bool showTracker;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
 
   @override
@@ -1205,9 +1205,9 @@ final class WaitingRoomPreset extends LivePreset {
   );
 }
 
-/// Marcador deportivo. Android no lo promueve a Live Update: no lo inició el usuario como actividad con inicio y fin.
+/// Sports score. Android does not promote it to a Live Update: the user did not start it as an activity with a start and an end.
 ///
-/// Datos de ejemplo: «Lima FC 2 – 1 Callao SC».
+/// Sample data: "Lima FC 2 – 1 Callao SC".
 final class ScorePreset extends LivePreset {
   const ScorePreset({
     this.accent = const Color(0xFF1B5E20),
@@ -1219,25 +1219,25 @@ final class ScorePreset extends LivePreset {
     this.chip,
   });
 
-  /// Color de acento.
+  /// Accent color.
   final Color accent;
 
-  /// Ícono principal.
+  /// Main icon.
   final LiveIcon? icon;
 
-  /// Logo de la app (tarjeta de bloqueo e ícono grande de Android). Sin él se usa el ícono principal.
+  /// App logo (lock screen card and Android's large icon). Without it the main icon is used.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
 
-  /// Fondo de la tarjeta de bloqueo.
+  /// Background of the lock screen card.
   final LiveBackground lockBackground;
 
-  /// Botones (hasta 2). Se muestran en la tarjeta de bloqueo y en Android.
+  /// Buttons (up to 2). They are shown on the lock screen card and on Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de la barra de estado de Android.
+  /// Chip in Android's status bar.
   final LiveChip? chip;
 
   @override

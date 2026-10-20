@@ -7,23 +7,23 @@ import 'core/state.dart';
 import 'platform/image_loader.dart';
 import 'platform/live_island_platform.dart';
 
-/// Una actividad en curso. Se obtiene con [LiveIsland.start].
+/// An activity in progress. It is obtained with [LiveIsland.start].
 class LiveActivity {
   LiveActivity._(this.id, this._platform, {this.customId});
 
-  /// Identificador de la plataforma (ActivityKit en iOS).
+  /// Platform identifier (ActivityKit on iOS).
   final String id;
 
-  /// El id propio que la app dio en [LiveIsland.start] (`customId`), si lo hay.
+  /// The app's own id given in [LiveIsland.start] (`customId`), if any.
   final String? customId;
   final LiveIslandPlatform _platform;
 
-  /// Cambia solo los campos indicados; el resto del estado se conserva. Es lo
-  /// único que viaja en cada actualización (iOS limita a 4 096 bytes).
+  /// Changes only the indicated fields; the rest of the state is kept. It is
+  /// the only thing that travels with each update (iOS limits it to 4,096 bytes).
   ///
-  /// [staleAfter] marca el contenido como desactualizado pasado ese tiempo
-  /// (ver [LiveBind.stale]). [alert] llama la atención: expande la isla y suena
-  /// en iOS; en Android la notificación suena y aparece como aviso emergente.
+  /// [staleAfter] marks the content as out of date after that time
+  /// (see [LiveBind.stale]). [alert] draws attention: it expands the island and
+  /// plays a sound on iOS; on Android the notification sounds and shows as a heads-up.
   Future<void> update(
     Map<String, Object?> state, {
     Duration? staleAfter,
@@ -35,19 +35,19 @@ class LiveActivity {
     alert: alert,
   );
 
-  /// Mantiene la actividad al día con una fuente de datos en vivo: la posición
-  /// del conductor, el estado de un pedido, un temporizador… Cada evento de
-  /// [source] pasa por [toState] y el resultado se envía con [update].
+  /// Keeps the activity up to date from a live data source: the driver's
+  /// position, an order's status, a timer… Each event of [source] goes through
+  /// [toState] and the result is sent with [update].
   ///
-  /// Para no gastar el presupuesto de actualizaciones del sistema, envía como
-  /// máximo una cada [minInterval] (la última siempre llega) y se salta las que
-  /// no cambian nada. Devuelve la suscripción: cancélala (o llama a [end]) para
-  /// dejar de seguir.
+  /// To avoid spending the system's update budget, it sends at most one every
+  /// [minInterval] (the last one always arrives) and skips those that change
+  /// nothing. It returns the subscription: cancel it (or call [end]) to stop
+  /// following.
   ///
   /// ```dart
-  /// actividad.follow(
-  ///   posiciones, // Stream<LiveLatLng> de tu mapa o de tu servidor
-  ///   (p) => {'progreso': ruta.progressAt(p), 'etapa': ruta.stageAt(p, 4)},
+  /// activity.follow(
+  ///   positions, // Stream<LiveLatLng> from your map or your server
+  ///   (p) => {'progress': route.progressAt(p), 'stage': route.stageAt(p, 4)},
   /// );
   /// ```
   StreamSubscription<T> follow<T>(
@@ -94,25 +94,25 @@ class LiveActivity {
     return sub;
   }
 
-  /// Tokens de push de esta actividad (iOS; empiezan a llegar poco después
-  /// de [LiveIsland.start] con `requestPushToken: true`). Envíalos a tu
-  /// servidor para actualizarla o terminarla por APNs.
+  /// Push tokens of this activity (iOS; they start arriving shortly after
+  /// [LiveIsland.start] with `requestPushToken: true`). Send them to your
+  /// server to update or end it through APNs.
   Stream<String> get pushTokens => _platform.pushEvents
       .where((e) => e is LivePushTokenEvent && e.token.activityId == id)
       .map((e) => (e as LivePushTokenEvent).token.token);
 
-  /// Programa que la actividad desaparezca a las [at].
+  /// Schedules the activity to disappear at [at].
   ///
-  /// El comportamiento depende de la plataforma, porque ActivityKit no tiene
-  /// «terminar más tarde» para una actividad viva:
+  /// The behavior depends on the platform, because ActivityKit has no
+  /// "end later" for a live activity:
   ///
-  /// - **iOS:** la actividad **termina ya** (sale de la isla y no se puede
-  ///   actualizar más) y la tarjeta de la pantalla de bloqueo se queda con
-  ///   [state] hasta [at]; iOS la quita como mucho 4 horas después.
-  /// - **Android:** la notificación **sigue viva y se puede actualizar**, y el
-  ///   sistema la retira solo a las [at], aunque la app esté cerrada.
+  /// - **iOS:** the activity **ends now** (it leaves the island and can no
+  ///   longer be updated) and the lock screen card stays with [state] until
+  ///   [at]; iOS removes it at most 4 hours later.
+  /// - **Android:** the notification **stays alive and can be updated**, and
+  ///   the system removes it by itself at [at], even if the app is closed.
   ///
-  /// Si [at] ya pasó, termina de inmediato.
+  /// If [at] has already passed, it ends immediately.
   Future<void> scheduleEnd(DateTime at, {Map<String, Object?>? state}) {
     final wait = at.difference(DateTime.now());
     if (wait <= Duration.zero) {
@@ -125,7 +125,7 @@ class LiveActivity {
     );
   }
 
-  /// Termina la actividad. Con [state] deja un último estado visible.
+  /// Ends the activity. With [state] it leaves a final visible state.
   Future<void> end({
     Map<String, Object?>? state,
     LiveDismiss dismiss = LiveDismiss.byDefault,
@@ -136,13 +136,13 @@ class LiveActivity {
   );
 }
 
-/// Punto de entrada del paquete.
+/// Entry point of the package.
 abstract final class LiveIsland {
   static LiveIslandPlatform _platform = MethodChannelLiveIslandPlatform();
   static LiveImageReader _imageReader = defaultImageReader;
   static LiveAssetReader _assetReader = defaultAssetReader;
 
-  /// Reemplaza la plataforma (para pruebas). Con `null` vuelve a la real.
+  /// Replaces the platform (for tests). With `null` it goes back to the real one.
   static void debugOverride({
     LiveIslandPlatform? platform,
     LiveImageReader? imageReader,
@@ -153,30 +153,30 @@ abstract final class LiveIsland {
     _assetReader = assetReader ?? defaultAssetReader;
   }
 
-  /// ¿Puede la app mostrar actividades ahora? En iOS es
+  /// Can the app show activities now? On iOS it is
   /// `ActivityAuthorizationInfo.areActivitiesEnabled`.
   static Future<bool> areEnabled() => _platform.areEnabled();
 
-  /// Pide el permiso de notificaciones (Android 13 o superior). Llámalo antes
-  /// de [start]; si el usuario lo rechaza, [start] lanza `disabled`. En iOS
-  /// no hace nada.
+  /// Asks for the notification permission (Android 13 or later). Call it
+  /// before [start]; if the user refuses, [start] throws `disabled`. On iOS
+  /// it does nothing.
   static Future<bool> requestPermission() => _platform.requestPermission();
 
-  /// Abre los ajustes donde el usuario permite que la app publique Live
-  /// Updates (Android 16 o superior). Devuelve `false` si no existen.
+  /// Opens the settings where the user allows the app to post Live
+  /// Updates (Android 16 or later). Returns `false` if they do not exist.
   static Future<bool> openPromotionSettings() =>
       _platform.openPromotionSettings();
 
-  /// Las actividades que siguen vivas, por ejemplo tras reabrir la app o
-  /// cuando una acción llegó con la app cerrada, para poder actualizarlas.
+  /// The activities that are still alive, for example after reopening the app
+  /// or when an action arrived with the app closed, so you can update them.
   static Future<List<LiveActivity>> activeActivities() async => [
     for (final a in await _platform.activeActivities())
       LiveActivity._(a.id, _platform, customId: a.customId),
   ];
 
-  /// La actividad viva que se inició con [customId], o `null` si no existe
-  /// (ya terminó o el usuario la descartó). Sirve tras reabrir la app, sin
-  /// guardar el id de la plataforma.
+  /// The live activity that was started with [customId], or `null` if it does
+  /// not exist (it already ended or the user dismissed it). Useful after
+  /// reopening the app, without storing the platform's id.
   static Future<LiveActivity?> activity(String customId) async {
     for (final a in await _platform.activeActivities()) {
       if (a.customId == customId) {
@@ -186,30 +186,30 @@ abstract final class LiveIsland {
     return null;
   }
 
-  /// Termina todas las actividades vivas de la app (por ejemplo al cerrar
-  /// sesión). Con [dismiss] `immediate` desaparecen de inmediato.
+  /// Ends all of the app's live activities (for example when signing out).
+  /// With [dismiss] `immediate` they disappear at once.
   static Future<void> endAll({LiveDismiss dismiss = LiveDismiss.immediate}) =>
       _platform.endAll(dismiss: dismiss);
 
-  /// Cada vez que el usuario toca un botón de una actividad llega aquí su
-  /// `id` (el de `LiveButton(id: ...)`). Las acciones que ocurrieron con la
-  /// app cerrada se entregan al empezar a escuchar.
+  /// Each time the user taps a button of an activity its `id` (the one from
+  /// `LiveButton(id: ...)`) arrives here. Actions that happened with the app
+  /// closed are delivered when you start listening.
   static Stream<String> get actions => _platform.actions;
 
-  /// Atajo de [actions]: llama a [callback] con el id de cada botón tocado.
-  /// Cancela la suscripción devuelta cuando ya no la necesites.
+  /// Shortcut for [actions]: calls [callback] with the id of each tapped button.
+  /// Cancel the returned subscription when you no longer need it.
   static StreamSubscription<String> onAction(
     void Function(String id) callback,
   ) => _platform.actions.listen(callback);
 
-  /// Tokens de push de iOS: los de cada actividad (con `requestPushToken`) y
-  /// el de push-to-start (iOS 17.2), que no tiene `activityId`.
+  /// iOS push tokens: those of each activity (with `requestPushToken`) and
+  /// the push-to-start one (iOS 17.2), which has no `activityId`.
   static Stream<LivePushToken> get pushTokens => _platform.pushEvents
       .where((e) => e is LivePushTokenEvent)
       .map((e) => (e as LivePushTokenEvent).token);
 
-  /// Actividades que empezaron por un push (push-to-start en iOS; [handlePush]
-  /// con `event: start` en Android).
+  /// Activities that started from a push (push-to-start on iOS; [handlePush]
+  /// with `event: start` on Android).
   static Stream<LiveActivity> get startedByPush => _platform.pushEvents
       .where((e) => e is LivePushStartedEvent)
       .map(
@@ -217,9 +217,9 @@ abstract final class LiveIsland {
             LiveActivity._((e as LivePushStartedEvent).activityId, _platform),
       );
 
-  /// Guarda [layout] en el dispositivo con el nombre [name]. Una actividad
-  /// iniciada desde un push usa ese diseño por su nombre, porque un push no
-  /// puede llevar el diseño. Vuelve a llamarlo si el diseño cambia.
+  /// Saves [layout] on the device under the name [name]. An activity started
+  /// from a push uses that design by its name, because a push cannot carry the
+  /// design. Call it again if the design changes.
   static Future<void> registerLayout(String name, LiveLayout layout) async {
     final images = await loadLayoutImages(
       layout,
@@ -234,24 +234,24 @@ abstract final class LiveIsland {
     );
   }
 
-  /// Procesa los datos de un mensaje de FCM (Android) para iniciar, actualizar
-  /// o terminar una actividad; ver `doc/push.md`. Llámalo desde tu handler de
-  /// `firebase_messaging`. Devuelve el id de la actividad afectada. En iOS no
-  /// hace nada: APNs llega directo a ActivityKit.
+  /// Processes the data of an FCM message (Android) to start, update or end an
+  /// activity; see `doc/push.md`. Call it from your `firebase_messaging`
+  /// handler. Returns the id of the affected activity. On iOS it does nothing:
+  /// APNs goes straight to ActivityKit.
   static Future<String?> handlePush(Map<String, Object?> data) =>
       _platform.handlePush(data);
 
-  /// Inicia una actividad con su [layout] (que viaja una sola vez) y su
-  /// estado inicial [state].
+  /// Starts an activity with its [layout] (which travels only once) and its
+  /// initial state [state].
   ///
-  /// [customId] es un id propio de tu app (`'viaje-42'`). Si ya hay una
-  /// actividad viva con ese id, no se crea otra: se actualiza su estado y se
-  /// devuelve la misma. Después se encuentra con [activity].
+  /// [customId] is your app's own id (`'trip-42'`). If a live activity with
+  /// that id already exists, another is not created: its state is updated and
+  /// the same one is returned. It can be found afterwards with [activity].
   ///
-  /// [deepLink] se abre al tocar la actividad. [staleAfter] marca el contenido
-  /// como desactualizado pasado ese tiempo. Lanza [LiveIslandException] si la
-  /// plataforma no puede (`disabled`, `not_configured`…) y [StateError] si el
-  /// diseño tiene errores según [check].
+  /// [deepLink] opens when the activity is tapped. [staleAfter] marks the
+  /// content as out of date after that time. It throws [LiveIslandException]
+  /// if the platform cannot (`disabled`, `not_configured`…) and [StateError]
+  /// if the design has errors according to [check].
   static Future<LiveActivity> start({
     required LiveLayout layout,
     required Map<String, Object?> state,
@@ -291,11 +291,11 @@ abstract final class LiveIsland {
     return LiveActivity._(id, _platform, customId: customId);
   }
 
-  /// Valida [layout] con [state] con el mismo criterio del panel "Validación"
-  /// del HTML de prototipos (`doc/design/live_island_prototipos.html`).
+  /// Validates [layout] with [state] using the same criteria as the
+  /// "Validation" panel of the prototype HTML (`doc/design/live_island_prototipos.html`).
   ///
-  /// [androidPromotable] debe ser `false` para casos que Google no promueve a
-  /// Live Update (publicidad, chats, actividades que no inició el usuario).
+  /// [androidPromotable] must be `false` for cases Google does not promote to
+  /// Live Update (ads, chats, activities the user did not start).
   static LiveReport check(
     LiveLayout layout,
     Map<String, Object?> state, {

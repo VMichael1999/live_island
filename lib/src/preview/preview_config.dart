@@ -9,11 +9,11 @@ import 'package:flutter/widgets.dart';
 import '../core/layout.dart';
 import '../core/state.dart';
 
-/// Construye el glifo de un SF Symbol que la vista previa no trae dibujado.
+/// Builds the glyph of an SF Symbol the preview does not ship drawn.
 typedef LiveSymbolBuilder =
     Widget Function(String symbol, double size, Color color);
 
-/// Todo lo que la vista previa necesita para dibujar una actividad.
+/// Everything the preview needs to draw an activity.
 class LivePreviewConfig {
   LivePreviewConfig({
     required this.layout,
@@ -30,40 +30,40 @@ class LivePreviewConfig {
 
   final LiveLayout layout;
 
-  /// Estado ya normalizado (fechas en ISO 8601 UTC).
+  /// Already-normalized state (dates in ISO 8601 UTC).
   final Map<String, Object?> state;
 
-  /// Instante fijo para contadores. Con `null` la vista previa corre en vivo.
+  /// Fixed instant for counters. With `null` the preview runs live.
   final DateTime? now;
 
-  /// Imágenes por id de `LiveImage`. Las que falten se leen de su origen
-  /// (asset, red, archivo o memoria).
+  /// Images by `LiveImage` id. Any that are missing are read from their origin
+  /// (asset, network, file or memory).
   final Map<String, ImageProvider> images;
 
-  /// Con [Brightness.light] la tarjeta de bloqueo `system` y la notificación de
-  /// Android usan sus versiones claras. La isla siempre es negra.
+  /// With [Brightness.light] the `system` lock screen card and the Android
+  /// notification use their light versions. The island is always black.
   final Brightness brightness;
 
-  /// Nombre de la app en el encabezado de la notificación de Android.
+  /// Name of the app in the Android notification's header.
   final String appName;
 
-  /// `false` para casos que Android no promueve a Live Update.
+  /// `false` for cases Android does not promote to a Live Update.
   final bool androidPromotable;
 
-  /// Dibuja los SF Symbols que no vienen incluidos en la vista previa.
+  /// Draws the SF Symbols the preview does not include.
   final LiveSymbolBuilder? symbolBuilder;
 
-  /// Dibuja la actividad como la vería el usuario pasado su `staleAfter`:
-  /// `LiveBind.stale` vale `true`.
+  /// Draws the activity as the user would see it after its `staleAfter`:
+  /// `LiveBind.stale` is `true`.
   final bool stale;
 
-  /// Desenfoca el fondo de la tarjeta de bloqueo (`BackdropFilter`). Apágalo si
-  /// tu GPU lo rechaza (por ejemplo, Impeller con OpenGL ES en algunos emuladores).
+  /// Blurs the lock screen card's background (`BackdropFilter`). Turn it off if
+  /// your GPU rejects it (for example, Impeller with OpenGL ES on some emulators).
   final bool blur;
 }
 
-/// Entrega la hora actual a [builder]; si [fixed] es `null` se actualiza cada
-/// segundo para que las cuentas regresivas corran.
+/// Delivers the current time to [builder]; if [fixed] is `null` it updates every
+/// second so the countdowns run.
 class LivePreviewClock extends StatefulWidget {
   const LivePreviewClock({super.key, this.fixed, required this.builder});
 

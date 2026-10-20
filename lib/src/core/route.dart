@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-/// Una posición geográfica en grados.
+/// A geographic position in degrees.
 class LiveLatLng {
   const LiveLatLng(this.lat, this.lng);
 
@@ -18,20 +18,20 @@ class LiveLatLng {
   String toString() => 'LiveLatLng($lat, $lng)';
 }
 
-/// Un recorrido (origen, paradas opcionales y destino) que convierte la
-/// posición actual en avance de 0 a 1 para la barra de progreso.
+/// A route (origin, optional stops and destination) that turns the current
+/// position into progress from 0 to 1 for the progress bar.
 ///
 /// ```dart
-/// final ruta = LiveRoute.straight(origen, destino);
-/// actividad.update({'progreso': ruta.progressAt(posicionDelConductor)});
+/// final route = LiveRoute.straight(origin, destination);
+/// activity.update({'progress': route.progressAt(driverPosition)});
 /// ```
 ///
-/// La posición se proyecta sobre el tramo más cercano, así que un conductor
-/// que se desvía un poco no hace retroceder la barra de golpe. El avance es la
-/// distancia recorrida sobre la distancia total del trazado. No depende de
-/// ningún plugin de mapas: tú pasas las coordenadas que ya recibes.
+/// The position is projected onto the nearest segment, so a driver who
+/// strays a little does not make the bar jump back. Progress is the distance
+/// traveled over the total distance of the path. It does not depend on any
+/// map plugin: you pass the coordinates you already receive.
 class LiveRoute {
-  /// [path] tiene al menos dos puntos: origen, puntos intermedios y destino.
+  /// [path] has at least two points: origin, intermediate points and destination.
   LiveRoute(List<LiveLatLng> path) : path = List.unmodifiable(path) {
     if (path.length < 2) {
       throw ArgumentError.value(path, 'path', 'Se necesitan al menos 2 puntos');
@@ -45,37 +45,37 @@ class LiveRoute {
     _cum = cum;
   }
 
-  /// Línea recta entre [start] y [end].
+  /// Straight line between [start] and [end].
   LiveRoute.straight(LiveLatLng start, LiveLatLng end) : this([start, end]);
 
   final List<LiveLatLng> path;
   late final List<double> _cum;
 
-  /// Largo total del trazado, en metros.
+  /// Total length of the path, in meters.
   double get totalMeters => _cum.last;
 
-  /// Avance de 0 a 1 de [position] sobre el trazado.
+  /// Progress from 0 to 1 of [position] along the path.
   double progressAt(LiveLatLng position) {
     if (totalMeters == 0) return 1;
     return (_alongMeters(position) / totalMeters).clamp(0.0, 1.0);
   }
 
-  /// Metros que faltan hasta el destino, siguiendo el trazado.
+  /// Meters left to the destination, following the path.
   double remainingMeters(LiveLatLng position) =>
       math.max(0, totalMeters - _alongMeters(position));
 
-  /// Distancia en línea recta hasta el destino, en metros.
+  /// Straight-line distance to the destination, in meters.
   double metersToEnd(LiveLatLng position) => _meters(position, path.last);
 
-  /// Etapa (0 a [stages] - 1) en la que está [position] si el trazado se
-  /// reparte en [stages] etapas iguales. Coincide con la etapa que dibuja la
-  /// barra con ese número de etiquetas.
+  /// Stage (0 to [stages] - 1) [position] is in if the path is split into
+  /// [stages] equal stages. It matches the stage the bar draws with that many
+  /// labels.
   int stageAt(LiveLatLng position, int stages) {
     final f = progressAt(position);
     return math.min(stages - 1, (f * (stages - 1) + 1e-6).floor());
   }
 
-  /// ¿Está [position] a menos de [meters] del destino?
+  /// Is [position] within [meters] of the destination?
   bool hasArrived(LiveLatLng position, {double meters = 50}) =>
       metersToEnd(position) <= meters;
 

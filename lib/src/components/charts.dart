@@ -6,16 +6,16 @@ import '../core/node.dart';
 import 'progress.dart';
 import 'visuals.dart';
 
-/// Convierte una serie de números al texto que viaja en el estado
-/// (`"10,12.5,11"`), que es lo que lee [LiveSparkline].
+/// Converts a series of numbers to the text that travels in the state
+/// (`"10,12.5,11"`), which is what [LiveSparkline] reads.
 ///
 /// ```dart
-/// LiveIsland.update(id, {'serie': liveSeries([212, 214.5, 213.2, 219])});
+/// LiveIsland.update(id, {'series': liveSeries([212, 214.5, 213.2, 219])});
 /// ```
 String liveSeries(Iterable<num> values) =>
     [for (final v in values) v == v.roundToDouble() ? v.toInt() : v].join(',');
 
-/// Lee una serie escrita con [liveSeries] (también acepta una lista).
+/// Reads a series written with [liveSeries] (it also accepts a list).
 List<double> parseLiveSeries(Object? raw) {
   if (raw is List) {
     return [
@@ -30,10 +30,10 @@ List<double> parseLiveSeries(Object? raw) {
   ];
 }
 
-/// Gráfica de línea pequeña ("sparkline") para precios, pulso, velocidad…
+/// Small line chart ("sparkline") for prices, heart rate, speed…
 ///
-/// El estado guarda la serie como texto con [liveSeries]. En Android se omite:
-/// una notificación no puede dibujar una gráfica.
+/// The state stores the series as text with [liveSeries]. It is omitted on
+/// Android: a notification cannot draw a chart.
 class LiveSparkline extends LiveNode {
   const LiveSparkline({
     required this.series,
@@ -46,21 +46,21 @@ class LiveSparkline extends LiveNode {
     this.max,
   });
 
-  /// Campo del estado con la serie (`"10,12.5,11"`).
+  /// State field with the series (`"10,12.5,11"`).
   final LiveBind series;
   final double height;
 
-  /// Color de la línea. Por defecto el acento de la tarjeta.
+  /// Color of the line. The card's accent by default.
   final Color? color;
 
-  /// Rellena el área bajo la línea con un degradado suave.
+  /// Fills the area under the line with a soft gradient.
   final bool fill;
   final double strokeWidth;
 
-  /// Punto en el último valor.
+  /// Dot on the last value.
   final bool dot;
 
-  /// Límites del eje vertical. Sin ellos se ajustan a la serie.
+  /// Limits of the vertical axis. Without them they adjust to the series.
   final double? min;
   final double? max;
 
@@ -93,10 +93,10 @@ class LiveSparkline extends LiveNode {
   );
 }
 
-/// Medidor de arco: parte de un anillo (por defecto media vuelta) con un
-/// punto que avanza. Sirve para una órbita, un parquímetro, una batería…
+/// Arc gauge: part of a ring (half a turn by default) with a moving dot.
+/// Useful for an orbit, a parking meter, a battery…
 ///
-/// En Android se muestra como barra de progreso.
+/// On Android it is shown as a progress bar.
 class LiveGauge extends LiveNode {
   const LiveGauge({
     required this.value,
@@ -107,22 +107,22 @@ class LiveGauge extends LiveNode {
     this.child,
   });
 
-  /// Campo numérico 0..1.
+  /// Numeric field 0..1.
   final LiveBind value;
 
-  /// Ancho del medidor en pt.
+  /// Width of the gauge in pt.
   final double size;
 
-  /// Grados que abarca el arco (de 90 a 360). 180 es un semicírculo.
+  /// Degrees the arc spans (from 90 to 360). 180 is a semicircle.
   final double sweep;
 
-  /// Punto en el extremo de lo avanzado.
+  /// Dot at the end of the completed part.
   final bool knob;
 
-  /// Color, color del fondo, grosor (`height`) y forma discontinua.
+  /// Color, background color, thickness (`height`) and dashed shape.
   final LiveProgressStyle? style;
 
-  /// Contenido en el centro del arco.
+  /// Content in the center of the arc.
   final LiveNode? child;
 
   @override
@@ -155,10 +155,10 @@ class LiveGauge extends LiveNode {
   );
 }
 
-/// Ruta curva entre dos puntos con un ícono que avanza por ella: el avión de
-/// un vuelo, un paquete en camino…
+/// Curved route between two points with an icon moving along it: a flight's
+/// airplane, a package on its way…
 ///
-/// En Android se muestra como barra de progreso con el mismo ícono.
+/// On Android it is shown as a progress bar with the same icon.
 class LiveFlightPath extends LiveNode {
   LiveFlightPath({
     required this.value,
@@ -170,14 +170,14 @@ class LiveFlightPath extends LiveNode {
     this.style,
   }) : tracker = tracker?.asTracker();
 
-  /// Campo numérico 0..1.
+  /// Numeric field 0..1.
   final LiveBind value;
   final double height;
 
-  /// Cuánto se arquea la ruta (0 = recta, 1 = muy curva).
+  /// How much the route arches (0 = straight, 1 = very curved).
   final double curve;
 
-  /// Ícono que avanza por la ruta.
+  /// Icon that moves along the route.
   final LiveTracker? tracker;
   final LiveVisual? startIcon;
   final LiveVisual? endIcon;
@@ -225,12 +225,12 @@ class LiveFlightPath extends LiveNode {
   );
 }
 
-/// Un tramo de [LiveSplitBar]: cuánto vale (campo numérico del estado) y su
+/// A segment of a [LiveSplitBar]: its value (a numeric state field) and its
 /// color.
 class LiveSplitPart {
   const LiveSplitPart(this.value, this.color);
 
-  /// Campo numérico del estado; los tramos se reparten en proporción a su valor.
+  /// Numeric state field; the segments are split in proportion to their value.
   final LiveBind value;
   final Color color;
 
@@ -245,22 +245,22 @@ class LiveSplitPart {
   );
 }
 
-/// Barra partida en tramos de distinto color, repartidos en proporción a sus
-/// valores: la tarifa y la propina, lo gastado y lo que queda…
+/// Bar split into segments of different colors, laid out in proportion to
+/// their values: the fare and the tip, what was spent and what is left…
 ///
-/// Android la omite (una notificación no puede dibujarla).
+/// Android omits it (a notification cannot draw it).
 class LiveSplitBar extends LiveNode {
   const LiveSplitBar(this.parts, {this.height = 10, this.gap = 3, this.radius});
 
   final List<LiveSplitPart> parts;
 
-  /// Grosor en pt.
+  /// Thickness in pt.
   final double height;
 
-  /// Separación entre tramos en pt.
+  /// Gap between segments in pt.
   final double gap;
 
-  /// Esquinas (por defecto la mitad del grosor).
+  /// Corners (half the thickness by default).
   final double? radius;
 
   @override

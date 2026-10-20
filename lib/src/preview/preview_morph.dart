@@ -11,11 +11,11 @@ import 'preview_surfaces.dart';
 double _clamp(double v, double a, double b) => math.min(b, math.max(a, v));
 double _mix(double t, double a, double b) => a + (b - a) * t;
 
-/// Forma de la gota y del cuello en un instante de la animación.
+/// Shape of the drop and the neck at an instant of the animation.
 ///
-/// Es la geometría del efecto «gota»: la isla suelta una gota que cae, se
-/// estira, deja un cuello que se afina hasta romperse y la gota se abre en
-/// tarjeta. Es una función pura: la usan el pintor y las pruebas.
+/// It is the geometry of the "drop" effect: the island lets go of a drop that
+/// falls, stretches, leaves a neck that thins until it breaks, and the drop
+/// opens into a card. It is a pure function: the painter and the tests use it.
 class LiveMorphGeometry {
   const LiveMorphGeometry({
     required this.x,
@@ -35,14 +35,14 @@ class LiveMorphGeometry {
   final double x, y, width, height, radius;
   final double neckX, neckY, neckWidth, neckHeight;
 
-  /// 0 a 1: cuánto cuello hay (pico a mitad de la caída).
+  /// 0 to 1: how much neck there is (peak halfway through the fall).
   final double neck;
 
-  /// Cuánto se aleja el centro de la gota del de la tarjeta final.
+  /// How far the drop's center is from the final card's.
   final double offsetY;
   final double widthRatio;
 
-  /// [drop] y [expand] van de 0 a 1 (pueden pasarse un poco por el resorte).
+  /// [drop] and [expand] go from 0 to 1 (they may overshoot a little because of the spring).
   factory LiveMorphGeometry.compute({
     required double drop,
     required double expand,
@@ -98,8 +98,8 @@ class LiveMorphGeometry {
     );
   }
 
-  /// Ancho del cuello: sube, se afina y desaparece (`t^rise · (1-t)^fall`,
-  /// normalizada para que el pico valga 1).
+  /// Width of the neck: it rises, thins and disappears (`t^rise · (1-t)^fall`,
+  /// normalized so the peak is 1).
   static double neckProfile(double progress, double rise, double fall) {
     final t = _clamp(progress, 0, 1);
     if (t <= 0 || t >= 1) return 0;
@@ -109,14 +109,14 @@ class LiveMorphGeometry {
   }
 }
 
-/// Isla dinámica que suelta una gota y se abre en una tarjeta con [child].
+/// Dynamic Island that lets go of a drop and opens into a card with [child].
 ///
-/// Con [visible] en `true` la isla baja la gota, la gota se abre y aparece el
-/// contenido; con `false` se pliega y vuelve a la isla. Tocar la tarjeta llama
-/// a [onTap] y la cierra; deslizarla hacia arriba la descarta.
+/// With [visible] set to `true` the island lowers the drop, the drop opens and
+/// the content appears; with `false` it folds back into the island. Tapping the
+/// card calls [onTap] and closes it; swiping it up dismisses it.
 ///
-/// Es solo la animación de la vista previa (o un aviso dentro de tu app): la
-/// isla real la dibuja el sistema y no se puede animar así.
+/// It is only the preview's animation (or a notice inside your app): the real
+/// island is drawn by the system and cannot be animated this way.
 class LiveIslandMorph extends StatefulWidget {
   const LiveIslandMorph({
     super.key,
@@ -139,36 +139,36 @@ class LiveIslandMorph extends StatefulWidget {
     this.onDismissed,
   });
 
-  /// Contenido de la tarjeta (se dibuja sobre la forma).
+  /// Content of the card (drawn over the shape).
   final Widget child;
   final bool visible;
 
-  /// Alto de la tarjeta. `null` lo mide a partir de [child].
+  /// Height of the card. `null` measures it from [child].
   final double? cardHeight;
   final double cardWidth;
   final Size islandSize;
   final double islandTop;
 
-  /// Espacio entre la isla y la tarjeta.
+  /// Space between the island and the card.
   final double gap;
   final double dropSize;
   final double neckWidth;
 
-  /// Radio del desenfoque que funde las formas.
+  /// Radius of the blur that fuses the shapes.
   final double blur;
 
-  /// Ganancia y umbral del filtro que vuelve a endurecer el borde.
+  /// Gain and threshold of the filter that hardens the edge again.
   final double gain;
   final double threshold;
   final Color islandColor;
   final Color cardColor;
 
-  /// 1 = velocidad normal; 3 = tres veces más lento.
+  /// 1 = normal speed; 3 = three times slower.
   final double timeScale;
   final VoidCallback? onTap;
   final VoidCallback? onDismissed;
 
-  /// Variante que dibuja la isla expandida de un diseño.
+  /// Variant that draws a design's expanded island.
   static Widget preview(
     LivePreviewConfig config, {
     Key? key,

@@ -18,7 +18,7 @@ import 'preview_icon.dart';
 import 'preview_progress.dart';
 import 'preview_style.dart';
 
-/// Contexto de un dibujado: datos, hora y colores de la superficie.
+/// Context of a drawing: data, time and the surface's colors.
 class LiveRenderContext {
   LiveRenderContext({
     required this.config,
@@ -31,13 +31,13 @@ class LiveRenderContext {
   final DateTime now;
   final LiveToneStyle style;
 
-  /// `true` en la isla expandida: no dibuja botones, porque tocar la isla
-  /// siempre abre la app (ver doc/design/DESVIACIONES.md).
+  /// `true` in the expanded island: it draws no buttons, because tapping the island
+  /// always opens the app (see doc/design/DESVIACIONES.md).
   final bool island;
 
   int _buttons = 0;
 
-  /// Posición del siguiente botón en esta superficie (0 = principal).
+  /// Position of the next button on this surface (0 = main).
   int nextButton() => _buttons++;
 
   Map<String, Object?> get state => config.state;
@@ -55,7 +55,7 @@ class LiveRenderContext {
   }
 }
 
-/// ¿Este nodo no se dibuja en este contexto? (Botones dentro de la isla.)
+/// Is this node not drawn in this context? (Buttons inside the island.)
 bool _hidden(LiveNode n, LiveRenderContext ctx) {
   if (!ctx.island) return false;
   if (n is LiveButton || n is LiveToggle) return true;
@@ -68,14 +68,14 @@ bool _hidden(LiveNode n, LiveRenderContext ctx) {
   return false;
 }
 
-/// Recuadro neutro cuando una imagen no se puede cargar.
+/// Neutral box when an image cannot be loaded.
 const _missingImage = DecoratedBox(
   decoration: BoxDecoration(color: Color(0x33808080)),
 );
 
 double _num(Object? v) => v is num ? v.toDouble() : double.tryParse('$v') ?? 0;
 
-/// Nombre con el que buscar el ícono: el SF Symbol o el archivo de Android.
+/// Name used to look up the icon: the SF Symbol or the Android file.
 String _androidName(String path) =>
     path
         .split('/')
@@ -83,8 +83,8 @@ String _androidName(String path) =>
         .replaceAll(RegExp(r'\.[A-Za-z0-9]+$'), '')
         .toLowerCase();
 
-/// Dibuja [node]. [slot] es el tamaño de la zona donde va (para íconos,
-/// imágenes y avatares sin `size`); [iconSize] el glifo si es un ícono.
+/// Draws [node]. [slot] is the size of the zone it goes in (for icons,
+/// images and avatars without `size`); [iconSize] the glyph if it is an icon.
 Widget buildLiveNode(
   LiveNode node,
   LiveRenderContext ctx, {
@@ -450,7 +450,7 @@ Widget _visual(
   }
 }
 
-/// Dibuja el SF Symbol (o su equivalente de Android) de [icon].
+/// Draws the SF Symbol (or its Android equivalent) of [icon].
 Widget liveSymbol(
   LiveIcon icon,
   double size,
@@ -472,7 +472,7 @@ Widget liveSymbol(
   );
 }
 
-/// Imagen propia dentro de un cuadro de [size], con su forma y ajuste.
+/// Your own image inside a box of [size], with its shape and fit.
 Widget liveImageBox(
   LiveImage img,
   double size,
@@ -549,8 +549,8 @@ Widget _avatar(
   );
 }
 
-/// Avatar de [size] con el fondo indicado (la tarjeta de bloqueo lo aclara
-/// cuando su fondo es el color de acento).
+/// Avatar of [size] with the given background (the lock screen lightens it
+/// when its background is the accent color).
 Widget liveAvatar(
   LiveAvatar a,
   double size,
@@ -586,7 +586,7 @@ Widget _progress(LiveProgress p, LiveRenderContext ctx, {double? slot}) {
   );
 }
 
-/// Barra con todos sus estilos opcionales ([style]).
+/// Bar with all its optional styles ([style]).
 Widget _bar(
   LiveRenderContext ctx, {
   required double value,
@@ -689,7 +689,7 @@ Widget? _tracker(
   return null;
 }
 
-/// Imagen sin fondo: alto fijo, ancho según su proporción y una sombra suave.
+/// Image with no background: fixed height, width by its proportion and a soft shadow.
 Widget _bareTracker(LiveImage img, double height, LiveRenderContext ctx) {
   final provider = ctx.providerFor(img);
   if (provider == null) return SizedBox(height: height, width: height);

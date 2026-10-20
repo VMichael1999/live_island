@@ -1,24 +1,24 @@
-/// Una fuente de texto que Android puede mostrar (título y texto de la
-/// notificación): un campo del estado, un literal o una plantilla.
+/// A text source Android can show (the notification's title and text): a
+/// state field, a literal or a template.
 abstract interface class LiveTextSource {
   Map<String, Object?> toAndroidTextJson();
 }
 
-/// Enlace a un campo del estado. Los nombres los elige quien usa el paquete.
+/// A binding to a state field. The names are chosen by whoever uses the package.
 class LiveBind implements LiveTextSource {
   const LiveBind(this.field);
 
-  /// El estado «desactualizado»: pasa a `true` cuando llega la fecha de
-  /// `staleAfter` y el sistema vuelve a dibujar la actividad, sin push ni
-  /// actualización. Úsalo en un `LiveIf` para mostrar el estado final:
+  /// The "stale" state: becomes `true` when the `staleAfter` date arrives and
+  /// the system redraws the activity, with no push or update. Use it in a
+  /// `LiveIf` to show the final state:
   ///
   /// ```dart
   /// LiveIf(LiveBind.stale.isTrue,
-  ///     then: LiveText.literal('Llegó'), otherwise: LiveText(bind('estado')))
+  ///     then: LiveText.literal('Arrived'), otherwise: LiveText(bind('status')))
   /// ```
   ///
-  /// iOS 16.2 o superior y la vista previa; Android no lo evalúa (siempre es
-  /// `false`): ahí cambia el estado con `update`.
+  /// iOS 16.2 or later and the preview; Android does not evaluate it (it is
+  /// always `false`): there, change the state with `update`.
   static const stale = LiveBind(r'$stale');
 
   final String field;
@@ -44,10 +44,10 @@ class LiveBind implements LiveTextSource {
   String toString() => "bind('$field')";
 }
 
-/// `bind('etapa')`: enlaza con el campo `etapa` del estado.
+/// `bind('stage')`: binds to the `stage` field of the state.
 LiveBind bind(String field) => LiveBind(field);
 
-/// Condición de un `LiveIf`: un campo y exactamente un operador.
+/// Condition of a `LiveIf`: a field and exactly one operator.
 class LiveCondition {
   const LiveCondition(this.field, this.op, this.value);
 
@@ -70,7 +70,7 @@ class LiveCondition {
     return LiveCondition(field, ops.single, json[ops.single]);
   }
 
-  /// Evalúa la condición contra [state].
+  /// Evaluates the condition against [state].
   bool evaluate(Map<String, Object?> state) {
     final v = state[field];
     switch (op) {
@@ -103,22 +103,22 @@ class LiveCondition {
   int get hashCode => '$_key'.hashCode;
 }
 
-/// Un número, o un texto que lo es; un booleano no cuenta.
+/// A number, or a string that is one; a boolean does not count.
 double? _number(Object? v) => switch (v) {
   num() => v.toDouble(),
   String() => double.tryParse(v),
   _ => null,
 };
 
-/// `eq`: si los dos son números se comparan como números; si no, como texto.
+/// `eq`: if both are numbers they are compared as numbers; otherwise, as text.
 bool _same(Object? a, Object? b) {
   final x = _number(a), y = _number(b);
   if (x != null && y != null) return (x - y).abs() < 1e-9;
   return liveText(a) == liveText(b);
 }
 
-/// El texto de un valor del estado, igual en Dart, Swift y Kotlin: un entero
-/// sin decimales (`5.0` → `5`), un booleano como `true` o `false` y nulo vacío.
+/// The text of a state value, the same in Dart, Swift and Kotlin: an integer
+/// without decimals (`5.0` → `5`), a boolean as `true` or `false` and null as empty.
 String liveText(Object? v) {
   if (v == null) return '';
   if (v is num && v.isFinite && v == v.roundToDouble() && v.abs() < 1e15) {
@@ -127,7 +127,7 @@ String liveText(Object? v) {
   return '$v';
 }
 
-/// Plantilla `{campo}`: sustituye cada campo por su valor en [state].
+/// `{field}` template: replaces each field with its value in [state].
 String formatTemplate(String fmt, Map<String, Object?> state) =>
     fmt.replaceAllMapped(
       RegExp(r'\{([A-Za-z_][A-Za-z0-9_]*)\}'),

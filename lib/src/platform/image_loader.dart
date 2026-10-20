@@ -8,8 +8,8 @@ import '../core/image_slots.dart';
 import '../core/layout.dart';
 import 'live_island_platform.dart';
 
-/// Lee los bytes de una imagen según su origen. Las de red las descarga la
-/// app, nunca el Widget Extension.
+/// Reads the bytes of an image according to its origin. Network ones are
+/// downloaded by the app, never by the Widget Extension.
 typedef LiveImageReader = Future<Uint8List> Function(LiveImage image);
 
 Future<Uint8List> defaultImageReader(LiveImage image) async {
@@ -47,25 +47,25 @@ Future<Uint8List> defaultImageReader(LiveImage image) async {
   }
 }
 
-/// Lee un asset por su ruta (`assets/live/car.png`).
+/// Reads an asset by its path (`assets/live/car.png`).
 typedef LiveAssetReader = Future<Uint8List> Function(String path);
 
 Future<Uint8List> defaultAssetReader(String path) async =>
     (await rootBundle.load(path)).buffer.asUint8List();
 
-/// Tamaño máximo (px) de los PNG de íconos de Android: se muestran a ~24 dp.
+/// Maximum size (px) of the Android icon PNGs: they are shown at ~24 dp.
 const liveAndroidIconMax = 96;
 
-/// Rutas `android:` de todos los íconos del [layout], sin repetir.
+/// `android:` paths of all the icons in the [layout], without repeats.
 List<String> androidIconPaths(LiveLayout layout) =>
     {
       for (final n in layout.allNodes)
         if (n is LiveIcon && n.android != null) n.android!,
     }.toList();
 
-/// Carga todas las imágenes del [layout], cada una con su límite de reducción.
-/// Con [androidIcons] agrega los PNG de los `LiveIcon.android`, con su ruta
-/// como id.
+/// Loads all the images of the [layout], each with its reduction limit.
+/// With [androidIcons] it adds the PNGs of the `LiveIcon.android`, with their
+/// path as id.
 Future<List<LiveImagePayload>> loadLayoutImages(
   LiveLayout layout, {
   LiveImageReader reader = defaultImageReader,

@@ -1,14 +1,14 @@
 import 'dart:convert';
 
-/// Utilidades para el estado: lo único que viaja en cada actualización.
+/// Utilities for the state: the only thing that travels with each update.
 abstract final class LiveState {
-  /// Límite de ActivityKit por actualización.
+  /// ActivityKit's limit per update.
   static const maxBytes = 4096;
 
   static final _key = RegExp(r'^[A-Za-z_][A-Za-z0-9_]*$');
 
-  /// Convierte el estado a tipos simples (las fechas pasan a ISO 8601 UTC) y
-  /// valida que todo cumpla `state.schema.json`.
+  /// Converts the state to simple types (dates become ISO 8601 UTC) and
+  /// validates that everything complies with `state.schema.json`.
   static Map<String, Object?> normalize(Map<String, Object?> state) {
     if (state.length > 64) {
       throw ArgumentError('El estado admite como máximo 64 campos');
@@ -18,7 +18,7 @@ abstract final class LiveState {
     };
   }
 
-  /// Bytes que pesa el estado ya normalizado, en UTF-8.
+  /// Bytes the already-normalized state weighs, in UTF-8.
   static int byteSize(Map<String, Object?> state) =>
       utf8.encode(jsonEncode(normalize(state))).length;
 

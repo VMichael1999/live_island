@@ -20,33 +20,33 @@ import '../core/node.dart';
 import 'preset.dart';
 import 'presets.dart' show livePresetCarAsset;
 
-/// Auto visto desde arriba, para avanzar sobre una barra.
+/// A car seen from above, to move along a bar.
 const liveDesignCarTopAsset = livePresetCarAsset;
 
-/// Auto visto de lado, para acompañar al conductor.
+/// A car seen from the side, to accompany the driver.
 const liveDesignCarSideAsset =
     'packages/live_island_kit/assets/presets/car_side.png';
 
-/// Sedán de frente con su placa (CSB488) dibujada, sin fondo.
+/// A sedan seen from the front with its plate (CSB488) drawn, no background.
 const liveDesignCarPlateAsset =
     'packages/live_island_kit/assets/presets/car_plate.png';
 
-/// Ícono de una etapa de un pedido a domicilio (1 libreta, 2 olla, 3 mochila de
-/// reparto, 4 bolsa con ubicación), gris mientras no llega y de color desde que
-/// llega.
+/// Icon of a delivery order stage (1 notepad, 2 pot, 3 delivery backpack,
+/// 4 bag with a location), gray until the stage is reached and colored
+/// afterwards.
 String liveDesignOrderAsset(int stage, {required bool reached}) =>
     'packages/live_island_kit/assets/presets/'
     'pedido_${stage}_${reached ? 'color' : 'gris'}.png';
 
-/// Tren visto desde arriba, para avanzar sobre una barra (sin fondo).
+/// A train seen from above, to move along a bar (no background).
 const liveDesignTrainTopAsset =
     'packages/live_island_kit/assets/presets/train_top.png';
 
-/// Escudo genérico azul y rojo (equipo local de ejemplo).
+/// Generic blue and red crest (sample home team).
 const liveDesignCrestAAsset =
     'packages/live_island_kit/assets/presets/crest_a.png';
 
-/// Escudo genérico amarillo y azul marino (equipo visitante de ejemplo).
+/// Generic yellow and navy crest (sample away team).
 const liveDesignCrestBAsset =
     'packages/live_island_kit/assets/presets/crest_b.png';
 
@@ -73,23 +73,23 @@ LiveNode _t(
   align: align,
 );
 
-/// Cómo se dibuja la barra de recogida.
+/// How the pickup bar is drawn.
 enum RideBar {
-  /// Línea continua de la salida al destino, con un marcador al final.
+  /// Continuous line from departure to destination, with a marker at the end.
   line,
 
-  /// Trazo discontinuo con marcadores intermedios.
+  /// Dashed stroke with intermediate markers.
   dotted,
 }
 
-/// Recogida de un viaje: tiempo, conductor con su auto, placa y una barra con
-/// el auto avanzando hacia el punto de recogida.
+/// Ride pickup: time, driver with their car, plate and a bar with the car
+/// moving toward the pickup point.
 ///
-/// La tarjeta clara usa la barra [RideBar.dotted] (punteada, con marcadores) y
-/// la oscura [RideBar.line] (continua, con marcador final); [bar] cambia
-/// cualquiera. Datos: `tiempo`, `titulo`, `subtitulo`, `placa`, `vehiculo`,
-/// `nombre`, `progreso`. En la oscura el título va antes del tiempo
-/// («Recogida en 2 min»); en la clara, después («2 min para la recogida»).
+/// The light card uses the [RideBar.dotted] bar (dotted, with markers) and
+/// the dark one [RideBar.line] (continuous, with an end marker); [bar] changes
+/// either. Data: `tiempo`, `titulo`, `subtitulo`, `placa`, `vehiculo`,
+/// `nombre`, `progreso`. On the dark one the title goes before the time
+/// ("Recogida en 2 min"); on the light one, after ("2 min para la recogida").
 final class RidePickupPreset extends LivePreset {
   const RidePickupPreset({
     this.androidStyle = LiveAndroidStyle.card,
@@ -109,54 +109,54 @@ final class RidePickupPreset extends LivePreset {
     this.chip,
   });
 
-  /// Tarjeta oscura en vez de clara.
+  /// Dark card instead of light.
   final bool dark;
 
-  /// Color del tiempo y de lo avanzado en la tarjeta clara; de la isla.
+  /// Color of the time and of the completed part on the light card; of the island.
   final Color accent;
 
-  /// Nombre de la app, arriba a la izquierda de la tarjeta.
+  /// Name of the app, at the top left of the card.
   final String brand;
 
-  /// Iniciales del conductor (si no hay [driverPhoto]).
+  /// Driver's initials (if there is no [driverPhoto]).
   final String driverInitials;
 
-  /// Foto circular del conductor.
+  /// Circular photo of the driver.
   final LiveImage? driverPhoto;
 
-  /// Imagen del auto junto al conductor; por defecto la que trae el paquete.
+  /// Image of the car next to the driver; by default the one the package ships.
   final LiveImage? carImage;
 
-  /// Logotipo en lugar del nombre de la app, arriba a la izquierda.
+  /// Logo instead of the app name, at the top left.
   final LiveImage? brandLogo;
 
-  /// Una sola imagen con el conductor y su auto, sin fondo (reemplaza a
-  /// [driverPhoto] y [carImage] en la tarjeta de bloqueo).
+  /// A single image with the driver and their car, no background (replaces
+  /// [driverPhoto] and [carImage] on the lock screen card).
   final LiveImage? headerImage;
 
-  /// Imagen del auto que avanza sobre la barra (vista desde arriba, sin fondo).
+  /// Image of the car that moves along the bar (seen from above, no background).
   final LiveImage? trackerImage;
 
-  /// Ícono o imagen de la isla compacta y la mínima (por defecto un auto).
+  /// Icon or image of the compact and minimal island (a car by default).
   final LiveVisual? compactIcon;
 
-  /// Estilo de la barra; por defecto punteada en la clara y continua en la oscura.
+  /// Style of the bar; by default dotted on the light card and continuous on the dark one.
   final RideBar? bar;
 
-  /// Muestra al conductor y su auto arriba a la derecha.
+  /// Shows the driver and their car at the top right.
   final bool showCar;
 
-  /// Botones de la tarjeta de bloqueo y de Android.
+  /// Buttons of the lock screen card and of Android.
   final List<LiveButton>? buttons;
 
-  /// Chip de Android; por defecto el tiempo.
+  /// Android chip; by default the time.
   final LiveChip? chip;
 
   RideBar get _bar => bar ?? (dark ? RideBar.line : RideBar.dotted);
 
-  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
-  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
-  /// Android 16 lo promueva a Live Update.
+  /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
+  /// iOS; [LiveAndroidStyle.liveUpdate] uses the native template and lets
+  /// Android 16 promote it to a Live Update.
   final LiveAndroidStyle androidStyle;
 
   @override
@@ -383,11 +383,11 @@ final class RidePickupPreset extends LivePreset {
   }
 }
 
-/// Pedido para recoger en tienda: tres pasos con íconos (recibido, preparando,
-/// listo) donde el paso actual crece y se pinta de blanco.
+/// Store pickup order: three steps with icons (received, preparing,
+/// ready) where the current step grows and turns white.
 ///
-/// Datos: `titulo`, `subtitulo`, `corto` (una palabra para la isla compacta),
-/// `etapa` (0, 1 o 2), `progreso`.
+/// Data: `titulo`, `subtitulo`, `corto` (one word for the compact island),
+/// `etapa` (0, 1 or 2), `progreso`.
 final class StorePickupPreset extends LivePreset {
   const StorePickupPreset({
     this.androidStyle = LiveAndroidStyle.card,
@@ -400,27 +400,27 @@ final class StorePickupPreset extends LivePreset {
     this.chip,
   });
 
-  /// Fondo de la tarjeta.
+  /// Background of the card.
   final Color accent;
 
-  /// Color de los pasos que no son el actual.
+  /// Color of the steps that are not the current one.
   final Color stepColor;
 
-  /// Cabecera de la tarjeta.
+  /// Header of the card.
   final String store;
 
-  /// Logotipo junto a la cabecera (por defecto un ícono).
+  /// Logo next to the header (an icon by default).
   final LiveImage? brandLogo;
 
-  /// Personas que reciben el pedido (iniciales); por defecto dos.
+  /// People who receive the order (initials); two by default.
   final List<String>? people;
 
   final List<LiveButton>? buttons;
   final LiveChip? chip;
 
-  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
-  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
-  /// Android 16 lo promueva a Live Update.
+  /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
+  /// iOS; [LiveAndroidStyle.liveUpdate] uses the native template and lets
+  /// Android 16 promote it to a Live Update.
   final LiveAndroidStyle androidStyle;
 
   @override
@@ -545,9 +545,9 @@ final class StorePickupPreset extends LivePreset {
   }
 }
 
-/// Carrera o entrenamiento: distancia grande, tiempo y barra de meta.
+/// Run or workout: big distance, time and a goal bar.
 ///
-/// Datos: `distancia`, `tiempo`, `progreso`.
+/// Data: `distancia`, `tiempo`, `progreso`.
 final class RunPreset extends LivePreset {
   const RunPreset({
     this.androidStyle = LiveAndroidStyle.card,
@@ -559,24 +559,24 @@ final class RunPreset extends LivePreset {
     this.chip,
   });
 
-  /// Color de la tarjeta.
+  /// Color of the card.
   final Color accent;
 
-  /// Unidad bajo la distancia.
+  /// Unit under the distance.
   final String unit;
 
-  /// Etiqueta bajo el tiempo.
+  /// Label under the time.
   final String timeLabel;
 
-  /// Nombre de la app, arriba a la derecha de la tarjeta.
+  /// Name of the app, at the top right of the card.
   final String brand;
 
   final List<LiveButton>? buttons;
   final LiveChip? chip;
 
-  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
-  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
-  /// Android 16 lo promueva a Live Update.
+  /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
+  /// iOS; [LiveAndroidStyle.liveUpdate] uses the native template and lets
+  /// Android 16 promote it to a Live Update.
   final LiveAndroidStyle androidStyle;
 
   @override
@@ -665,9 +665,9 @@ final class RunPreset extends LivePreset {
   );
 }
 
-/// Marcador de un partido: escudos, goles en un recuadro, minuto y torneo.
+/// Score of a match: crests, goals in a box, minute and tournament.
 ///
-/// Datos: `local`, `visitante`, `golesLocal`, `golesVisitante`, `minuto`,
+/// Data: `local`, `visitante`, `golesLocal`, `golesVisitante`, `minuto`,
 /// `torneo`, `progreso`.
 final class MatchPreset extends LivePreset {
   const MatchPreset({
@@ -683,24 +683,24 @@ final class MatchPreset extends LivePreset {
 
   final Color accent;
 
-  /// Escudo del equipo local (imagen propia).
+  /// Crest of the home team (your own image).
   final LiveImage? homeCrest;
 
-  /// Escudo del equipo visitante.
+  /// Crest of the away team.
   final LiveImage? awayCrest;
 
-  /// Etiqueta bajo el nombre del local.
+  /// Label under the home team's name.
   final String homeLabel;
 
-  /// Etiqueta bajo el nombre del visitante.
+  /// Label under the away team's name.
   final String awayLabel;
 
-  /// Texto del enlace bajo el minuto.
+  /// Text of the link under the minute.
   final String link;
 
-  /// En Android: `card` dibuja la tarjeta con los dos escudos y el marcador
-  /// (sin chip ni Live Update); `liveUpdate` usa el estilo nativo con el escudo
-  /// local y el chip.
+  /// On Android: `card` draws the card with the two crests and the score
+  /// (no chip or Live Update); `liveUpdate` uses the native style with the
+  /// home crest and the chip.
   final LiveAndroidStyle androidStyle;
 
   final LiveChip? chip;
@@ -838,10 +838,10 @@ final class MatchPreset extends LivePreset {
 
 const _up = Color(0xFF30D158);
 
-/// Cotización de una acción: símbolo, precio, variación y gráfica de línea.
+/// Stock quote: symbol, price, change and a line chart.
 ///
-/// Datos: `simbolo`, `nombre`, `precio`, `cambio` (texto, por ejemplo
-/// `+1.24%`) y `serie` (los últimos precios con [liveSeries]).
+/// Data: `simbolo`, `nombre`, `precio`, `cambio` (text, for example
+/// `+1.24%`) and `serie` (the latest prices with [liveSeries]).
 final class StockPreset extends LivePreset {
   const StockPreset({
     this.accent = _up,
@@ -850,14 +850,14 @@ final class StockPreset extends LivePreset {
     this.chip,
   });
 
-  /// Color de la línea y de la variación (verde si sube, rojo si baja).
+  /// Color of the line and of the change (green if up, red if down).
   final Color accent;
 
-  /// Logotipo de la empresa.
+  /// Logo of the company.
   final LiveImage? brandLogo;
 
-  /// En Android: `card` dibuja la tarjeta con la gráfica de línea (sin chip ni
-  /// Live Update); `liveUpdate` usa el estilo nativo con texto y chip.
+  /// On Android: `card` draws the card with the line chart (no chip or Live
+  /// Update); `liveUpdate` uses the native style with text and a chip.
   final LiveAndroidStyle androidStyle;
 
   final LiveChip? chip;
@@ -971,9 +971,9 @@ final class StockPreset extends LivePreset {
   );
 }
 
-/// Vuelo con la ruta curva entre dos aeropuertos y el avión avanzando.
+/// Flight with the curved route between two airports and the airplane advancing.
 ///
-/// Datos: `vuelo`, `estado`, `origen`, `destino`, `aterriza` y `progreso`.
+/// Data: `vuelo`, `estado`, `origen`, `destino`, `aterriza` and `progreso`.
 final class FlightPathPreset extends LivePreset {
   const FlightPathPreset({
     this.androidStyle = LiveAndroidStyle.card,
@@ -982,17 +982,17 @@ final class FlightPathPreset extends LivePreset {
     this.chip,
   });
 
-  /// Color de lo recorrido, del avión y del estado.
+  /// Color of the completed part, the airplane and the status.
   final Color accent;
 
-  /// Logotipo de la aerolínea.
+  /// Logo of the airline.
   final LiveImage? carrier;
 
   final LiveChip? chip;
 
-  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
-  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
-  /// Android 16 lo promueva a Live Update.
+  /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
+  /// iOS; [LiveAndroidStyle.liveUpdate] uses the native template and lets
+  /// Android 16 promote it to a Live Update.
   final LiveAndroidStyle androidStyle;
 
   @override
@@ -1092,10 +1092,10 @@ final class FlightPathPreset extends LivePreset {
   );
 }
 
-/// Órbita: un arco con un punto que avanza (la ISS, un satélite, un
-/// parquímetro). El arco es un [LiveGauge], así que `sweep` lo cambia.
+/// Orbit: an arc with a moving dot (the ISS, a satellite, a parking
+/// meter). The arc is a [LiveGauge], so `sweep` changes it.
 ///
-/// Datos: `titulo`, `lugar`, `tiempo` y `progreso`.
+/// Data: `titulo`, `lugar`, `tiempo` and `progreso`.
 final class OrbitPreset extends LivePreset {
   const OrbitPreset({
     this.androidStyle = LiveAndroidStyle.card,
@@ -1106,14 +1106,14 @@ final class OrbitPreset extends LivePreset {
 
   final Color accent;
 
-  /// Grados que abarca el arco.
+  /// Degrees the arc spans.
   final double sweep;
 
   final LiveChip? chip;
 
-  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
-  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
-  /// Android 16 lo promueva a Live Update.
+  /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
+  /// iOS; [LiveAndroidStyle.liveUpdate] uses the native template and lets
+  /// Android 16 promote it to a Live Update.
   final LiveAndroidStyle androidStyle;
 
   @override
@@ -1204,11 +1204,11 @@ final class OrbitPreset extends LivePreset {
   );
 }
 
-/// Carga de un auto eléctrico con el "cable luminoso": una barra con halo y
-/// una tarjeta con borde brillante.
+/// Electric car charging with the "glowing cable": a bar with a halo and
+/// a card with a glowing border.
 ///
-/// Datos: `nivel` (texto, por ejemplo `72 %`), `estado`, `restante`,
-/// `potencia` y `progreso`.
+/// Data: `nivel` (text, for example `72 %`), `estado`, `restante`,
+/// `potencia` and `progreso`.
 final class ChargePreset extends LivePreset {
   const ChargePreset({
     this.androidStyle = LiveAndroidStyle.card,
@@ -1218,20 +1218,20 @@ final class ChargePreset extends LivePreset {
     this.chip,
   });
 
-  /// Color de la barra, del borde y del halo.
+  /// Color of the bar, the border and the halo.
   final Color accent;
 
-  /// Radio del halo en pt (0 = sin brillo).
+  /// Radius of the halo in pt (0 = no glow).
   final double glow;
 
-  /// Ícono o imagen de la isla compacta y la mínima (por defecto un rayo).
+  /// Icon or image of the compact and minimal island (a bolt by default).
   final LiveVisual? compactIcon;
 
   final LiveChip? chip;
 
-  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
-  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
-  /// Android 16 lo promueva a Live Update.
+  /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
+  /// iOS; [LiveAndroidStyle.liveUpdate] uses the native template and lets
+  /// Android 16 promote it to a Live Update.
   final LiveAndroidStyle androidStyle;
 
   @override
@@ -1337,12 +1337,12 @@ final class ChargePreset extends LivePreset {
   );
 }
 
-/// Resumen de un viaje con la tarifa partida en tramos de color: base,
-/// servicio y propina.
+/// Summary of a ride with the fare split into colored segments: base,
+/// service and tip.
 ///
-/// Datos: `titulo`, `total`, `base`, `servicio`, `propina` (números que
-/// reparten la barra) y `baseTxt`, `servicioTxt`, `propinaTxt` (los mismos
-/// importes ya escritos).
+/// Data: `titulo`, `total`, `base`, `servicio`, `propina` (numbers that
+/// split the bar) and `baseTxt`, `servicioTxt`, `propinaTxt` (the same
+/// amounts already written out).
 final class FareSplitPreset extends LivePreset {
   const FareSplitPreset({
     this.accent = const Color(0xFF30D158),
@@ -1351,14 +1351,14 @@ final class FareSplitPreset extends LivePreset {
     this.chip,
   });
 
-  /// Color de la propina.
+  /// Color of the tip.
   final Color accent;
 
-  /// Nombre de la app, en cursiva arriba a la izquierda.
+  /// Name of the app, in italics at the top left.
   final String brand;
 
-  /// En Android: `liveUpdate` (por defecto) con la barra partida y el chip, o
-  /// `card` con la tarjeta completa.
+  /// On Android: `liveUpdate` (the default) with the split bar and the chip, or
+  /// `card` with the full card.
   final LiveAndroidStyle androidStyle;
 
   final LiveChip? chip;

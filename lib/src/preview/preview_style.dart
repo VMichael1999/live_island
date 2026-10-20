@@ -2,11 +2,11 @@ import 'dart:ui' show Brightness;
 
 import 'package:flutter/painting.dart';
 
-/// Fondo sobre el que se dibuja un componente. Decide colores de texto,
-/// barra y botones (ver `progress()` e `iosActions()` del HTML).
+/// Background a component is drawn on. It decides the colors of text,
+/// bar and buttons (see `progress()` and `iosActions()` in the HTML).
 enum LiveTone { dark, light, accent }
 
-/// Colores de una superficie, derivados de su [LiveTone] y del acento.
+/// Colors of a surface, derived from its [LiveTone] and the accent.
 class LiveToneStyle {
   LiveToneStyle(this.tone, this.accent, {double mutedAlpha = .68})
     : fg =
@@ -20,7 +20,7 @@ class LiveToneStyle {
 
   final LiveTone tone;
 
-  /// Color de acento del tema (nunca cambia por superficie).
+  /// Accent color of the theme (it never changes per surface).
   final Color accent;
   final Color fg;
   final Color muted;
@@ -28,7 +28,7 @@ class LiveToneStyle {
   bool get isLight => tone == LiveTone.light;
   bool get isAccent => tone == LiveTone.accent;
 
-  /// Color del texto o ícono marcado como `accent`: blanco sobre fondo de acento.
+  /// Color of the text or icon marked `accent`: white on an accent background.
   Color get accentOnSurface => isAccent ? const Color(0xFFFFFFFF) : accent;
 
   Color get trackBg =>
@@ -45,7 +45,7 @@ class LiveToneStyle {
   Color get stageStrong =>
       isLight ? const Color(0xFF111111) : const Color(0xFFFFFFFF);
 
-  /// Fondo y texto del botón [index] (0 = principal).
+  /// Background and text of button [index] (0 = main).
   (Color, Color) button(int index) {
     if (isAccent) {
       return index == 0
@@ -63,7 +63,7 @@ class LiveToneStyle {
   }
 }
 
-/// Colores de la notificación de Android (Material 3).
+/// Colors of the Android notification (Material 3).
 class AndroidTokens {
   const AndroidTokens._(
     this.shade,

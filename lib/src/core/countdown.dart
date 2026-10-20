@@ -1,4 +1,4 @@
-/// Segundos que faltan para la fecha ISO 8601 [date] (0 si ya pasó o es inválida).
+/// Seconds left until the ISO 8601 date [date] (0 if it already passed or is invalid).
 int remainingSeconds(Object? date, DateTime now) {
   final dl = date is String ? DateTime.tryParse(date) : null;
   if (dl == null) return 0;
@@ -8,13 +8,13 @@ int remainingSeconds(Object? date, DateTime now) {
   return s < 0 ? 0 : s;
 }
 
-/// Minutos que faltan, redondeados hacia arriba y nunca menos de 1.
+/// Minutes left, rounded up and never less than 1.
 int remainingMinutes(Object? date, DateTime now) {
   final m = (remainingSeconds(date, now) / 60).ceil();
   return m < 1 ? 1 : m;
 }
 
-/// Segundos transcurridos desde la fecha ISO 8601 [date] (0 si es futura).
+/// Seconds elapsed since the ISO 8601 date [date] (0 if it is in the future).
 int elapsedSeconds(Object? date, DateTime now) {
   final start = date is String ? DateTime.tryParse(date) : null;
   if (start == null) return 0;
@@ -22,7 +22,7 @@ int elapsedSeconds(Object? date, DateTime now) {
   return s < 0 ? 0 : s;
 }
 
-/// `m:ss` o `h:mm:ss`.
+/// `m:ss` or `h:mm:ss`.
 String formatCountdown(int seconds) {
   final h = seconds ~/ 3600, m = seconds % 3600 ~/ 60, s = seconds % 60;
   final ss = s.toString().padLeft(2, '0');

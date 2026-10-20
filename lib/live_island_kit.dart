@@ -1,4 +1,4 @@
-/// Live Activities (iOS) y Live Updates (Android) con una sola API en Dart.
+/// iOS Live Activities and Android Live Updates with a single Dart API.
 library;
 
 export 'src/components/actions.dart';

@@ -1,48 +1,48 @@
-/// Ajuste de una imagen dentro de su espacio. Nunca se deforma.
+/// How an image fits in its space. It is never distorted.
 enum LiveFit { contain, cover }
 
-/// Forma del recorte de una imagen.
+/// Shape of an image's crop.
 enum LiveShape { rounded, circle, square }
 
-/// Fondo de la tarjeta de la pantalla de bloqueo.
+/// Background of the lock screen card.
 enum LiveBackground { system, light, accent }
 
-/// Alineación de hijos en filas, columnas y textos.
+/// Alignment of children in rows, columns and texts.
 enum LiveAlign { start, center, end }
 
-/// Cómo se dibuja la notificación de Android.
+/// How the Android notification is drawn.
 enum LiveAndroidStyle {
-  /// Estilo nativo (`Notification.ProgressStyle`): título, texto, barra, imagen
-  /// grande y chip. Android 16+ la promueve a Live Update.
+  /// Native style (`Notification.ProgressStyle`): title, text, bar, large image
+  /// and chip. Android 16+ promotes it to a Live Update.
   liveUpdate,
 
-  /// Tarjeta con tu propio diseño (`RemoteViews`): dos imágenes, un marcador
-  /// grande, cualquier composición. Android NO la promueve a Live Update, así
-  /// que no hay chip en la barra de estado. Pide Android 12 (API 31) o más; en
-  /// versiones anteriores se usa [liveUpdate].
+  /// Card with your own design (`RemoteViews`): two images, a big score, any
+  /// composition. Android does NOT promote it to a Live Update, so there is no
+  /// chip in the status bar. It needs Android 12 (API 31) or later; on earlier
+  /// versions [liveUpdate] is used.
   card,
 }
 
-/// Forma de los puntos de etapa de una barra.
+/// Shape of a bar's stage dots.
 enum LivePointShape {
   circle,
   square,
   rounded,
 
-  /// Círculo suave con un punto dentro, como un marcador de mapa.
+  /// Soft circle with a dot inside, like a map marker.
   ring,
 
-  /// Aro grueso con el centro vacío (la «bolita» de destino).
+  /// Thick ring with an empty center (the destination "dot").
   target,
 
-  /// Cuadrado de esquinas suaves, grueso y con el centro vacío.
+  /// Thick square with soft corners and an empty center.
   targetSquare,
 }
 
-/// Fondo del ícono que avanza sobre la barra.
+/// Background of the icon that moves along the bar.
 enum LiveTrackerBackground { accentCircle, none }
 
-/// Busca un valor de [values] por su nombre; si no existe devuelve [fallback].
+/// Looks up a value in [values] by name; if it does not exist returns [fallback].
 T enumByName<T extends Enum>(List<T> values, Object? name, T fallback) {
   for (final v in values) {
     if (v.name == name) return v;

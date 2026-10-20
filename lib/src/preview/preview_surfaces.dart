@@ -20,8 +20,8 @@ import 'preview_style.dart';
 
 const _black = Color(0xFF000000);
 
-/// Estilo base: sin subrayado, para que el texto se vea igual dentro o fuera
-/// de un `Material`.
+/// Base style: no underline, so the text looks the same inside or outside
+/// a `Material`.
 Widget _base({required Widget child, Color color = const Color(0xFFFFFFFF)}) =>
     DefaultTextStyle.merge(
       style: TextStyle(
@@ -46,7 +46,7 @@ LiveTone _lockTone(LiveLayout l, Brightness b) => switch (l.theme.background) {
 
 // ------------------------------------------------------------------ compact
 
-/// Isla compacta: ícono a la izquierda y dato destacado a la derecha.
+/// Compact island: icon on the left and highlighted value on the right.
 class LiveCompactPreview extends StatelessWidget {
   const LiveCompactPreview(this.config, {super.key});
 
@@ -106,8 +106,8 @@ class LiveCompactPreview extends StatelessWidget {
 
 // ------------------------------------------------------------------ minimal
 
-/// Isla mínima (37 × 37 pt). Con [withOtherActivity] se dibuja junto a una
-/// segunda actividad, que es cuando iOS la usa.
+/// Minimal island (37 × 37 pt). With [withOtherActivity] it is drawn next to a
+/// second activity, which is when iOS uses it.
 class LiveMinimalPreview extends StatelessWidget {
   const LiveMinimalPreview(
     this.config, {
@@ -181,7 +181,7 @@ class LiveMinimalPreview extends StatelessWidget {
 
 // ----------------------------------------------------------------- expandida
 
-/// Parte superior (ícono, texto y dato) y parte inferior de una tarjeta.
+/// Top part (icon, text and value) and bottom part of a card.
 Widget _topAndBottom({
   required LiveRenderContext ctx,
   required Widget? leading,
@@ -230,7 +230,7 @@ Widget _topAndBottom({
   );
 }
 
-/// Contenido de la isla expandida, sin el fondo negro.
+/// Content of the expanded island, without the black background.
 class LiveExpandedBody extends StatelessWidget {
   const LiveExpandedBody(this.config, {super.key});
 
@@ -264,7 +264,7 @@ class LiveExpandedBody extends StatelessWidget {
   );
 }
 
-/// Isla expandida (esquinas de 44 pt, negra).
+/// Expanded island (44 pt corners, black).
 class LiveExpandedPreview extends StatelessWidget {
   const LiveExpandedPreview(this.config, {super.key});
 
@@ -284,7 +284,7 @@ class LiveExpandedPreview extends StatelessWidget {
 
 // ------------------------------------------------------------------- bloqueo
 
-/// Tarjeta de la pantalla de bloqueo (esquinas de 22 pt).
+/// Lock screen card (22 pt corners).
 class LiveLockScreenPreview extends StatelessWidget {
   const LiveLockScreenPreview(this.config, {super.key});
 
@@ -360,8 +360,8 @@ class LiveLockScreenPreview extends StatelessWidget {
   );
 }
 
-/// Ícono de la app en la tarjeta de bloqueo (40 pt): logo, avatar o ícono
-/// sobre un cuadro de acento.
+/// App icon on the lock screen card (40 pt): logo, avatar or icon
+/// on an accent square.
 Widget? _lockLeading(LiveLayout l, LiveRenderContext ctx) {
   final logo = l.appLogo;
   if (logo is LiveImage) return liveImageBox(logo, 40, ctx);
@@ -397,7 +397,7 @@ Widget? _lockLeading(LiveLayout l, LiveRenderContext ctx) {
 
 // ------------------------------------------------------------------- Android
 
-/// Notificación de Android con su chip de Live Update.
+/// Android notification with its Live Update chip.
 class LiveAndroidPreview extends StatelessWidget {
   const LiveAndroidPreview(this.config, {super.key});
 
@@ -714,7 +714,7 @@ Widget _android(LivePreviewConfig config, DateTime now) {
   );
 }
 
-/// Texto del chip y cómo se muestra (mismo criterio que `chipInfo` del HTML).
+/// Text of the chip and how it is shown (same criteria as `chipInfo` in the HTML).
 ({String shown, bool onlyIcon})? _chipOf(
   LiveChip? chip,
   LiveRenderContext ctx,

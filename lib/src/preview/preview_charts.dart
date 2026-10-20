@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/widgets.dart';
 
-/// Gráfica de línea con área opcional y punto final.
+/// Line chart with an optional area and an end dot.
 class LivePreviewSparkline extends StatelessWidget {
   const LivePreviewSparkline({
     super.key,
@@ -108,7 +108,7 @@ class _SparkPainter extends CustomPainter {
       old.w.strokeWidth != w.strokeWidth;
 }
 
-/// Medidor de arco de [size] de ancho que abarca [sweep] grados.
+/// Arc gauge of width [size] spanning [sweep] degrees.
 class LivePreviewGauge extends StatelessWidget {
   const LivePreviewGauge({
     super.key,
@@ -226,7 +226,7 @@ class _GaugePainter extends CustomPainter {
       old.g.dashed != g.dashed;
 }
 
-/// Ruta curva (arco) con lo recorrido, lo que falta y un ícono que avanza.
+/// Curved route (arc) with the completed part, what remains and a moving icon.
 class LivePreviewPath extends StatelessWidget {
   const LivePreviewPath({
     super.key,
@@ -255,7 +255,7 @@ class LivePreviewPath extends StatelessWidget {
 
   static const double _inset = 14;
 
-  /// Punto de la curva (cuadrática) en `t` para un cuadro [size].
+  /// Point of the (quadratic) curve at `t` for a box of [size].
   static Offset pointAt(Size size, double curve, double t) {
     final p0 = Offset(_inset, size.height - _inset);
     final p2 = Offset(size.width - _inset, size.height - _inset);
@@ -375,7 +375,7 @@ class _PathPainter extends CustomPainter {
       old.w.dashed != w.dashed;
 }
 
-/// Barra partida en tramos de color, en proporción a sus valores.
+/// Bar split into colored segments, in proportion to their values.
 class LivePreviewSplit extends StatelessWidget {
   const LivePreviewSplit({
     super.key,

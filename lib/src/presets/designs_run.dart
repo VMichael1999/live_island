@@ -36,7 +36,7 @@ LiveNode _field(
   align: align,
 );
 
-/// Placa dentro de un recuadro con borde.
+/// Plate inside a bordered box.
 LiveNode _plate(String field, {Color color = _white}) => LiveBox(
   border: color,
   borderWidth: 1,
@@ -48,7 +48,7 @@ LiveNode _plate(String field, {Color color = _white}) => LiveBox(
   ),
 );
 
-/// Auto con el que avanza la barra, visto desde arriba.
+/// Car that moves along the bar, seen from above.
 LiveTracker _tracker(LiveImage? image) => LiveTracker(
   image ??
       LiveImage.asset(
@@ -61,11 +61,11 @@ LiveTracker _tracker(LiveImage? image) => LiveTracker(
   background: LiveTrackerBackground.none,
 );
 
-/// Llegada: a qué hora llegarás y cuánto pagas, sin barra. Datos: `hora`,
+/// Arrival: what time you will arrive and how much you pay, with no bar. Data: `hora`,
 /// `pago`, `placa`.
 ///
-/// Es la versión más simple de un viaje en curso: marca y auto con su placa
-/// arriba, la hora de llegada a la izquierda y el pago a la derecha.
+/// It is the simplest version of a trip in progress: brand and car with its plate
+/// at the top, the arrival time on the left and the fare on the right.
 final class RideArrivalPreset extends LivePreset {
   const RideArrivalPreset({
     this.androidStyle = LiveAndroidStyle.card,
@@ -77,29 +77,29 @@ final class RideArrivalPreset extends LivePreset {
     this.chip,
   });
 
-  /// Color del monto.
+  /// Color of the amount.
   final Color accent;
 
-  /// Fondo de toda la tarjeta de bloqueo (negro). El color del diseño está en
-  /// el texto: [accent].
+  /// Background of the whole lock screen card (black). The design's color is in
+  /// the text: [accent].
   final Color background;
 
-  /// Nombre de la app, arriba a la izquierda de la tarjeta.
+  /// Name of the app, at the top left of the card.
   final String brand;
 
-  /// Imagen del auto, sin fondo. Por defecto es un sedán con su placa ya
-  /// dibujada; con una imagen propia la placa sale del campo `placa`.
+  /// Image of the car, no background. By default it is a sedan with its plate
+  /// already drawn; with your own image the plate comes from the `placa` field.
   final LiveImage? carImage;
 
-  /// Ícono o imagen de la isla compacta y la mínima (por defecto un auto).
+  /// Icon or image of the compact and minimal island (a car by default).
   final LiveVisual? compactIcon;
 
-  /// Chip de Android; por defecto el monto.
+  /// Android chip; by default the amount.
   final LiveChip? chip;
 
-  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
-  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
-  /// Android 16 lo promueva a Live Update.
+  /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
+  /// iOS; [LiveAndroidStyle.liveUpdate] uses the native template and lets
+  /// Android 16 promote it to a Live Update.
   final LiveAndroidStyle androidStyle;
 
   @override
@@ -131,8 +131,8 @@ final class RideArrivalPreset extends LivePreset {
   LiveVisual get _compact =>
       compactIcon ?? presetIcon('car.fill', 'car', accent: true);
 
-  /// Con la imagen por defecto la placa ya viene dibujada; con una imagen
-  /// propia se dibuja la placa del estado (`placa`) debajo del auto.
+  /// With the default image the plate is already drawn; with your own image
+  /// the state's plate (`placa`) is drawn below the car.
   LiveNode get _carWithPlate =>
       carImage == null
           ? LiveImage.asset(
@@ -150,7 +150,7 @@ final class RideArrivalPreset extends LivePreset {
   LiveNode get _brand =>
       LiveText.literal(brand, size: 24, weight: 800, color: _white);
 
-  /// Hora de llegada a la izquierda y pago a la derecha.
+  /// Arrival time on the left and fare on the right.
   LiveNode get _arrivalRow => LiveRow([
     LiveColumn([
       LiveText.literal(
@@ -213,12 +213,12 @@ final class RideArrivalPreset extends LivePreset {
   );
 }
 
-/// Viaje en curso con detalle: fase, destino, dirección, categoría y pago, con
-/// una barra que termina en un cuadrado. Datos: `fase`, `hora`, `direccion`,
+/// Trip in progress with details: phase, destination, address, category and fare, with
+/// a bar that ends in a square. Data: `fase`, `hora`, `direccion`,
 /// `categoria`, `pago`, `progreso`.
 ///
-/// `fase` cambia con lo que llegue del servidor («EN CAMINO AL DESTINO»,
-/// «EL CONDUCTOR LLEGÓ»…) sin cambiar el diseño.
+/// `fase` changes with what the server sends ("EN CAMINO AL DESTINO",
+/// "EL CONDUCTOR LLEGÓ"…) without changing the design.
 final class RideTripPreset extends LivePreset {
   const RideTripPreset({
     this.androidStyle = LiveAndroidStyle.card,
@@ -232,34 +232,34 @@ final class RideTripPreset extends LivePreset {
     this.chip,
   });
 
-  /// Color de la fase, del monto y de lo avanzado.
+  /// Color of the phase, the amount and the completed part.
   final Color accent;
 
-  /// Fondo de toda la tarjeta de bloqueo (negro). El color del diseño está en
-  /// el texto y la barra: [accent].
+  /// Background of the whole lock screen card (black). The design's color is in
+  /// the text and the bar: [accent].
   final Color background;
 
-  /// Nombre de la app.
+  /// Name of the app.
   final String brand;
 
-  /// Iniciales del conductor (si no hay [driverPhoto]).
+  /// Driver's initials (if there is no [driverPhoto]).
   final String driverInitials;
 
-  /// Foto circular del conductor.
+  /// Circular photo of the driver.
   final LiveImage? driverPhoto;
 
-  /// Auto que avanza sobre la barra (vista desde arriba, sin fondo).
+  /// Car that moves along the bar (seen from above, no background).
   final LiveImage? trackerImage;
 
-  /// Ícono o imagen de la isla compacta y la mínima (por defecto un auto).
+  /// Icon or image of the compact and minimal island (a car by default).
   final LiveVisual? compactIcon;
 
-  /// Chip de Android; por defecto «En ruta».
+  /// Android chip; by default "En ruta" ("On the way").
   final LiveChip? chip;
 
-  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
-  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
-  /// Android 16 lo promueva a Live Update.
+  /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
+  /// iOS; [LiveAndroidStyle.liveUpdate] uses the native template and lets
+  /// Android 16 promote it to a Live Update.
   final LiveAndroidStyle androidStyle;
 
   @override
@@ -322,8 +322,8 @@ final class RideTripPreset extends LivePreset {
     ),
   );
 
-  /// Destino con dirección a la izquierda, categoría con pago a la derecha y
-  /// debajo la barra. La dirección es lo que se corta con «…», nunca el pago.
+  /// Destination with address on the left, category with fare on the right and
+  /// the bar below. The address is what gets cut with "…", never the fare.
   LiveNode get _tripBody => LiveColumn([
     LiveRow([
       _driver,
@@ -382,14 +382,14 @@ final class RideTripPreset extends LivePreset {
   );
 }
 
-/// Seguimiento de un pedido a domicilio en cuatro etapas: la tienda lo recibe,
-/// lo prepara, el repartidor lo recoge y llega al cliente. Datos: `titulo`,
-/// `hora` y `progreso` (0 a 1: 0 recibido, 1/3 preparando, 2/3 en camino, 1
-/// entregado).
+/// Tracking of a delivery order in four stages: the store receives it,
+/// prepares it, the courier picks it up and it reaches the customer. Data: `titulo`,
+/// `hora` and `progreso` (0 to 1: 0 received, 1/3 preparing, 2/3 on the way, 1
+/// delivered).
 ///
-/// Cada etapa tiene su ícono en gris mientras no llega y de color desde que
-/// llega; los tramos entre íconos se pintan igual. El título cambia con lo que
-/// mande el servidor («Pedido recibido», «Preparando tu pedido»…).
+/// Each stage has its icon in gray until it is reached and colored once it is;
+/// the segments between icons are painted the same. The title changes with what
+/// the server sends ("Pedido recibido", "Preparando tu pedido"…).
 final class DeliveryOrderPreset extends LivePreset {
   const DeliveryOrderPreset({
     this.androidStyle = LiveAndroidStyle.card,
@@ -399,24 +399,24 @@ final class DeliveryOrderPreset extends LivePreset {
     this.chip,
   });
 
-  /// Color de los tramos ya recorridos y de la hora.
+  /// Color of the segments already completed and of the time.
   final Color accent;
 
-  /// Nombre de la app, arriba a la izquierda.
+  /// Name of the app, at the top left.
   final String brand;
 
-  /// Ícono de la isla compacta y la mínima (por defecto la mochila de reparto).
+  /// Icon of the compact and minimal island (the delivery backpack by default).
   final LiveVisual? compactIcon;
 
-  /// Chip de Android; por defecto «Pedido».
+  /// Android chip; by default "Pedido" ("Order").
   final LiveChip? chip;
 
   static const _stages = ['Recibido', 'Preparando', 'En camino', 'Entregado'];
   static const _gray = Color(0xFF4A4A50);
 
-  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
-  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
-  /// Android 16 lo promueva a Live Update.
+  /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
+  /// iOS; [LiveAndroidStyle.liveUpdate] uses the native template and lets
+  /// Android 16 promote it to a Live Update.
   final LiveAndroidStyle androidStyle;
 
   @override
@@ -528,13 +528,13 @@ final class DeliveryOrderPreset extends LivePreset {
   );
 }
 
-/// Inicio de un viaje con el código PIN que se le dice al conductor: marca y
-/// cuatro casillas con el PIN, cuánto falta, a quién esperar y su foto, con la
-/// barra del auto hacia el punto de recogida. Datos: `minutos`, `conductor`,
-/// `pin1`, `pin2`, `pin3`, `pin4` y `progreso`.
+/// Start of a trip with the PIN code you tell the driver: brand and
+/// four boxes with the PIN, how long is left, who to wait for and their photo, with the
+/// car's bar toward the pickup point. Data: `minutos`, `conductor`,
+/// `pin1`, `pin2`, `pin3`, `pin4` and `progreso`.
 ///
-/// El PIN va por dígitos (`pin1` a `pin4`) para dibujar una casilla por cada
-/// uno; se ve en la isla y en la pantalla de bloqueo aunque la app esté cerrada.
+/// The PIN goes digit by digit (`pin1` to `pin4`) to draw one box for each
+/// one; it shows on the island and on the lock screen even if the app is closed.
 final class RidePinPreset extends LivePreset {
   const RidePinPreset({
     this.androidStyle = LiveAndroidStyle.card,
@@ -547,30 +547,30 @@ final class RidePinPreset extends LivePreset {
     this.chip,
   });
 
-  /// Color de las casillas del PIN.
+  /// Color of the PIN boxes.
   final Color accent;
 
-  /// Nombre de la app, arriba a la izquierda.
+  /// Name of the app, at the top left.
   final String brand;
 
-  /// Iniciales del conductor (si no hay [driverPhoto]).
+  /// Driver's initials (if there is no [driverPhoto]).
   final String driverInitials;
 
-  /// Foto circular del conductor.
+  /// Circular photo of the driver.
   final LiveImage? driverPhoto;
 
-  /// Auto que avanza sobre la barra (vista desde arriba, sin fondo).
+  /// Car that moves along the bar (seen from above, no background).
   final LiveImage? trackerImage;
 
-  /// Ícono o imagen de la isla compacta y la mínima (por defecto un auto).
+  /// Icon or image of the compact and minimal island (a car by default).
   final LiveVisual? compactIcon;
 
-  /// Chip de Android; por defecto «PIN».
+  /// Android chip; by default "PIN".
   final LiveChip? chip;
 
-  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
-  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
-  /// Android 16 lo promueva a Live Update.
+  /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
+  /// iOS; [LiveAndroidStyle.liveUpdate] uses the native template and lets
+  /// Android 16 promote it to a Live Update.
   final LiveAndroidStyle androidStyle;
 
   @override
@@ -611,7 +611,7 @@ final class RidePinPreset extends LivePreset {
           ? LiveAvatar.photo(driverPhoto!, size: size)
           : LiveAvatar(driverInitials, size: size);
 
-  /// Una casilla por dígito del PIN.
+  /// One box per PIN digit.
   LiveNode _pin(double size) => LiveRow([
     for (final f in const ['pin1', 'pin2', 'pin3', 'pin4'])
       LiveBox(
@@ -642,7 +642,7 @@ final class RidePinPreset extends LivePreset {
     size: 20,
   );
 
-  /// «Inicio de viaje en 1 min» y, debajo, a quién esperar.
+  /// "Inicio de viaje en 1 min" ("Trip starts in 1 min") and, below, who to wait for.
   LiveNode _text(double titleSize) => LiveColumn([
     LiveText.format(
       'Inicio de viaje en {minutos}',
@@ -719,12 +719,12 @@ final class RidePinPreset extends LivePreset {
   );
 }
 
-/// El conductor aún tiene que dejar a otro pasajero antes de venir por ti:
-/// cuánto falta, el auto con su placa y una barra con una parada numerada antes
-/// del punto de recogida. Datos: `minutos`, `vehiculo`, `placa` y `progreso`.
+/// The driver still has to drop off another passenger before coming for you:
+/// how long is left, the car with its plate and a bar with a numbered stop before
+/// the pickup point. Data: `minutos`, `vehiculo`, `placa` and `progreso`.
 ///
-/// La parada es el marcador «1» de la barra (la posición se fija con
-/// `stopAt`); el auto avanza hacia ella y luego hacia el final.
+/// The stop is the "1" marker on the bar (its position is set with
+/// `stopAt`); the car moves toward it and then toward the end.
 final class RideStopPreset extends LivePreset {
   const RideStopPreset({
     this.androidStyle = LiveAndroidStyle.card,
@@ -737,31 +737,31 @@ final class RideStopPreset extends LivePreset {
     this.chip,
   });
 
-  /// Color de lo recorrido y de la parada.
+  /// Color of the completed part and of the stop.
   final Color accent;
 
-  /// Nombre de la app, arriba a la izquierda.
+  /// Name of the app, at the top left.
   final String brand;
 
-  /// Posición de la parada en la barra (0 a 1).
+  /// Position of the stop on the bar (0 to 1).
   final double stopAt;
 
-  /// Imagen del auto, sin fondo. Por defecto es un sedán con su placa ya
-  /// dibujada; con una imagen propia la placa sale del campo `placa`.
+  /// Image of the car, no background. By default it is a sedan with its plate
+  /// already drawn; with your own image the plate comes from the `placa` field.
   final LiveImage? carImage;
 
-  /// Auto que avanza sobre la barra (vista desde arriba, sin fondo).
+  /// Car that moves along the bar (seen from above, no background).
   final LiveImage? trackerImage;
 
-  /// Ícono o imagen de la isla compacta y la mínima (por defecto un auto).
+  /// Icon or image of the compact and minimal island (a car by default).
   final LiveVisual? compactIcon;
 
-  /// Chip de Android; por defecto «En ruta».
+  /// Android chip; by default "En ruta" ("On the way").
   final LiveChip? chip;
 
-  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
-  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
-  /// Android 16 lo promueva a Live Update.
+  /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
+  /// iOS; [LiveAndroidStyle.liveUpdate] uses the native template and lets
+  /// Android 16 promote it to a Live Update.
   final LiveAndroidStyle androidStyle;
 
   @override
@@ -794,8 +794,8 @@ final class RideStopPreset extends LivePreset {
   LiveVisual get _compact =>
       compactIcon ?? presetIcon('car.fill', 'car', accent: true);
 
-  /// Con la imagen por defecto la placa ya viene dibujada; con una imagen
-  /// propia se dibuja la placa del estado (`placa`) encima del auto.
+  /// With the default image the plate is already drawn; with your own image
+  /// the state's plate (`placa`) is drawn above the car.
   LiveNode _carWithPlate(double height) =>
       carImage == null
           ? LiveImage.asset(
@@ -881,11 +881,11 @@ final class RideStopPreset extends LivePreset {
   );
 }
 
-/// Rumbo al destino: la hora de llegada, hacia dónde va y una barra que termina
-/// en un cuadrado pegado. Datos: `hora`, `direccion` y `progreso`.
+/// On the way to the destination: the arrival time, where it is going and a bar that ends
+/// in an attached square. Data: `hora`, `direccion` and `progreso`.
 ///
-/// Es la fase que sigue a la entrega del PIN, y la versión más simple de un
-/// viaje con barra.
+/// It is the phase that follows the delivery of the PIN, and the simplest version of a
+/// trip with a bar.
 final class RideDestinationPreset extends LivePreset {
   const RideDestinationPreset({
     this.androidStyle = LiveAndroidStyle.card,
@@ -896,24 +896,24 @@ final class RideDestinationPreset extends LivePreset {
     this.chip,
   });
 
-  /// Color de lo recorrido.
+  /// Color of the completed part.
   final Color accent;
 
-  /// Nombre de la app, arriba a la izquierda.
+  /// Name of the app, at the top left.
   final String brand;
 
-  /// Auto que avanza sobre la barra (vista desde arriba, sin fondo).
+  /// Car that moves along the bar (seen from above, no background).
   final LiveImage? trackerImage;
 
-  /// Ícono o imagen de la isla compacta y la mínima (por defecto un auto).
+  /// Icon or image of the compact and minimal island (a car by default).
   final LiveVisual? compactIcon;
 
-  /// Chip de Android; por defecto «Destino».
+  /// Android chip; by default "Destino" ("Destination").
   final LiveChip? chip;
 
-  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
-  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
-  /// Android 16 lo promueva a Live Update.
+  /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
+  /// iOS; [LiveAndroidStyle.liveUpdate] uses the native template and lets
+  /// Android 16 promote it to a Live Update.
   final LiveAndroidStyle androidStyle;
 
   @override
@@ -1009,13 +1009,13 @@ final class RideDestinationPreset extends LivePreset {
   );
 }
 
-/// Línea de tren: cuántas paradas faltan, hacia dónde va y una barra por
-/// estaciones con el tren encima. Datos: `titulo`, `subtitulo`, `destacado`,
-/// `nombre` y `progreso`.
+/// Train line: how many stops are left, where it is going and a bar by
+/// stations with the train on top. Data: `titulo`, `subtitulo`, `destacado`,
+/// `nombre` and `progreso`.
 ///
-/// El dato clave (`destacado`, «3 paradas») va a la derecha del título y
-/// nunca se corta; lo largo (el nombre del paradero) va en el texto de Android
-/// y no compite por el ancho de la isla.
+/// The key value (`destacado`, "3 paradas") goes to the right of the title and
+/// is never cut; the long part (the stop's name) goes in Android's text
+/// and does not compete for the island's width.
 final class TrainPreset extends LivePreset {
   const TrainPreset({
     this.androidStyle = LiveAndroidStyle.card,
@@ -1027,27 +1027,27 @@ final class TrainPreset extends LivePreset {
     this.chip,
   });
 
-  /// Color de lo recorrido y del dato clave.
+  /// Color of the completed part and of the key value.
   final Color accent;
 
-  /// Nombre de la app.
+  /// Name of the app.
   final String brand;
 
-  /// Estaciones de la barra (mínimo dos).
+  /// Stations of the bar (at least two).
   final List<String> stages;
 
-  /// Tren visto desde arriba, sin fondo; por defecto el del paquete.
+  /// Train seen from above, no background; by default the package's.
   final LiveImage? trainImage;
 
-  /// Ícono o imagen de la isla compacta y la mínima (por defecto un bus).
+  /// Icon or image of the compact and minimal island (a bus by default).
   final LiveVisual? compactIcon;
 
-  /// Chip de Android; por defecto «3 par.».
+  /// Android chip; by default "3 par.".
   final LiveChip? chip;
 
-  /// [LiveAndroidStyle.card] (por defecto) dibuja en Android el mismo diseño que
-  /// en iOS; [LiveAndroidStyle.liveUpdate] usa la plantilla nativa y permite que
-  /// Android 16 lo promueva a Live Update.
+  /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
+  /// iOS; [LiveAndroidStyle.liveUpdate] uses the native template and lets
+  /// Android 16 promote it to a Live Update.
   final LiveAndroidStyle androidStyle;
 
   @override
