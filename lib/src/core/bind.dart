@@ -64,7 +64,7 @@ class LiveCondition {
     final field = json['bind'];
     if (field is! String || ops.length != 1) {
       throw const FormatException(
-        'Una condición lleva "bind" y exactamente un operador',
+        'A condition takes "bind" and exactly one operator',
       );
     }
     return LiveCondition(field, ops.single, json[ops.single]);

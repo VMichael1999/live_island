@@ -41,8 +41,8 @@ Future<Uint8List> defaultImageReader(LiveImage image) async {
       }
     case LiveImageSource.reference:
       throw StateError(
-        'La imagen "${image.id}" viene de un JSON y no tiene origen; '
-        'créala con LiveImage.asset, .network, .file o .memory.',
+        'The image "${image.id}" comes from a JSON and has no source; '
+        'create it with LiveImage.asset, .network, .file or .memory.',
       );
   }
 }
@@ -87,7 +87,7 @@ Future<List<LiveImagePayload>> loadLayoutImages(
         } catch (e) {
           throw LiveIslandException(
             'image_failed',
-            'No se pudo leer el ícono de Android "$path": $e',
+            'Could not read the Android icon "$path": $e',
           );
         }
       }(),
@@ -99,7 +99,7 @@ Future<List<LiveImagePayload>> loadLayoutImages(
         } catch (e) {
           throw LiveIslandException(
             'image_failed',
-            'No se pudo leer la imagen "${img.key}": $e',
+            'Could not read the image "${img.key}": $e',
           );
         }
         final l = limits[img.id]!;

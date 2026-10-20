@@ -34,7 +34,7 @@ class LiveRoute {
   /// [path] has at least two points: origin, intermediate points and destination.
   LiveRoute(List<LiveLatLng> path) : path = List.unmodifiable(path) {
     if (path.length < 2) {
-      throw ArgumentError.value(path, 'path', 'Se necesitan al menos 2 puntos');
+      throw ArgumentError.value(path, 'path', 'At least 2 points are needed');
     }
     var acc = 0.0;
     final cum = <double>[0];

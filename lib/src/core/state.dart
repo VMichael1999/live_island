@@ -11,7 +11,7 @@ abstract final class LiveState {
   /// validates that everything complies with `state.schema.json`.
   static Map<String, Object?> normalize(Map<String, Object?> state) {
     if (state.length > 64) {
-      throw ArgumentError('El estado admite como máximo 64 campos');
+      throw ArgumentError('The state allows at most 64 fields');
     }
     return {
       for (final e in state.entries) _checkKey(e.key): _value(e.key, e.value),
@@ -26,8 +26,8 @@ abstract final class LiveState {
     if (!_key.hasMatch(key)) {
       throw ArgumentError.value(
         key,
-        'campo',
-        'Debe empezar con letra o guion bajo y usar solo letras, números y _',
+        'field',
+        'Must start with a letter or underscore and use only letters, digits and _',
       );
     }
     return key;
@@ -37,7 +37,7 @@ abstract final class LiveState {
     if (v == null || v is String || v is bool) return v;
     if (v is num) {
       if (v.isNaN || v.isInfinite) {
-        throw ArgumentError.value(v, key, 'Los números deben ser finitos');
+        throw ArgumentError.value(v, key, 'Numbers must be finite');
       }
       return v;
     }
@@ -45,7 +45,7 @@ abstract final class LiveState {
     throw ArgumentError.value(
       v,
       key,
-      'Solo se admiten texto, número, booleano, nulo y fecha (${v.runtimeType})',
+      'Only text, number, boolean, null and date are allowed (${v.runtimeType})',
     );
   }
 }

@@ -34,7 +34,7 @@ class LiveActivities(private val context: Context) {
         if (!nm.areNotificationsEnabled()) {
             throw LiveException(
                 "disabled",
-                "El usuario desactivó las notificaciones de esta app. Pide el permiso con LiveIsland.requestPermission().",
+                "The user turned off notifications for this app. Ask for the permission with LiveIsland.requestPermission().",
             )
         }
     }
@@ -97,7 +97,7 @@ class LiveActivities(private val context: Context) {
         }
         val (id, notificationId) = newIds()
         if (!store.instantiate(template, id, notificationId, state, deepLink, customId)) {
-            throw LiveException("template_not_found", "No hay un diseño registrado con el nombre \"$template\". Llama a LiveIsland.registerLayout.")
+            throw LiveException("template_not_found", "No design is registered with the name \"$template\". Call LiveIsland.registerLayout.")
         }
         cleanup(id)
         post(store.load(id)!!)
@@ -117,8 +117,8 @@ class LiveActivities(private val context: Context) {
     /** [alert] hace que esta actualización suene y salga como aviso emergente. */
     fun update(ref: String, changes: LiveState, alert: Boolean = false) {
         val id = resolve(ref)
-        val a = store.load(id) ?: throw LiveException("not_found", "No existe una actividad con ese id (¿ya terminó?).")
-        if (a.dismissed) throw LiveException("dismissed", "El usuario cerró la notificación; no se vuelve a publicar.")
+        val a = store.load(id) ?: throw LiveException("not_found", "No activity exists with that id (did it already end?).")
+        if (a.dismissed) throw LiveException("dismissed", "The user dismissed the notification; it is not posted again.")
         val merged = LiveJson.merge(a.state, changes)
         store.saveState(id, merged)
         post(a.copy(state = merged), alert = alert)
@@ -135,7 +135,7 @@ class LiveActivities(private val context: Context) {
      */
     fun scheduleEnd(ref: String, afterSeconds: Double, changes: LiveState?) {
         val id = resolve(ref)
-        val a = store.load(id) ?: throw LiveException("not_found", "No existe una actividad con ese id (¿ya terminó?).")
+        val a = store.load(id) ?: throw LiveException("not_found", "No activity exists with that id (did it already end?).")
         val state = changes?.let { LiveJson.merge(a.state, it) } ?: a.state
         val endAt = System.currentTimeMillis() + (afterSeconds * 1000).toLong()
         store.saveState(id, state)

@@ -86,7 +86,7 @@ void main() {
   ) async {
     await show(tester, 'taxi', surfaces: {LiveSurface.android});
     expect(find.text('6 min'), findsOneWidget);
-    expect(find.textContaining('Promovida a Live Update'), findsOneWidget);
+    expect(find.textContaining('Promoted to a Live Update'), findsOneWidget);
   });
 
   testWidgets('si Android no promueve, no hay chip y se explica por qué', (
@@ -94,7 +94,7 @@ void main() {
   ) async {
     await show(tester, 'score', surfaces: {LiveSurface.android});
     expect(find.text('2–1'), findsNothing);
-    expect(find.textContaining('No se promueve'), findsOneWidget);
+    expect(find.textContaining('Not promoted'), findsOneWidget);
   });
 
   testWidgets('un chip de texto largo se recorta a 6 caracteres y …', (

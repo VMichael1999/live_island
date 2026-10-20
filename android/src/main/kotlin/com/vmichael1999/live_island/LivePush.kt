@@ -42,7 +42,7 @@ object LivePush {
 
         val state = root.optJSONObject("state")?.let { LiveJson.state(it) }
         fun need(key: String) = root.optString(key).takeIf { it.isNotEmpty() }
-            ?: throw IllegalArgumentException("Falta \"$key\" en el push de live_island.")
+            ?: throw IllegalArgumentException("Missing \"$key\" in the live_island push.")
 
         return when (val event = need("event")) {
             "start" -> PushCommand.Start(
@@ -53,12 +53,12 @@ object LivePush {
             )
             "update" -> PushCommand.Update(
                 need("id"),
-                state ?: throw IllegalArgumentException("Falta \"state\" en el push de live_island."),
+                state ?: throw IllegalArgumentException("Missing \"state\" in the live_island push."),
                 // `"alert": true` (o un objeto con title/body, como en iOS): suena y sale como emergente.
                 root.opt("alert").let { it == true || it == "true" || it is JSONObject },
             )
             "end" -> PushCommand.End(need("id"), state, root.optString("dismiss", "default"), root.optDouble("dismissAfter", 0.0))
-            else -> throw IllegalArgumentException("Evento desconocido en el push de live_island: $event")
+            else -> throw IllegalArgumentException("Unknown event in the live_island push: $event")
         }
     }
 }

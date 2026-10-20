@@ -14,7 +14,7 @@ import 'node.dart';
 import 'state.dart';
 
 /// 4,096-byte limit, written as in the prototype HTML.
-const _maxBytesLabel = '4 096';
+const _maxBytesLabel = '4,096';
 
 /// Severity of a [LiveIsland.check] warning.
 enum LiveSeverity { ok, warn, bad }
@@ -73,15 +73,15 @@ LiveReport checkLayout(
   // 1. Peso del estado.
   final bytes = utf8.encode(jsonEncode(data)).length;
   final payload =
-      'Estado por actualización: $bytes bytes de $_maxBytesLabel '
-      '(iOS). Solo viajan datos, el diseño se envía una vez.';
+      'State per update: $bytes bytes of $_maxBytesLabel '
+      '(iOS). Only data travels; the design is sent once.';
   if (bytes > LiveState.maxBytes) {
     rows.add(
       LiveCheck(
         LiveSeverity.bad,
         'statePayload',
-        'El estado pesa $bytes bytes y supera los $_maxBytesLabel de iOS. '
-            'Quita campos o acorta los textos.',
+        'The state weighs $bytes bytes and exceeds the $_maxBytesLabel limit of iOS. '
+            'Remove fields or shorten the texts.',
       ),
     );
   } else {
@@ -97,12 +97,12 @@ LiveReport checkLayout(
           ? LiveCheck(
             LiveSeverity.warn,
             'highlightLength',
-            'El dato destacado tiene $n caracteres; en la isla compacta se recorta. Usa 7 o menos.',
+            'The highlighted value has $n characters; it is cut in the compact island. Use 7 or fewer.',
           )
           : const LiveCheck(
             LiveSeverity.ok,
             'highlightLength',
-            'El dato destacado cabe en la isla compacta.',
+            'The highlighted value fits in the compact island.',
           ),
     );
   }
@@ -114,7 +114,7 @@ LiveReport checkLayout(
       const LiveCheck(
         LiveSeverity.warn,
         'androidCard',
-        'Android: la tarjeta con tu diseño (style card) no se promueve a Live Update ni muestra chip en la barra de estado. Pide Android 12 o más; antes se usa el estilo nativo.',
+        'Android: the card with your design (style card) is not promoted to a Live Update and shows no chip in the status bar. It needs Android 12 or later; before that the native style is used.',
       ),
     );
   }
@@ -126,7 +126,7 @@ LiveReport checkLayout(
         LiveCheck(
           LiveSeverity.ok,
           'chip',
-          'Chip de Android completo ($len caracteres).',
+          'Android chip complete ($len characters).',
         ),
       );
     } else if (chip.mode == _ChipMode.cut) {
@@ -134,7 +134,7 @@ LiveReport checkLayout(
         LiveCheck(
           LiveSeverity.warn,
           'chip',
-          'Chip de Android recortado: “${chip.text}” tiene $len caracteres (máximo 7 para verse completo).',
+          'Android chip cut: “${chip.text}” has $len characters (7 at most to show in full).',
         ),
       );
     } else {
@@ -142,7 +142,7 @@ LiveReport checkLayout(
         LiveCheck(
           LiveSeverity.warn,
           'chip',
-          'Chip de Android solo con ícono${chip.text.isNotEmpty ? ': el texto es demasiado largo.' : '.'}',
+          'Android chip with the icon only${chip.text.isNotEmpty ? ': the text is too long.' : '.'}',
         ),
       );
     }
@@ -155,7 +155,7 @@ LiveReport checkLayout(
       const LiveCheck(
         LiveSeverity.bad,
         'androidPromotion',
-        'Android no promueve este caso: no lo inició el usuario como actividad con inicio y fin. Se muestra como notificación normal.',
+        'Android does not promote this case: the user did not start it as an activity with a start and an end. It is shown as a normal notification.',
       ),
     );
   } else if (android?.colorized ?? false) {
@@ -163,7 +163,7 @@ LiveReport checkLayout(
       const LiveCheck(
         LiveSeverity.bad,
         'androidPromotion',
-        'Android no promueve notificaciones con setColorized(true). Quita el color de fondo.',
+        'Android does not promote notifications with setColorized(true). Remove the background color.',
       ),
     );
   } else if (title == null || title.isEmpty) {
@@ -171,7 +171,7 @@ LiveReport checkLayout(
       const LiveCheck(
         LiveSeverity.bad,
         'androidPromotion',
-        'Android exige un título (setContentTitle) para promover.',
+        'Android requires a title (setContentTitle) to promote.',
       ),
     );
   } else {
@@ -179,7 +179,7 @@ LiveReport checkLayout(
       const LiveCheck(
         LiveSeverity.ok,
         'androidPromotion',
-        'Android la promueve a Live Update (estilo nativo, sin RemoteViews).',
+        'Android promotes it to a Live Update (native style, no RemoteViews).',
       ),
     );
   }
@@ -194,7 +194,7 @@ LiveReport checkLayout(
       const LiveCheck(
         LiveSeverity.warn,
         'ringOnAndroid',
-        'El anillo no existe en Android: se muestra como barra de ProgressStyle.',
+        'The ring does not exist on Android: it is shown as a ProgressStyle bar.',
       ),
     );
   }
@@ -206,7 +206,7 @@ LiveReport checkLayout(
         const LiveCheck(
           LiveSeverity.warn,
           'segmentsFewStages',
-          'Para la barra por etapas escribe al menos dos etapas.',
+          'For the bar by stages, write at least two stages.',
         ),
       );
       break;
@@ -219,7 +219,7 @@ LiveReport checkLayout(
       const LiveCheck(
         LiveSeverity.warn,
         'androidSmallIcon',
-        'En Android el ícono pequeño (barra de estado, chip y encabezado) se ve como silueta de un solo color. El logo a color se muestra como ícono grande; conviene darle una versión en silueta con androidSmallIcon.',
+        'On Android the small icon (status bar, chip and header) shows as a one-color silhouette. The color logo is shown as the large icon; consider giving it a silhouette version with androidSmallIcon.',
       ),
     );
   }
@@ -235,8 +235,8 @@ LiveReport checkLayout(
       LiveCheck(
         LiveSeverity.ok,
         'imageSize',
-        '${slot.label}: ${kb}se reduce a ${slot.px} antes de copiarse al App Group (iOS). '
-            'Proporción respetada con fit “${img.fit.name}”.',
+        '${slot.label}: ${kb}reduced to ${slot.px} before being copied to the App Group (iOS). '
+            'Proportion kept with fit “${img.fit.name}”.',
       ),
     );
   }

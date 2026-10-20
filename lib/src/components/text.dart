@@ -175,8 +175,8 @@ class LiveText extends LiveNode implements LiveTextSource {
     LiveTextKind.format => {'fmt': template},
     _ =>
       throw UnsupportedError(
-        'Android solo admite texto enlazado, literal o con plantilla en '
-        'el título y el texto de la notificación.',
+        'Android only supports bound, literal or templated text in '
+        'the notification title and text.',
       ),
   };
 

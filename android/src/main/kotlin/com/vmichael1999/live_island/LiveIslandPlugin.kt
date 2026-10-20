@@ -97,7 +97,7 @@ class LiveIslandPlugin :
                 "openPromotionSettings" -> result.success(openPromotionSettings())
                 "start" -> result.success(
                     live.start(
-                        JSONObject(call.argument<String>("layout") ?: throw LiveException("bad_arguments", "Falta layout.")),
+                        JSONObject(call.argument<String>("layout") ?: throw LiveException("bad_arguments", "Missing layout.")),
                         LiveJson.state(JSONObject(call.argument<String>("state") ?: "{}")),
                         call.argument<String>("deepLink"),
                         images(call),
@@ -106,15 +106,15 @@ class LiveIslandPlugin :
                 )
                 "registerLayout" -> {
                     live.registerLayout(
-                        call.argument<String>("name") ?: throw LiveException("bad_arguments", "Falta name."),
-                        JSONObject(call.argument<String>("layout") ?: throw LiveException("bad_arguments", "Falta layout.")),
+                        call.argument<String>("name") ?: throw LiveException("bad_arguments", "Missing name."),
+                        JSONObject(call.argument<String>("layout") ?: throw LiveException("bad_arguments", "Missing layout.")),
                         images(call),
                     )
                     result.success(null)
                 }
                 "update" -> {
                     live.update(
-                        call.argument<String>("id") ?: throw LiveException("bad_arguments", "Falta id."),
+                        call.argument<String>("id") ?: throw LiveException("bad_arguments", "Missing id."),
                         LiveJson.state(JSONObject(call.argument<String>("state") ?: "{}")),
                         call.argument<Map<String, Any?>>("alert") != null,
                     )
@@ -131,7 +131,7 @@ class LiveIslandPlugin :
                 }
                 "scheduleEnd" -> {
                     live.scheduleEnd(
-                        call.argument<String>("id") ?: throw LiveException("bad_arguments", "Falta id."),
+                        call.argument<String>("id") ?: throw LiveException("bad_arguments", "Missing id."),
                         call.argument<Number>("dismissAfter")?.toDouble() ?: 0.0,
                         call.argument<String>("state")?.let { LiveJson.state(JSONObject(it)) },
                     )

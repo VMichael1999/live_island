@@ -73,7 +73,7 @@ abstract class LiveNode {
       case 'toggle':
         return LiveToggle.fromJson(json);
     }
-    throw FormatException('Tipo de nodo desconocido: $t');
+    throw FormatException('Unknown node type: $t');
   }
 
   /// Reads a list of child nodes (`"c": [...]`).
