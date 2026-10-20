@@ -65,11 +65,9 @@ void main() {
     'sala_medica': const WaitingRoomPreset(),
     'vuelo': const FlightPathPreset(),
     'orbita': const OrbitPreset(),
-    'tarifa': const FareSplitPreset(),
     'carrera': const RunPreset(),
-    'viaje': RideTripPreset(
-      driverPhoto: _run('avatar.png', 200, 205, size: 46),
-    ),
+    'pin': RidePinPreset(driverPhoto: _run('avatar.png', 200, 205, size: 52)),
+    'pedido': const DeliveryOrderPreset(),
   };
 
   final generar = Platform.environment['GENERAR_GALERIA'] != null;

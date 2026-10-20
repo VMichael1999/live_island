@@ -14,8 +14,8 @@
 | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/recogida_clara.png" width="300" alt="Ride pickup"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/marcador.png" width="300" alt="Match score"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/bolsa.png" width="300" alt="Stock quote"> |
 | **Store pickup** | **Medical waiting room** | **EV charging** |
 | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/tienda.png" width="300" alt="Store pickup"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/sala_medica.png" width="300" alt="Medical waiting room"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/carga.png" width="300" alt="Charging with glowing cable"> |
-| **Flight with curved route** | **Trip with details** | **Fare and tip** |
-| <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/vuelo.png" width="300" alt="Flight"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/viaje.png" width="300" alt="Trip with details"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/tarifa.png" width="300" alt="Fare and tip"> |
+| **Flight with curved route** | **Trip start with PIN** | **Delivery order** |
+| <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/vuelo.png" width="300" alt="Flight"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/pin.png" width="300" alt="Trip start with PIN"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/pedido.png" width="300" alt="Delivery order"> |
 
 *Each image shows the compact island, the expanded island and the Lock Screen card. They are the Flutter preview (`LiveIslandPreview`), except charging, which is an iOS Simulator capture (the preview does not draw the glow). All are example designs with made-up names and images; every text, color and image can be changed from Dart. The sample texts are in Spanish.*
 
@@ -362,6 +362,10 @@ More elaborate than the presets, with their own island and Lock Screen card; use
 | `RideArrivalPreset` | Arrival time, fare and the car with its plate | `brand`, `carImage`, `accent` |
 | `RideTripPreset` | Trip with phase, destination, category, fare and bar | `brand`, `driverPhoto`, `accent` |
 | `DeliveryOrderPreset` | Delivery order in four stages with icons | `brand`, `accent` |
+| `RidePinPreset` | Trip start with the PIN code, driver photo and bar | `brand`, `driverPhoto`, `accent` |
+| `RideStopPreset` | Driver with a numbered stop before pickup, car with plate | `brand`, `stopAt`, `carImage` |
+| `RideDestinationPreset` | On the way to the destination: time, address and bar with a square end | `brand`, `accent` |
+| `TrainPreset` | Train line with stations and the train on the bar | `stages`, `trainImage`, `accent` |
 | `StorePickupPreset` | Order pickup, with three steps | `store`, `brandLogo`, `stepColor` |
 | `RunPreset` | Run: distance, time and goal | `brand`, `unit`, `timeLabel` |
 | `MatchPreset` | A match score | `homeCrest`, `awayCrest`, `homeLabel`, `link` |

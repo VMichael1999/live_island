@@ -1,6 +1,6 @@
 name: live_island_kit
 description: "Live Activities (iOS) y Live Updates (Android) con una sola API en Dart, sin Swift ni Kotlin. Isla dinámica, pantalla de bloqueo, presets, gráficas y vista previa."
-version: 0.1.1
+version: 0.2.0
 repository: https://github.com/VMichael1999/live_island_kit
 issue_tracker: https://github.com/VMichael1999/live_island_kit/issues
 topics:
@@ -25,10 +25,10 @@ screenshots:
     path: doc/assets/galeria/carga.png
   - description: "Vuelo con ruta curva"
     path: doc/assets/galeria/vuelo.png
-  - description: "Viaje con fase, destino, categoría, pago y barra"
-    path: doc/assets/galeria/viaje.png
-  - description: "Tarifa partida en tramos de color"
-    path: doc/assets/galeria/tarifa.png
+  - description: "Inicio de viaje con el código PIN del conductor"
+    path: doc/assets/galeria/pin.png
+  - description: "Pedido a domicilio en cuatro etapas con íconos"
+    path: doc/assets/galeria/pedido.png
 
 executables:
   setup:
