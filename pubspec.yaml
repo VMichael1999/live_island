@@ -1,5 +1,5 @@
 name: live_island_kit
-description: "Live Activities (iOS) y Live Updates (Android) con una sola API en Dart, sin Swift ni Kotlin. Isla dinámica, pantalla de bloqueo, presets, gráficas y vista previa."
+description: "iOS Live Activities and Android Live Updates with a single Dart API, no Swift or Kotlin. Dynamic Island, lock screen, presets, charts and a live preview."
 version: 0.2.0
 repository: https://github.com/VMichael1999/live_island_kit
 issue_tracker: https://github.com/VMichael1999/live_island_kit/issues
@@ -11,23 +11,23 @@ topics:
   - android
 
 screenshots:
-  - description: "Marcador de partido: isla compacta, expandida y pantalla de bloqueo"
+  - description: "Match score: compact and expanded island and lock screen"
     path: doc/assets/galeria/marcador.png
-  - description: "Recogida de un viaje con barra punteada y marcadores"
+  - description: "Ride pickup with a dotted bar and markers"
     path: doc/assets/galeria/recogida_clara.png
-  - description: "Cotización en bolsa con gráfica de línea"
+  - description: "Stock quote with a line chart"
     path: doc/assets/galeria/bolsa.png
-  - description: "Pedido en tienda con tres pasos"
+  - description: "Store pickup order in three steps"
     path: doc/assets/galeria/tienda.png
-  - description: "Sala de espera médica"
+  - description: "Medical waiting room"
     path: doc/assets/galeria/sala_medica.png
-  - description: "Carga de un auto eléctrico con cable luminoso"
+  - description: "Electric car charging with a glowing cable"
     path: doc/assets/galeria/carga.png
-  - description: "Vuelo con ruta curva"
+  - description: "Flight with a curved route"
     path: doc/assets/galeria/vuelo.png
-  - description: "Inicio de viaje con el código PIN del conductor"
+  - description: "Trip start with the driver's PIN code"
     path: doc/assets/galeria/pin.png
-  - description: "Pedido a domicilio en cuatro etapas con íconos"
+  - description: "Delivery order in four stages with icons"
     path: doc/assets/galeria/pedido.png
 
 executables:
