@@ -182,8 +182,12 @@ enum LiveRenderer {
                 .overlay(style(view).lineLimit(1).multilineTextAlignment(textAlign), alignment: frameAlign)
                 .fixedSize())
         }
+        // En la isla expandida las zonas laterales son angostas: un texto de una línea
+        // se encoge hasta un 65 % antes de cortarse con «…».
+        let shrink: CGFloat = (c.island && lines == 1) ? 0.65 : 1
         return AnyView(style(view)
             .lineLimit(lines)
+            .minimumScaleFactor(shrink)
             .multilineTextAlignment(textAlign)
             .fixedSize(horizontal: false, vertical: true))
     }
