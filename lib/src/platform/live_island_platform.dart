@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart'
     show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/services.dart';
 
-/// Una imagen lista para enviar al dispositivo, con el límite al que debe
-/// reducirse (en píxeles).
+/// An image ready to send to the device, with the limit it must be reduced
+/// to (in pixels).
 class LiveImagePayload {
   const LiveImagePayload({
     required this.id,
@@ -24,15 +24,15 @@ class LiveImagePayload {
   };
 }
 
-/// Un token de push de iOS (ActivityKit).
+/// An iOS push token (ActivityKit).
 class LivePushToken {
   const LivePushToken({required this.token, this.activityId});
 
-  /// Token en hexadecimal, listo para enviarlo al servidor.
+  /// Token in hexadecimal, ready to send to the server.
   final String token;
 
-  /// Actividad a la que pertenece. `null` = token de push-to-start (iOS 17.2),
-  /// que sirve para iniciar actividades desde el servidor.
+  /// The activity it belongs to. `null` = push-to-start token (iOS 17.2),
+  /// used to start activities from the server.
   final String? activityId;
 
   bool get isPushToStart => activityId == null;
@@ -42,45 +42,45 @@ class LivePushToken {
       'LivePushToken(${activityId ?? 'push-to-start'}: $token)';
 }
 
-/// Eventos que la plataforma envía sobre push.
+/// Events the platform sends about push.
 sealed class LivePushEvent {
   const LivePushEvent();
 }
 
-/// Llegó un token nuevo (de una actividad o de push-to-start).
+/// A new token arrived (from an activity or from push-to-start).
 class LivePushTokenEvent extends LivePushEvent {
   const LivePushTokenEvent(this.token);
   final LivePushToken token;
 }
 
-/// Una actividad empezó por push (iOS push-to-start, Android `handlePush`).
+/// An activity started from a push (iOS push-to-start, Android `handlePush`).
 class LivePushStartedEvent extends LivePushEvent {
   const LivePushStartedEvent(this.activityId);
   final String activityId;
 }
 
-/// Un aviso que acompaña a una actualización: en iOS la isla se expande un
-/// momento (o aparece un banner en la pantalla de bloqueo) con [title] y
-/// [body], y suena; en Android la notificación suena y aparece como aviso
-/// emergente.
+/// An alert that accompanies an update: on iOS the island expands for a
+/// moment (or a banner appears on the lock screen) with [title] and
+/// [body], and plays a sound; on Android the notification sounds and shows as
+/// a heads-up.
 ///
 /// ```dart
-/// await actividad.update(
-///   {'estado': 'llegó'},
-///   alert: const LiveAlert(title: 'Tu conductor llegó', body: 'Toyota Yaris · ABC-123'),
+/// await activity.update(
+///   {'status': 'arrived'},
+///   alert: const LiveAlert(title: 'Your driver arrived', body: 'Toyota Yaris · ABC-123'),
 /// );
 /// ```
 class LiveAlert {
   const LiveAlert({required this.title, required this.body, this.sound});
 
-  /// Título del aviso (iOS). Android muestra el contenido de la actividad.
+  /// Title of the alert (iOS). Android shows the activity's content.
   final String title;
 
-  /// Texto del aviso (iOS).
+  /// Text of the alert (iOS).
   final String body;
 
-  /// Nombre de un archivo de sonido del paquete de la app (`aviso.caf`).
-  /// Con `null` suena el sonido por defecto.
+  /// Name of a sound file in the app's bundle (`alert.caf`).
+  /// With `null` the default sound plays.
   final String? sound;
 
   Map<String, Object?> toMap() => {
@@ -100,33 +100,33 @@ class LiveAlert {
   int get hashCode => Object.hash(title, body, sound);
 }
 
-/// Cómo se descarta una actividad al terminar.
+/// How an activity is dismissed when it ends.
 class LiveDismiss {
   const LiveDismiss._(this.type, this.after, [this.at]);
 
-  /// Desaparece de inmediato.
+  /// Disappears at once.
   static const immediate = LiveDismiss._('immediate', Duration.zero);
 
-  /// Se queda hasta que el usuario la descarta o pasan unas horas (iOS: 4 h).
+  /// Stays until the user dismisses it or a few hours pass (iOS: 4 h).
   static const byDefault = LiveDismiss._('default', Duration.zero);
 
-  /// Se queda visible [delay] con su último estado y luego desaparece
-  /// (iOS la limita a 4 horas).
+  /// Stays visible for [delay] with its last state and then disappears
+  /// (iOS limits it to 4 hours).
   const LiveDismiss.after(Duration delay) : this._('after', delay);
 
-  /// Se queda visible con su último estado hasta [when] y luego desaparece.
-  /// Si [when] ya pasó, equivale a [immediate]. iOS la limita a 4 horas
-  /// después de terminar.
+  /// Stays visible with its last state until [when] and then disappears.
+  /// If [when] has already passed, it is equivalent to [immediate]. iOS limits
+  /// it to 4 hours after it ends.
   const LiveDismiss.at(DateTime when) : this._('after', Duration.zero, when);
 
   final String type;
   final Duration after;
 
-  /// Hora absoluta de [LiveDismiss.at]; `null` en los demás.
+  /// Absolute time of [LiveDismiss.at]; `null` for the others.
   final DateTime? at;
 
-  /// La espera hasta el descarte, calculada ahora: para [at] es la distancia
-  /// hasta esa hora.
+  /// The wait until dismissal, computed now: for [at] it is the distance
+  /// to that time.
   Duration afterFromNow([DateTime? now]) {
     final target = at;
     if (target == null) return after;
@@ -135,8 +135,8 @@ class LiveDismiss {
   }
 }
 
-/// Una actividad viva: su id de la plataforma y, si la app se lo dio al
-/// iniciarla, su id propio.
+/// A live activity: its platform id and, if the app gave one when starting
+/// it, its own id.
 class LiveActivityInfo {
   const LiveActivityInfo(this.id, {this.customId});
 
@@ -151,7 +151,7 @@ class LiveActivityInfo {
   int get hashCode => Object.hash(id, customId);
 }
 
-/// Error de la plataforma al manejar una actividad.
+/// Platform error while handling an activity.
 class LiveIslandException implements Exception {
   const LiveIslandException(this.code, this.message);
 
@@ -163,50 +163,50 @@ class LiveIslandException implements Exception {
   String toString() => 'LiveIslandException($code): $message';
 }
 
-/// Lo que cada plataforma (iOS, Android) implementa.
+/// What each platform (iOS, Android) implements.
 abstract class LiveIslandPlatform {
-  /// ¿Esta plataforma necesita los PNG de `LiveIcon.android`? (Solo Android.)
+  /// Does this platform need the `LiveIcon.android` PNGs? (Android only.)
   bool get needsAndroidIcons;
 
-  /// ¿Puede la app mostrar actividades? (iOS: `areActivitiesEnabled`;
-  /// Android: notificaciones permitidas y, en Android 16+, promovidas.)
+  /// Can the app show activities? (iOS: `areActivitiesEnabled`;
+  /// Android: notifications allowed and, on Android 16+, promoted.)
   Future<bool> areEnabled();
 
-  /// Las actividades que siguen vivas (también las iniciadas antes de que la
-  /// app se cerrara o por un push), con su id propio si lo tienen.
+  /// The activities that are still alive (also those started before the app
+  /// was closed or by a push), with their own id if they have one.
   Future<List<LiveActivityInfo>> activeActivities();
 
-  /// Termina todas las actividades vivas de la app.
+  /// Ends all of the app's live activities.
   Future<void> endAll({LiveDismiss dismiss = LiveDismiss.immediate});
 
-  /// Id de cada botón que el usuario toca en la actividad. Las acciones que
-  /// llegaron con la app cerrada se entregan al empezar a escuchar.
+  /// Id of each button the user taps in the activity. Actions that arrived
+  /// with the app closed are delivered when you start listening.
   Stream<String> get actions;
 
-  /// Tokens de push y actividades iniciadas por push.
+  /// Push tokens and activities started by push.
   Stream<LivePushEvent> get pushEvents;
 
-  /// Guarda un diseño con nombre en el dispositivo. Hace falta para iniciar
-  /// actividades desde un push, que no puede llevar el diseño.
+  /// Saves a named design on the device. It is needed to start activities from
+  /// a push, which cannot carry the design.
   Future<void> registerLayout({
     required String name,
     required String layoutJson,
     required List<LiveImagePayload> images,
   });
 
-  /// Procesa los datos de un push de FCM (Android). Devuelve el id de la
-  /// actividad afectada. En iOS no hace nada: APNs llega directo a ActivityKit.
+  /// Processes the data of an FCM push (Android). Returns the id of the
+  /// affected activity. On iOS it does nothing: APNs goes straight to ActivityKit.
   Future<String?> handlePush(Map<String, Object?> data);
 
-  /// Pide el permiso de notificaciones (Android 13+). En iOS no hace nada y
-  /// devuelve si las actividades están activas.
+  /// Asks for the notification permission (Android 13+). On iOS it does nothing
+  /// and returns whether activities are enabled.
   Future<bool> requestPermission();
 
-  /// Abre los ajustes donde el usuario permite las notificaciones promovidas
-  /// a Live Update (Android 16+). Devuelve `false` si no existen.
+  /// Opens the settings where the user allows notifications promoted to
+  /// Live Update (Android 16+). Returns `false` if they do not exist.
   Future<bool> openPromotionSettings();
 
-  /// Inicia una actividad y devuelve su id.
+  /// Starts an activity and returns its id.
   Future<String> start({
     required String layoutJson,
     required String stateJson,
@@ -231,8 +231,8 @@ abstract class LiveIslandPlatform {
     LiveDismiss dismiss = LiveDismiss.byDefault,
   });
 
-  /// Programa el fin de la actividad para [at] (ver [LiveActivity.scheduleEnd]).
-  /// [secondsFromNow] ya es la distancia desde ahora, mayor que cero.
+  /// Schedules the end of the activity for `at` (see [LiveActivity.scheduleEnd]).
+  /// [secondsFromNow] is already the distance from now, greater than zero.
   Future<void> scheduleEnd(
     String id, {
     required double secondsFromNow,
@@ -240,7 +240,7 @@ abstract class LiveIslandPlatform {
   });
 }
 
-/// Implementación por canal de métodos (`live_island`).
+/// Method channel implementation (`live_island`).
 class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
   MethodChannelLiveIslandPlatform([MethodChannel? channel])
     : _channel = channel ?? const MethodChannel('live_island');

@@ -5,7 +5,7 @@ import '../core/enums.dart';
 import '../core/json_util.dart';
 import '../core/node.dart';
 
-/// Hijos en horizontal (HStack en SwiftUI).
+/// Children laid out horizontally (HStack in SwiftUI).
 class LiveRow extends LiveNode {
   const LiveRow(this.items, {this.gap, this.align});
 
@@ -37,7 +37,7 @@ class LiveRow extends LiveNode {
   );
 }
 
-/// Hijos en vertical (VStack en SwiftUI).
+/// Children laid out vertically (VStack in SwiftUI).
 class LiveColumn extends LiveNode {
   const LiveColumn(this.items, {this.gap, this.align});
 
@@ -69,7 +69,7 @@ class LiveColumn extends LiveNode {
   );
 }
 
-/// Hijos uno encima de otro (ZStack en SwiftUI).
+/// Children stacked one over another (ZStack in SwiftUI).
 class LiveStack extends LiveNode {
   const LiveStack(this.items, {this.align});
 
@@ -98,7 +98,7 @@ class LiveStack extends LiveNode {
   );
 }
 
-/// Espacio. Sin [size] es flexible y empuja a los vecinos.
+/// Space. Without [size] it is flexible and pushes its neighbors apart.
 class LiveSpacer extends LiveNode {
   const LiveSpacer({this.size});
 
@@ -114,7 +114,7 @@ class LiveSpacer extends LiveNode {
       LiveSpacer(size: (json['size'] as num?)?.toDouble());
 }
 
-/// Margen alrededor de un hijo.
+/// Margin around a child.
 class LivePadding extends LiveNode {
   const LivePadding(
     this.child, {
@@ -164,8 +164,8 @@ class LivePadding extends LiveNode {
   }
 }
 
-/// Caja con tamaño, esquinas y fondo (por ejemplo el cuadro de 46 pt con
-/// acento al 22 % detrás del ícono de la isla expandida).
+/// A box with size, corners and background (for example the 46 pt square
+/// with a 22 % accent behind the expanded island's icon).
 class LiveBox extends LiveNode {
   const LiveBox({
     this.child,
@@ -182,18 +182,18 @@ class LiveBox extends LiveNode {
   final double? size;
   final double? radius;
 
-  /// Opacidad (0 a 1) del color de acento usada como fondo.
+  /// Opacity (0 to 1) of the accent color used as the background.
   final double? tint;
   final Color? color;
 
-  /// Color del borde (sin borde si falta).
+  /// Border color (no border if missing).
   final Color? border;
 
-  /// Grosor del borde en pt (1,5 por defecto).
+  /// Border thickness in pt (1.5 by default).
   final double? borderWidth;
 
-  /// Brillo alrededor de la caja: radio en pt del halo, del color del borde
-  /// (o del fondo si no hay borde).
+  /// Glow around the box: radius in pt of the halo, in the border's color
+  /// (or the background's if there is no border).
   final double? glow;
 
   @override
@@ -232,7 +232,7 @@ class LiveBox extends LiveNode {
   );
 }
 
-/// Muestra [then] si se cumple [when] (se evalúa en el dispositivo); si no,
+/// Shows [then] if [when] holds (evaluated on the device); otherwise,
 /// [otherwise].
 class LiveIf extends LiveNode {
   const LiveIf(this.when, {required this.then, this.otherwise});

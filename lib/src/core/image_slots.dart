@@ -4,8 +4,8 @@ import 'enums.dart';
 import 'layout.dart';
 import 'node.dart';
 
-/// Una ranura de imagen del diseño y el tamaño al que se reduce antes de
-/// copiarse al dispositivo (tamaño mostrado × 3).
+/// An image slot of the design and the size it is reduced to before being
+/// copied to the device (displayed size × 3).
 class LiveImageSlot {
   const LiveImageSlot(
     this.label,
@@ -15,21 +15,21 @@ class LiveImageSlot {
     this.maxHeight,
   );
 
-  /// Nombre de la ranura, como en el editor del HTML.
+  /// Name of the slot, as in the HTML editor.
   final String label;
 
-  /// Tamaño final, para los avisos de `check()`.
+  /// Final size, for the `check()` warnings.
   final String px;
   final LiveImage image;
 
-  /// Límite en píxeles; la imagen se reduce sin deformarse ni agrandarse.
+  /// Limit in pixels; the image is reduced without being distorted or enlarged.
   final int maxWidth, maxHeight;
 }
 
-/// Tamaño de reducción de una imagen que no está en ninguna ranura conocida.
+/// Reduction size of an image that is not in any known slot.
 const liveDefaultImageMax = 138;
 
-/// Las cuatro ranuras de imagen del editor del HTML, en su mismo orden.
+/// The four image slots of the HTML editor, in the same order.
 List<LiveImageSlot> imageSlots(LiveLayout layout) {
   final slots = <LiveImageSlot>[];
   final logo = layout.appLogo;
@@ -99,8 +99,8 @@ List<LiveImageSlot> imageSlots(LiveLayout layout) {
   return slots;
 }
 
-/// Límite de reducción de cada imagen del diseño, por id. Si una imagen se usa
-/// en varias ranuras gana el límite más grande.
+/// Reduction limit of each image in the design, by id. If an image is used
+/// in several slots, the largest limit wins.
 Map<String, ({int maxWidth, int maxHeight})> imageLimits(LiveLayout layout) {
   final out = <String, ({int maxWidth, int maxHeight})>{};
   for (final s in imageSlots(layout)) {

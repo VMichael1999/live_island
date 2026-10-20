@@ -19,9 +19,9 @@ Iterable<LiveNode> _progressChildren(
   if (end != null) end,
 ];
 
-/// Ícono de una etapa de [LiveSegments]: [pending] mientras la etapa no se
-/// alcanza y [reached] desde que se alcanza. Sirve, por ejemplo, para un pedido
-/// cuyos pasos pasan de gris a color.
+/// Icon of a [LiveSegments] stage: [pending] while the stage has not been
+/// reached and [reached] once it has. Useful, for example, for an order whose
+/// steps turn from gray to colored.
 class LiveStageIcon {
   const LiveStageIcon({required this.pending, required this.reached});
 
@@ -38,11 +38,11 @@ class LiveStageIcon {
   );
 }
 
-/// Estilo de una barra o un anillo de progreso. Todo es opcional: lo que no se
-/// indica toma su valor por defecto (los del prototipo).
+/// Style of a progress bar or ring. Everything is optional: what is not
+/// specified takes its default value (the prototype's).
 ///
-/// Android solo respeta [color], [pointColor], el tracker y los marcadores; el
-/// grosor, el espacio, las esquinas y las etiquetas los decide el sistema.
+/// Android only honors [color], [pointColor], the tracker and the markers; the
+/// thickness, spacing, corners and labels are decided by the system.
 class LiveProgressStyle {
   const LiveProgressStyle({
     this.height,
@@ -62,57 +62,57 @@ class LiveProgressStyle {
     this.markerLabels,
   });
 
-  /// Grosor de la barra en pt (por defecto 6). En un anillo, el ancho del trazo (3).
+  /// Bar thickness in pt (6 by default). In a ring, the stroke width (3).
   final double? height;
 
-  /// Color de lo avanzado (por defecto el acento).
+  /// Color of the completed part (the accent by default).
   final Color? color;
 
-  /// Color de lo que falta.
+  /// Color of what remains.
   final Color? trackColor;
 
-  /// Separación entre tramos (por defecto 4).
+  /// Gap between segments (4 by default).
   final double? gap;
 
-  /// Esquinas (por defecto la mitad del grosor).
+  /// Corners (half the thickness by default).
   final double? radius;
 
-  /// Diámetro de los puntos de etapa (por defecto 10).
+  /// Diameter of the stage dots (10 by default).
   final double? pointSize;
 
-  /// Color de los puntos completados (por defecto el de [color]).
+  /// Color of the completed dots (that of [color] by default).
   final Color? pointColor;
 
-  /// Forma de los puntos de etapa (por defecto círculo).
+  /// Shape of the stage dots (a circle by default).
   final LivePointShape? pointShape;
 
-  /// Dibuja lo que falta como trazo discontinuo (por defecto sólido).
+  /// Draws what remains as a dashed stroke (solid by default).
   final bool? dashed;
 
-  /// Tamaño de las etiquetas de etapas (por defecto 11,5).
+  /// Size of the stage labels (11.5 by default).
   final double? labelSize;
 
-  /// Diámetro del círculo del ícono que avanza (por defecto 26).
+  /// Diameter of the circle of the moving icon (26 by default).
   final double? trackerSize;
 
-  /// Posiciones (0 a 1) de marcadores sobre la barra, con la forma de
-  /// [pointShape]. El marcador ya recorrido y el siguiente usan el color de
-  /// lo avanzado; los demás, el de lo que falta. Android los ignora.
+  /// Positions (0 to 1) of markers on the bar, with the shape of
+  /// [pointShape]. The marker already passed and the next one use the color of
+  /// the completed part; the others, that of what remains. Android ignores them.
   final List<double>? markers;
 
-  /// Brillo de lo avanzado (radio del halo en pt): el "cable luminoso".
-  /// Android lo ignora.
+  /// Glow of the completed part (halo radius in pt): the "glowing cable".
+  /// Android ignores it.
   final double? glow;
 
-  /// Marcador del final de la barra, **pegado** a ella y con el ícono que
-  /// avanza encima al llegar al 100 %. Usa [pointSize] como tamaño y
-  /// [LivePointShape.target] o [LivePointShape.targetSquare] como forma.
-  /// Android lo ignora.
+  /// Marker at the end of the bar, **attached** to it, with the moving icon on
+  /// top when it reaches 100 %. It uses [pointSize] as its size and
+  /// [LivePointShape.target] or [LivePointShape.targetSquare] as its shape.
+  /// Android ignores it.
   final LivePointShape? endMarker;
 
-  /// Texto dentro de cada marcador de [markers] (en el mismo orden, que debe
-  /// ser ascendente): por ejemplo `['1']` para una parada numerada. Android
-  /// Live Update lo ignora.
+  /// Text inside each marker of [markers] (in the same order, which must be
+  /// ascending): for example `['1']` for a numbered stop. Android Live Update
+  /// ignores it.
   final List<String>? markerLabels;
 
   bool get isEmpty =>
@@ -239,12 +239,12 @@ LiveProgressStyle? progressStyleFromJson(Object? raw) =>
 Map<String, Object?>? progressStyleToJson(LiveProgressStyle? s) =>
     s == null || s.isEmpty ? null : s.toJson();
 
-/// Barra de progreso continua o anillo. El valor es un número de 0 a 1 que
-/// se lee del campo [value] del estado.
+/// Continuous progress bar or ring. The value is a number from 0 to 1 read
+/// from the [value] field of the state.
 class LiveProgress extends LiveNode {
-  /// Barra con ícono que avanza ([tracker]) e íconos en los extremos
-  /// ([startIcon], [endIcon]). Todo es opcional: sin [tracker] ni íconos queda
-  /// solo la barra. [style] cambia grosor, colores, esquinas y espacio.
+  /// Bar with a moving icon ([tracker]) and icons at the ends
+  /// ([startIcon], [endIcon]). Everything is optional: with no [tracker] or
+  /// icons only the bar remains. [style] changes thickness, colors, corners.
   LiveProgress.bar({
     required this.value,
     LiveTrackerSource? tracker,
@@ -256,8 +256,8 @@ class LiveProgress extends LiveNode {
        child = null,
        size = null;
 
-  /// Anillo. En Android se muestra como barra. [child] va dentro del anillo.
-  /// [style] cambia el ancho del trazo (`height`) y los colores.
+  /// Ring. On Android it is shown as a bar. [child] goes inside the ring.
+  /// [style] changes the stroke width (`height`) and the colors.
   const LiveProgress.ring({
     required this.value,
     this.child,
@@ -325,12 +325,12 @@ class LiveProgress extends LiveNode {
   }
 }
 
-/// Barra por etapas: `n` etiquetas dan `n - 1` tramos, con puntos opcionales.
+/// Bar by stages: `n` labels give `n - 1` segments, with optional dots.
 ///
-/// Todo es opcional: [points] (un punto por etapa), [showLabels] (las
-/// etiquetas), [tracker] (el ícono o imagen que avanza) y los marcadores
-/// [startIcon] y [endIcon]. [style] cambia grosor, colores, esquinas, espacio
-/// y tamaños.
+/// Everything is optional: [points] (a dot per stage), [showLabels] (the
+/// labels), [tracker] (the moving icon or image) and the [startIcon] and
+/// [endIcon] markers. [style] changes thickness, colors, corners, spacing
+/// and sizes.
 class LiveSegments extends LiveNode {
   LiveSegments({
     required this.value,
@@ -346,18 +346,18 @@ class LiveSegments extends LiveNode {
 
   final LiveBind value;
 
-  /// Un ícono por etapa (uno por cada elemento de [labels]), en lugar de los
-  /// puntos: gris mientras la etapa no llega y de color desde que llega. Su
-  /// tamaño es `style.pointSize`; los tramos terminan antes de cada ícono según
-  /// `style.gap`. Android Live Update lo ignora.
+  /// One icon per stage (one for each element of [labels]), instead of the
+  /// dots: gray until the stage is reached and colored once it is. Its size is
+  /// `style.pointSize`; the segments end before each icon according to
+  /// `style.gap`. Android Live Update ignores it.
   final List<LiveStageIcon>? stageIcons;
 
-  /// Una etiqueta por etapa (mínimo dos). Aunque no se muestren ([showLabels]
-  /// en `false`) definen cuántos tramos hay.
+  /// One label per stage (at least two). Even if they are not shown
+  /// ([showLabels] set to `false`) they define how many segments there are.
   final List<String> labels;
   final bool points;
 
-  /// Muestra las etiquetas de las etapas.
+  /// Shows the stage labels.
   final bool showLabels;
   final LiveTracker? tracker;
   final LiveVisual? startIcon;
@@ -411,7 +411,7 @@ class LiveSegments extends LiveNode {
   );
 }
 
-/// Un dato numérico en vivo con unidad y etiqueta (`MetricStyle` en Android 17).
+/// A live numeric value with a unit and a label (`MetricStyle` on Android 17).
 class LiveMetric extends LiveNode {
   const LiveMetric({required this.value, this.unit, this.label});
 

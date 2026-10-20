@@ -3,17 +3,17 @@ import '../core/json_util.dart';
 import '../core/node.dart';
 import 'visuals.dart';
 
-/// Qué pasa al tocar un botón.
+/// What happens when a button is tapped.
 class LiveAction {
   const LiveAction._(this.type, {this.url, this.number});
 
-  /// Abre un enlace profundo de la app.
+  /// Opens a deep link of the app.
   const LiveAction.deepLink(String url) : this._('deepLink', url: url);
 
-  /// Llama a un número.
+  /// Calls a number.
   const LiveAction.call(String number) : this._('call', number: number);
 
-  /// Reenvía el id del botón a `LiveIsland.onAction` en Dart (por defecto).
+  /// Forwards the button's id to `LiveIsland.onAction` in Dart (the default).
   const LiveAction.custom() : this._('custom');
 
   final String type;
@@ -42,7 +42,7 @@ void _checkId(String id) {
   }
 }
 
-/// Botón. Su [id] llega al callback `LiveIsland.onAction`.
+/// A button. Its [id] reaches the `LiveIsland.onAction` callback.
 class LiveButton extends LiveNode {
   LiveButton({required this.id, required this.label, this.icon, this.action}) {
     _checkId(id);
@@ -82,7 +82,7 @@ class LiveButton extends LiveNode {
   );
 }
 
-/// Interruptor ligado a un campo booleano del estado.
+/// A switch tied to a boolean field of the state.
 class LiveToggle extends LiveNode {
   LiveToggle({required this.id, required this.value, this.label, this.icon}) {
     _checkId(id);

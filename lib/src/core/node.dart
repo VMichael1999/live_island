@@ -6,19 +6,19 @@ import '../components/progress.dart';
 import '../components/text.dart';
 import '../components/visuals.dart';
 
-/// Un componente del diseño. En JSON es un objeto con el campo `t` (tipo).
+/// A component of the design. In JSON it is an object with a `t` (type) field.
 abstract class LiveNode {
   const LiveNode();
 
-  /// Valor de `t` en el contrato JSON.
+  /// Value of `t` in the JSON contract.
   String get type;
 
   Map<String, Object?> toJson();
 
-  /// Hijos directos, para recorrer el árbol (imágenes, botones, progreso…).
+  /// Direct children, to walk the tree (images, buttons, progress…).
   Iterable<LiveNode> get children => const [];
 
-  /// Este nodo y todos sus descendientes, en orden de aparición.
+  /// This node and all its descendants, in order of appearance.
   Iterable<LiveNode> get descendants sync* {
     yield this;
     for (final c in children) {
@@ -26,7 +26,7 @@ abstract class LiveNode {
     }
   }
 
-  /// Construye un nodo desde el contrato JSON (`layout.schema.json`).
+  /// Builds a node from the JSON contract (`layout.schema.json`).
   factory LiveNode.fromJson(Map<String, Object?> json) {
     final t = json['t'];
     switch (t) {
@@ -76,7 +76,7 @@ abstract class LiveNode {
     throw FormatException('Tipo de nodo desconocido: $t');
   }
 
-  /// Lee una lista de nodos hijos (`"c": [...]`).
+  /// Reads a list of child nodes (`"c": [...]`).
   static List<LiveNode> listFromJson(Object? raw) => [
     for (final c in (raw as List? ?? const []))
       LiveNode.fromJson(asMap(c, 'c')),

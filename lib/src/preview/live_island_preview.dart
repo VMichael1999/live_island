@@ -9,13 +9,13 @@ import '../core/layout.dart';
 import 'preview_config.dart';
 import 'preview_surfaces.dart';
 
-/// Superficies que puede dibujar [LiveIslandPreview].
+/// Surfaces [LiveIslandPreview] can draw.
 enum LiveSurface { compact, minimal, expanded, lockScreen, android }
 
-/// Réplica en Flutter de lo que muestra el HTML de prototipos: la isla
-/// compacta, mínima y expandida, la tarjeta de la pantalla de bloqueo y la
-/// notificación de Android. Sirve para probar un diseño sin compilar el
-/// Widget Extension.
+/// A Flutter replica of what the prototype HTML shows: the compact, minimal
+/// and expanded island, the lock screen card and the Android notification.
+/// Useful to try a design without compiling the Widget Extension.
+///
 class LiveIslandPreview extends StatelessWidget {
   LiveIslandPreview({
     super.key,
@@ -51,12 +51,12 @@ class LiveIslandPreview extends StatelessWidget {
 
   final LivePreviewConfig config;
 
-  /// Qué superficies dibujar, siempre en este orden.
+  /// Which surfaces to draw, always in this order.
   final Set<LiveSurface> surfaces;
 
-  /// Con `true` se rotula cada superficie con su medida, como en el editor
-  /// del HTML, y la pantalla de bloqueo lleva reloj y fecha. Con `false` se
-  /// ve como una tarjeta de la galería.
+  /// With `true` each surface is labeled with its size, as in the HTML editor,
+  /// and the lock screen carries a clock and a date. With `false` it looks like
+  /// a gallery card.
   final bool showLabels;
 
   static const _label = TextStyle(

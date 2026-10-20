@@ -5,13 +5,13 @@ import '../core/enums.dart';
 import '../core/json_util.dart';
 import '../core/node.dart';
 
-/// De dónde sale el texto.
+/// Where the text comes from.
 enum LiveTextKind { bound, literal, format, countdown, stopwatch, relative }
 
-/// Texto. Puede venir de un campo del estado, ser literal, una plantilla o un
-/// contador que corre solo (cuenta regresiva, cronómetro, tiempo relativo).
+/// Text. It can come from a state field, be a literal, a template or a
+/// counter that runs on its own (countdown, stopwatch, relative time).
 class LiveText extends LiveNode implements LiveTextSource {
-  /// Texto de un campo del estado: `LiveText(bind('titulo'))`.
+  /// Text from a state field: `LiveText(bind('title'))`.
   const LiveText(
     LiveBind this.source, {
     this.size,
@@ -27,7 +27,7 @@ class LiveText extends LiveNode implements LiveTextSource {
        literal = null,
        template = null;
 
-  /// Texto fijo.
+  /// Fixed text.
   const LiveText.literal(
     String this.literal, {
     this.size,
@@ -43,7 +43,7 @@ class LiveText extends LiveNode implements LiveTextSource {
        source = null,
        template = null;
 
-  /// Plantilla con campos entre llaves: `'{subtitulo} · {nombre}'`.
+  /// Template with fields between braces: `'{subtitle} · {name}'`.
   const LiveText.format(
     String this.template, {
     this.size,
@@ -59,7 +59,7 @@ class LiveText extends LiveNode implements LiveTextSource {
        source = null,
        literal = null;
 
-  /// Cuenta regresiva hasta la fecha del campo [until]. Corre sola.
+  /// Countdown to the date in the [until] field. It runs on its own.
   const LiveText.countdown(
     LiveBind until, {
     this.size,
@@ -76,7 +76,7 @@ class LiveText extends LiveNode implements LiveTextSource {
        literal = null,
        template = null;
 
-  /// Cronómetro desde la fecha del campo [since].
+  /// Stopwatch from the date in the [since] field.
   const LiveText.stopwatch(
     LiveBind since, {
     this.size,
@@ -93,7 +93,7 @@ class LiveText extends LiveNode implements LiveTextSource {
        literal = null,
        template = null;
 
-  /// Tiempo relativo a la fecha del campo [date] ("hace 3 min", "en 5 min").
+  /// Time relative to the date in the [date] field ("3 min ago", "in 5 min").
   const LiveText.relative(
     LiveBind date, {
     this.size,
@@ -110,7 +110,7 @@ class LiveText extends LiveNode implements LiveTextSource {
        literal = null,
        template = null;
 
-  /// Copia de [other] con otro estilo: `LiveText.from(otro, size: 22)`.
+  /// Copy of [other] with another style: `LiveText.from(other, size: 22)`.
   LiveText.from(
     LiveText other, {
     double? size,
@@ -141,23 +141,23 @@ class LiveText extends LiveNode implements LiveTextSource {
   final String? literal;
   final String? template;
 
-  /// Tamaño en pt (15 por defecto).
+  /// Size in pt (15 by default).
   final double? size;
 
-  /// Peso de la fuente: 400, 600, 700…
+  /// Font weight: 400, 600, 700…
   final int? weight;
 
-  /// Cursiva.
+  /// Italic.
   final bool italic;
   final bool muted;
   final bool accent;
   final Color? color;
 
-  /// Máximo de líneas; el resto se recorta con elipsis.
+  /// Maximum lines; the rest is cut with an ellipsis.
   final int? lines;
   final LiveAlign? align;
 
-  /// Cifras tabulares (activas por defecto en contadores).
+  /// Tabular figures (on by default in counters).
   final bool? tabular;
 
   @override

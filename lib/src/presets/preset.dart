@@ -10,17 +10,17 @@ import '../core/enums.dart';
 import '../core/layout.dart';
 import '../core/node.dart';
 
-/// Carpeta de los PNG de íconos de Android que trae el paquete.
+/// Folder of the Android icon PNGs the package ships.
 const _iconDir = 'packages/live_island_kit/assets/icons';
 
-/// Un ícono del sistema con su PNG de Android: `presetIcon('car.fill', 'car')`.
+/// A system icon with its Android PNG: `presetIcon('car.fill', 'car')`.
 ///
-/// [sf] es el SF Symbol (iOS) y [file] el PNG que el paquete trae en
+/// [sf] is the SF Symbol (iOS) and [file] the PNG the package ships in
 /// `assets/icons/` (Android).
 LiveIcon presetIcon(String sf, String file, {bool accent = false}) =>
     LiveIcon.symbol(sf, android: '$_iconDir/$file.png', accent: accent);
 
-/// Un botón de ejemplo: el `id` sale de la etiqueta si no se indica.
+/// A sample button: the `id` comes from the label if not specified.
 LiveButton presetButton(String label, LiveIcon? icon, {String? id}) {
   final auto = label
       .toLowerCase()
@@ -33,10 +33,10 @@ LiveButton presetButton(String label, LiveIcon? icon, {String? id}) {
   );
 }
 
-/// Cómo se muestra el avance de un preset.
+/// How a preset shows progress.
 enum PresetProgress { none, bar, segments, ring }
 
-/// Datos de ejemplo de un preset (los mismos de la galería del HTML).
+/// Sample data of a preset (the same as the HTML gallery's).
 class PresetSample {
   const PresetSample({
     required this.title,
@@ -49,16 +49,16 @@ class PresetSample {
 
   final String title, subtitle, name;
 
-  /// Dato destacado cuando es texto.
+  /// Highlighted value when it is text.
   final String highlight;
 
-  /// Minutos de la cuenta regresiva cuando el dato destacado es un contador.
+  /// Minutes of the countdown when the highlighted value is a counter.
   final double minutes;
   final double progress;
 }
 
-/// Todo lo que define el diseño de un preset. Los presets son clases con los
-/// parámetros que más se cambian; esta especificación es lo que construye el
+/// Everything that defines a preset's design. Presets are classes with the
+/// parameters that change the most; this specification is what builds the
 /// [LiveLayout].
 class LivePresetSpec {
   LivePresetSpec({
@@ -89,38 +89,38 @@ class LivePresetSpec {
   final String id, appName;
   final Color accent;
 
-  /// Ícono principal (sin acento; el diseño lo pinta donde corresponde).
+  /// Main icon (no accent; the design paints it where appropriate).
   final LiveIcon icon;
   final PresetSample sample;
   final LiveChip chip;
   final LiveVisual? appLogo, androidSmallIcon;
 
-  /// Iniciales (o [avatarPhoto]) si el preset muestra un avatar en lugar del ícono.
+  /// Initials (or [avatarPhoto]) if the preset shows an avatar instead of the icon.
   final String? avatarText;
   final LiveImage? avatarPhoto;
 
-  /// `true`: el dato destacado es una cuenta regresiva hasta `llegaA`; si no, el texto de `destacado`.
+  /// `true`: the highlighted value is a countdown to `llegaA`; otherwise, the text of `destacado`.
   final bool countdown;
   final PresetProgress progress;
   final List<String> stages;
   final bool showPoints;
 
-  /// Muestra las etiquetas de las etapas.
+  /// Shows the stage labels.
   final bool showLabels;
 
-  /// Grosor, colores, esquinas y tamaños de la barra (o el anillo).
+  /// Thickness, colors, corners and sizes of the bar (or the ring).
   final LiveProgressStyle? progressStyle;
   final LiveTrackerSource? tracker;
   final LiveVisual? startIcon, endIcon;
   final List<LiveButton> buttons;
   final LiveBackground lockBackground;
 
-  /// `false` en casos que Android no promueve a Live Update (se usa en `check()`).
+  /// `false` for cases Android does not promote to a Live Update (used in `check()`).
   final bool androidPromotable;
 }
 
-/// Construye el diseño de [spec]. Es el "Código Dart generado" del HTML de
-/// prototipos (`renderCode`) hecho función.
+/// Builds the design of [spec]. It is the HTML prototype's "generated Dart
+/// code" (`renderCode`) turned into a function.
 LiveLayout buildPresetLayout(LivePresetSpec spec) {
   final accentIcon = spec.icon.withAccent();
   final hasAvatar = spec.avatarText != null || spec.avatarPhoto != null;
@@ -225,29 +225,29 @@ LiveLayout buildPresetLayout(LivePresetSpec spec) {
   );
 }
 
-/// Un diseño listo para usar. Cada preset es un [LiveLayout] normal: se puede
-/// usar tal cual, con [override] o como punto de partida de uno propio.
+/// A ready-to-use design. Each preset is a normal [LiveLayout]: it can be
+/// used as is, with [override] or as the starting point of your own.
 ///
-/// Los datos que espera el diseño (los nombres que se enlazan con `bind`) son
-/// siempre `titulo`, `subtitulo`, `nombre`, `progreso` y `destacado` (texto) o
-/// `llegaA` (fecha de la cuenta regresiva): ver [sampleState].
+/// The data the design expects (the names bound with `bind`) are always
+/// `titulo`, `subtitulo`, `nombre`, `progreso` and `destacado` (text) or
+/// `llegaA` (the countdown's date): see [sampleState].
 abstract class LivePreset {
   const LivePreset();
 
-  /// La especificación completa del preset.
+  /// The complete specification of the preset.
   LivePresetSpec get spec;
 
-  /// Nombre de la app que muestra la vista previa de Android.
+  /// Name of the app shown by the Android preview.
   String get appName => spec.appName;
 
-  /// `false` si Android no promueve este caso a Live Update.
+  /// `false` if Android does not promote this case to a Live Update.
   bool get androidPromotable => spec.androidPromotable;
 
-  /// El diseño del preset.
+  /// The preset's design.
   LiveLayout build() => buildPresetLayout(spec);
 
-  /// Datos de ejemplo para probar el diseño. [now] fija la hora de la cuenta
-  /// regresiva.
+  /// Sample data to try the design. [now] fixes the time of the
+  /// countdown.
   Map<String, Object?> sampleState({DateTime? now}) {
     final s = spec.sample;
     return {
@@ -264,9 +264,9 @@ abstract class LivePreset {
     };
   }
 
-  /// El diseño del preset con algunas partes reemplazadas. Cada argumento
-  /// reemplaza una región completa; los `expanded*` reemplazan solo una zona
-  /// de la isla expandida.
+  /// The preset's design with some parts replaced. Each argument replaces a
+  /// whole region; the `expanded*` ones replace only a zone of the expanded
+  /// island.
   LiveLayout override({
     LiveTheme? theme,
     LiveVisual? appLogo,

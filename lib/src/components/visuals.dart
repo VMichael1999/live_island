@@ -7,8 +7,8 @@ import '../core/bind.dart';
 import '../core/json_util.dart';
 import '../core/node.dart';
 
-/// Un ícono del sistema, una imagen propia o un avatar: todo lo que puede ir
-/// donde va un ícono (ver doc/PROMPT.md §5.1).
+/// A system icon, your own image or an avatar: everything that can go where
+/// an icon goes (see doc/PROMPT.md §5.1).
 sealed class LiveVisual extends LiveNode {
   const LiveVisual();
 
@@ -20,12 +20,12 @@ sealed class LiveVisual extends LiveNode {
   };
 }
 
-/// Algo que se puede usar como ícono que avanza sobre la barra de progreso.
+/// Something that can be used as the icon that moves along the progress bar.
 abstract interface class LiveTrackerSource {
   LiveTracker asTracker();
 }
 
-/// Ícono del sistema: un SF Symbol en iOS y un PNG en Android.
+/// System icon: an SF Symbol on iOS and a PNG on Android.
 class LiveIcon extends LiveVisual implements LiveTrackerSource {
   const LiveIcon.symbol(
     this.sf, {
@@ -35,21 +35,21 @@ class LiveIcon extends LiveVisual implements LiveTrackerSource {
     this.color,
   });
 
-  /// Nombre del SF Symbol (`car.fill`).
+  /// Name of the SF Symbol (`car.fill`).
   final String sf;
 
-  /// Ruta del PNG o vector para Android (`assets/live/car.png`).
+  /// Path of the PNG or vector for Android (`assets/live/car.png`).
   final String? android;
   final double? size;
 
-  /// Pintar con el color de acento del tema.
+  /// Paint with the theme's accent color.
   final bool accent;
   final Color? color;
 
   @override
   String get type => 'icon';
 
-  /// El mismo ícono pintado (o no) con el color de acento.
+  /// The same icon painted (or not) with the accent color.
   LiveIcon withAccent([bool accent = true]) => LiveIcon.symbol(
     sf,
     android: android,
@@ -81,12 +81,12 @@ class LiveIcon extends LiveVisual implements LiveTrackerSource {
   );
 }
 
-/// Origen de una imagen propia.
+/// Origin of your own image.
 enum LiveImageSource { asset, network, file, memory, reference }
 
-/// Imagen propia (logo, foto, ilustración). Se respeta su proporción.
+/// Your own image (logo, photo, illustration). Its proportion is respected.
 class LiveImage extends LiveVisual implements LiveTrackerSource {
-  /// Imagen de los assets de la app (`assets/logo.png`).
+  /// An image from the app's assets (`assets/logo.png`).
   LiveImage.asset(
     String path, {
     this.fit = LiveFit.contain,
@@ -101,7 +101,7 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
        bytes = null,
        id = 'asset_${_slug(path)}';
 
-  /// Imagen de red. La descarga la app, nunca el Widget Extension.
+  /// A network image. The app downloads it, never the Widget Extension.
   LiveImage.network(
     String url, {
     this.fit = LiveFit.contain,
@@ -116,7 +116,7 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
        bytes = null,
        id = 'net_${fnv1a(url.codeUnits)}';
 
-  /// Imagen de un archivo local.
+  /// An image from a local file.
   LiveImage.file(
     File file, {
     this.fit = LiveFit.contain,
@@ -131,7 +131,7 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
        bytes = null,
        id = 'file_${fnv1a(file.path.codeUnits)}';
 
-  /// Imagen en memoria. Su peso se conoce solo.
+  /// An in-memory image. Its weight is known on its own.
   LiveImage.memory(
     Uint8List data, {
     this.fit = LiveFit.contain,
@@ -146,8 +146,8 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
        byteSize = data.lengthInBytes,
        id = 'mem_${fnv1a(data)}';
 
-  /// Referencia a una imagen ya registrada en `layout.images` (la usa
-  /// `fromJson`; el plugin la resuelve).
+  /// Reference to an image already registered in `layout.images` (used by
+  /// `fromJson`; the plugin resolves it).
   LiveImage.reference(
     this.id, {
     this.fit = LiveFit.contain,
@@ -174,35 +174,35 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
       width = o.width,
       height = o.height;
 
-  /// La misma imagen con otro tamaño: sirve para usar un escudo o logo en
-  /// la isla compacta (pequeño) y en la expandida (grande).
+  /// The same image at another size: useful to use a crest or logo in the
+  /// compact island (small) and the expanded one (large).
   LiveImage withSize(double size) => LiveImage._copy(this, size: size);
 
-  /// La misma imagen con un alto fijo en pt (el ancho sale de su proporción).
+  /// The same image with a fixed height in pt (the width follows its proportion).
   LiveImage withHeight(double height) =>
       LiveImage._copy(this, fixedHeight: height);
 
   final LiveImageSource source;
 
-  /// Ruta, URL o ruta de archivo según [source].
+  /// Path, URL or file path depending on [source].
   final String key;
   final Uint8List? bytes;
 
-  /// Id estable que une el nodo con `layout.images`.
+  /// Stable id that links the node to `layout.images`.
   final String id;
   final LiveFit fit;
   final LiveShape shape;
   final double? size;
 
-  /// Alto fijo en pt con el ancho según la proporción de la imagen, sin
-  /// recortar ni dar forma: para imágenes anchas sin fondo (un conductor con
-  /// su auto). Con esto [size] se ignora.
+  /// Fixed height in pt with the width following the image's proportion,
+  /// with no cropping or shaping: for wide images with no background (a driver
+  /// with their car). With this, [size] is ignored.
   final double? fixedHeight;
 
-  /// Peso original en bytes, si se conoce (solo informa a `check()`).
+  /// Original weight in bytes, if known (only informs `check()`).
   final int? byteSize;
 
-  /// Dimensiones originales, si se conocen (para guardar la proporción).
+  /// Original dimensions, if known (to keep the proportion).
   final int? width;
   final int? height;
 
@@ -235,16 +235,16 @@ class LiveImage extends LiveVisual implements LiveTrackerSource {
       .replaceAll(RegExp(r'^_|_$'), '');
 }
 
-/// Avatar con iniciales (círculo de acento) o con foto circular.
+/// Avatar with initials (accent circle) or with a circular photo.
 class LiveAvatar extends LiveVisual {
   const LiveAvatar(this.text, {this.size}) : bindText = null, photo = null;
 
-  /// Iniciales tomadas de un campo del estado.
+  /// Initials taken from a state field.
   const LiveAvatar.bound(LiveBind this.bindText, {this.size})
     : text = null,
       photo = null;
 
-  /// Foto circular.
+  /// Circular photo.
   const LiveAvatar.photo(LiveImage this.photo, {this.size})
     : text = null,
       bindText = null;
@@ -284,7 +284,7 @@ class LiveAvatar extends LiveVisual {
   }
 }
 
-/// Ícono o imagen que avanza sobre la barra según el progreso.
+/// Icon or image that moves along the bar according to progress.
 class LiveTracker implements LiveTrackerSource {
   const LiveTracker(
     this.visual, {
@@ -292,10 +292,10 @@ class LiveTracker implements LiveTrackerSource {
     this.background = LiveTrackerBackground.accentCircle,
   });
 
-  /// Un [LiveIcon] o un [LiveImage].
+  /// A [LiveIcon] or a [LiveImage].
   final LiveVisual visual;
 
-  /// Solo imagen: alto fijo en pt; el ancho sale de la proporción.
+  /// Image only: fixed height in pt; the width follows the proportion.
   final double height;
   final LiveTrackerBackground background;
 

@@ -4,7 +4,7 @@ import 'package:path_drawing/path_drawing.dart';
 import 'preview_config.dart';
 import 'preview_symbols.dart';
 
-/// Ícono de contorno (trazo redondeado, viewBox 24) de los símbolos incluidos.
+/// Outline icon (rounded stroke, viewBox 24) of the included symbols.
 class LiveSymbolIcon extends StatelessWidget {
   const LiveSymbolIcon(
     this.symbol, {
@@ -15,7 +15,7 @@ class LiveSymbolIcon extends StatelessWidget {
     this.fallback,
   });
 
-  /// Nombre de SF Symbol o nombre del archivo de Android en minúsculas.
+  /// SF Symbol name or the Android file name, in lowercase.
   final String symbol;
   final double size;
   final Color color;

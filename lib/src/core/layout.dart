@@ -9,10 +9,10 @@ import 'enums.dart';
 import 'json_util.dart';
 import 'node.dart';
 
-/// Versión del contrato JSON que escribe este paquete.
+/// Version of the JSON contract this package writes.
 const liveContractVersion = 1;
 
-/// Color de acento y fondo de la tarjeta de bloqueo.
+/// Accent color and background of the lock screen card.
 class LiveTheme {
   const LiveTheme({
     required this.accent,
@@ -37,7 +37,7 @@ class LiveTheme {
   );
 }
 
-/// Las cuatro zonas de la isla expandida.
+/// The four zones of the expanded island.
 class LiveExpanded {
   const LiveExpanded({this.leading, this.center, this.trailing, this.bottom});
 
@@ -67,12 +67,12 @@ class LiveExpanded {
   }
 }
 
-/// Diseño de la tarjeta de bloqueo: el de la isla expandida o uno propio.
+/// Design of the lock screen card: the expanded island's or its own.
 class LiveLockScreen {
   const LiveLockScreen.sameAsExpanded() : custom = null;
   const LiveLockScreen.custom(LiveNode this.custom);
 
-  /// `null` = reutiliza la isla expandida.
+  /// `null` = reuses the expanded island.
   final LiveNode? custom;
 
   bool get isSameAsExpanded => custom == null;
@@ -85,17 +85,17 @@ class LiveLockScreen {
           : LiveLockScreen.custom(LiveNode.fromJson(json));
 }
 
-/// Chip de la barra de estado de Android (solo con Live Update).
+/// Chip in Android's status bar (only with a Live Update).
 class LiveChip {
   const LiveChip._(this.type, {this.bind, this.text});
 
-  /// Minutos que faltan para la fecha del campo [until]: "6 min".
+  /// Minutes left until the date in the [until] field: "6 min".
   const LiveChip.countdown(LiveBind until) : this._('countdown', bind: until);
 
-  /// Texto corto: 7 caracteres o menos se ve completo.
+  /// Short text: 7 characters or fewer are shown in full.
   const LiveChip.text(String text) : this._('text', text: text);
 
-  /// Solo el ícono pequeño.
+  /// Only the small icon.
   const LiveChip.icon() : this._('icon');
 
   final String type;
@@ -112,7 +112,7 @@ class LiveChip {
   };
 }
 
-/// Bloque Android: notificación con estilos nativos (nunca `RemoteViews`).
+/// Android block: a notification with native styles (never `RemoteViews`).
 class LiveAndroid {
   const LiveAndroid({
     this.title,
@@ -128,38 +128,38 @@ class LiveAndroid {
     this.cardCollapsed,
   });
 
-  /// [LiveAndroidStyle.liveUpdate] (por defecto) o [LiveAndroidStyle.card].
+  /// [LiveAndroidStyle.liveUpdate] (the default) or [LiveAndroidStyle.card].
   final LiveAndroidStyle style;
 
-  /// Diseño de la tarjeta expandida con [LiveAndroidStyle.card]: el mismo árbol
-  /// de componentes que la isla (fila, columna, texto, imagen, barra…). Si falta,
-  /// se usa la tarjeta de bloqueo propia (`LiveLockScreen.custom`).
+  /// Design of the expanded card with [LiveAndroidStyle.card]: the same tree
+  /// of components as the island (row, column, text, image, bar…). If missing,
+  /// the lock screen's own card (`LiveLockScreen.custom`) is used.
   final LiveNode? card;
 
-  /// Diseño de la tarjeta colapsada. Si falta, se usa [card].
+  /// Design of the collapsed card. If missing, [card] is used.
   final LiveNode? cardCollapsed;
 
-  /// Obligatorio para que Android promueva a Live Update.
+  /// Required for Android to promote it to a Live Update.
   final LiveTextSource? title;
   final LiveTextSource? text;
   final LiveChip? chip;
 
-  /// Con `true` Android NO promueve la notificación.
+  /// With `true` Android does NOT promote the notification.
   final bool colorized;
 
-  /// Barra, anillo o etapas. Si falta, se toma de `expanded.bottom`.
+  /// Bar, ring or stages. If missing, it is taken from `expanded.bottom`.
   final LiveNode? progress;
 
-  /// Hasta tres botones. Si faltan, se toman de `expanded.bottom`.
+  /// Up to three buttons. If missing, they are taken from `expanded.bottom`.
   final List<LiveButton>? actions;
 
-  /// Imagen grande a la derecha de la notificación (foto del conductor, escudo,
-  /// logo…): una [LiveImage] o un [LiveAvatar]. Si falta, Android usa el avatar
-  /// o la imagen de la isla expandida o el logo de la app.
+  /// Large image on the right of the notification (driver photo, crest,
+  /// logo…): a [LiveImage] or a [LiveAvatar]. If missing, Android uses the
+  /// expanded island's avatar or image, or the app logo.
   final LiveVisual? largeIcon;
 
-  /// Texto pequeño del encabezado, junto al nombre de la app (por ejemplo el
-  /// vehículo o la ruta). Si falta, Android muestra la etapa de la barra.
+  /// Small header text next to the app name (for example the vehicle or the
+  /// route). If missing, Android shows the bar's stage.
   final LiveTextSource? subText;
 
   Map<String, Object?> toJson() => compact({
@@ -229,7 +229,7 @@ class LiveAndroid {
   }
 }
 
-/// Texto de Android leído de JSON (literal o plantilla).
+/// Android text read from JSON (literal or template).
 class _AndroidTextFromJson implements LiveTextSource {
   _AndroidTextFromJson(this.json);
   final Map<String, Object?> json;
@@ -237,7 +237,7 @@ class _AndroidTextFromJson implements LiveTextSource {
   Map<String, Object?> toAndroidTextJson() => json;
 }
 
-/// Datos de una imagen ya reducida por el plugin.
+/// Data of an image already reduced by the plugin.
 class LiveImageMeta {
   const LiveImageMeta({required this.file, required this.w, required this.h});
 
@@ -253,7 +253,7 @@ class LiveImageMeta {
   );
 }
 
-/// El diseño completo de una actividad. Viaja una sola vez, en `start()`.
+/// The complete design of an activity. It travels only once, in `start()`.
 class LiveLayout {
   const LiveLayout({
     required this.theme,
@@ -269,17 +269,17 @@ class LiveLayout {
 
   final LiveTheme theme;
 
-  /// Pantalla de bloqueo e ícono grande de Android.
+  /// Lock screen and Android's large icon.
   final LiveVisual? appLogo;
 
-  /// Silueta de un color para la barra de estado de Android.
+  /// One-color silhouette for Android's status bar.
   final LiveVisual? androidSmallIcon;
   final LiveNode? compactLeading, compactTrailing, minimal;
   final LiveExpanded? expanded;
   final LiveLockScreen? lockScreen;
   final LiveAndroid? android;
 
-  /// Copia del diseño cambiando solo lo indicado.
+  /// A copy of the design changing only what is indicated.
   LiveLayout copyWith({
     LiveTheme? theme,
     LiveVisual? appLogo,
@@ -302,7 +302,7 @@ class LiveLayout {
     android: android ?? this.android,
   );
 
-  /// Todos los nodos del diseño (regiones, bloque Android y logos).
+  /// All the nodes of the design (regions, Android block and logos).
   Iterable<LiveNode> get allNodes sync* {
     for (final v in [appLogo, androidSmallIcon]) {
       if (v != null) yield* v.descendants;
@@ -325,7 +325,7 @@ class LiveLayout {
     }
   }
 
-  /// Imágenes propias del diseño, sin repetir (por id).
+  /// The design's own images, without repeats (by id).
   List<LiveImage> get images {
     final byId = <String, LiveImage>{};
     for (final n in allNodes) {
@@ -334,9 +334,9 @@ class LiveLayout {
     return byId.values.toList();
   }
 
-  /// Serializa al contrato JSON. [resolved] trae los datos de las imágenes que
-  /// el plugin ya redujo; las que falten llevan un marcador con sus
-  /// dimensiones originales (o 1 × 1).
+  /// Serializes to the JSON contract. [resolved] carries the data of the images
+  /// the plugin already reduced; any that are missing get a placeholder with
+  /// their original dimensions (or 1 × 1).
   Map<String, Object?> toJson({Map<String, LiveImageMeta>? resolved}) {
     final manifest = <String, Object?>{
       for (final img in images)
@@ -366,7 +366,7 @@ class LiveLayout {
     });
   }
 
-  /// Lee el contrato JSON. Las imágenes quedan como referencias por id.
+  /// Reads the JSON contract. Images stay as references by id.
   factory LiveLayout.fromJson(Map<String, Object?> json) {
     final version = json['v'];
     if (version != liveContractVersion) {
@@ -402,7 +402,7 @@ class LiveLayout {
   }
 }
 
-/// Primer nodo de progreso (barra, anillo o etapas) dentro de [roots].
+/// First progress node (bar, ring or stages) inside [roots].
 LiveNode? firstProgress(Iterable<LiveNode> roots) {
   for (final root in roots) {
     for (final n in root.descendants) {

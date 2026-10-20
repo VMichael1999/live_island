@@ -13,19 +13,19 @@ import 'layout.dart';
 import 'node.dart';
 import 'state.dart';
 
-/// Límite de 4 096 bytes escrito como en el HTML de prototipos.
+/// 4,096-byte limit, written as in the prototype HTML.
 const _maxBytesLabel = '4 096';
 
-/// Gravedad de un aviso de [LiveIsland.check].
+/// Severity of a [LiveIsland.check] warning.
 enum LiveSeverity { ok, warn, bad }
 
-/// Un aviso del informe de validación.
+/// A warning from the validation report.
 class LiveCheck {
   const LiveCheck(this.severity, this.code, this.message);
 
   final LiveSeverity severity;
 
-  /// Identificador estable para pruebas y filtros.
+  /// Stable identifier for tests and filters.
   final String code;
   final String message;
 
@@ -33,7 +33,7 @@ class LiveCheck {
   String toString() => '[${severity.name}] $message';
 }
 
-/// Resultado de validar un diseño con su estado.
+/// Result of validating a design with its state.
 class LiveReport {
   const LiveReport(this.items);
 
@@ -42,7 +42,7 @@ class LiveReport {
   bool get hasErrors => items.any((c) => c.severity == LiveSeverity.bad);
   bool get hasWarnings => items.any((c) => c.severity == LiveSeverity.warn);
 
-  /// Primer aviso con el [code] dado, si existe.
+  /// First warning with the given [code], if any.
   LiveCheck? byCode(String code) {
     for (final c in items) {
       if (c.code == code) return c;
@@ -54,12 +54,12 @@ class LiveReport {
   String toString() => items.join('\n');
 }
 
-/// Valida [layout] con [state] con el mismo criterio del panel "Validación"
-/// del HTML de prototipos.
+/// Validates [layout] with [state] using the same criteria as the "Validation"
+/// panel of the prototype HTML.
 ///
-/// [now] fija el instante usado para las cuentas regresivas.
-/// [androidPromotable] es `false` para casos que Google no promueve a Live
-/// Update (publicidad, chats, actividades que no inició el usuario).
+/// [now] fixes the instant used for the countdowns.
+/// [androidPromotable] is `false` for cases Google does not promote to Live
+/// Update (ads, chats, activities the user did not start).
 LiveReport checkLayout(
   LiveLayout layout,
   Map<String, Object?> state, {
@@ -246,7 +246,7 @@ LiveReport checkLayout(
 
 enum _ChipMode { full, cut, icon }
 
-/// Mismo criterio que `chipInfo` del HTML.
+/// Same criteria as `chipInfo` in the HTML.
 ({String text, _ChipMode mode, int length})? _chip(
   LiveChip? chip,
   Map<String, Object?> data,
@@ -268,8 +268,8 @@ enum _ChipMode { full, cut, icon }
   return (text: text, mode: _ChipMode.full, length: len);
 }
 
-/// Texto que mostraría un nodo de texto con [data]; `null` si no es texto
-/// o no se puede calcular.
+/// Text a text node would show with [data]; `null` if it is not text or
+/// cannot be computed.
 String? _text(LiveNode? node, Map<String, Object?> data, DateTime now) {
   if (node is! LiveText) return null;
   switch (node.kind) {

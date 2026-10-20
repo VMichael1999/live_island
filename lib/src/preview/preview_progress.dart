@@ -5,9 +5,9 @@ import 'package:flutter/widgets.dart';
 import '../core/enums.dart';
 import 'preview_style.dart';
 
-/// Barra continua o por etapas, con puntos, ícono que avanza y etiquetas.
-/// Reproduce `progress()` del HTML de prototipos; todo lo que se puede cambiar
-/// (grosor, colores, esquinas, espacio, tamaños) viene de `LiveProgressStyle`.
+/// Continuous bar or bar by stages, with dots, moving icon and labels.
+/// Reproduces `progress()` of the prototype HTML; everything that can be changed
+/// (thickness, colors, corners, spacing, sizes) comes from `LiveProgressStyle`.
 class LivePreviewBar extends StatelessWidget {
   const LivePreviewBar({
     super.key,
@@ -37,60 +37,60 @@ class LivePreviewBar extends StatelessWidget {
     this.markerLabels = const [],
   });
 
-  /// 0 a 1.
+  /// 0 to 1.
   final double value;
   final LiveToneStyle style;
   final List<String> labels;
 
-  /// Un tramo por cada par de etapas (si no, un único tramo).
+  /// One segment per pair of stages (otherwise, a single segment).
   final bool segmented;
   final bool points;
 
-  /// Muestra las etiquetas de las etapas.
+  /// Shows the stage labels.
   final bool showLabels;
 
-  /// Ya compuesto: círculo con ícono, o imagen sin fondo.
+  /// Already composed: circle with an icon, or an image with no background.
   final Widget? tracker;
   final Widget? start, end;
 
-  /// Grosor de la barra.
+  /// Thickness of the bar.
   final double height;
 
-  /// Separación entre tramos.
+  /// Gap between segments.
   final double gap;
 
-  /// Esquinas (por defecto la mitad del grosor).
+  /// Corners (half the thickness by default).
   final double? radius;
   final double pointSize;
   final LivePointShape pointShape;
 
-  /// Lo que falta se dibuja como trazo discontinuo.
+  /// What remains is drawn as a dashed stroke.
   final bool dashed;
   final double labelSize;
 
-  /// Colores propios; si faltan se usan los de la superficie.
+  /// Own colors; if missing the surface's are used.
   final Color? fillColor, trackColor, pointColor;
 
-  /// Posiciones (0 a 1) de marcadores sobre la barra.
+  /// Positions (0 to 1) of markers on the bar.
   final List<double> markers;
 
-  /// Halo de lo avanzado (radio en pt).
+  /// Halo of the completed part (radius in pt).
   final double glow;
 
-  /// Marcador pegado al final de la barra (de tamaño [pointSize]).
+  /// Marker attached to the end of the bar (of size [pointSize]).
   final LivePointShape? endMarker;
 
-  /// Texto dentro de cada marcador de [markers], en el mismo orden.
+  /// Text inside each marker of [markers], in the same order.
   final List<String> markerLabels;
 
-  /// Un ícono por etapa (ya compuesto), en lugar de los puntos: `pending`
-  /// mientras la etapa no llega y `reached` desde que llega.
+  /// One icon per stage (already composed), instead of the dots: `pending`
+  /// while the stage is not reached and `reached` once it is.
   final List<({Widget pending, Widget reached})> stageIcons;
 
   bool get _hasStages => labels.length > 1;
 
-  /// Alto de la fila: lo mayor entre la barra, los íconos de los extremos y los
-  /// íconos de etapa.
+  /// Height of the row: the largest of the bar, the end icons and the
+  /// stage icons.
   double _rowHeight(bool hasEnds) => math.max(
     math.max(height, hasEnds ? 16.0 : 0),
     stageIcons.isEmpty ? 0 : pointSize,
@@ -346,7 +346,7 @@ class LivePreviewBar extends StatelessWidget {
     ),
   );
 
-  /// Marcadores: el recorrido y el siguiente van de color; los demás, apagados.
+  /// Markers: the one traveled and the next are colored; the others, dimmed.
   List<Widget> _markers(double v, double w) {
     final sorted = [...markers]..sort();
     final next = sorted.indexWhere((m) => m > v + 1e-6);
@@ -429,7 +429,7 @@ class LivePreviewBar extends StatelessWidget {
     );
   }
 
-  /// Círculo suave con un punto dentro, como un marcador de mapa.
+  /// Soft circle with a dot inside, like a map marker.
   Widget _ring(Color c) => Container(
     width: pointSize,
     height: pointSize,
@@ -446,7 +446,7 @@ class LivePreviewBar extends StatelessWidget {
   );
 }
 
-/// Anillo de progreso con contenido opcional en el centro.
+/// Progress ring with optional content in the center.
 class LivePreviewRing extends StatelessWidget {
   const LivePreviewRing({
     super.key,
@@ -517,7 +517,7 @@ class _RingPainter extends CustomPainter {
       old.track != track;
 }
 
-/// Trazo discontinuo de lo que falta de la barra (rayas del doble del grosor).
+/// Dashed stroke of what remains of the bar (dashes of twice the thickness).
 class _DashPainter extends CustomPainter {
   _DashPainter(this.color, this.thickness);
 
