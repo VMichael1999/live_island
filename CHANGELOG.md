@@ -1,5 +1,6 @@
 ## Sin publicar
 
+* iOS: se corrige un cierre de la app al iniciar una actividad (carrera de datos al vigilar los tokens de push de ActivityKit).
 * Diseños nuevos de «Run»: `RideArrivalPreset` (llegada, con un sedán y su placa), `RideTripPreset` (viaje con fase, destino y pago) y `DeliveryOrderPreset` (pedido a domicilio en cuatro etapas con íconos).
 * Barra: `LiveProgressStyle.endMarker` pega un aro o un cuadrado al final de la barra, con el auto encima, y `LiveSegments.stageIcons` pone un ícono por etapa (gris hasta que llega y de color después).
 * Tarjeta de bloqueo: si la raíz es una caja con color opaco, ese color es el fondo de toda la tarjeta (un solo contenedor) en iOS y en la vista previa.
