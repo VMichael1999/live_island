@@ -81,9 +81,12 @@ final class PushStream: NSObject, FlutterStreamHandler {
     private var sink: FlutterEventSink?
     private var watching = Set<String>()
     private var tasks: [Task<Void, Never>] = []
+    /// `watch` se llama desde el hilo principal y desde tareas: sin el candado
+    /// el `Set` se corrompía y la app se cerraba al iniciar una actividad.
+    private let lock = NSLock()
 
     func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-        sink = events
+        lock.lock(); sink = events; lock.unlock()
         #if canImport(ActivityKit)
         if #available(iOS 16.2, *) { startObserving() }
         #endif
@@ -91,6 +94,7 @@ final class PushStream: NSObject, FlutterStreamHandler {
     }
 
     func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        lock.lock(); defer { lock.unlock() }
         sink = nil
         tasks.forEach { $0.cancel() }
         tasks = []
@@ -109,29 +113,35 @@ final class PushStream: NSObject, FlutterStreamHandler {
     private func startObserving() {
         // Actividades que ya existen y las que empiecen después (por push-to-start).
         Activity<LiveIslandAttributes>.activities.forEach { watch($0, announce: false) }
-        tasks.append(Task {
+        let updates = Task {
             for await activity in Activity<LiveIslandAttributes>.activityUpdates {
                 self.watch(activity, announce: true)
             }
-        })
+        }
+        lock.lock(); tasks.append(updates); lock.unlock()
         if #available(iOS 17.2, *) {
-            tasks.append(Task {
+            let starts = Task {
                 for await token in Activity<LiveIslandAttributes>.pushToStartTokenUpdates {
                     self.send(["type": "token", "token": Self.hex(token)])
                 }
-            })
+            }
+            lock.lock(); tasks.append(starts); lock.unlock()
         }
     }
 
     @available(iOS 16.2, *)
     func watch(_ activity: Activity<LiveIslandAttributes>, announce: Bool) {
-        if !watching.insert(activity.id).inserted { return }
+        lock.lock()
+        let isNew = watching.insert(activity.id).inserted
+        lock.unlock()
+        if !isNew { return }
         if announce { send(["type": "started", "activityId": activity.id]) }
-        tasks.append(Task {
+        let task = Task {
             for await token in activity.pushTokenUpdates {
                 self.send(["type": "token", "activityId": activity.id, "token": Self.hex(token)])
             }
-        })
+        }
+        lock.lock(); tasks.append(task); lock.unlock()
     }
     #endif
 }
