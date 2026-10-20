@@ -14,8 +14,8 @@
 | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/recogida_clara.png" width="300" alt="Recogida de viaje"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/marcador.png" width="300" alt="Marcador de partido"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/bolsa.png" width="300" alt="Cotización en bolsa"> |
 | **Pedido en tienda** | **Sala de espera médica** | **Carga de auto eléctrico** |
 | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/tienda.png" width="300" alt="Pedido en tienda"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/sala_medica.png" width="300" alt="Sala de espera médica"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/carga.png" width="300" alt="Carga con cable luminoso"> |
-| **Vuelo con ruta curva** | **Viaje con detalle** | **Tarifa y propina** |
-| <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/vuelo.png" width="300" alt="Vuelo"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/viaje.png" width="300" alt="Viaje con detalle"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/tarifa.png" width="300" alt="Tarifa y propina"> |
+| **Vuelo con ruta curva** | **Inicio de viaje con PIN** | **Pedido a domicilio** |
+| <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/vuelo.png" width="300" alt="Vuelo"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/pin.png" width="300" alt="Inicio de viaje con PIN"> | <img src="https://raw.githubusercontent.com/VMichael1999/live_island_kit/main/doc/assets/galeria/pedido.png" width="300" alt="Pedido a domicilio"> |
 
 *Cada imagen muestra la isla compacta, la isla expandida y la tarjeta de la pantalla de bloqueo. Son la vista previa de Flutter (`LiveIslandPreview`), salvo la carga, que es una captura del simulador de iOS (la vista previa no dibuja el brillo). Todos son diseños de ejemplo, con nombres e imágenes inventados, y cada texto, color e imagen se cambia desde Dart.*
 
@@ -380,6 +380,10 @@ Más elaborados que los presets, con isla y tarjeta de bloqueo propias; se usan 
 | `RideArrivalPreset` | Hora de llegada, pago y auto con su placa | `brand`, `carImage`, `accent` |
 | `RideTripPreset` | Viaje con fase, destino, categoría, pago y barra | `brand`, `driverPhoto`, `accent` |
 | `DeliveryOrderPreset` | Pedido a domicilio en cuatro etapas con íconos | `brand`, `accent` |
+| `RidePinPreset` | Inicio de viaje con el código PIN, foto del conductor y barra | `brand`, `driverPhoto`, `accent` |
+| `RideStopPreset` | Conductor con una parada previa numerada, auto con placa | `brand`, `stopAt`, `carImage` |
+| `RideDestinationPreset` | Rumbo al destino: hora, dirección y barra con cuadrado final | `brand`, `accent` |
+| `TrainPreset` | Línea de tren con estaciones y el tren sobre la barra | `stages`, `trainImage`, `accent` |
 | `StorePickupPreset` | Pedido para recoger, con tres pasos | `store`, `brandLogo`, `stepColor` |
 | `RunPreset` | Carrera: distancia, tiempo y meta | `brand`, `unit`, `timeLabel` |
 | `MatchPreset` | Marcador de un partido | `homeCrest`, `awayCrest`, `homeLabel`, `link` |

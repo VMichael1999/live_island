@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'live_island_kit'
-  s.version          = '0.1.1'
+  s.version          = '0.2.0'
   s.summary          = 'Live Activities (iOS) y Live Updates (Android) con una sola API en Dart, sin Swift ni Kotlin.'
   s.description      = <<-DESC
 Live Activities (iOS) y Live Updates (Android) con una sola API en Dart. Isla dinámica,

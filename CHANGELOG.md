@@ -1,13 +1,16 @@
-## Sin publicar
+## 0.2.0
 
 * iOS: la zona derecha de la isla expandida lleva 4 pt de margen, para que la curva de la isla no recorte el «78'» del marcador deportivo.
 * iOS: en la isla expandida, un texto de una línea se encoge hasta un 65 % antes de cortarse con «…» (Transporte público, Sala de espera y Subida de archivo ya no pierden «3 paradas», «Te llaman pronto» ni «3 min restantes»).
 * iOS: se corrige un cierre de la app al iniciar una actividad (carrera de datos al vigilar los tokens de push de ActivityKit).
-* Diseños nuevos de «Run»: `RideArrivalPreset` (llegada, con un sedán y su placa), `RideTripPreset` (viaje con fase, destino y pago) y `DeliveryOrderPreset` (pedido a domicilio en cuatro etapas con íconos).
-* Barra: `LiveProgressStyle.endMarker` pega un aro o un cuadrado al final de la barra, con el auto encima, y `LiveSegments.stageIcons` pone un ícono por etapa (gris hasta que llega y de color después).
+* Diseños nuevos de «Run»: `RideArrivalPreset` (llegada, con un sedán y su placa), `RideTripPreset` (viaje con fase, destino y pago), `RidePinPreset` (inicio de viaje con el código PIN), `RideStopPreset` (conductor con una parada previa), `RideDestinationPreset` (rumbo al destino), `TrainPreset` (línea de tren con estaciones de Lima) y `DeliveryOrderPreset` (pedido a domicilio en cuatro etapas con íconos). Traen sus propias imágenes: un auto con placa, un auto y un tren vistos desde arriba y los íconos del pedido.
+* Barra: `LiveProgressStyle.endMarker` pega un aro o un cuadrado al final de la barra, con el auto encima, `LiveSegments.stageIcons` pone un ícono por etapa (gris hasta que llega y de color después) y `LiveProgressStyle.markerLabels` escribe un texto dentro de un marcador (una parada numerada).
 * Tarjeta de bloqueo: si la raíz es una caja con color opaco, ese color es el fondo de toda la tarjeta (un solo contenedor) en iOS y en la vista previa.
+* `tool/sincronizar_swift.sh` y `swift_sincronizado_test` mantienen igual la copia del renderer de iOS del ejemplo.
 * La vista previa corta con «…» el texto largo junto a un espaciador, como SwiftUI.
+* Android: la tarjeta pinta el fondo del tema (`accent` y `light`), como la de iOS.
 * Android: todos los diseños de ejemplo usan la tarjeta (`LiveAndroidStyle.card`) por defecto, así que Android dibuja el mismo diseño que iOS desde el mismo JSON. Con `androidStyle: LiveAndroidStyle.liveUpdate` se vuelve a la plantilla nativa (y a la promoción a Live Update).
+* La galería del README cambia: «Inicio de viaje con PIN» y «Pedido a domicilio» reemplazan a «Viaje con detalle» y «Tarifa y propina».
 * Se quita `RideDriverPreset` (viaje visto por el conductor): los diseños nuevos lo reemplazan.
 
 ## 0.1.1
