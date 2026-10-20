@@ -63,4 +63,50 @@ void main() {
       contains("live_island_kit/Sources/live_island_kit/**/*.swift"),
     );
   });
+
+  // Apple exige declarar el motivo de cada API de «razón requerida». El código
+  // solo usa UserDefaults del App Group (1C8F.1): si alguien agrega otra API de
+  // estas categorías sin declararla, App Store puede rechazar la app de un cliente.
+  test('el código de iOS no usa APIs de razón requerida sin declararlas', () {
+    final manifiesto =
+        File(
+          'ios/live_island_kit/Sources/live_island_kit/PrivacyInfo.xcprivacy',
+        ).readAsStringSync();
+    final declaradas = {
+      for (final m in RegExp(
+        r'NSPrivacyAccessedAPICategory(\w+)',
+      ).allMatches(manifiesto))
+        m.group(1),
+    };
+    // categoría → patrón que delata su uso en el código Swift.
+    final categorias = {
+      'FileTimestamp': RegExp(
+        r'creationDate|modificationDate|NSFileCreationDate|NSFileModificationDate|contentModificationDateKey|creationDateKey|\bstat\(|getattrlist',
+      ),
+      'SystemBootTime': RegExp(r'systemUptime|mach_absolute_time'),
+      'DiskSpace': RegExp(
+        r'volumeAvailableCapacity|volumeTotalCapacity|systemFreeSize|\bstatfs\(|\bstatvfs\(',
+      ),
+      'ActiveKeyboards': RegExp(r'activeInputModes'),
+      'UserDefaults': RegExp(r'UserDefaults'),
+    };
+    final fuentes = [
+      ...Directory('ios/live_island_kit/Sources').listSync(recursive: true),
+      ...Directory('ios/LiveIslandExtension').listSync(recursive: true),
+    ].whereType<File>().where((f) => f.path.endsWith('.swift'));
+    for (final f in fuentes) {
+      final texto = f.readAsStringSync();
+      for (final e in categorias.entries) {
+        if (e.value.hasMatch(texto)) {
+          expect(
+            declaradas,
+            contains(e.key),
+            reason:
+                '${f.path} usa la categoría ${e.key}, que falta en PrivacyInfo.xcprivacy',
+          );
+        }
+      }
+    }
+    expect(declaradas, {'UserDefaults'});
+  });
 }

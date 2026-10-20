@@ -1,5 +1,6 @@
 ## Sin publicar
 
+* iOS: se confirma el manifiesto de privacidad (UserDefaults del App Group, motivo `1C8F.1`) contra los binarios compilados del plugin y de la extensión: no usan ninguna otra API de razón requerida. Una prueba nueva falla si se agrega una sin declararla.
 * Conformidad entre plataformas: `doc/contract/conformance.json` reúne 52 casos (plantillas `{campo}`, condiciones y cuenta regresiva) que Dart, Swift y Kotlin ejecutan con su lógica real (`tool/conformidad.sh`). Las reglas quedan escritas en el contrato.
 * Se corrigen diferencias que la suite encontró: la vista previa escribía `5.0` donde el dispositivo escribe `5`; `eq` y los operadores numéricos tratan igual un número y un texto numérico en las tres plataformas; `truthy: false` invierte la condición; el texto `"false"` es verdadero; un booleano no es un número; y en iOS `{ x }` o `{}` ya no desaparecen de una plantilla.
 
