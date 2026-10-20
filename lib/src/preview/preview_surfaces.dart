@@ -8,7 +8,7 @@ import '../components/charts.dart';
 import '../components/progress.dart';
 import '../components/text.dart';
 import '../components/visuals.dart';
-import '../core/bind.dart' show LiveTextSource;
+import '../core/bind.dart' show LiveTextSource, liveText;
 import '../core/countdown.dart';
 import '../core/enums.dart';
 import '../core/layout.dart';
@@ -413,11 +413,11 @@ class LiveAndroidPreview extends StatelessWidget {
 String _androidText(LiveTextSource? source, LiveRenderContext ctx) {
   if (source == null) return '';
   final j = source.toAndroidTextJson();
-  if (j['bind'] != null) return '${ctx.state[j['bind']] ?? ''}';
+  if (j['bind'] != null) return liveText(ctx.state[j['bind']]);
   if (j['fmt'] != null) {
     return (j['fmt']! as String).replaceAllMapped(
       RegExp(r'\{([A-Za-z_][A-Za-z0-9_]*)\}'),
-      (m) => '${ctx.state[m[1]] ?? ''}',
+      (m) => liveText(ctx.state[m[1]]),
     );
   }
   return '${j['text'] ?? ''}';

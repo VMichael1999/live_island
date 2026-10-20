@@ -356,7 +356,7 @@ Widget _column(LiveColumn node, LiveRenderContext ctx) {
 String liveTextOf(LiveText t, LiveRenderContext ctx) {
   switch (t.kind) {
     case LiveTextKind.bound:
-      return '${ctx.state[t.source!.field] ?? ''}';
+      return liveText(ctx.state[t.source!.field]);
     case LiveTextKind.literal:
       return t.literal!;
     case LiveTextKind.format:
@@ -527,7 +527,7 @@ Widget _avatar(
   }
   final text =
       a.bindText != null
-          ? '${ctx.state[a.bindText!.field] ?? ''}'
+          ? liveText(ctx.state[a.bindText!.field])
           : (a.text ?? '');
   return Container(
     width: size,
@@ -729,7 +729,7 @@ Widget _metric(LiveMetric m, LiveRenderContext ctx) => Column(
       TextSpan(
         children: [
           TextSpan(
-            text: '${ctx.state[m.value.field] ?? ''}',
+            text: liveText(ctx.state[m.value.field]),
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w700,
