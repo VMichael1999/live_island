@@ -1,58 +1,59 @@
-## Sin publicar
+## Unreleased
 
-* iOS: se confirma el manifiesto de privacidad (UserDefaults del App Group, motivo `1C8F.1`) contra los binarios compilados del plugin y de la extensión: no usan ninguna otra API de razón requerida. Una prueba nueva falla si se agrega una sin declararla.
-* Conformidad entre plataformas: `doc/contract/conformance.json` reúne 52 casos (plantillas `{campo}`, condiciones y cuenta regresiva) que Dart, Swift y Kotlin ejecutan con su lógica real (`tool/conformidad.sh`). Las reglas quedan escritas en el contrato.
-* Se corrigen diferencias que la suite encontró: la vista previa escribía `5.0` donde el dispositivo escribe `5`; `eq` y los operadores numéricos tratan igual un número y un texto numérico en las tres plataformas; `truthy: false` invierte la condición; el texto `"false"` es verdadero; un booleano no es un número; y en iOS `{ x }` o `{}` ya no desaparecen de una plantilla.
+* iOS: the privacy manifest (App Group `UserDefaults`, reason `1C8F.1`) was checked against the compiled binaries of the plugin and the extension: they use no other required-reason API. A new test fails if one is added without declaring it.
+* Cross-platform conformance: `doc/contract/conformance.json` holds 52 cases (`{field}` templates, conditions and the countdown) that Dart, Swift and Kotlin run with their real logic (`tool/conformidad.sh`). The rules are now written in the contract.
+* Differences the suite found are fixed: the preview wrote `5.0` where the device writes `5`; `eq` and the numeric operators treat a number and a numeric string the same on all three platforms; `truthy: false` inverts the condition; the text `"false"` is truthy; a boolean is not a number; and on iOS `{ x }` or `{}` no longer disappear from a template.
+* The README is now in English (Spanish version: `README.es.md`), and so are the pub.dev description and screenshot captions.
 
 ## 0.2.0
 
-* iOS: la zona derecha de la isla expandida lleva 4 pt de margen, para que la curva de la isla no recorte el «78'» del marcador deportivo.
-* iOS: en la isla expandida, un texto de una línea se encoge hasta un 65 % antes de cortarse con «…» (Transporte público, Sala de espera y Subida de archivo ya no pierden «3 paradas», «Te llaman pronto» ni «3 min restantes»).
-* iOS: se corrige un cierre de la app al iniciar una actividad (carrera de datos al vigilar los tokens de push de ActivityKit).
-* Diseños nuevos de «Run»: `RideArrivalPreset` (llegada, con un sedán y su placa), `RideTripPreset` (viaje con fase, destino y pago), `RidePinPreset` (inicio de viaje con el código PIN), `RideStopPreset` (conductor con una parada previa), `RideDestinationPreset` (rumbo al destino), `TrainPreset` (línea de tren con estaciones de Lima) y `DeliveryOrderPreset` (pedido a domicilio en cuatro etapas con íconos). Traen sus propias imágenes: un auto con placa, un auto y un tren vistos desde arriba y los íconos del pedido.
-* Barra: `LiveProgressStyle.endMarker` pega un aro o un cuadrado al final de la barra, con el auto encima, `LiveSegments.stageIcons` pone un ícono por etapa (gris hasta que llega y de color después) y `LiveProgressStyle.markerLabels` escribe un texto dentro de un marcador (una parada numerada).
-* Tarjeta de bloqueo: si la raíz es una caja con color opaco, ese color es el fondo de toda la tarjeta (un solo contenedor) en iOS y en la vista previa.
-* `tool/sincronizar_swift.sh` y `swift_sincronizado_test` mantienen igual la copia del renderer de iOS del ejemplo.
-* La vista previa corta con «…» el texto largo junto a un espaciador, como SwiftUI.
-* Android: la tarjeta pinta el fondo del tema (`accent` y `light`), como la de iOS.
-* Android: todos los diseños de ejemplo usan la tarjeta (`LiveAndroidStyle.card`) por defecto, así que Android dibuja el mismo diseño que iOS desde el mismo JSON. Con `androidStyle: LiveAndroidStyle.liveUpdate` se vuelve a la plantilla nativa (y a la promoción a Live Update).
-* La galería del README cambia: «Inicio de viaje con PIN» y «Pedido a domicilio» reemplazan a «Viaje con detalle» y «Tarifa y propina».
-* Se quita `RideDriverPreset` (viaje visto por el conductor): los diseños nuevos lo reemplazan.
+* iOS: the right zone of the expanded island has a 4 pt margin, so the island's curve does not clip the "78'" of the sports score.
+* iOS: in the expanded island, a one-line text shrinks down to 65 % before being cut with "…" (Public transport, Waiting room and File upload no longer lose "3 stops", "We'll call you soon" or "3 min left").
+* iOS: fixes an app crash when starting an activity (a data race while watching ActivityKit push tokens).
+* New "Run" designs: `RideArrivalPreset` (arrival, with a sedan and its plate), `RideTripPreset` (trip with phase, destination and fare), `RidePinPreset` (trip start with the PIN code), `RideStopPreset` (driver with a stop before pickup), `RideDestinationPreset` (on the way to the destination), `TrainPreset` (train line with stations in Lima) and `DeliveryOrderPreset` (delivery order in four stages with icons). They ship their own images: a car with a plate, a car and a train seen from above, and the order icons.
+* Bar: `LiveProgressStyle.endMarker` attaches a ring or a square to the end of the bar, with the car on top; `LiveSegments.stageIcons` puts an icon on each stage (gray until reached, colored after); and `LiveProgressStyle.markerLabels` writes text inside a marker (a numbered stop).
+* Lock screen: if the root is a box with an opaque color, that color is the background of the whole card (a single container) on iOS and in the preview.
+* `tool/sincronizar_swift.sh` and `swift_sincronizado_test` keep the example's copy of the iOS renderer identical to the source.
+* The preview cuts long text next to a spacer with "…", like SwiftUI.
+* Android: the card paints the theme background (`accent` and `light`), like the iOS one.
+* Android: every example design uses the card (`LiveAndroidStyle.card`) by default, so Android draws the same design as iOS from the same JSON. With `androidStyle: LiveAndroidStyle.liveUpdate` you go back to the native template (and to the Live Update promotion).
+* The README gallery changes: "Trip start with PIN" and "Delivery order" replace "Trip with details" and "Fare and tip".
+* `RideDriverPreset` (trip as the driver sees it) is removed: the new designs replace it.
 
 ## 0.1.1
 
-* Sin avisos del analizador en Flutter 3.47 (imports de `dart:ui` marcados como innecesarios).
-* El repositorio pasa a llamarse `live_island_kit`: se actualizan `repository`, `issue_tracker` y los enlaces de las imágenes del README.
+* No analyzer warnings on Flutter 3.47 (`dart:ui` imports flagged as unnecessary).
+* The repository is renamed `live_island_kit`: `repository`, `issue_tracker` and the README image links are updated.
 
 ## 0.1.0
 
-Primera versión publicada.
+First published version.
 
-* API única en Dart (`LiveIsland.start/update/end`) para Live Activities de iOS y Live Updates de Android 16+.
-* Contrato JSON v1 (diseño una vez, estado ≤ 4 096 bytes) compartido por Dart, Swift y Kotlin.
-* iOS: Widget Extension genérico en SwiftUI (isla compacta, expandida y mínima, pantalla de bloqueo, StandBy), botones con `LiveActivityIntent` (iOS 17+), push tokens y push-to-start (iOS 17.2).
-* Android: `Notification.ProgressStyle`, chip, promoción a Live Update, botones, cola de acciones y entrada de push FCM.
-* `dart run live_island_kit:setup` configura el proyecto de Xcode (`--push` para APNs).
-* Componentes: texto, contadores, íconos e imágenes, avatar, barra, anillo, etapas, tracker, botones.
-* Barra de progreso editable: color, grosor, puntos, etiquetas, ícono que avanza y marcador final (`LiveProgressStyle`).
-* Puntos de etapa a gusto: cantidad, con o sin texto, y forma (`LivePointShape`: círculo, cuadrado, redondeado).
-* Barra en vivo: `LiveRoute` convierte la posición en avance y `LiveActivity.follow` mantiene la actividad al día con un `Stream`, espaciando las actualizaciones.
-* `LiveIslandMorph`: la isla suelta una gota que se abre en tarjeta (vista previa y aviso dentro de la app), con descarte por gesto.
-* iOS: manifiesto de privacidad que declara el uso de `UserDefaults` del App Group (motivo `1C8F.1`), empaquetado con el plugin y copiado a la extensión por `dart run live_island_kit:setup`; el podspec toma la versión del paquete.
-* Actividades con id propio: `start(customId:)` crea o actualiza, `LiveIsland.activity(customId)` las encuentra tras reabrir la app, `LiveIsland.endAll()` las termina y `activeActivities()` trae su `customId`. Los push de Android aceptan `customId` en `start` y como `id` en `update`/`end`.
-* Avisos: `update(alert: LiveAlert(...))` expande la isla y suena en iOS; en Android usa un canal con sonido y sale como emergente. El push de Android acepta `"alert": true`.
-* Estado desactualizado: `LiveBind.stale` (campo reservado `$stale`) cambia el diseño al pasar `staleAfter` sin push (iOS 16.2+).
-* Ejemplo: iniciar un caso termina el anterior y usa `relevance: 100`, para que la isla muestre siempre el que se acaba de iniciar (iOS solo muestra una actividad en la isla).
-* Fin programado: `LiveActivity.scheduleEnd(at)` y `LiveDismiss.at(DateTime)`. En Android la notificación sigue viva y el sistema la retira a esa hora; en iOS termina ya y la tarjeta se queda hasta esa hora.
-* iOS: soporte de Swift Package Manager (`ios/live_island_kit/Package.swift`), además de CocoaPods; ambos usan las mismas fuentes. Probado con Flutter 3.29, 3.41 y 3.47.
-* Diseños de referencia con nombres e imágenes propios, en español: `RidePickupPreset` (clara y oscura, barra `RideBar.dotted` o `RideBar.line`), `RideDriverPreset` (vista del conductor), `StorePickupPreset`, `RunPreset`, `MatchPreset`, y una línea de tren hecha con `TransitPreset`.
-* `LiveProgressStyle.dashed` (lo que falta, como trazo discontinuo), `LiveProgressStyle.markers` (marcadores sobre la barra), `LivePointShape.ring`, `LiveImage.withSize` y `LiveImage.withHeight` (alto fijo para imágenes anchas).
-* `LiveIsland.check()` valida el diseño y el estado con los mismos avisos que el HTML de prototipos.
-* `LiveIslandPreview`: vista previa en Flutter de la isla, la pantalla de bloqueo y la notificación de Android.
-* 15 presets listos (`TripPreset`, `DeliveryPreset`, `CourierPreset`…) y app de ejemplo.
-* Android: modo tarjeta (`LiveAndroidStyle.card`): tu diseño completo con `RemoteViews` (dos escudos, marcador grande, gráfica), sin chip ni Live Update; `MatchPreset` y `StockPreset` lo usan por defecto.
-* Android: `LiveAndroid(largeIcon, subText)`, barra partida como tramos de color y marcadores como puntos de `ProgressStyle`; los diseños de ejemplo ponen su imagen, subtexto y textos propios.
-* Efectos: `LiveProgressStyle.glow` (cable luminoso), `LiveBox(border, borderWidth, glow)` (borde con brillo), `LiveSplitBar` (tramos de color en proporción) y `LiveText(italic: true)`; con `ChargePreset` y `FareSplitPreset`.
-* Gráficas: `LiveSparkline` (línea con área y punto final), `LiveGauge` (arco con punto que avanza) y `LiveFlightPath` (ruta curva con ícono que avanza); con `StockPreset`, `FlightPathPreset` y `OrbitPreset`. En Android el arco y la ruta son una barra y la línea se omite.
+* A single Dart API (`LiveIsland.start/update/end`) for iOS Live Activities and Android 16+ Live Updates.
+* JSON contract v1 (design once, state ≤ 4,096 bytes) shared by Dart, Swift and Kotlin.
+* iOS: a generic SwiftUI Widget Extension (compact, expanded and minimal island, lock screen, StandBy), buttons with `LiveActivityIntent` (iOS 17+), push tokens and push-to-start (iOS 17.2).
+* Android: `Notification.ProgressStyle`, chip, Live Update promotion, buttons, action queue and FCM push entry point.
+* `dart run live_island_kit:setup` configures the Xcode project (`--push` for APNs).
+* Components: text, countdowns, icons and images, avatar, bar, ring, stages, tracker, buttons.
+* Editable progress bar: color, thickness, dots, labels, moving icon and end marker (`LiveProgressStyle`).
+* Stage dots to taste: count, with or without text, and shape (`LivePointShape`: circle, square, rounded).
+* Live bar: `LiveRoute` turns a position into progress and `LiveActivity.follow` keeps the activity up to date from a `Stream`, spacing out the updates.
+* `LiveIslandMorph`: the island drops a blob that opens into a card (preview and in-app notice), dismissible by gesture.
+* iOS: a privacy manifest that declares the App Group `UserDefaults` use (reason `1C8F.1`), packaged with the plugin and copied into the extension by `dart run live_island_kit:setup`; the podspec takes the package version.
+* Activities with your own id: `start(customId:)` creates or updates, `LiveIsland.activity(customId)` finds them after reopening the app, `LiveIsland.endAll()` ends them and `activeActivities()` returns their `customId`. Android pushes accept `customId` in `start` and as `id` in `update`/`end`.
+* Alerts: `update(alert: LiveAlert(...))` expands the island and plays a sound on iOS; on Android it uses a channel with sound and shows as a heads-up. The Android push accepts `"alert": true`.
+* Stale state: `LiveBind.stale` (reserved field `$stale`) changes the design once `staleAfter` passes without a push (iOS 16.2+).
+* Example: starting a case ends the previous one and uses `relevance: 100`, so the island always shows the one just started (iOS shows only one activity in the island).
+* Scheduled end: `LiveActivity.scheduleEnd(at)` and `LiveDismiss.at(DateTime)`. On Android the notification stays alive and the system removes it at that time; on iOS it ends now and the card stays until then.
+* iOS: Swift Package Manager support (`ios/live_island_kit/Package.swift`) as well as CocoaPods; both use the same sources. Tested with Flutter 3.29, 3.41 and 3.47.
+* Reference designs with their own names and images, in Spanish: `RidePickupPreset` (light and dark, `RideBar.dotted` or `RideBar.line` bar), `RideDriverPreset` (driver view), `StorePickupPreset`, `RunPreset`, `MatchPreset`, and a train line built with `TransitPreset`.
+* `LiveProgressStyle.dashed` (the remainder as a dashed stroke), `LiveProgressStyle.markers` (markers on the bar), `LivePointShape.ring`, `LiveImage.withSize` and `LiveImage.withHeight` (fixed height for wide images).
+* `LiveIsland.check()` validates the design and the state with the same warnings as the prototype HTML.
+* `LiveIslandPreview`: a Flutter preview of the island, the lock screen and the Android notification.
+* 15 ready-made presets (`TripPreset`, `DeliveryPreset`, `CourierPreset`…) and an example app.
+* Android: card mode (`LiveAndroidStyle.card`): your whole design with `RemoteViews` (two crests, a big score, a chart), with no chip or Live Update; `MatchPreset` and `StockPreset` use it by default.
+* Android: `LiveAndroid(largeIcon, subText)`, a split bar as colored segments and markers as `ProgressStyle` points; the example designs set their own image, subtext and texts.
+* Effects: `LiveProgressStyle.glow` (glowing cable), `LiveBox(border, borderWidth, glow)` (glowing border), `LiveSplitBar` (proportional colored segments) and `LiveText(italic: true)`; with `ChargePreset` and `FareSplitPreset`.
+* Charts: `LiveSparkline` (line with area and end dot), `LiveGauge` (arc with a moving dot) and `LiveFlightPath` (curved route with a moving icon); with `StockPreset`, `FlightPathPreset` and `OrbitPreset`. On Android the arc and the route are a bar and the line is omitted.
 
-Limitaciones conocidas: en Android el grosor, la separación y las etiquetas de la barra los decide el sistema; los botones no se dibujan en la isla expandida de iOS; sin snapshot tests de SwiftUI.
+Known limitations: on Android the bar's thickness, spacing and labels are decided by the system; buttons are not drawn in the expanded iOS island; no SwiftUI snapshot tests.

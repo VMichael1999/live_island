@@ -1,4 +1,5 @@
-"""Genera doc/assets/banner.png: la cabecera del README y de pub.dev.
+"""Genera la cabecera del README y de pub.dev: doc/assets/banner.png (inglés, la
+principal) y doc/assets/banner.es.png (español, para README.es.md).
 
 Uso: python3 tool/make_banner.py [nombre_del_paquete]
 Usa las imágenes de doc/assets/galeria/ (que genera test/readme_gallery_test.dart).
@@ -44,7 +45,24 @@ def card(name, width):
     return shadow
 
 
-def main():
+TEXTOS = {
+    'en': {
+        'out': 'doc/assets/banner.png',
+        'lineas': ['iOS Live Activities and Android', 'Live Updates, 100 % in Dart.'],
+        'insignias': ['No Swift', 'No Kotlin', '100 % editable'],
+        'pie': 'Dynamic Island · Lock Screen · Android Live Updates',
+    },
+    'es': {
+        'out': 'doc/assets/banner.es.png',
+        'lineas': ['Live Activities de iOS y Live Updates', 'de Android, 100 % en Dart.'],
+        'insignias': ['Sin Swift', 'Sin Kotlin', '100 % editable'],
+        'pie': 'Isla dinámica · Pantalla de bloqueo · Live Updates de Android',
+    },
+}
+
+
+def main(lang):
+    t = TEXTOS[lang]
     canvas = gradient().convert('RGBA')
     # Capturas a la derecha, solapadas.
     for name, x, y, w in [('marcador', 900, 28, 400), ('recogida_clara', 1150, 235, 400)]:
@@ -52,13 +70,13 @@ def main():
         canvas.alpha_composite(c, (x - 40, y - 40))
     d = ImageDraw.Draw(canvas)
     d.text((90, 110), NAME, font=font(86, True), fill=(255, 255, 255))
-    d.text((92, 225), 'Live Activities de iOS y Live Updates', font=font(36), fill=(210, 222, 240))
-    d.text((92, 272), 'de Android, 100 % en Dart.', font=font(36), fill=(210, 222, 240))
+    d.text((92, 225), t['lineas'][0], font=font(36), fill=(210, 222, 240))
+    d.text((92, 272), t['lineas'][1], font=font(36), fill=(210, 222, 240))
     # Insignias (sobre una capa aparte para que la transparencia se mezcle)
     layer = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     ld = ImageDraw.Draw(layer)
     x = 92
-    for text in ['Sin Swift', 'Sin Kotlin', '100 % editable']:
+    for text in t['insignias']:
         f = font(26, True)
         w = ld.textlength(text, font=f) + 44
         ld.rounded_rectangle((x, 360, x + w, 412), 26, fill=(48, 209, 88, 40), outline=(48, 209, 88, 255), width=2)
@@ -66,8 +84,9 @@ def main():
         x += w + 18
     canvas.alpha_composite(layer)
     d = ImageDraw.Draw(canvas)
-    d.text((92, 470), 'Isla dinámica · Pantalla de bloqueo · Live Updates de Android', font=font(24), fill=(150, 170, 200))
-    canvas.convert('RGB').save('doc/assets/banner.png', optimize=True)
+    d.text((92, 470), t['pie'], font=font(24), fill=(150, 170, 200))
+    canvas.convert('RGB').save(t['out'], optimize=True)
 
 
-main()
+for idioma in TEXTOS:
+    main(idioma)
