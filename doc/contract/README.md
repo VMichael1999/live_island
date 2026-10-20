@@ -18,6 +18,11 @@ Se validan con JSON Schema 2020-12 (probado con `ajv`).
 4. **Íconos con dos nombres.** `{t:"icon", sf:"car.fill", android:"assets/live/car.png"}`: SF Symbol para iOS, PNG para Android.
 5. **Fechas** en el estado: ISO 8601 UTC con `Z`. `countdown`, `stopwatch` y `relative` leen un campo con esa fecha; cada plataforma cuenta sola.
 6. **Condiciones** (`if`): `{bind, <un operador>}` con `eq`, `neq`, `gt`, `gte`, `lt`, `lte`, `truthy`. Es la forma serializada de `bind('etapa').equals(2)`.
+   - `eq` y `neq`: si los dos valores son números (un texto numérico cuenta; un booleano no) se comparan como números; si no, como texto (`true` es «true» y nulo es vacío).
+   - `gt`, `gte`, `lt`, `lte`: solo con números o textos numéricos; si el campo falta o no es numérico, la condición es falsa.
+   - `truthy`: verdadero salvo nulo, `false`, `0` o texto vacío (el texto `"false"` es verdadero); `truthy: false` lo invierte.
+   - **Plantillas `{campo}`:** solo un identificador (`[A-Za-z_][A-Za-z0-9_]*`) entre llaves es un campo; `{ x }`, `{}` o una llave sin cerrar se dejan tal cual. Un número entero se escribe sin decimales (`5.0` → `5`) y un campo que falta, vacío.
+   - Estas reglas las ejecutan los tres intérpretes con los mismos casos de [`conformance.json`](conformance.json) (`tool/conformidad.sh`).
 7. **`lockScreen`** puede ser `{same:"expanded"}` (reutiliza la expandida) o un nodo propio.
 8. **Bloque `android`**: usa `title`, `text`, `chip`, `colorized`. `progress` y `actions` son opcionales; si faltan, el traductor Kotlin los toma de `expanded.bottom` (primer nodo de progreso y botones). Así el caso normal no duplica información.
 9. **Botones**: `id` obligatorio (`[a-z0-9_]+`). Con `action` ausente o `custom` llegan a `LiveIsland.onAction(id)`.

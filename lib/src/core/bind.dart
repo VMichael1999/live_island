@@ -75,14 +75,15 @@ class LiveCondition {
     final v = state[field];
     switch (op) {
       case 'eq':
-        return v == value;
+        return _same(v, value);
       case 'neq':
-        return v != value;
+        return !_same(v, value);
       case 'truthy':
-        return v != null && v != false && v != 0 && v != '';
+        final on = v != null && v != false && v != 0 && v != '';
+        return value == false ? !on : on;
       default:
-        if (v is! num || value is! num) return false;
-        final a = v, b = value! as num;
+        final a = _number(v), b = _number(value);
+        if (a == null || b == null) return false;
         return switch (op) {
           'gt' => a > b,
           'gte' => a >= b,
@@ -102,9 +103,33 @@ class LiveCondition {
   int get hashCode => '$_key'.hashCode;
 }
 
+/// Un número, o un texto que lo es; un booleano no cuenta.
+double? _number(Object? v) => switch (v) {
+  num() => v.toDouble(),
+  String() => double.tryParse(v),
+  _ => null,
+};
+
+/// `eq`: si los dos son números se comparan como números; si no, como texto.
+bool _same(Object? a, Object? b) {
+  final x = _number(a), y = _number(b);
+  if (x != null && y != null) return (x - y).abs() < 1e-9;
+  return liveText(a) == liveText(b);
+}
+
+/// El texto de un valor del estado, igual en Dart, Swift y Kotlin: un entero
+/// sin decimales (`5.0` → `5`), un booleano como `true` o `false` y nulo vacío.
+String liveText(Object? v) {
+  if (v == null) return '';
+  if (v is num && v.isFinite && v == v.roundToDouble() && v.abs() < 1e15) {
+    return v.toInt().toString();
+  }
+  return '$v';
+}
+
 /// Plantilla `{campo}`: sustituye cada campo por su valor en [state].
 String formatTemplate(String fmt, Map<String, Object?> state) =>
     fmt.replaceAllMapped(
       RegExp(r'\{([A-Za-z_][A-Za-z0-9_]*)\}'),
-      (m) => '${state[m[1]] ?? ''}',
+      (m) => liveText(state[m[1]]),
     );

@@ -1,3 +1,8 @@
+## Sin publicar
+
+* Conformidad entre plataformas: `doc/contract/conformance.json` reúne 52 casos (plantillas `{campo}`, condiciones y cuenta regresiva) que Dart, Swift y Kotlin ejecutan con su lógica real (`tool/conformidad.sh`). Las reglas quedan escritas en el contrato.
+* Se corrigen diferencias que la suite encontró: la vista previa escribía `5.0` donde el dispositivo escribe `5`; `eq` y los operadores numéricos tratan igual un número y un texto numérico en las tres plataformas; `truthy: false` invierte la condición; el texto `"false"` es verdadero; un booleano no es un número; y en iOS `{ x }` o `{}` ya no desaparecen de una plantilla.
+
 ## 0.2.0
 
 * iOS: la zona derecha de la isla expandida lleva 4 pt de margen, para que la curva de la isla no recorte el «78'» del marcador deportivo.

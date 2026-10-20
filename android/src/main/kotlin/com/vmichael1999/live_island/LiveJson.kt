@@ -22,8 +22,9 @@ object LiveJson {
 
     fun text(v: Any?): String = when (v) {
         null -> ""
-        is Double -> numberText(v)
-        is Float -> numberText(v.toDouble())
+        is Int, is Long, is Short, is Byte -> v.toString()
+        // Double, Float o BigDecimal (según la librería de JSON): entero sin decimales.
+        is Number -> numberText(v.toDouble())
         else -> v.toString()
     }
 

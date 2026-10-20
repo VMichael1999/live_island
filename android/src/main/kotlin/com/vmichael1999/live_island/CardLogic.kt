@@ -13,13 +13,15 @@ object CardLogic {
         if (c == null) return false
         val v = state[c.optString("bind")]
         fun cmp(key: String): Double? = if (c.has(key)) c.optDouble(key) else null
+        // Un booleano no es un número: solo comparan números y textos numéricos.
+        val n = if (v is Boolean) null else LiveJson.number(v)
         return when {
             c.has("eq") -> same(v, c.get("eq"))
             c.has("neq") -> !same(v, c.get("neq"))
-            c.has("gt") -> (LiveJson.number(v) ?: return false) > cmp("gt")!!
-            c.has("gte") -> (LiveJson.number(v) ?: return false) >= cmp("gte")!!
-            c.has("lt") -> (LiveJson.number(v) ?: return false) < cmp("lt")!!
-            c.has("lte") -> (LiveJson.number(v) ?: return false) <= cmp("lte")!!
+            c.has("gt") -> (n ?: return false) > cmp("gt")!!
+            c.has("gte") -> (n ?: return false) >= cmp("gte")!!
+            c.has("lt") -> (n ?: return false) < cmp("lt")!!
+            c.has("lte") -> (n ?: return false) <= cmp("lte")!!
             c.has("truthy") -> truthy(v) == c.optBoolean("truthy", true)
             else -> false
         }
@@ -36,7 +38,7 @@ object CardLogic {
         null -> false
         is Boolean -> v
         is Number -> v.toDouble() != 0.0
-        is String -> v.isNotEmpty() && v != "false" && v != "0"
+        is String -> v.isNotEmpty()
         else -> true
     }
 
