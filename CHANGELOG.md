@@ -1,5 +1,6 @@
 ## Sin publicar
 
+* iOS: en la isla expandida, un texto de una línea se encoge hasta un 65 % antes de cortarse con «…» (Transporte público, Sala de espera y Subida de archivo ya no pierden «3 paradas», «Te llaman pronto» ni «3 min restantes»).
 * iOS: se corrige un cierre de la app al iniciar una actividad (carrera de datos al vigilar los tokens de push de ActivityKit).
 * Diseños nuevos de «Run»: `RideArrivalPreset` (llegada, con un sedán y su placa), `RideTripPreset` (viaje con fase, destino y pago) y `DeliveryOrderPreset` (pedido a domicilio en cuatro etapas con íconos).
 * Barra: `LiveProgressStyle.endMarker` pega un aro o un cuadrado al final de la barra, con el auto encima, y `LiveSegments.stageIcons` pone un ícono por etapa (gris hasta que llega y de color después).
