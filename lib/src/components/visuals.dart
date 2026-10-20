@@ -16,7 +16,7 @@ sealed class LiveVisual extends LiveNode {
     'icon' => LiveIcon.fromJson(json),
     'image' => LiveImage.fromJson(json),
     'avatar' => LiveAvatar.fromJson(json),
-    final t => throw FormatException('Visual desconocido: $t'),
+    final t => throw FormatException('Unknown visual: $t'),
   };
 }
 

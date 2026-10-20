@@ -37,7 +37,7 @@ void _checkId(String id) {
     throw ArgumentError.value(
       id,
       'id',
-      'Debe usar solo minúsculas, números y guiones bajos',
+      'Must use only lowercase letters, numbers and underscores',
     );
   }
 }

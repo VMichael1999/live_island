@@ -262,7 +262,7 @@ abstract final class LiveIsland {
     String? customId,
   }) async {
     if (customId != null && customId.isEmpty) {
-      throw ArgumentError.value(customId, 'customId', 'No puede estar vacío');
+      throw ArgumentError.value(customId, 'customId', 'Cannot be empty');
     }
     final normalized = LiveState.normalize(state);
     final report = check(layout, normalized, androidPromotable: true);

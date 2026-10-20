@@ -87,19 +87,19 @@ class LiveIslandPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     final ios = <Widget>[
       if (surfaces.contains(LiveSurface.compact))
-        _section('Compact', '~44 pt por lado', LiveCompactPreview(config)),
+        _section('Compact', '~44 pt per side', LiveCompactPreview(config)),
       if (surfaces.contains(LiveSurface.minimal))
         _section(
-          'Minimal (con otra actividad)',
+          'Minimal (with another activity)',
           '37 × 37 pt',
           LiveMinimalPreview(config),
         ),
       if (surfaces.contains(LiveSurface.expanded))
-        _section('Expandida', '~160 pt de alto', LiveExpandedPreview(config)),
+        _section('Expanded', '~160 pt tall', LiveExpandedPreview(config)),
       if (surfaces.contains(LiveSurface.lockScreen))
         _section(
-          'Pantalla de bloqueo',
-          'esquinas 22 pt',
+          'Lock screen',
+          '22 pt corners',
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 360),
             child: Column(
@@ -179,7 +179,7 @@ class _LockClock extends StatelessWidget {
         ),
         SizedBox(height: 10),
         Text(
-          'domingo 4 de octubre',
+          'Sunday, October 4',
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w500,

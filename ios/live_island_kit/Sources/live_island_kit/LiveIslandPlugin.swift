@@ -211,15 +211,15 @@ enum LiveActivities {
     /// lo usa con `attributes.layoutId = "tpl_<nombre>"`.
     static func registerLayout(_ args: [String: Any], _ result: @escaping FlutterResult) {
         guard LiveStorage.appGroup != nil else {
-            return fail(result, "not_configured", "Falta el App Group. Ejecuta `dart run live_island_kit:setup` y vuelve a compilar.")
+            return fail(result, "not_configured", "The App Group is missing. Run `dart run live_island_kit:setup` and build again.")
         }
         guard let name = args["name"] as? String, let layoutText = args["layout"] as? String else {
-            return fail(result, "bad_arguments", "Faltan name y layout.")
+            return fail(result, "bad_arguments", "name and layout are missing.")
         }
         let id = LiveStorage.templatePrefix + name.replacingOccurrences(of: "[^A-Za-z0-9_-]", with: "_", options: .regularExpression)
         LiveStorage.removeDirectory(for: id)
         guard let dir = LiveStorage.directory(for: id, create: true), store(args, layoutText: layoutText, in: dir) else {
-            return fail(result, "storage", "No se pudo guardar el diseño en el App Group.")
+            return fail(result, "storage", "The design could not be saved to the App Group.")
         }
         result(nil)
     }
@@ -233,15 +233,15 @@ enum LiveActivities {
         }
         guard LiveStorage.appGroup != nil else {
             return fail(result, "not_configured",
-                        "Falta el App Group. Ejecuta `dart run live_island_kit:setup` y vuelve a compilar.")
+                        "The App Group is missing. Run `dart run live_island_kit:setup` and build again.")
         }
         guard ActivityAuthorizationInfo().areActivitiesEnabled else {
-            return fail(result, "disabled", "El usuario desactivó las Live Activities para esta app.")
+            return fail(result, "disabled", "The user turned off Live Activities for this app.")
         }
         guard let layoutText = args["layout"] as? String,
               let stateText = args["state"] as? String,
               let state = (try? JSONSerialization.jsonObject(with: Data(stateText.utf8))) as? [String: Any]
-        else { return fail(result, "bad_arguments", "layout y state deben ser JSON válido.") }
+        else { return fail(result, "bad_arguments", "layout and state must be valid JSON.") }
 
         // Con el mismo id propio no se crea otra actividad: se actualiza la que ya existe.
         let customId = (args["customId"] as? String).flatMap { $0.isEmpty ? nil : $0 }
@@ -258,7 +258,7 @@ enum LiveActivities {
         let layoutId = UUID().uuidString
         guard let dir = LiveStorage.directory(for: layoutId, create: true),
               store(args, layoutText: layoutText, in: dir)
-        else { return fail(result, "storage", "No se pudo guardar el diseño en el App Group.") }
+        else { return fail(result, "storage", "The design could not be saved to the App Group.") }
 
         // Limpia diseños de actividades que ya no existen (las plantillas no se tocan).
         LiveStorage.removeAll(except: Set(Activity<LiveIslandAttributes>.activities.map { $0.attributes.layoutId } + [layoutId]))
@@ -288,7 +288,7 @@ enum LiveActivities {
             fail(result, "start_failed", "\(error)")
         }
         #else
-        fail(result, "unsupported", "ActivityKit no está disponible.")
+        fail(result, "unsupported", "ActivityKit is not available.")
         #endif
     }
 
@@ -303,13 +303,13 @@ enum LiveActivities {
 
     static func update(_ args: [String: Any], _ result: @escaping FlutterResult, returning value: Any? = nil) {
         #if canImport(ActivityKit)
-        guard #available(iOS 16.1, *) else { return fail(result, "unsupported", "Requiere iOS 16.1.") }
+        guard #available(iOS 16.1, *) else { return fail(result, "unsupported", "Requires iOS 16.1.") }
         guard let id = args["id"] as? String, let activity = find(id) else {
-            return fail(result, "not_found", "No existe una actividad con ese id (¿ya terminó?).")
+            return fail(result, "not_found", "No activity exists with that id (did it already end?).")
         }
         guard let stateText = args["state"] as? String,
               let state = (try? JSONSerialization.jsonObject(with: Data(stateText.utf8))) as? [String: Any]
-        else { return fail(result, "bad_arguments", "state debe ser JSON válido.") }
+        else { return fail(result, "bad_arguments", "state must be valid JSON.") }
 
         // El estado que llega se mezcla con el anterior: solo viajan los campos que cambian.
         var values = activity.contentState.values
@@ -336,7 +336,7 @@ enum LiveActivities {
             result(value)
         }
         #else
-        fail(result, "unsupported", "ActivityKit no está disponible.")
+        fail(result, "unsupported", "ActivityKit is not available.")
         #endif
     }
 
@@ -370,7 +370,7 @@ enum LiveActivities {
 
     static func end(_ args: [String: Any], _ result: @escaping FlutterResult) {
         #if canImport(ActivityKit)
-        guard #available(iOS 16.1, *) else { return fail(result, "unsupported", "Requiere iOS 16.1.") }
+        guard #available(iOS 16.1, *) else { return fail(result, "unsupported", "Requires iOS 16.1.") }
         guard let id = args["id"] as? String, let activity = find(id) else { return result(nil) }
         let policy: ActivityUIDismissalPolicy
         let immediate = (args["dismiss"] as? String) == "immediate"
@@ -401,7 +401,7 @@ enum LiveActivities {
             result(nil)
         }
         #else
-        fail(result, "unsupported", "ActivityKit no está disponible.")
+        fail(result, "unsupported", "ActivityKit is not available.")
         #endif
     }
 }

@@ -257,7 +257,7 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
     } on MissingPluginException {
       throw const LiveIslandException(
         'unsupported',
-        'live_island todavía no está disponible en esta plataforma.',
+        'live_island is not available on this platform yet.',
       );
     }
   }
@@ -359,7 +359,7 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
     if (id == null) {
       throw const LiveIslandException(
         'start_failed',
-        'La plataforma no devolvió un id.',
+        'The platform did not return an id.',
       );
     }
     return id;

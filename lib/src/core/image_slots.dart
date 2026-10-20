@@ -34,7 +34,7 @@ List<LiveImageSlot> imageSlots(LiveLayout layout) {
   final slots = <LiveImageSlot>[];
   final logo = layout.appLogo;
   if (logo is LiveImage) {
-    slots.add(LiveImageSlot('Logo de la app', '120 × 120 px', logo, 120, 120));
+    slots.add(LiveImageSlot('App logo', '120 × 120 px', logo, 120, 120));
   }
   LiveImage? main, avatar;
   final leads = [
@@ -57,20 +57,10 @@ List<LiveImageSlot> imageSlots(LiveLayout layout) {
     }
   }
   if (main != null) {
-    slots.add(
-      LiveImageSlot(
-        'Imagen del ícono principal',
-        '138 × 138 px',
-        main,
-        138,
-        138,
-      ),
-    );
+    slots.add(LiveImageSlot('Main icon image', '138 × 138 px', main, 138, 138));
   }
   if (avatar != null) {
-    slots.add(
-      LiveImageSlot('Foto del avatar', '138 × 138 px', avatar, 138, 138),
-    );
+    slots.add(LiveImageSlot('Avatar photo', '138 × 138 px', avatar, 138, 138));
   }
   LiveNode? progress;
   for (final n in layout.allNodes) {
@@ -88,8 +78,8 @@ List<LiveImageSlot> imageSlots(LiveLayout layout) {
     // 130 pt de ancho máximo (un tren) y 24 pt de alto, por 3.
     slots.add(
       LiveImageSlot(
-        'Imagen que avanza en la barra',
-        '72 px de alto',
+        'Image that moves along the bar',
+        '72 px tall',
         tracker!.visual as LiveImage,
         390,
         72,

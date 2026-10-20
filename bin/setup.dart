@@ -1,12 +1,13 @@
 import 'dart:io';
 import 'dart:isolate';
 
-/// Configura una app Flutter para usar live_island_kit en iOS:
+/// Configures a Flutter app to use live_island_kit on iOS:
 ///
-///     dart run live_island_kit:setup [--app-group group.com.miapp] [--extension LiveIslandExtension]
+///     dart run live_island_kit:setup [--app-group group.com.myapp] [--extension LiveIslandExtension]
 ///
-/// Agrega el Widget Extension al proyecto de Xcode, el App Group y
-/// `NSSupportsLiveActivities` (con `--push`, también el permiso de push). Se puede repetir para actualizar el renderer.
+/// Adds the Widget Extension to the Xcode project, the App Group and
+/// `NSSupportsLiveActivities` (with `--push`, also the push permission). It can be
+/// run again to update the renderer.
 Future<void> main(List<String> args) async {
   String? group;
   var extension = 'LiveIslandExtension';
@@ -27,7 +28,7 @@ Future<void> main(List<String> args) async {
         _usage();
         return;
       default:
-        stderr.writeln('Opción desconocida: ${args[i]}');
+        stderr.writeln('Unknown option: ${args[i]}');
         _usage();
         exitCode = 64;
         return;
@@ -38,7 +39,7 @@ Future<void> main(List<String> args) async {
   if (!File('$project/pubspec.yaml').existsSync() ||
       !Directory('${iosDir.path}/Runner.xcodeproj').existsSync()) {
     stderr.writeln(
-      'Ejecuta este comando en la raíz de una app Flutter con carpeta ios/.',
+      'Run this command at the root of a Flutter app with an ios/ folder.',
     );
     exitCode = 66;
     return;
@@ -49,7 +50,7 @@ Future<void> main(List<String> args) async {
   );
   if (uri == null) {
     stderr.writeln(
-      'No se encontró el paquete live_island_kit. ¿Está en tu pubspec.yaml?',
+      'The live_island_kit package was not found. Is it in your pubspec.yaml?',
     );
     exitCode = 66;
     return;
@@ -57,11 +58,11 @@ Future<void> main(List<String> args) async {
   final root = File.fromUri(uri).parent.parent.path;
 
   if (!Platform.isMacOS) {
-    stdout.writeln('iOS: omitido (Xcode solo existe en macOS).');
+    stdout.writeln('iOS: skipped (Xcode only exists on macOS).');
     return;
   }
 
-  stdout.writeln('Configurando iOS…');
+  stdout.writeln('Configuring iOS…');
   final result = await Process.run('ruby', [
     '$root/bin/setup_ios.rb',
     iosDir.path,
@@ -74,8 +75,8 @@ Future<void> main(List<String> args) async {
   if (result.exitCode != 0) {
     stderr.write(result.stderr);
     stderr.writeln(
-      '\nNo se pudo configurar iOS. Necesitas Ruby y la gema xcodeproj '
-      '(viene con CocoaPods: `sudo gem install cocoapods`).',
+      '\nCould not configure iOS. You need Ruby and the xcodeproj gem '
+      '(it comes with CocoaPods: `sudo gem install cocoapods`).',
     );
     exitCode = result.exitCode;
     return;
@@ -83,21 +84,21 @@ Future<void> main(List<String> args) async {
 
   stdout.writeln('''
 
-Listo. Falta, una sola vez, en Xcode (ios/Runner.xcworkspace):
-  1. Selecciona tu equipo de desarrollo en los targets Runner y $extension.
-  2. En un dispositivo real activa las Live Activities para la app (Ajustes).
-Luego: flutter run''');
+Done. One thing is left, once, in Xcode (ios/Runner.xcworkspace):
+  1. Select your development team on the Runner and $extension targets.
+  2. On a real device, turn on Live Activities for the app (Settings).
+Then: flutter run''');
 }
 
 void _usage() {
   stdout.writeln('''
-Uso: dart run live_island_kit:setup [opciones]
+Usage: dart run live_island_kit:setup [options]
 
-  --app-group <id>     App Group (por defecto group.<bundle id>.liveisland)
-  --push               Agrega el permiso de push (aps-environment) para actualizar
-                       o iniciar actividades por APNs; requiere una cuenta de
-                       desarrollador con la capacidad Push Notifications
-  --extension <name>   Nombre del Widget Extension (LiveIslandExtension)
-  --project <dir>      Carpeta de la app Flutter (por defecto .)
+  --app-group <id>     App Group (default group.<bundle id>.liveisland)
+  --push               Adds the push permission (aps-environment) to update
+                       or start activities through APNs; it needs a developer
+                       account with the Push Notifications capability
+  --extension <name>   Name of the Widget Extension (LiveIslandExtension)
+  --project <dir>      Folder of the Flutter app (default .)
 ''');
 }

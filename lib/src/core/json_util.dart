@@ -20,7 +20,7 @@ Color colorFromHex(String hex) {
     final v = int.parse(s, radix: 16);
     return Color(((v & 0xFF) << 24) | (v >> 8));
   }
-  throw FormatException('Color inválido: $hex');
+  throw FormatException('Invalid color: $hex');
 }
 
 /// 32-bit FNV-1a hash in hexadecimal, for stable image ids.
@@ -36,5 +36,5 @@ String fnv1a(Iterable<int> bytes) {
 /// `{ "t": ... }` → typed object, or fails with a clear message.
 Map<String, Object?> asMap(Object? v, String where) {
   if (v is Map) return Map<String, Object?>.from(v);
-  throw FormatException('Se esperaba un objeto en $where');
+  throw FormatException('Expected an object at $where');
 }

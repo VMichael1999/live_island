@@ -370,7 +370,7 @@ class LiveLayout {
   factory LiveLayout.fromJson(Map<String, Object?> json) {
     final version = json['v'];
     if (version != liveContractVersion) {
-      throw FormatException('Versión de contrato no soportada: $version');
+      throw FormatException('Unsupported contract version: $version');
     }
     final regions = asMap(json['regions'], 'regions');
     LiveNode? n(String k) =>

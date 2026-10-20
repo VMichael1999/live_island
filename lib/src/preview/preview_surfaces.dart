@@ -703,8 +703,8 @@ Widget _android(LivePreviewConfig config, DateTime now) {
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
             child: Text(
               promoted
-                  ? 'Promovida a Live Update: chip en la barra de estado, arriba del panel y en la pantalla de bloqueo.'
-                  : 'No se promueve: se ve como notificación en curso normal, sin chip.',
+                  ? 'Promoted to a Live Update: chip in the status bar, at the top of the panel and on the lock screen.'
+                  : 'Not promoted: it looks like a normal ongoing notification, with no chip.',
               style: TextStyle(fontSize: 12, color: t.body),
             ),
           ),

@@ -75,7 +75,7 @@ void main() {
         'd': '12345678',
       }, now: now);
       expect(code(r, 'highlightLength')!.severity, LiveSeverity.warn);
-      expect(code(r, 'highlightLength')!.message, contains('8 caracteres'));
+      expect(code(r, 'highlightLength')!.message, contains('8 characters'));
     });
 
     test('cuenta la longitud en caracteres, no en bytes', () {
@@ -119,7 +119,7 @@ void main() {
         expect(code(r, 'chip')!.severity, LiveSeverity.ok);
         expect(
           code(r, 'chip')!.message,
-          'Chip de Android completo (5 caracteres).',
+          'Android chip complete (5 characters).',
         );
       });
 
@@ -130,21 +130,21 @@ void main() {
           ),
         );
         expect(code(r, 'chip')!.severity, LiveSeverity.warn);
-        expect(code(r, 'chip')!.message, contains('recortado'));
-        expect(code(r, 'chip')!.message, contains('11 caracteres'));
+        expect(code(r, 'chip')!.message, contains('cut'));
+        expect(code(r, 'chip')!.message, contains('11 characters'));
       });
 
       test('más de 12 caracteres queda solo el ícono', () {
         final r = chip(const LiveChip.text('Texto demasiado largo'));
         expect(
           code(r, 'chip')!.message,
-          'Chip de Android solo con ícono: el texto es demasiado largo.',
+          'Android chip with the icon only: the text is too long.',
         );
       });
 
       test('chip de solo ícono', () {
         final r = chip(const LiveChip.icon());
-        expect(code(r, 'chip')!.message, 'Chip de Android solo con ícono.');
+        expect(code(r, 'chip')!.message, 'Android chip with the icon only.');
       });
 
       test('la cuenta regresiva muestra minutos, mínimo 1', () {
@@ -153,7 +153,7 @@ void main() {
         });
         expect(
           code(r, 'chip')!.message,
-          'Chip de Android completo (5 caracteres).',
+          'Android chip complete (5 characters).',
         );
       });
 
@@ -207,7 +207,7 @@ void main() {
             promo(android: const LiveAndroid()),
             'androidPromotion',
           )!.message,
-          contains('título'),
+          contains('title'),
         );
         expect(code(promo(), 'androidPromotion')!.severity, LiveSeverity.bad);
         final empty = promo(
@@ -227,7 +227,7 @@ void main() {
         );
         expect(
           code(r, 'androidPromotion')!.message,
-          contains('no lo inició el usuario'),
+          contains('the user did not start it'),
         );
       });
     });
@@ -312,7 +312,7 @@ void main() {
         );
         expect(
           code(r, 'imageSize')!.message,
-          'Logo de la app: 3 KB, se reduce a 120 × 120 px antes de copiarse al App Group (iOS). Proporción respetada con fit “cover”.',
+          'App logo: 3 KB, reduced to 120 × 120 px before being copied to the App Group (iOS). Proportion kept with fit “cover”.',
         );
       });
 
@@ -325,7 +325,7 @@ void main() {
         );
         expect(
           code(r, 'imageSize')!.message,
-          'Logo de la app: se reduce a 120 × 120 px antes de copiarse al App Group (iOS). Proporción respetada con fit “contain”.',
+          'App logo: reduced to 120 × 120 px before being copied to the App Group (iOS). Proportion kept with fit “contain”.',
         );
       });
 
@@ -353,16 +353,16 @@ void main() {
                 .map((c) => c.message.split(':').first)
                 .toList();
         expect(labels, [
-          'Imagen del ícono principal',
-          'Foto del avatar',
-          'Imagen que avanza en la barra',
+          'Main icon image',
+          'Avatar photo',
+          'Image that moves along the bar',
         ]);
       });
     });
 
     test('el informe se imprime una línea por aviso', () {
       final r = LiveIsland.check(base(), const {}, now: now);
-      expect(r.toString(), startsWith('[ok] Estado por actualización'));
+      expect(r.toString(), startsWith('[ok] State per update'));
       expect(r.hasWarnings, isFalse);
     });
   });
