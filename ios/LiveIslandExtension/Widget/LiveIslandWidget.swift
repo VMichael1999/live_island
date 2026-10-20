@@ -66,7 +66,8 @@ enum LiveIslandSurfaces {
                 zone("leading", c, slot: 46, iconSize: 38)
             }
             DynamicIslandExpandedRegion(.trailing) {
-                zone("trailing", c, slot: 46, align: "end")
+                // Margen: la curva de la isla recorta lo que va pegado al borde (el «78'»).
+                zone("trailing", c, slot: 46, align: "end").padding(.trailing, 4)
             }
             DynamicIslandExpandedRegion(.center) {
                 zone("center", c)
