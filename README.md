@@ -61,9 +61,9 @@ Fifteen ready-made cases (taxi, delivery, parking, flight…) and ten more elabo
 final activity = await LiveIsland.start(
   layout: const ParkingPreset().build(),
   state: {
-    'titulo': 'Estacionamiento activo',
-    'subtitulo': 'Zona azul · Av. Larco 400',
-    'nombre': 'Placa ABC-123',
+    'titulo': 'Parking active',
+    'subtitulo': 'Blue zone · Av. Larco 400',
+    'nombre': 'Plate ABC-123',
     'llegaA': DateTime.now().add(const Duration(minutes: 45)),
     'progreso': 0.0,
   },
@@ -73,7 +73,7 @@ await activity.update({'progreso': 0.5}); // only what changes travels
 await activity.end(dismiss: const LiveDismiss.after(Duration(minutes: 5)));
 ```
 
-Every preset takes its most common parameters: `accent`, `icon`, `appLogo`, `androidSmallIcon`, `lockBackground`, `buttons`, `chip` and, depending on the case, `stages`, `tracker`, `endIcon` or `avatarText`. The state keys the presets bind to are `titulo`, `subtitulo`, `nombre`, `progreso` and `destacado` (text) or `llegaA` (countdown date).
+Every preset takes its most common parameters: `accent`, `icon`, `appLogo`, `androidSmallIcon`, `lockBackground`, `buttons`, `chip` and, depending on the case, `stages`, `tracker`, `endIcon` or `avatarText`. The state keys the presets bind to are `titulo`, `subtitulo`, `nombre`, `progreso` and `destacado` (text) or `llegaA` (countdown date). These key names are just identifiers (they date from the first Spanish version): in your own layouts you choose any names, and each preset documents the keys it reads.
 
 ### 2. A preset with `.override`
 
@@ -82,7 +82,7 @@ Replace one region and keep the rest:
 ```dart
 final layout = const TripPreset(
   accent: Color(0xFFD81B60),
-  stages: ['Pedido', 'En camino', 'Llegó'],
+  stages: ['Order', 'On the way', 'Arrived'],
 ).override(
   // The compact island shows the plate instead of the countdown.
   compactTrailing: LiveText.from(
