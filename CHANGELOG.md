@@ -1,3 +1,10 @@
+## Unreleased
+
+* Three messages that were still in Spanish are now in English: the iOS error for versions earlier than 16.1, the Android error when a permission request is replaced, and the titles of the button App Intent ("live_island action", "Button") that Shortcuts shows.
+* `dart run live_island_kit:setup` now also raises the Android app's `minSdk` to 26 in `android/app/build.gradle(.kts)` (it never lowers a bigger value or Flutter's own). A new app uses `flutter.minSdkVersion` (24), and the first Android build failed with "minSdkVersion 24 cannot be smaller than version 26". Apps without an `ios/` folder are configured for Android only.
+* New "Troubleshooting" section in the README (English and Spanish) with the checks for a card that does not show, the build errors above and the `LiveIslandException` codes.
+* `dart run live_island_kit:setup` now raises the app's `Podfile` platform and the Xcode project's iOS deployment target to 15.0 (the plugin's minimum). On a new app made with Flutter 3.29 the template leaves `# platform :ios, '12.0'` commented, and the first `flutter run` failed with "requires a higher minimum iOS deployment version". A test covers the Podfile rewrite.
+
 ## 0.3.0
 
 Behavior changes to be aware of when upgrading:
