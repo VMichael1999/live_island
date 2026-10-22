@@ -162,9 +162,9 @@ void main() {
     expect(back.children.whereType<LiveImage>(), hasLength(4));
   });
 
-  test('ningún texto de ejemplo mezcla inglés y español', () {
-    final english = RegExp(
-      r'\b(until|pickup|arriving|soon|order|progress|handcrafting|miles|time|home|guest|stats|world cup|landing|on time)\b',
+  test('ningún texto de ejemplo está en español', () {
+    final spanish = RegExp(
+      r'\b(para|tu|tus|llega|llegarás|pedido|recogida|viaje|quedan|sal ahora|paradas|pago|destino|bájate|tiempo|aproximadamente|estimada|camino|breve)\b',
       caseSensitive: false,
     );
     for (final p in <LivePreset>[
@@ -195,7 +195,7 @@ void main() {
           ],
       ];
       final text = texts.join(' | ');
-      expect(english.hasMatch(text), isFalse, reason: '${p.runtimeType}');
+      expect(spanish.hasMatch(text), isFalse, reason: '${p.runtimeType}');
     }
   });
 

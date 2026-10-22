@@ -20,7 +20,7 @@ const livePresetCarAsset =
 
 /// Taxi or similar ride: driver, arrival countdown and progress by stages with the image of a car.
 ///
-/// Sample data: "Tu conductor está en camino" ("Your driver is on the way").
+/// Sample data: "Your driver is on the way".
 final class TripPreset extends LivePreset {
   const TripPreset({
     this.accent = const Color(0xFF1F6FEB),
@@ -30,7 +30,7 @@ final class TripPreset extends LivePreset {
     this.lockBackground = LiveBackground.system,
     this.buttons,
     this.chip,
-    this.stages = const ['Asignado', 'En camino', 'Llegó'],
+    this.stages = const ['Assigned', 'On the way', 'Arrived'],
     this.showPoints = true,
     this.tracker,
     this.endIcon,
@@ -98,7 +98,7 @@ final class TripPreset extends LivePreset {
     id: 'taxi',
     showLabels: showLabels,
     progressStyle: progressStyle,
-    appName: 'Taxi Ya',
+    appName: 'Ride Now',
     accent: accent,
     icon: icon ?? presetIcon('car.fill', 'car'),
     appLogo: appLogo,
@@ -122,16 +122,16 @@ final class TripPreset extends LivePreset {
     buttons:
         buttons ??
         [
-          presetButton('Llamar', presetIcon('phone.fill', 'phone')),
+          presetButton('Call', presetIcon('phone.fill', 'phone')),
           presetButton(
-            'Compartir',
+            'Share',
             presetIcon('square.and.arrow.up', 'share2'),
           ),
         ],
     chip: chip ?? const LiveChip.countdown(LiveBind('llegaA')),
     sample: const PresetSample(
-      title: 'Tu conductor está en camino',
-      subtitle: 'Toyota Yaris gris · ABC-123',
+      title: 'Your driver is on the way',
+      subtitle: 'Gray sedan · ABC-123',
       name: 'Carlos M.',
       minutes: 6.0,
       progress: 0.45,
@@ -141,7 +141,7 @@ final class TripPreset extends LivePreset {
 
 /// Food delivery order: stages, countdown and courier.
 ///
-/// Sample data: "Tu pedido va en camino" ("Your order is on its way").
+/// Sample data: "Your order is on the way".
 final class DeliveryPreset extends LivePreset {
   const DeliveryPreset({
     this.accent = const Color(0xFFE4572E),
@@ -151,7 +151,7 @@ final class DeliveryPreset extends LivePreset {
     this.lockBackground = LiveBackground.system,
     this.buttons,
     this.chip,
-    this.stages = const ['Confirmado', 'Preparando', 'En camino', 'Entregado'],
+    this.stages = const ['Confirmed', 'Preparing', 'On the way', 'Delivered'],
     this.showPoints = true,
     this.tracker,
     this.endIcon,
@@ -211,7 +211,7 @@ final class DeliveryPreset extends LivePreset {
     id: 'delivery',
     showLabels: showLabels,
     progressStyle: progressStyle,
-    appName: 'Come Ya',
+    appName: 'Eat Now',
     accent: accent,
     icon: icon ?? presetIcon('fork.knife', 'utensils'),
     appLogo: appLogo,
@@ -226,14 +226,14 @@ final class DeliveryPreset extends LivePreset {
     buttons:
         buttons ??
         [
-          presetButton('Llamar', presetIcon('phone.fill', 'phone')),
-          presetButton('Ver mapa', presetIcon('mappin', 'mappin')),
+          presetButton('Call', presetIcon('phone.fill', 'phone')),
+          presetButton('View map', presetIcon('mappin', 'mappin')),
         ],
     chip: chip ?? const LiveChip.countdown(LiveBind('llegaA')),
     sample: const PresetSample(
-      title: 'Tu pedido va en camino',
-      subtitle: 'Pollería La Brasa · 2 productos',
-      name: 'Luis, repartidor',
+      title: 'Your order is on the way',
+      subtitle: 'La Brasa Chicken · 2 items',
+      name: 'Luis, courier',
       minutes: 12.0,
       progress: 0.62,
     ),
@@ -242,7 +242,7 @@ final class DeliveryPreset extends LivePreset {
 
 /// Package on its way: remaining stops and shipping stages.
 ///
-/// Sample data: "Tu paquete llega hoy" ("Your package arrives today").
+/// Sample data: "Your package arrives today".
 final class CourierPreset extends LivePreset {
   const CourierPreset({
     this.accent = const Color(0xFF6D4C41),
@@ -252,7 +252,7 @@ final class CourierPreset extends LivePreset {
     this.lockBackground = LiveBackground.system,
     this.buttons,
     this.chip,
-    this.stages = const ['Almacén', 'En ruta', 'Cerca', 'Entregado'],
+    this.stages = const ['Warehouse', 'In transit', 'Nearby', 'Delivered'],
     this.showPoints = true,
     this.tracker,
     this.endIcon,
@@ -312,7 +312,7 @@ final class CourierPreset extends LivePreset {
     id: 'courier',
     showLabels: showLabels,
     progressStyle: progressStyle,
-    appName: 'Envíos Rápidos',
+    appName: 'Fast Parcel',
     accent: accent,
     icon: icon ?? presetIcon('shippingbox.fill', 'package'),
     appLogo: appLogo,
@@ -326,13 +326,13 @@ final class CourierPreset extends LivePreset {
         !showTracker ? null : tracker ?? presetIcon('truck.box.fill', 'truck'),
     endIcon: !showEndIcon ? null : endIcon ?? presetIcon('house.fill', 'house'),
     buttons:
-        buttons ?? [presetButton('Ver ruta', presetIcon('mappin', 'mappin'))],
-    chip: chip ?? const LiveChip.text('3 más'),
+        buttons ?? [presetButton('View route', presetIcon('mappin', 'mappin'))],
+    chip: chip ?? const LiveChip.text('3 more'),
     sample: const PresetSample(
-      title: 'Tu paquete llega hoy',
-      subtitle: 'Quedan 3 paradas antes de la tuya',
-      name: 'Ruta 14',
-      highlight: '3 paradas',
+      title: 'Your package arrives today',
+      subtitle: '3 stops before yours',
+      name: 'Route 14',
+      highlight: '3 stops',
       minutes: 5.0,
       progress: 0.4,
     ),
@@ -341,7 +341,7 @@ final class CourierPreset extends LivePreset {
 
 /// Pickup order: stages and pickup code.
 ///
-/// Sample data: "Tu pedido está casi listo" ("Your order is almost ready").
+/// Sample data: "Your order is almost ready".
 final class PickupPreset extends LivePreset {
   const PickupPreset({
     this.accent = const Color(0xFF8D5B3A),
@@ -351,7 +351,7 @@ final class PickupPreset extends LivePreset {
     this.lockBackground = LiveBackground.system,
     this.buttons,
     this.chip,
-    this.stages = const ['Recibido', 'Preparando', 'Listo'],
+    this.stages = const ['Received', 'Preparing', 'Ready'],
     this.showPoints = true,
     this.showLabels = true,
     this.progressStyle,
@@ -395,7 +395,7 @@ final class PickupPreset extends LivePreset {
     id: 'pickup',
     showLabels: showLabels,
     progressStyle: progressStyle,
-    appName: 'Café Central',
+    appName: 'Central Café',
     accent: accent,
     icon: icon ?? presetIcon('cup.and.saucer.fill', 'coffee'),
     appLogo: appLogo,
@@ -406,12 +406,12 @@ final class PickupPreset extends LivePreset {
     stages: stages,
     showPoints: showPoints,
     buttons:
-        buttons ?? [presetButton('Ver código', presetIcon('qrcode', 'qrcode'))],
+        buttons ?? [presetButton('Show code', presetIcon('qrcode', 'qrcode'))],
     chip: chip ?? const LiveChip.text('#47'),
     sample: const PresetSample(
-      title: 'Tu pedido está casi listo',
-      subtitle: 'Latte grande · Mesa de recojo',
-      name: 'Código 47',
+      title: 'Your order is almost ready',
+      subtitle: 'Large latte · Pickup counter',
+      name: 'Code 47',
       highlight: '#47',
       minutes: 5.0,
       progress: 0.5,
@@ -421,7 +421,7 @@ final class PickupPreset extends LivePreset {
 
 /// Turn in a queue (bank, paperwork): position and ticket code.
 ///
-/// Sample data: "Tu turno se acerca" ("Your turn is coming up").
+/// Sample data: "Your turn is coming".
 final class QueuePreset extends LivePreset {
   const QueuePreset({
     this.accent = const Color(0xFF00897B),
@@ -470,7 +470,7 @@ final class QueuePreset extends LivePreset {
   LivePresetSpec get spec => LivePresetSpec(
     id: 'queue',
     progressStyle: progressStyle,
-    appName: 'Mi Banco',
+    appName: 'My Bank',
     accent: accent,
     icon: icon ?? presetIcon('building.columns.fill', 'landmark'),
     appLogo: appLogo,
@@ -480,13 +480,13 @@ final class QueuePreset extends LivePreset {
     progress: PresetProgress.bar,
     tracker: !showTracker ? null : tracker ?? presetIcon('person.fill', 'user'),
     buttons:
-        buttons ?? [presetButton('Cancelar turno', presetIcon('xmark', 'x'))],
+        buttons ?? [presetButton('Cancel ticket', presetIcon('xmark', 'x'))],
     chip: chip ?? const LiveChip.text('B-027'),
     sample: const PresetSample(
-      title: 'Tu turno se acerca',
-      subtitle: 'Agencia Miraflores · Plataforma',
-      name: 'Turno B-027',
-      highlight: '4 antes',
+      title: 'Your turn is coming',
+      subtitle: 'Miraflores branch · Platform',
+      name: 'Ticket B-027',
+      highlight: '4 ahead',
       minutes: 5.0,
       progress: 0.7,
     ),
@@ -495,7 +495,7 @@ final class QueuePreset extends LivePreset {
 
 /// Flight: check-in, boarding and takeoff with a countdown.
 ///
-/// Sample data: "Embarque en curso" ("Boarding in progress").
+/// Sample data: "Now boarding".
 final class FlightPreset extends LivePreset {
   const FlightPreset({
     this.accent = const Color(0xFF2D5BD7),
@@ -505,7 +505,7 @@ final class FlightPreset extends LivePreset {
     this.lockBackground = LiveBackground.system,
     this.buttons,
     this.chip,
-    this.stages = const ['Check-in', 'Embarque', 'Despegue'],
+    this.stages = const ['Check-in', 'Boarding', 'Takeoff'],
     this.showPoints = true,
     this.tracker,
     this.showLabels = true,
@@ -557,7 +557,7 @@ final class FlightPreset extends LivePreset {
     id: 'flight',
     showLabels: showLabels,
     progressStyle: progressStyle,
-    appName: 'Vuela',
+    appName: 'Fly',
     accent: accent,
     icon: icon ?? presetIcon('airplane', 'plane'),
     appLogo: appLogo,
@@ -570,12 +570,12 @@ final class FlightPreset extends LivePreset {
     tracker: !showTracker ? null : tracker ?? presetIcon('airplane', 'plane'),
     buttons:
         buttons ??
-        [presetButton('Pase de abordar', presetIcon('qrcode', 'qrcode'))],
+        [presetButton('Boarding pass', presetIcon('qrcode', 'qrcode'))],
     chip: chip ?? const LiveChip.countdown(LiveBind('llegaA')),
     sample: const PresetSample(
-      title: 'Embarque en curso',
-      subtitle: 'LIM → CUZ · Vuelo 2041',
-      name: 'Puerta 18',
+      title: 'Now boarding',
+      subtitle: 'LIM → CUZ · Flight 2041',
+      name: 'Gate 18',
       minutes: 25.0,
       progress: 0.35,
     ),
@@ -584,7 +584,7 @@ final class FlightPreset extends LivePreset {
 
 /// Time-limited parking: ring and countdown, with buttons to extend or end.
 ///
-/// Sample data: "Estacionamiento activo" ("Parking active").
+/// Sample data: "Parking active".
 final class ParkingPreset extends LivePreset {
   const ParkingPreset({
     this.accent = const Color(0xFF0277BD),
@@ -625,7 +625,7 @@ final class ParkingPreset extends LivePreset {
   LivePresetSpec get spec => LivePresetSpec(
     id: 'parking',
     progressStyle: progressStyle,
-    appName: 'Parquea',
+    appName: 'Park',
     accent: accent,
     icon: icon ?? presetIcon('parkingsign.circle.fill', 'squareparking'),
     appLogo: appLogo,
@@ -637,13 +637,13 @@ final class ParkingPreset extends LivePreset {
         buttons ??
         [
           presetButton('+15 min', presetIcon('plus', 'plus')),
-          presetButton('Terminar', presetIcon('xmark', 'x')),
+          presetButton('End', presetIcon('xmark', 'x')),
         ],
     chip: chip ?? const LiveChip.countdown(LiveBind('llegaA')),
     sample: const PresetSample(
-      title: 'Estacionamiento activo',
-      subtitle: 'Zona azul · Av. Larco 400',
-      name: 'Placa ABC-123',
+      title: 'Parking active',
+      subtitle: 'Blue zone · Av. Larco 400',
+      name: 'Plate ABC-123',
       minutes: 45.0,
       progress: 0.35,
     ),
@@ -652,7 +652,7 @@ final class ParkingPreset extends LivePreset {
 
 /// Electric car charging: battery percentage and finish time.
 ///
-/// Sample data: "Cargando tu auto" ("Charging your car").
+/// Sample data: "Charging your car".
 final class EvChargingPreset extends LivePreset {
   const EvChargingPreset({
     this.accent = const Color(0xFF2E7D32),
@@ -701,7 +701,7 @@ final class EvChargingPreset extends LivePreset {
   LivePresetSpec get spec => LivePresetSpec(
     id: 'ev',
     progressStyle: progressStyle,
-    appName: 'Carga Fácil',
+    appName: 'Easy Charge',
     accent: accent,
     icon: icon ?? presetIcon('bolt.car.fill', 'batterycharging'),
     appLogo: appLogo,
@@ -711,12 +711,12 @@ final class EvChargingPreset extends LivePreset {
     progress: PresetProgress.bar,
     tracker: !showTracker ? null : tracker ?? presetIcon('bolt.fill', 'zap'),
     buttons:
-        buttons ?? [presetButton('Detener', presetIcon('pause.fill', 'pause'))],
+        buttons ?? [presetButton('Stop', presetIcon('pause.fill', 'pause'))],
     chip: chip ?? const LiveChip.text('68 %'),
     sample: const PresetSample(
-      title: 'Cargando tu auto',
-      subtitle: 'Estación 3 · 50 kW',
-      name: 'Termina 10:35',
+      title: 'Charging your car',
+      subtitle: 'Station 3 · 50 kW',
+      name: 'Done 10:35',
       highlight: '68 %',
       minutes: 5.0,
       progress: 0.68,
@@ -726,7 +726,7 @@ final class EvChargingPreset extends LivePreset {
 
 /// Rest between sets of a workout: countdown and set number.
 ///
-/// Sample data: "Descanso" ("Rest").
+/// Sample data: "Rest".
 final class WorkoutPreset extends LivePreset {
   const WorkoutPreset({
     this.accent = const Color(0xFFD81B60),
@@ -794,12 +794,12 @@ final class WorkoutPreset extends LivePreset {
         buttons ??
         [
           presetButton('+30 s', presetIcon('plus', 'plus')),
-          presetButton('Saltar', presetIcon('play.fill', 'play')),
+          presetButton('Skip', presetIcon('play.fill', 'play')),
         ],
     chip: chip ?? const LiveChip.countdown(LiveBind('llegaA')),
     sample: const PresetSample(
-      title: 'Descanso',
-      subtitle: 'Press de banca · Serie 3 de 4',
+      title: 'Rest',
+      subtitle: 'Bench press · Set 3 of 4',
       name: '60 kg × 10',
       minutes: 1.5,
       progress: 0.5,
@@ -809,7 +809,7 @@ final class WorkoutPreset extends LivePreset {
 
 /// Kitchen timer: ring and countdown.
 ///
-/// Sample data: "Arroz en cocción" ("Rice cooking").
+/// Sample data: "Rice cooking".
 final class CookingTimerPreset extends LivePreset {
   const CookingTimerPreset({
     this.accent = const Color(0xFFF57C00),
@@ -850,7 +850,7 @@ final class CookingTimerPreset extends LivePreset {
   LivePresetSpec get spec => LivePresetSpec(
     id: 'cooking',
     progressStyle: progressStyle,
-    appName: 'Recetas',
+    appName: 'Recipes',
     accent: accent,
     icon: icon ?? presetIcon('frying.pan.fill', 'cookingpot'),
     appLogo: appLogo,
@@ -859,12 +859,12 @@ final class CookingTimerPreset extends LivePreset {
     countdown: true,
     progress: PresetProgress.ring,
     buttons:
-        buttons ?? [presetButton('Pausar', presetIcon('pause.fill', 'pause'))],
+        buttons ?? [presetButton('Pause', presetIcon('pause.fill', 'pause'))],
     chip: chip ?? const LiveChip.countdown(LiveBind('llegaA')),
     sample: const PresetSample(
-      title: 'Arroz en cocción',
-      subtitle: 'Paso 3 de 5 · Bajar el fuego',
-      name: 'Arroz con pollo',
+      title: 'Rice cooking',
+      subtitle: 'Step 3 of 5 · Lower the heat',
+      name: 'Chicken rice',
       minutes: 15.0,
       progress: 0.4,
     ),
@@ -873,7 +873,7 @@ final class CookingTimerPreset extends LivePreset {
 
 /// File upload: percentage and time remaining.
 ///
-/// Sample data: "Subiendo video" ("Uploading video").
+/// Sample data: "Uploading video".
 final class UploadPreset extends LivePreset {
   const UploadPreset({
     this.accent = const Color(0xFF5E35B1),
@@ -914,7 +914,7 @@ final class UploadPreset extends LivePreset {
   LivePresetSpec get spec => LivePresetSpec(
     id: 'upload',
     progressStyle: progressStyle,
-    appName: 'Nube',
+    appName: 'Cloud',
     accent: accent,
     icon: icon ?? presetIcon('arrow.up.circle.fill', 'upload'),
     appLogo: appLogo,
@@ -922,12 +922,12 @@ final class UploadPreset extends LivePreset {
     lockBackground: lockBackground,
     countdown: false,
     progress: PresetProgress.bar,
-    buttons: buttons ?? [presetButton('Cancelar', presetIcon('xmark', 'x'))],
+    buttons: buttons ?? [presetButton('Cancel', presetIcon('xmark', 'x'))],
     chip: chip ?? const LiveChip.text('42 %'),
     sample: const PresetSample(
-      title: 'Subiendo video',
-      subtitle: 'vacaciones.mp4 · 420 MB',
-      name: '3 min restantes',
+      title: 'Uploading video',
+      subtitle: 'holiday.mp4 · 420 MB',
+      name: '3 min left',
       highlight: '42 %',
       minutes: 5.0,
       progress: 0.42,
@@ -937,7 +937,7 @@ final class UploadPreset extends LivePreset {
 
 /// Technician at home: avatar, countdown and service stages.
 ///
-/// Sample data: "Tu técnico está en camino" ("Your technician is on the way").
+/// Sample data: "Your technician is on the way".
 final class TechnicianPreset extends LivePreset {
   const TechnicianPreset({
     this.accent = const Color(0xFF00838F),
@@ -947,7 +947,7 @@ final class TechnicianPreset extends LivePreset {
     this.lockBackground = LiveBackground.system,
     this.buttons,
     this.chip,
-    this.stages = const ['Asignado', 'En camino', 'Trabajando', 'Listo'],
+    this.stages = const ['Assigned', 'On the way', 'Working', 'Ready'],
     this.showPoints = true,
     this.tracker,
     this.avatarText = 'JR',
@@ -1007,7 +1007,7 @@ final class TechnicianPreset extends LivePreset {
     id: 'tech',
     showLabels: showLabels,
     progressStyle: progressStyle,
-    appName: 'Hogar Fácil',
+    appName: 'Home Easy',
     accent: accent,
     icon: icon ?? presetIcon('wrench.and.screwdriver.fill', 'wrench'),
     appLogo: appLogo,
@@ -1021,11 +1021,11 @@ final class TechnicianPreset extends LivePreset {
     showPoints: showPoints,
     tracker: !showTracker ? null : tracker ?? presetIcon('car.fill', 'car'),
     buttons:
-        buttons ?? [presetButton('Llamar', presetIcon('phone.fill', 'phone'))],
+        buttons ?? [presetButton('Call', presetIcon('phone.fill', 'phone'))],
     chip: chip ?? const LiveChip.countdown(LiveBind('llegaA')),
     sample: const PresetSample(
-      title: 'Tu técnico está en camino',
-      subtitle: 'Instalación de internet',
+      title: 'Your technician is on the way',
+      subtitle: 'Internet installation',
       name: 'Jorge R.',
       minutes: 20.0,
       progress: 0.3,
@@ -1035,7 +1035,7 @@ final class TechnicianPreset extends LivePreset {
 
 /// Public transport: stops left and stages of the route.
 ///
-/// Sample data: "Bájate en 3 paradas" ("Get off in 3 stops").
+/// Sample data: "Get off in 3 stops".
 final class TransitPreset extends LivePreset {
   const TransitPreset({
     this.accent = const Color(0xFFC62828),
@@ -1045,7 +1045,7 @@ final class TransitPreset extends LivePreset {
     this.lockBackground = LiveBackground.system,
     this.buttons,
     this.chip,
-    this.stages = const ['Subiste', '2', '3', '4', 'Bajas'],
+    this.stages = const ['Boarded', '2', '3', '4', 'Exit'],
     this.showPoints = true,
     this.tracker,
     this.endIcon,
@@ -1105,7 +1105,7 @@ final class TransitPreset extends LivePreset {
     id: 'transit',
     showLabels: showLabels,
     progressStyle: progressStyle,
-    appName: 'Ruta Lima',
+    appName: 'Lima Transit',
     accent: accent,
     icon: icon ?? presetIcon('bus.fill', 'bus'),
     appLogo: appLogo,
@@ -1119,12 +1119,12 @@ final class TransitPreset extends LivePreset {
     endIcon:
         !showEndIcon ? null : endIcon ?? presetIcon('flag.checkered', 'flag'),
     buttons: buttons ?? [],
-    chip: chip ?? const LiveChip.text('3 par.'),
+    chip: chip ?? const LiveChip.text('3 stops'),
     sample: const PresetSample(
-      title: 'Bájate en 3 paradas',
-      subtitle: 'Línea 201 · Javier Prado',
-      name: 'Paradero Las Begonias',
-      highlight: '3 paradas',
+      title: 'Get off in 3 stops',
+      subtitle: 'Line 201 · Javier Prado',
+      name: 'Las Begonias stop',
+      highlight: '3 stops',
       minutes: 5.0,
       progress: 0.55,
     ),
@@ -1133,7 +1133,7 @@ final class TransitPreset extends LivePreset {
 
 /// Virtual waiting room: people before your turn.
 ///
-/// Sample data: "Sala de espera virtual" ("Virtual waiting room").
+/// Sample data: "Virtual waiting room".
 final class WaitingRoomPreset extends LivePreset {
   const WaitingRoomPreset({
     this.accent = const Color(0xFF00796B),
@@ -1182,7 +1182,7 @@ final class WaitingRoomPreset extends LivePreset {
   LivePresetSpec get spec => LivePresetSpec(
     id: 'clinic',
     progressStyle: progressStyle,
-    appName: 'Salud Online',
+    appName: 'Online Health',
     accent: accent,
     icon: icon ?? presetIcon('stethoscope', 'stethoscope'),
     appLogo: appLogo,
@@ -1192,13 +1192,13 @@ final class WaitingRoomPreset extends LivePreset {
     progress: PresetProgress.bar,
     tracker: !showTracker ? null : tracker ?? presetIcon('person.fill', 'user'),
     buttons:
-        buttons ?? [presetButton('Salir de la fila', presetIcon('xmark', 'x'))],
-    chip: chip ?? const LiveChip.text('2 antes'),
+        buttons ?? [presetButton('Leave queue', presetIcon('xmark', 'x'))],
+    chip: chip ?? const LiveChip.text('2 ahead'),
     sample: const PresetSample(
-      title: 'Sala de espera virtual',
-      subtitle: 'Dra. Ríos · Medicina general',
-      name: 'Te llaman pronto',
-      highlight: '2 antes',
+      title: 'Virtual waiting room',
+      subtitle: 'Dr. Ríos · General medicine',
+      name: 'Calling you soon',
+      highlight: '2 ahead',
       minutes: 5.0,
       progress: 0.8,
     ),
@@ -1243,7 +1243,7 @@ final class ScorePreset extends LivePreset {
   @override
   LivePresetSpec get spec => LivePresetSpec(
     id: 'score',
-    appName: 'Fútbol Vivo',
+    appName: 'Live Football',
     accent: accent,
     icon: icon ?? presetIcon('trophy.fill', 'trophy'),
     appLogo: appLogo,
@@ -1256,7 +1256,7 @@ final class ScorePreset extends LivePreset {
     androidPromotable: false,
     sample: const PresetSample(
       title: 'Lima FC 2 – 1 Callao SC',
-      subtitle: 'Segundo tiempo · Gol de Lima FC',
+      subtitle: 'Second half · Lima FC goal',
       name: 'Liga 1',
       highlight: '78\'',
       minutes: 5.0,

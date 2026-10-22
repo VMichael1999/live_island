@@ -44,7 +44,7 @@ final catalog = <CatalogEntry>[
   // (brand, brandLogo, trackerImage, compactIcon, driverPhoto…).
   CatalogEntry(
     'ride_light',
-    'Recogida · tarjeta clara',
+    'Pickup · light card',
     (a, b) => RidePickupPreset(
       accent: _a(a, const RidePickupPreset().accent),
       headerImage: _runHeader,
@@ -53,7 +53,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'ride_dark',
-    'Recogida · tarjeta oscura',
+    'Pickup · dark card',
     (a, b) => RidePickupPreset(
       dark: true,
       accent: _a(a, const RidePickupPreset().accent),
@@ -119,7 +119,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'run',
-    'Carrera',
+    'Run',
     (a, b) => RunPreset(accent: _a(a, const RunPreset().accent)),
   ),
   CatalogEntry(
@@ -192,7 +192,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'flight',
-    'Vuelo',
+    'Flight',
     (a, b) => FlightPreset(
       accent: _a(a, const FlightPreset().accent),
       lockBackground: b ?? LiveBackground.system,
@@ -240,7 +240,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'technician',
-    'Técnico a domicilio',
+    'Home technician',
     (a, b) => TechnicianPreset(
       accent: _a(a, const TechnicianPreset().accent),
       lockBackground: b ?? LiveBackground.system,
@@ -256,7 +256,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'waiting',
-    'Sala de espera médica',
+    'Medical waiting room',
     (a, b) => WaitingRoomPreset(
       accent: _a(a, const WaitingRoomPreset().accent),
       lockBackground: b ?? LiveBackground.system,

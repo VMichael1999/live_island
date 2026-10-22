@@ -17,8 +17,8 @@
   },
   "examples": [
     {
-      "titulo": "Tu conductor está en camino",
-      "subtitulo": "Toyota Yaris gris · ABC-123",
+      "titulo": "Your driver is on the way",
+      "subtitulo": "Gray sedan · ABC-123",
       "nombre": "Carlos M.",
       "llegaA": "2026-10-04T15:06:00Z",
       "progreso": 0.45

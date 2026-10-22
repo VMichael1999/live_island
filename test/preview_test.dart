@@ -59,26 +59,26 @@ void main() {
     // Compact + expandida + bloqueo muestran la cuenta regresiva.
     expect(find.text('6:00'), findsNWidgets(3));
     expect(
-      find.text('Tu conductor está en camino'),
+      find.text('Your driver is on the way'),
       findsNWidgets(3),
     ); // isla, bloqueo, Android
     expect(find.text('Carlos M.'), findsNWidgets(2));
     // La isla expandida no dibuja botones: solo bloqueo y Android.
-    expect(find.text('Llamar'), findsNWidgets(2));
-    expect(find.text('Asignado'), findsNWidgets(3));
+    expect(find.text('Call'), findsNWidgets(2));
+    expect(find.text('Assigned'), findsNWidgets(3));
   });
 
   testWidgets('la isla expandida no dibuja botones, la tarjeta de bloqueo sí', (
     tester,
   ) async {
     await show(tester, 'taxi', surfaces: {LiveSurface.expanded});
-    expect(find.text('Llamar'), findsNothing);
-    expect(find.text('Compartir'), findsNothing);
-    expect(find.text('Asignado'), findsOneWidget);
+    expect(find.text('Call'), findsNothing);
+    expect(find.text('Share'), findsNothing);
+    expect(find.text('Assigned'), findsOneWidget);
 
     await show(tester, 'taxi', surfaces: {LiveSurface.lockScreen});
-    expect(find.text('Llamar'), findsOneWidget);
-    expect(find.text('Compartir'), findsOneWidget);
+    expect(find.text('Call'), findsOneWidget);
+    expect(find.text('Share'), findsOneWidget);
   });
 
   testWidgets('el chip de Android muestra los minutos y la nota de promoción', (
@@ -127,18 +127,18 @@ void main() {
 
   testWidgets('con más de 3 etapas se muestra "Paso k de n"', (tester) async {
     await show(tester, 'delivery', surfaces: {LiveSurface.expanded});
-    expect(find.text('Preparando'), findsOneWidget);
+    expect(find.text('Preparing'), findsOneWidget);
     expect(find.text('Paso 2 de 4'), findsOneWidget);
-    expect(find.text('Confirmado'), findsNothing);
+    expect(find.text('Confirmed'), findsNothing);
   });
 
   testWidgets('con 3 etapas o menos se muestran todas las etiquetas', (
     tester,
   ) async {
     await show(tester, 'taxi', surfaces: {LiveSurface.expanded});
-    expect(find.text('Asignado'), findsOneWidget);
-    expect(find.text('En camino'), findsOneWidget);
-    expect(find.text('Llegó'), findsOneWidget);
+    expect(find.text('Assigned'), findsOneWidget);
+    expect(find.text('On the way'), findsOneWidget);
+    expect(find.text('Arrived'), findsOneWidget);
   });
 
   testWidgets('el progreso cambia el estado de las etiquetas', (tester) async {
@@ -152,9 +152,9 @@ void main() {
         ),
       ),
     );
-    final llego = tester.widget<Text>(find.text('Llegó'));
+    final llego = tester.widget<Text>(find.text('Arrived'));
     expect(llego.style!.fontWeight, FontWeight.w600);
-    final asignado = tester.widget<Text>(find.text('Asignado'));
+    final asignado = tester.widget<Text>(find.text('Assigned'));
     expect(asignado.style!.fontWeight, FontWeight.w400);
   });
 

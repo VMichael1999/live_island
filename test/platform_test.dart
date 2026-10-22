@@ -168,7 +168,7 @@ void main() {
         'asset_assets_live_auto_png',
       });
       final state = jsonDecode(call.args['state']! as String) as Map;
-      expect(state['titulo'], 'Tu conductor está en camino');
+      expect(state['titulo'], 'Your driver is on the way');
       expect(state['llegaA'], p.raw['deadline']);
       expect(call.args['deepLink'], 'miapp://viaje/1');
       expect(call.args['staleAfter'], const Duration(minutes: 30));
@@ -427,13 +427,13 @@ void main() {
       await a.update(
         {'estado': 'llegó'},
         alert: const LiveAlert(
-          title: 'Llegó',
+          title: 'Arrived',
           body: 'Tu conductor',
           sound: 'a.caf',
         ),
       );
       final sent = platform.calls.last.args['alert']! as LiveAlert;
-      expect(sent.title, 'Llegó');
+      expect(sent.title, 'Arrived');
       expect(sent.sound, 'a.caf');
       await a.update({'progreso': .2});
       expect(platform.calls.last.args['alert'], isNull);

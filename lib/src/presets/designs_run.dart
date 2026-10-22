@@ -113,8 +113,8 @@ final class RideArrivalPreset extends LivePreset {
     buttons: const [],
     chip: chip ?? const LiveChip.text('S/14'),
     sample: const PresetSample(
-      title: 'Llegarás a las 11:36 AM',
-      subtitle: 'Pago S/ 14',
+      title: 'Arriving at 11:36 AM',
+      subtitle: 'Fare S/ 14',
       name: 'Run',
       highlight: 'S/ 14',
       progress: 0,
@@ -154,14 +154,14 @@ final class RideArrivalPreset extends LivePreset {
   LiveNode get _arrivalRow => LiveRow([
     LiveColumn([
       LiveText.literal(
-        'Llegarás aproximadamente',
+        'Arriving around',
         size: 16,
         weight: 600,
         color: _white,
         lines: 1,
       ),
       LiveText.format(
-        'a las {hora}',
+        'at {hora}',
         size: 16,
         weight: 600,
         color: _white,
@@ -170,7 +170,7 @@ final class RideArrivalPreset extends LivePreset {
     ], gap: 2),
     const LiveSpacer(),
     LiveColumn([
-      LiveText.literal('Pago', size: 18, weight: 600, color: _white),
+      LiveText.literal('Fare', size: 18, weight: 600, color: _white),
       _field('pago', size: 24, weight: 800, color: accent, lines: 1),
     ], align: LiveAlign.end),
   ], align: LiveAlign.end);
@@ -206,8 +206,8 @@ final class RideArrivalPreset extends LivePreset {
     ),
     android: LiveAndroid(
       style: androidStyle,
-      title: const LiveText.format('Llegarás a las {hora}'),
-      text: const LiveText.format('Pago {pago} · {placa}'),
+      title: const LiveText.format('Arriving at {hora}'),
+      text: const LiveText.format('Fare {pago} · {placa}'),
       chip: chip ?? const LiveChip.text('S/14'),
     ),
   );
@@ -217,7 +217,7 @@ final class RideArrivalPreset extends LivePreset {
 /// a bar that ends in a square. Data: `fase`, `hora`, `direccion`,
 /// `categoria`, `pago`, `progreso`.
 ///
-/// `fase` changes with what the server sends ("EN CAMINO AL DESTINO",
+/// `fase` changes with what the server sends ("ON THE WAY TO DESTINATION",
 /// "EL CONDUCTOR LLEGÓ"…) without changing the design.
 final class RideTripPreset extends LivePreset {
   const RideTripPreset({
@@ -254,7 +254,7 @@ final class RideTripPreset extends LivePreset {
   /// Icon or image of the compact and minimal island (a car by default).
   final LiveVisual? compactIcon;
 
-  /// Android chip; by default "En ruta" ("On the way").
+  /// Android chip; by default "In transit".
   final LiveChip? chip;
 
   /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
@@ -271,9 +271,9 @@ final class RideTripPreset extends LivePreset {
     countdown: false,
     progress: PresetProgress.bar,
     buttons: const [],
-    chip: chip ?? const LiveChip.text('En ruta'),
+    chip: chip ?? const LiveChip.text('In transit'),
     sample: const PresetSample(
-      title: 'Destino 2:44 PM',
+      title: 'Drop-off 2:44 PM',
       subtitle: 'Av. Javier Prado Este, Santiago de Surco',
       name: 'Ana',
       highlight: 'S/ 13.60',
@@ -283,10 +283,10 @@ final class RideTripPreset extends LivePreset {
 
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
-    'fase': 'EN CAMINO AL DESTINO',
+    'fase': 'ON THE WAY TO DESTINATION',
     'hora': '2:44 PM',
     'direccion': 'Av. Javier Prado Este, Santiago de Surco',
-    'categoria': 'ECONÓMICO',
+    'categoria': 'ECONOMY',
     'pago': 'S/ 13.60',
     'progreso': 0.32,
   };
@@ -329,7 +329,7 @@ final class RideTripPreset extends LivePreset {
       _driver,
       LiveColumn([
         LiveText.format(
-          'Destino {hora}',
+          'Drop-off {hora}',
           size: 19,
           weight: 700,
           color: _white,
@@ -375,9 +375,9 @@ final class RideTripPreset extends LivePreset {
     ),
     android: LiveAndroid(
       style: androidStyle,
-      title: const LiveText.format('Destino {hora}'),
+      title: const LiveText.format('Drop-off {hora}'),
       text: const LiveText.format('{direccion}'),
-      chip: chip ?? const LiveChip.text('En ruta'),
+      chip: chip ?? const LiveChip.text('In transit'),
     ),
   );
 }
@@ -408,10 +408,10 @@ final class DeliveryOrderPreset extends LivePreset {
   /// Icon of the compact and minimal island (the delivery backpack by default).
   final LiveVisual? compactIcon;
 
-  /// Android chip; by default "Pedido" ("Order").
+  /// Android chip; by default "Order".
   final LiveChip? chip;
 
-  static const _stages = ['Recibido', 'Preparando', 'En camino', 'Entregado'];
+  static const _stages = ['Received', 'Preparing', 'On the way', 'Delivered'];
   static const _gray = Color(0xFF4A4A50);
 
   /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
@@ -428,10 +428,10 @@ final class DeliveryOrderPreset extends LivePreset {
     countdown: false,
     progress: PresetProgress.segments,
     buttons: const [],
-    chip: chip ?? const LiveChip.text('Pedido'),
+    chip: chip ?? const LiveChip.text('Order'),
     sample: const PresetSample(
-      title: 'En camino a tu ubicación',
-      subtitle: '9:45 PM Llegada estimada',
+      title: 'On the way to you',
+      subtitle: '9:45 PM Estimated arrival',
       name: 'Run',
       highlight: '9:45 PM',
       progress: 2 / 3,
@@ -440,7 +440,7 @@ final class DeliveryOrderPreset extends LivePreset {
 
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
-    'titulo': 'En camino a tu ubicación',
+    'titulo': 'On the way to you',
     'hora': '9:45 PM',
     'progreso': 2 / 3,
   };
@@ -506,7 +506,7 @@ final class DeliveryOrderPreset extends LivePreset {
             LiveColumn([
               _field('titulo', size: 22, weight: 700, color: _white, lines: 1),
               LiveText.format(
-                '{hora} Llegada estimada',
+                '{hora} Estimated arrival',
                 size: 14,
                 color: _soft,
                 lines: 1,
@@ -522,8 +522,8 @@ final class DeliveryOrderPreset extends LivePreset {
     android: LiveAndroid(
       style: androidStyle,
       title: const LiveText.format('{titulo}'),
-      text: const LiveText.format('{hora} Llegada estimada'),
-      chip: chip ?? const LiveChip.text('Pedido'),
+      text: const LiveText.format('{hora} Estimated arrival'),
+      chip: chip ?? const LiveChip.text('Order'),
     ),
   );
 }
@@ -584,8 +584,8 @@ final class RidePinPreset extends LivePreset {
     buttons: const [],
     chip: chip ?? const LiveChip.text('PIN'),
     sample: const PresetSample(
-      title: 'Inicio de viaje en 1 min',
-      subtitle: 'Sal ahora para la llegada de MARCO PAREDES',
+      title: 'Trip starts in 1 min',
+      subtitle: 'Head out now to meet MARCO PAREDES',
       name: 'Marco',
       highlight: '0249',
       progress: .86,
@@ -642,10 +642,10 @@ final class RidePinPreset extends LivePreset {
     size: 20,
   );
 
-  /// "Inicio de viaje en 1 min" ("Trip starts in 1 min") and, below, who to wait for.
+  /// "Trip starts in 1 min" and, below, who to wait for.
   LiveNode _text(double titleSize) => LiveColumn([
     LiveText.format(
-      'Inicio de viaje en {minutos}',
+      'Trip starts in {minutos}',
       size: titleSize,
       weight: 700,
       color: _white,
@@ -655,7 +655,7 @@ final class RidePinPreset extends LivePreset {
       _walk,
       LiveColumn([
         LiveText.literal(
-          'Sal ahora para la llegada de',
+          'Head out now to meet',
           size: 13,
           color: _soft,
           lines: 1,
@@ -712,8 +712,8 @@ final class RidePinPreset extends LivePreset {
     ),
     android: LiveAndroid(
       style: androidStyle,
-      title: const LiveText.format('Inicio de viaje en {minutos}'),
-      text: const LiveText.format('Tu PIN: {pin1}{pin2}{pin3}{pin4}'),
+      title: const LiveText.format('Trip starts in {minutos}'),
+      text: const LiveText.format('Your PIN: {pin1}{pin2}{pin3}{pin4}'),
       chip: chip ?? const LiveChip.text('PIN'),
     ),
   );
@@ -756,7 +756,7 @@ final class RideStopPreset extends LivePreset {
   /// Icon or image of the compact and minimal island (a car by default).
   final LiveVisual? compactIcon;
 
-  /// Android chip; by default "En ruta" ("On the way").
+  /// Android chip; by default "In transit".
   final LiveChip? chip;
 
   /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
@@ -773,10 +773,10 @@ final class RideStopPreset extends LivePreset {
     countdown: false,
     progress: PresetProgress.bar,
     buttons: const [],
-    chip: chip ?? const LiveChip.text('En ruta'),
+    chip: chip ?? const LiveChip.text('In transit'),
     sample: const PresetSample(
-      title: 'Quedan 20 min',
-      subtitle: 'Sedán negro',
+      title: '20 min left',
+      subtitle: 'Black sedan',
       name: 'Run',
       highlight: '20 min',
       progress: .18,
@@ -786,7 +786,7 @@ final class RideStopPreset extends LivePreset {
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
     'minutos': '20 min',
-    'vehiculo': 'Sedán negro',
+    'vehiculo': 'Black sedan',
     'placa': 'PXR784',
     'progreso': .18,
   };
@@ -832,7 +832,7 @@ final class RideStopPreset extends LivePreset {
 
   LiveNode get _titles => LiveColumn([
     LiveText.format(
-      'Quedan {minutos}',
+      '{minutos} left',
       size: 22,
       weight: 700,
       color: _white,
@@ -874,9 +874,9 @@ final class RideStopPreset extends LivePreset {
     ),
     android: LiveAndroid(
       style: androidStyle,
-      title: const LiveText.format('Quedan {minutos}'),
+      title: const LiveText.format('{minutos} left'),
       text: const LiveText.format('{vehiculo} · {placa}'),
-      chip: chip ?? const LiveChip.text('En ruta'),
+      chip: chip ?? const LiveChip.text('In transit'),
     ),
   );
 }
@@ -908,7 +908,7 @@ final class RideDestinationPreset extends LivePreset {
   /// Icon or image of the compact and minimal island (a car by default).
   final LiveVisual? compactIcon;
 
-  /// Android chip; by default "Destino" ("Destination").
+  /// Android chip; by default "Drop-off".
   final LiveChip? chip;
 
   /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
@@ -925,10 +925,10 @@ final class RideDestinationPreset extends LivePreset {
     countdown: false,
     progress: PresetProgress.bar,
     buttons: const [],
-    chip: chip ?? const LiveChip.text('Destino'),
+    chip: chip ?? const LiveChip.text('Drop-off'),
     sample: const PresetSample(
-      title: 'Destino 8:37 PM',
-      subtitle: 'En camino a Av. Los Cedros 234',
+      title: 'Drop-off 8:37 PM',
+      subtitle: 'Heading to Av. Los Cedros 234',
       name: 'Run',
       highlight: '8:37 PM',
       progress: .1,
@@ -963,14 +963,14 @@ final class RideDestinationPreset extends LivePreset {
 
   LiveNode _titles(double size) => LiveColumn([
     LiveText.format(
-      'Destino {hora}',
+      'Drop-off {hora}',
       size: size,
       weight: 700,
       color: _white,
       lines: 1,
     ),
     LiveText.format(
-      'En camino a {direccion}',
+      'Heading to {direccion}',
       size: size * .62,
       color: _soft,
       lines: 1,
@@ -1002,9 +1002,9 @@ final class RideDestinationPreset extends LivePreset {
     ),
     android: LiveAndroid(
       style: androidStyle,
-      title: const LiveText.format('Destino {hora}'),
-      text: const LiveText.format('En camino a {direccion}'),
-      chip: chip ?? const LiveChip.text('Destino'),
+      title: const LiveText.format('Drop-off {hora}'),
+      text: const LiveText.format('Heading to {direccion}'),
+      chip: chip ?? const LiveChip.text('Drop-off'),
     ),
   );
 }
@@ -1013,14 +1013,14 @@ final class RideDestinationPreset extends LivePreset {
 /// stations with the train on top. Data: `titulo`, `subtitulo`, `destacado`,
 /// `nombre` and `progreso`.
 ///
-/// The key value (`destacado`, "3 paradas") goes to the right of the title and
+/// The key value (`destacado`, "3 stops") goes to the right of the title and
 /// is never cut; the long part (the stop's name) goes in Android's text
 /// and does not compete for the island's width.
 final class TrainPreset extends LivePreset {
   const TrainPreset({
     this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFFA7F060),
-    this.brand = 'Ruta Lima',
+    this.brand = 'Lima Transit',
     this.stages = const ['El Ángel', 'Miguel Grau', 'Gamarra'],
     this.trainImage,
     this.compactIcon,
@@ -1042,7 +1042,7 @@ final class TrainPreset extends LivePreset {
   /// Icon or image of the compact and minimal island (a bus by default).
   final LiveVisual? compactIcon;
 
-  /// Android chip; by default "3 par.".
+  /// Android chip; by default "3 stops".
   final LiveChip? chip;
 
   /// [LiveAndroidStyle.card] (the default) draws the same design on Android as on
@@ -1060,22 +1060,22 @@ final class TrainPreset extends LivePreset {
     progress: PresetProgress.segments,
     stages: stages,
     buttons: const [],
-    chip: chip ?? const LiveChip.text('3 par.'),
+    chip: chip ?? const LiveChip.text('3 stops'),
     sample: const PresetSample(
-      title: 'Bájate en 3 paradas',
-      subtitle: 'Línea 201 · Javier Prado',
-      name: 'Paradero Las Begonias',
-      highlight: '3 paradas',
+      title: 'Get off in 3 stops',
+      subtitle: 'Line 201 · Javier Prado',
+      name: 'Las Begonias stop',
+      highlight: '3 stops',
       progress: .55,
     ),
   );
 
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
-    'titulo': 'Bájate en 3 paradas',
-    'subtitulo': 'Línea 201 · Javier Prado',
-    'nombre': 'Paradero Las Begonias',
-    'destacado': '3 paradas',
+    'titulo': 'Get off in 3 stops',
+    'subtitulo': 'Line 201 · Javier Prado',
+    'nombre': 'Las Begonias stop',
+    'destacado': '3 stops',
     'progreso': .55,
   };
 
@@ -1159,7 +1159,7 @@ final class TrainPreset extends LivePreset {
       style: androidStyle,
       title: const LiveBind('titulo'),
       text: const LiveText.format('{subtitulo} · {nombre}'),
-      chip: chip ?? const LiveChip.text('3 par.'),
+      chip: chip ?? const LiveChip.text('3 stops'),
     ),
   );
 }

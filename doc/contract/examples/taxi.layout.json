@@ -36,7 +36,7 @@
           {
             "t": "segments",
             "bind": "progreso",
-            "labels": ["Asignado", "En camino", "Llegó"],
+            "labels": ["Assigned", "On the way", "Arrived"],
             "points": true,
             "tracker": { "visual": { "t": "image", "img": "auto", "fit": "contain" }, "height": 24, "background": "none" },
             "end": { "t": "icon", "sf": "mappin", "android": "assets/live/mappin.png" }
@@ -45,8 +45,8 @@
             "t": "row",
             "gap": 8,
             "c": [
-              { "t": "button", "id": "llamar", "label": "Llamar", "icon": { "t": "icon", "sf": "phone.fill", "android": "assets/live/phone.png" } },
-              { "t": "button", "id": "compartir", "label": "Compartir", "icon": { "t": "icon", "sf": "square.and.arrow.up", "android": "assets/live/share2.png" } }
+              { "t": "button", "id": "llamar", "label": "Call", "icon": { "t": "icon", "sf": "phone.fill", "android": "assets/live/phone.png" } },
+              { "t": "button", "id": "compartir", "label": "Share", "icon": { "t": "icon", "sf": "square.and.arrow.up", "android": "assets/live/share2.png" } }
             ]
           }
         ]

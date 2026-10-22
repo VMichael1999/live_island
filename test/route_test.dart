@@ -170,7 +170,7 @@ void main() {
     test('cuántas etapas: las que se indiquen, con o sin texto', () {
       final seg = LiveSegments(
         value: const LiveBind('p'),
-        labels: ['Asignado', '', 'En camino', '', 'Llegó'],
+        labels: ['Assigned', '', 'On the way', '', 'Arrived'],
         points: true,
         style: const LiveProgressStyle(pointShape: LivePointShape.rounded),
       );

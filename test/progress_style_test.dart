@@ -19,7 +19,7 @@ LiveSegments _segments({
   LiveVisual? end,
 }) => LiveSegments(
   value: bind('progreso'),
-  labels: const ['Asignado', 'En camino', 'Llegó'],
+  labels: const ['Assigned', 'On the way', 'Arrived'],
   points: points,
   showLabels: showLabels,
   style: style,
@@ -175,8 +175,8 @@ void main() {
   group('la vista previa respeta el estilo', () {
     testWidgets('por defecto: barra de 6, etiquetas y puntos', (tester) async {
       await _show(tester, _segments());
-      expect(find.text('Asignado'), findsOneWidget);
-      expect(find.text('Llegó'), findsOneWidget);
+      expect(find.text('Assigned'), findsOneWidget);
+      expect(find.text('Arrived'), findsOneWidget);
       final bar = tester.widget<LivePreviewBar>(find.byType(LivePreviewBar));
       expect(bar.height, 6);
       expect(bar.points, isTrue);
@@ -186,8 +186,8 @@ void main() {
       tester,
     ) async {
       await _show(tester, _segments(showLabels: false));
-      expect(find.text('Asignado'), findsNothing);
-      expect(find.text('En camino'), findsNothing);
+      expect(find.text('Assigned'), findsNothing);
+      expect(find.text('On the way'), findsNothing);
       expect(find.byType(LivePreviewBar), findsOneWidget);
     });
 
@@ -240,7 +240,7 @@ void main() {
         tester,
         _segments(style: const LiveProgressStyle(labelSize: 16)),
       );
-      expect(tester.widget<Text>(find.text('Asignado')).style!.fontSize, 16);
+      expect(tester.widget<Text>(find.text('Assigned')).style!.fontSize, 16);
     });
   });
 }

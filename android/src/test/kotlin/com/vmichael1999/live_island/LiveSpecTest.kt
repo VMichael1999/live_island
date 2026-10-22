@@ -34,8 +34,8 @@ class LiveSpecTest {
     fun `taxi se traduce a ProgressStyle con tramos, puntos, tracker y acciones`() {
         val spec = LiveSpec.from(example("taxi"), state("taxi"))
 
-        assertEquals("Tu conductor está en camino", spec.title)
-        assertEquals("Toyota Yaris gris · ABC-123 · Carlos M.", spec.text)
+        assertEquals("Your driver is on the way", spec.title)
+        assertEquals("Gray sedan · ABC-123 · Carlos M.", spec.text)
         assertTrue(spec.promotable)
         assertFalse(spec.colorized)
         assertEquals(0xFF1F6FEB.toInt(), spec.accent)
@@ -51,7 +51,7 @@ class LiveSpecTest {
         assertEquals(90, p.progress)
         assertEquals(listOf(100, 100), p.segments)
         assertEquals(listOf(0, 100, 200), p.points)
-        assertEquals("Asignado", p.stage)
+        assertEquals("Assigned", p.stage)
         assertEquals(p.stage, spec.subText)
         assertEquals(IconRef.Image("auto"), p.tracker)
         assertEquals(IconRef.Asset("assets/live/mappin.png"), p.end)
@@ -69,9 +69,9 @@ class LiveSpecTest {
         val layout = example("taxi")
         fun at(v: Double) = LiveSpec.from(layout, LiveJson.merge(state("taxi"), mapOf("progreso" to v))).progress!!
         assertEquals(0, at(0.0).progress)
-        assertEquals("En camino", at(0.5).stage)
+        assertEquals("On the way", at(0.5).stage)
         assertEquals(100, at(0.5).progress)
-        assertEquals("Llegó", at(1.0).stage)
+        assertEquals("Arrived", at(1.0).stage)
         assertEquals(200, at(1.0).progress)
         // Fuera de rango se acota.
         assertEquals(200, at(4.0).progress)
@@ -164,12 +164,12 @@ class LiveSpecTest {
     fun `con mas de tres etapas la etapa actual va al encabezado`() {
         val l = layout(
             """{"title":{"text":"T"}}""",
-            """{"expanded":{"bottom":{"t":"segments","bind":"p","labels":["Confirmado","Preparando","En camino","Entregado"],"points":true}}}""",
+            """{"expanded":{"bottom":{"t":"segments","bind":"p","labels":["Confirmed","Preparing","On the way","Delivered"],"points":true}}}""",
         )
         val p = LiveSpec.from(l, mapOf("p" to 0.62)).progress!!
         assertEquals(300, p.max)
         // 62 % con cuatro etapas: la segunda ("Paso 2 de 4" en el HTML).
-        assertEquals("Preparando", p.stage)
+        assertEquals("Preparing", p.stage)
         assertEquals(listOf(0, 100, 200, 300), p.points)
     }
 
@@ -287,9 +287,9 @@ class LiveSpecTest {
                 "largeIcon":{"t":"image","img":"asset_foto_png","size":44}}""",
             """{"expanded":{"leading":{"t":"avatar","text":"X"}}}""",
         )
-        val spec = LiveSpec.from(l, mapOf("vehiculo" to "Sedán plateado"))
+        val spec = LiveSpec.from(l, mapOf("vehiculo" to "Silver sedan"))
         assertEquals(IconRef.Image("asset_foto_png"), spec.largeIcon, "gana a la de la isla")
-        assertEquals("Sedán plateado", spec.subText)
+        assertEquals("Silver sedan", spec.subText)
     }
 
     @Test
