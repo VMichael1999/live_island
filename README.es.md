@@ -207,6 +207,23 @@ Cambia según la plataforma, porque ActivityKit no puede «terminar más tarde»
 
 Si `at` ya pasó, termina de inmediato.
 
+### Abrir una pantalla al tocar la actividad
+
+Inicia la actividad con un `deepLink` y un toque en la tarjeta (pantalla de bloqueo, isla o notificación) abre tu app en ese link; si la app estaba cerrada, arranca ahí:
+
+```dart
+await LiveIsland.start(
+  layout: layout,
+  state: state,
+  deepLink: 'miapp://pedido/42',
+);
+
+// Después, el repartidor va en camino: la misma tarjeta ahora abre el mapa.
+await activity.update({'progreso': 0.6}, deepLink: 'miapp://mapa/42');
+```
+
+Tu app recibe el link como cualquier otro deep link, así que sirve con el enrutado que ya uses (`go_router`, `app_links`, `onGenerateRoute`…). Registra el esquema de URL una vez con `dart run live_island_kit:setup --url-scheme miapp`: agrega `CFBundleURLTypes` en iOS y un intent filter en Android, y se puede volver a correr. Con el `Navigator` simple el link llega como nombre de ruta; léelo con `Uri.parse(name).path`, porque en Android un arranque en frío entrega el link completo y en iOS solo su ruta. Un push también puede cambiar el destino: manda la clave reservada `$url` en el estado ([doc/push.md](doc/push.md)).
+
 ### Saber qué pasó con una actividad
 
 `LiveIsland.stateChanges` avisa de cada cambio en la vida de tus actividades, y `activity.states` los de una sola actividad:

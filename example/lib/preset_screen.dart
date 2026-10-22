@@ -80,6 +80,8 @@ class _PresetScreenState extends State<PresetScreen> {
             ),
             const SizedBox(height: 8),
             Text(model.status),
+            if (model.openedFrom != null)
+              Text('Opened from the card: ${model.openedFrom}'),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,

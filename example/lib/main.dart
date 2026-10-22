@@ -32,8 +32,27 @@ class ExampleApp extends StatelessWidget {
         builders: {TargetPlatform.android: CupertinoPageTransitionsBuilder()},
       ),
     ),
-    home: const HomeScreen(),
+    // Tocar una actividad abre `liveisland://app/<caso>?progress=NN`: Flutter lo
+    // entrega como ruta (`/<caso>?progress=NN`), también si la app estaba cerrada.
+    onGenerateInitialRoutes: (name) {
+      final opened = _routeFor(name);
+      return [
+        MaterialPageRoute<void>(builder: (_) => const HomeScreen()),
+        if (opened != null) opened,
+      ];
+    },
+    onGenerateRoute: (settings) => _routeFor(settings.name ?? '/'),
   );
+
+  static Route<void>? _routeFor(String name) {
+    final uri = Uri.parse(name);
+    if (uri.path.length < 2) return null;
+    final id = uri.path.substring(1);
+    final entry = catalog.where((e) => e.id == id).firstOrNull;
+    if (entry == null) return null;
+    model.openedFrom = name;
+    return MaterialPageRoute<void>(builder: (_) => PresetScreen(entry));
+  }
 }
 
 /// Lista de los 15 presets y el editor.

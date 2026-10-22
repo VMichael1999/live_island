@@ -207,6 +207,23 @@ It differs per platform, because ActivityKit cannot «end later» a live activit
 
 If `at` is in the past it ends immediately.
 
+### Open a screen when the activity is tapped
+
+Start the activity with a `deepLink` and a tap on the card (lock screen, island or notification) opens your app on that link; if the app was closed, it starts there:
+
+```dart
+await LiveIsland.start(
+  layout: layout,
+  state: state,
+  deepLink: 'myapp://orders/42',
+);
+
+// Later, the courier is on the way: the same card now opens the map.
+await activity.update({'progreso': 0.6}, deepLink: 'myapp://map/42');
+```
+
+Your app receives the link like any other deep link, so it works with the routing you already have (`go_router`, `app_links`, `onGenerateRoute`…). Register the URL scheme once with `dart run live_island_kit:setup --url-scheme myapp`: it adds `CFBundleURLTypes` on iOS and an intent filter on Android, and can be re-run. With the plain `Navigator` the link arrives as the route name; read it with `Uri.parse(name).path`, because on Android a cold start delivers the whole link and on iOS only its path. A push can change the destination too: send the reserved key `$url` in the state ([doc/push.md](doc/push.md), in Spanish).
+
 ### Know what happened to an activity
 
 `LiveIsland.stateChanges` reports every change in the life of your activities, and `activity.states` the ones of a single activity:
