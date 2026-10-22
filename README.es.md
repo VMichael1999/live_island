@@ -411,6 +411,22 @@ MatchPreset(androidStyle: LiveAndroidStyle.liveUpdate)
 
 La tarjeta pide Android 12 o más (antes se usa el estilo nativo). Detalles en [`doc/design/DESVIACIONES.md`](doc/design/DESVIACIONES.md).
 
+## Solución de problemas
+
+**No aparece nada en el iPhone.** Revisa, en orden: `await LiveIsland.areEnabled()` es `true` (el usuario puede apagar las Live Activities por app en Ajustes); los targets *Runner* y *LiveIslandExtension* tienen **el mismo** App Group; `NSSupportsLiveActivities` está en `YES` en `ios/Runner/Info.plist`; la extensión está incrustada en la app y tiene equipo de desarrollo; y `LiveIsland.check(layout, state)` no da errores. Volver a correr `dart run live_island_kit:setup` repara los tres primeros.
+
+**`pod install` dice «requires a higher minimum iOS deployment version».** El plugin necesita iOS 15. `setup` sube `platform :ios` en el `Podfile` y en el proyecto de Xcode a 15.0; si editas el `Podfile` a mano, pon `platform :ios, '15.0'` y vuelve a correr `pod install`.
+
+**El build de Android falla con «minSdkVersion 24 cannot be smaller than version 26».** El plugin necesita API 26. `setup` sube `minSdk` en `android/app/build.gradle(.kts)` a 26 (y nunca baja un valor mayor); también puedes ponerlo tú.
+
+**Flutter avisa de que `live_island_kit` «applies Kotlin Gradle Plugin».** Por ahora es solo un aviso: el build funciona.
+
+**Códigos de `LiveIslandException`.** `disabled`: el usuario apagó las Live Activities (iOS) o las notificaciones (Android); en Android llama antes a `LiveIsland.requestPermission()`. `unsupported`: el dispositivo no tiene Live Activities (iOS anterior a 16.1, iPad, Mac). `not_found`: la actividad ya terminó o el id no existe. `not_configured`: falta el App Group; corre `dart run live_island_kit:setup` y compila de nuevo. `start_failed`: el sistema se negó a iniciarla; el mensaje de la excepción trae el motivo. `LiveIsland.check()` avisa antes de un estado de más de 4.096 bytes.
+
+**La actividad se queda en un valor viejo.** iOS limita cada cuánto puede actualizarse una actividad y la termina a las ocho horas. Define `staleAfter` para que la tarjeta muestre que está desactualizada y actualiza por push ([doc/push.md](doc/push.md)).
+
+**El chip de Live Update no aparece en Android.** Necesita Android 16 y que el usuario permita las notificaciones promovidas de la app: `LiveIsland.openPromotionSettings()` abre esa pantalla. Antes de Android 16 se muestra una notificación estándar con barra.
+
 ## Compatibilidad
 
 | | iOS | Android 16+ |
