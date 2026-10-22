@@ -84,6 +84,49 @@ void main() {
     },
   );
 
+  test('varios oyentes comparten una sola suscripción nativa', () async {
+    // Cada `receiveBroadcastStream()` abriría una suscripción nueva en el lado
+    // nativo y esa reemplaza a la anterior: el primer oyente dejaba de recibir.
+    var listens = 0, cancels = 0;
+    messenger.setMockMethodCallHandler(
+      const MethodChannel('live_island/push'),
+      (call) async {
+        if (call.method == 'listen') listens++;
+        if (call.method == 'cancel') cancels++;
+        return null;
+      },
+    );
+    Future<void> enviar(String activityId, String state) =>
+        messenger.handlePlatformMessage(
+          'live_island/push',
+          const StandardMethodCodec().encodeSuccessEnvelope({
+            'type': 'state',
+            'activityId': activityId,
+            'state': state,
+          }),
+          (_) {},
+        );
+
+    final platform = MethodChannelLiveIslandPlatform();
+    final a = <LivePushEvent>[], b = <LivePushEvent>[];
+    final subA = platform.pushEvents.listen(a.add);
+    final subB = platform.pushEvents.listen(b.add);
+    await Future<void>.delayed(Duration.zero);
+    expect(listens, 1, reason: 'una sola suscripción nativa para los dos');
+
+    await enviar('x', 'active');
+    await Future<void>.delayed(Duration.zero);
+    expect([a.length, b.length], [1, 1]);
+
+    // Cancelar uno no corta al otro.
+    await subB.cancel();
+    await enviar('x', 'ended');
+    await Future<void>.delayed(Duration.zero);
+    expect(a.length, 2);
+    expect(cancels, 0);
+    await subA.cancel();
+  });
+
   test('los eventos de push y de estado conviven en el mismo canal', () async {
     final got = await recibir([
       {'type': 'started', 'activityId': 'a1'},

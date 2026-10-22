@@ -333,35 +333,50 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
         'dismissAfter': dismiss.afterFromNow().inMilliseconds / 1000,
       });
 
-  @override
-  Stream<String> get actions =>
-      _actionsChannel.receiveBroadcastStream().map((e) => e as String);
+  // Cada `receiveBroadcastStream()` abre una suscripción nueva en el lado nativo y
+  // esa reemplaza a la anterior: con dos oyentes (por ejemplo `stateChanges` y
+  // `activity.states`) uno dejaba de recibir. Se comparte una sola suscripción.
+  late final Stream<String> _actions =
+      _actionsChannel
+          .receiveBroadcastStream()
+          .map((e) => e as String)
+          .asBroadcastStream();
+
+  late final Stream<LivePushEvent> _pushEvents =
+      _pushChannel
+          .receiveBroadcastStream()
+          .map(_decodePushEvent)
+          .asBroadcastStream();
 
   @override
-  Stream<LivePushEvent> get pushEvents =>
-      _pushChannel.receiveBroadcastStream().map((e) {
-        final m = Map<String, Object?>.from(e as Map);
-        return switch (m['type']) {
-          'started' => LivePushStartedEvent(m['activityId']! as String),
-          'state' => LivePushStateEvent(
-            LiveActivityStateChange(
-              m['activityId']! as String,
-              LiveActivityState.values.asNameMap()[m['state']] ??
-                  LiveActivityState.active,
-              customId:
-                  (m['customId'] as String?)?.isEmpty ?? true
-                      ? null
-                      : m['customId'] as String?,
-            ),
-          ),
-          _ => LivePushTokenEvent(
-            LivePushToken(
-              token: m['token']! as String,
-              activityId: m['activityId'] as String?,
-            ),
-          ),
-        };
-      });
+  Stream<String> get actions => _actions;
+
+  @override
+  Stream<LivePushEvent> get pushEvents => _pushEvents;
+
+  static LivePushEvent _decodePushEvent(Object? e) {
+    final m = Map<String, Object?>.from(e as Map);
+    return switch (m['type']) {
+      'started' => LivePushStartedEvent(m['activityId']! as String),
+      'state' => LivePushStateEvent(
+        LiveActivityStateChange(
+          m['activityId']! as String,
+          LiveActivityState.values.asNameMap()[m['state']] ??
+              LiveActivityState.active,
+          customId:
+              (m['customId'] as String?)?.isEmpty ?? true
+                  ? null
+                  : m['customId'] as String?,
+        ),
+      ),
+      _ => LivePushTokenEvent(
+        LivePushToken(
+          token: m['token']! as String,
+          activityId: m['activityId'] as String?,
+        ),
+      ),
+    };
+  }
 
   @override
   Future<void> registerLayout({
