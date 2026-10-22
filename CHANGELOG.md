@@ -1,4 +1,11 @@
-## Unreleased
+## 0.3.0
+
+Behavior changes to be aware of when upgrading:
+
+* `eq`/`neq` compare numerically when both sides are numbers (a numeric string counts, a boolean does not), `gt`/`gte`/`lt`/`lte` only accept numbers, `truthy: false` inverts the condition and the text `"false"` is truthy. The same rules now apply on Dart, Swift and Kotlin.
+* Numbers print without decimals when they are whole (`5`, not `5.0`) in every `{field}` template.
+* The sample texts of every preset and the example app are in English. State keys (`titulo`, `nombre`, `llegaA`…) are unchanged.
+
 
 * iOS: the privacy manifest (App Group `UserDefaults`, reason `1C8F.1`) was checked against the compiled binaries of the plugin and the extension: they use no other required-reason API. A new test fails if one is added without declaring it.
 * Cross-platform conformance: `doc/contract/conformance.json` holds 52 cases (`{field}` templates, conditions and the countdown) that Dart, Swift and Kotlin run with their real logic (`tool/conformidad.sh`). The rules are now written in the contract.
