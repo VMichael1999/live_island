@@ -474,7 +474,6 @@ If something cannot be shown on Android, `LiveIsland.check()` tells you before y
 ## More documentation
 
 - [Roadmap](doc/ROADMAP.md): known limits and what is not verified yet.
-
 - [`doc/contract/`](doc/contract): the JSON contract between Dart, Swift and Kotlin and its render rules.
 - [`doc/design/DESVIACIONES.md`](doc/design/DESVIACIONES.md): how iOS and Android differ from the prototype.
 - [`doc/push.md`](doc/push.md): APNs and FCM push formats.
