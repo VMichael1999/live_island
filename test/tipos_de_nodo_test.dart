@@ -48,9 +48,13 @@ void main() {
     if (v is Map) {
       final t = v['t'];
       if (t is String) tipos.add(t);
-      v.values.forEach((e) => recoger(e, tipos));
+      for (final e in v.values) {
+        recoger(e, tipos);
+      }
     } else if (v is List) {
-      v.forEach((e) => recoger(e, tipos));
+      for (final e in v) {
+        recoger(e, tipos);
+      }
     }
   }
 
