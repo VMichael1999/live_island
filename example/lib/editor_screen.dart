@@ -38,7 +38,7 @@ class _EditorScreenState extends State<EditorScreen> {
   );
   late final name = TextEditingController(text: state['nombre'] as String);
 
-  // Barra de progreso (solo en los presets de etapas con ícono que avanza).
+  // Progress bar (solo en los presets de etapas con ícono que avanza).
   bool showLabels = true;
   bool showPoints = true;
   bool showTracker = true;
@@ -163,16 +163,16 @@ class _EditorScreenState extends State<EditorScreen> {
       "import 'package:live_island_kit/live_island_kit.dart';",
       '',
       'final preset = $cls($args);',
-      'final layout = preset.build(); // o preset.override(compactTrailing: ...)',
+      'final layout = preset.build(); // or preset.override(compactTrailing: ...)',
       '',
-      'final estado = {',
+      'final state = {',
       "  'titulo': ${q(state['titulo'])},",
       "  'subtitulo': ${q(state['subtitulo'])},",
       "  'nombre': ${q(state['nombre'])},",
       "  'progreso': ${(state['progreso'] as num).toStringAsFixed(2)},",
       '};',
       '',
-      'final actividad = await LiveIsland.start(layout: layout, state: estado);',
+      'final activity = await LiveIsland.start(layout: layout, state: state);',
     ].join('\n');
   }
 
@@ -200,34 +200,34 @@ class _EditorScreenState extends State<EditorScreen> {
 
   List<Widget> _barControls() => [
     const SizedBox(height: 8),
-    Text('Barra de progreso', style: Theme.of(context).textTheme.titleSmall),
+    Text('Progress bar', style: Theme.of(context).textTheme.titleSmall),
     SwitchListTile(
       dense: true,
-      title: const Text('Etiquetas de etapa'),
+      title: const Text('Stage labels'),
       value: showLabels,
       onChanged: (v) => setState(() => showLabels = v),
     ),
     SwitchListTile(
       dense: true,
-      title: const Text('Puntos de etapa'),
+      title: const Text('Stage points'),
       value: showPoints,
       onChanged: (v) => setState(() => showPoints = v),
     ),
     SwitchListTile(
       dense: true,
-      title: const Text('Ícono que avanza'),
+      title: const Text('Moving icon'),
       value: showTracker,
       onChanged: (v) => setState(() => showTracker = v),
     ),
     SwitchListTile(
       dense: true,
-      title: const Text('Marcador final'),
+      title: const Text('End marker'),
       value: showEndIcon,
       onChanged: (v) => setState(() => showEndIcon = v),
     ),
     _slider('Grosor', barHeight, 2, 16, (x) => barHeight = x),
-    _slider('Tamaño de puntos', pointSize, 6, 20, (x) => pointSize = x),
-    _slider('Separación', gap, 0, 8, (x) => gap = x),
+    _slider('Point size', pointSize, 6, 20, (x) => pointSize = x),
+    _slider('Spacing', gap, 0, 8, (x) => gap = x),
     Wrap(
       spacing: 8,
       children: [
@@ -271,7 +271,7 @@ class _EditorScreenState extends State<EditorScreen> {
         children: [
           DropdownButtonFormField<CatalogEntry>(
             value: entry,
-            decoration: const InputDecoration(labelText: 'Caso de uso'),
+            decoration: const InputDecoration(labelText: 'Use case'),
             items: [
               for (final e in catalog)
                 DropdownMenuItem(value: e, child: Text(e.label)),
@@ -281,17 +281,17 @@ class _EditorScreenState extends State<EditorScreen> {
           const SizedBox(height: 12),
           TextField(
             controller: title,
-            decoration: const InputDecoration(labelText: 'Título'),
+            decoration: const InputDecoration(labelText: 'Title'),
             onChanged: (v) => _set('titulo', v),
           ),
           TextField(
             controller: subtitle,
-            decoration: const InputDecoration(labelText: 'Subtítulo'),
+            decoration: const InputDecoration(labelText: 'Subtitle'),
             onChanged: (v) => _set('subtitulo', v),
           ),
           TextField(
             controller: name,
-            decoration: const InputDecoration(labelText: 'Nombre visible'),
+            decoration: const InputDecoration(labelText: 'Visible name'),
             onChanged: (v) => _set('nombre', v),
           ),
           const SizedBox(height: 12),
@@ -334,7 +334,7 @@ class _EditorScreenState extends State<EditorScreen> {
           ),
           Row(
             children: [
-              const Text('Avance'),
+              const Text('Progress'),
               Expanded(
                 child: Slider(
                   value: (state['progreso'] as num).toDouble(),
@@ -349,7 +349,7 @@ class _EditorScreenState extends State<EditorScreen> {
           if (hasBarEditor) ..._barControls(),
           FilledButton(
             onPressed: () => model.start(entry, layout, state),
-            child: const Text('Iniciar con estos datos'),
+            child: const Text('Start with this data'),
           ),
           const SizedBox(height: 16),
           LiveIslandPreview(
@@ -362,13 +362,13 @@ class _EditorScreenState extends State<EditorScreen> {
           Row(
             children: [
               Text(
-                'Código Dart',
+                'Dart code',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const Spacer(),
               TextButton(
                 onPressed: () => Clipboard.setData(ClipboardData(text: code)),
-                child: const Text('Copiar'),
+                child: const Text('Copy'),
               ),
             ],
           ),
@@ -385,7 +385,7 @@ class _EditorScreenState extends State<EditorScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          Text('Validación', style: Theme.of(context).textTheme.titleMedium),
+          Text('Validation', style: Theme.of(context).textTheme.titleMedium),
           for (final c in report.items)
             ListTile(
               dense: true,

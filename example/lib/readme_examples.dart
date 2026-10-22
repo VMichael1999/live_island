@@ -1,12 +1,12 @@
-// Los ejemplos del README, compilados aquí para que no se desfasen de la API.
-// Se analizan con `flutter analyze`; no se ejecutan.
+// The README examples, compiled here so they never drift from the API.
+// They are checked by `flutter analyze`; they are not run.
 import 'dart:ui' show Color;
 
 import 'package:live_island_kit/live_island_kit.dart';
 
-/// Nivel 1: un preset tal cual.
+/// Level 1: a preset as it is.
 Future<void> nivel1() async {
-  final actividad = await LiveIsland.start(
+  final activity = await LiveIsland.start(
     layout: const ParkingPreset().build(),
     state: {
       'titulo': 'Parking active',
@@ -17,16 +17,16 @@ Future<void> nivel1() async {
     },
   );
 
-  await actividad.update({'progreso': 0.5}); // solo viaja lo que cambia
-  await actividad.end(dismiss: const LiveDismiss.after(Duration(minutes: 5)));
+  await activity.update({'progreso': 0.5}); // only what changes travels
+  await activity.end(dismiss: const LiveDismiss.after(Duration(minutes: 5)));
 }
 
-/// Nivel 2: un preset con sus parámetros y `.override` en una región.
+/// Level 2: a preset with its parameters and `.override` on one region.
 LiveLayout nivel2() => const TripPreset(
   accent: Color(0xFFD81B60),
   stages: ['Order', 'On the way', 'Arrived'],
 ).override(
-  // La isla compacta muestra la placa en lugar de la cuenta regresiva.
+  // The compact island shows the plate instead of the countdown.
   compactTrailing: LiveText.from(
     const LiveText(LiveBind('placa')),
     size: 15,
@@ -35,7 +35,7 @@ LiveLayout nivel2() => const TripPreset(
   ),
 );
 
-/// Nivel 3: un diseño desde cero, con los componentes.
+/// Level 3: a design from scratch, with the components.
 LiveLayout nivel3() => LiveLayout(
   theme: const LiveTheme(accent: Color(0xFF00897B)),
   compactLeading: const LiveIcon.symbol('timer', accent: true),
@@ -73,23 +73,23 @@ LiveLayout nivel3() => LiveLayout(
   ),
 );
 
-/// Botones, vista previa y validación.
+/// Buttons, preview and validation.
 Future<void> extras() async {
-  // Cada botón de la actividad llega aquí con su id.
+  // Each button of the activity arrives here with its id.
   LiveIsland.onAction((id) {
     if (id == 'mas_15_min') {
-      // ... amplía el tiempo y actualiza la actividad
+      // ... extend the time and update the activity
     }
   });
 
-  // Antes de compilar la extensión, comprueba el diseño.
+  // Before building the extension, check the design.
   final preset = const TripPreset();
-  final informe = LiveIsland.check(preset.build(), preset.sampleState());
-  if (informe.hasErrors) {
+  final report = LiveIsland.check(preset.build(), preset.sampleState());
+  if (report.hasErrors) {
     // ignore: avoid_print
-    print(informe);
+    print(report);
   }
 
-  // Los diseños con nombre permiten iniciar actividades desde un push.
+  // Named layouts let a push start activities.
   await LiveIsland.registerLayout('taxi', preset.build());
 }

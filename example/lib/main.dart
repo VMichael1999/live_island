@@ -49,7 +49,7 @@ class HomeScreen extends StatelessWidget {
           leading: const Icon(Icons.tune),
           title: const Text('Editor'),
           subtitle: const Text(
-            'Cambia textos, color y avance y mira el resultado',
+            'Change texts, color and progress and see the result',
           ),
           onTap:
               () => Navigator.of(context).push(

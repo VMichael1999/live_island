@@ -12,7 +12,7 @@ class ExampleModel extends ChangeNotifier {
   LiveActivity? activity;
   CatalogEntry? activeEntry;
   Map<String, Object?> state = const {};
-  String status = 'Sin actividad';
+  String status = 'No activity';
   final List<String> tokens = [];
   final List<StreamSubscription<Object?>> _subs = [];
 
@@ -32,7 +32,7 @@ class ExampleModel extends ChangeNotifier {
     _subs.add(
       LiveIsland.startedByPush.listen((a) {
         activity = a;
-        status = 'Iniciada por push (${a.id.substring(0, 8)}…)';
+        status = 'Started by push (${a.id.substring(0, 8)}…)';
         notifyListeners();
       }),
     );
@@ -68,7 +68,7 @@ class ExampleModel extends ChangeNotifier {
     try {
       await body();
     } on LiveIslandException catch (e) {
-      _setStatus('$what falló: ${e.code} · ${e.message}');
+      _setStatus('$what failed: ${e.code} · ${e.message}');
     }
   }
 
@@ -92,7 +92,7 @@ class ExampleModel extends ChangeNotifier {
     CatalogEntry entry,
     LiveLayout layout,
     Map<String, Object?> newState,
-  ) => _guard('Iniciar', () async {
+  ) => _guard('Start', () async {
     // Android 13+: pide el permiso de notificaciones (en iOS no hace nada).
     await LiveIsland.requestPermission();
     await _endOthers('demo-${entry.id}');
@@ -118,14 +118,14 @@ class ExampleModel extends ChangeNotifier {
     LiveLayout layout,
     Map<String, Object?> newState, {
     int seconds = 15,
-  }) => _guard('Iniciar (desactualizable)', () async {
+  }) => _guard('Start (can go stale)', () async {
     await LiveIsland.requestPermission();
     await _endOthers('demo-stale-${entry.id}');
     final stale = entry.preset.override(
       expandedCenter: LiveIf(
         LiveBind.stale.isTrue,
         then: const LiveText.literal(
-          'Sin novedades: toca para actualizar',
+          'No news: tap to refresh',
           size: 15,
           weight: 600,
         ),
@@ -142,7 +142,7 @@ class ExampleModel extends ChangeNotifier {
     activity = a;
     activeEntry = entry;
     state = newState;
-    _setStatus('Se desactualiza en $seconds s');
+    _setStatus('Goes stale in $seconds s');
   });
 
   /// Programa que la actividad desaparezca sola dentro de [seconds] s.
@@ -150,21 +150,21 @@ class ExampleModel extends ChangeNotifier {
   /// Android: sigue viva y se puede actualizar hasta entonces. iOS: termina ya y
   /// la tarjeta de la pantalla de bloqueo se queda hasta esa hora.
   Future<void> scheduleEnd({int seconds = 20}) =>
-      _guard('Programar fin', () async {
+      _guard('Schedule end', () async {
         final a = activity ?? (await LiveIsland.activeActivities()).lastOrNull;
         if (a == null) return;
         await a.scheduleEnd(DateTime.now().add(Duration(seconds: seconds)));
-        _setStatus('Desaparece en $seconds s');
+        _setStatus('Disappears in $seconds s');
       });
 
   /// Actualiza con un aviso: la isla se expande y suena.
-  Future<void> alert() => _guard('Avisar', () async {
+  Future<void> alert() => _guard('Alert', () async {
     final a = activity ?? (await LiveIsland.activeActivities()).lastOrNull;
     if (a == null) return;
     await a.update(
       {'progreso': (((state['progreso'] as num?) ?? 0) + 0.1).clamp(0.0, 1.0)},
       alert: const LiveAlert(
-        title: 'Tu conductor llegó',
+        title: 'Your driver arrived',
         body: 'Gray sedan · ABC-123',
       ),
     );
@@ -172,7 +172,7 @@ class ExampleModel extends ChangeNotifier {
       ...state,
       'progreso': (((state['progreso'] as num?) ?? 0) + 0.1).clamp(0.0, 1.0),
     };
-    _setStatus('Aviso enviado');
+    _setStatus('Alert sent');
   });
 
   Future<void> update(Map<String, Object?> changes, {String? label}) =>
@@ -194,16 +194,16 @@ class ExampleModel extends ChangeNotifier {
   }
 
   /// Termina todas las actividades de la app (por ejemplo al cerrar sesión).
-  Future<void> endAll() => _guard('Terminar todas', () async {
+  Future<void> endAll() => _guard('End all', () async {
     await LiveIsland.endAll();
     activity = null;
-    _setStatus('Todas terminadas');
+    _setStatus('All ended');
   });
 
-  Future<void> end() => _guard('Terminar', () async {
+  Future<void> end() => _guard('End', () async {
     await activity?.end(dismiss: LiveDismiss.immediate);
     activity = null;
-    _setStatus('Sin actividad');
+    _setStatus('No activity');
   });
 
   /// Qué hace cada botón de los ejemplos. El id es el de `LiveButton(id: ...)`.
@@ -222,7 +222,7 @@ class ExampleModel extends ChangeNotifier {
       },
       _ => <String, Object?>{'subtitulo': 'Tocaste "$id"'},
     };
-    await update(changes, label: 'Botón "$id" → ${changes.keys.join(', ')}');
+    await update(changes, label: 'Button "$id" → ${changes.keys.join(', ')}');
   }
 
   /// Simula un mensaje de FCM (Android): lo que haría tu servidor.
@@ -231,6 +231,6 @@ class ExampleModel extends ChangeNotifier {
         final id = await LiveIsland.handlePush({
           'live_island': jsonEncode(payload),
         });
-        if (id != null) _setStatus('Push aplicado a ${id.substring(0, 8)}…');
+        if (id != null) _setStatus('Push applied to ${id.substring(0, 8)}…');
       });
 }
