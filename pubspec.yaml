@@ -1,6 +1,6 @@
 name: live_island_kit
 description: "iOS Live Activities and Android Live Updates with a single Dart API, no Swift or Kotlin. Dynamic Island, lock screen, presets, charts and a live preview."
-version: 0.2.0
+version: 0.3.0
 repository: https://github.com/VMichael1999/live_island_kit
 issue_tracker: https://github.com/VMichael1999/live_island_kit/issues
 topics:
