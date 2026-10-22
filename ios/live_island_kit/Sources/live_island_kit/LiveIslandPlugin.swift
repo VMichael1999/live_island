@@ -148,9 +148,18 @@ final class PushStream: NSObject, FlutterStreamHandler {
         // El ciclo de vida: active, stale, ended y dismissed (también cuando el usuario la descarta).
         let customId = activity.attributes.customId ?? ""
         watchers.append(Task {
+            // Con un cierre inmediato ActivityKit pasa de active a dismissed sin
+            // dar `ended`: se emite antes, para que `dismissed` siempre vaya
+            // precedido de `ended` (como en Android).
+            var sawEnded = false
             for await state in activity.activityStateUpdates {
-                self.send(["type": "state", "activityId": activity.id, "customId": customId,
-                           "state": Self.name(of: state)])
+                let name = Self.name(of: state)
+                if name == "ended" { sawEnded = true }
+                if name == "dismissed" && !sawEnded {
+                    sawEnded = true
+                    self.send(["type": "state", "activityId": activity.id, "customId": customId, "state": "ended"])
+                }
+                self.send(["type": "state", "activityId": activity.id, "customId": customId, "state": name])
             }
         })
         lock.lock(); tasks.append(contentsOf: watchers); lock.unlock()
