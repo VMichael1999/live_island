@@ -7,6 +7,9 @@ import 'core/state.dart';
 import 'platform/image_loader.dart';
 import 'platform/live_island_platform.dart';
 
+/// The reserved state key that holds where a tap on the activity goes.
+const _deepLinkKey = r'$url';
+
 /// An activity in progress. It is obtained with [LiveIsland.start].
 class LiveActivity {
   LiveActivity._(this.id, this._platform, {this.customId});
@@ -24,13 +27,22 @@ class LiveActivity {
   /// [staleAfter] marks the content as out of date after that time
   /// (see [LiveBind.stale]). [alert] draws attention: it expands the island and
   /// plays a sound on iOS; on Android the notification sounds and shows as a heads-up.
+  ///
+  /// [deepLink] changes where a tap on the activity goes (the one given in
+  /// [LiveIsland.start] stays until then): the order screen first, the
+  /// delivery map once the courier is on the way. It travels in the reserved
+  /// state key `\$url` (a push can set it too).
   Future<void> update(
     Map<String, Object?> state, {
     Duration? staleAfter,
     LiveAlert? alert,
+    String? deepLink,
   }) => _platform.update(
     id,
-    jsonEncode(LiveState.normalize(state)),
+    jsonEncode({
+      ...LiveState.normalize(state),
+      if (deepLink != null) _deepLinkKey: deepLink,
+    }),
     staleAfter: staleAfter,
     alert: alert,
   );

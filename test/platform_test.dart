@@ -285,6 +285,27 @@ void main() {
     expect(c.args['staleAfter'], const Duration(minutes: 5));
   });
 
+  test(
+    'update(deepLink:) cambia a dónde lleva el toque con la clave \$url',
+    () async {
+      final act = await LiveIsland.start(
+        layout: _plain,
+        state: {'a': 1},
+        deepLink: 'miapp://pedido/42',
+      );
+      await act.update({'progreso': 0.5}, deepLink: 'miapp://mapa/42');
+      expect(jsonDecode(platform.calls.last.args['state']! as String), {
+        'progreso': 0.5,
+        r'$url': 'miapp://mapa/42',
+      });
+      // Sin deepLink, el estado no lleva la clave y se conserva el anterior.
+      await act.update({'progreso': 0.6});
+      expect(jsonDecode(platform.calls.last.args['state']! as String), {
+        'progreso': 0.6,
+      });
+    },
+  );
+
   test('end admite estado final y política de cierre', () async {
     final act = await LiveIsland.start(layout: _plain, state: {'a': 1});
     await act.end(

@@ -24,6 +24,14 @@ enum LiveIslandSurfaces {
         return false
     }
 
+    /// A dónde lleva el toque: el `$url` del estado (cambia con cada actualización)
+    /// y, si no hay, el `deepLink` con el que empezó la actividad.
+    static func tapURL(_ attributes: LiveIslandAttributes,
+                       _ state: LiveIslandAttributes.ContentState) -> URL? {
+        if let text = state.values["$url"]?.text, !text.isEmpty, let url = URL(string: text) { return url }
+        return attributes.deepLink.flatMap { URL(string: $0) }
+    }
+
     private static func ctx(_ attributes: LiveIslandAttributes,
                             _ state: LiveIslandAttributes.ContentState,
                             stale: Bool = false) -> LiveCtx? {
@@ -59,7 +67,7 @@ enum LiveIslandSurfaces {
         let c = ctx(context.attributes, context.state, stale: isStale(context))
         let minimalNode = c?.doc.region("minimal")
         let minimalIsRing = minimalNode?.t == "ring"
-        let url = context.attributes.deepLink.flatMap { URL(string: $0) }
+        let url = LiveIslandSurfaces.tapURL(context.attributes, context.state)
 
         return DynamicIsland {
             DynamicIslandExpandedRegion(.leading) {
@@ -103,13 +111,13 @@ struct LiveLockScreenView: View {
                 // toda la tarjeta y el diseño trae sus propios márgenes.
                 content(doc, override: h.child)
                     .activityBackgroundTint(h.color)
-                    .widgetURL(attributes.deepLink.flatMap { URL(string: $0) })
+                    .widgetURL(LiveIslandSurfaces.tapURL(attributes, state))
             } else {
                 content(doc)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 14)
                     .activityBackgroundTint(tint(doc))
-                    .widgetURL(attributes.deepLink.flatMap { URL(string: $0) })
+                    .widgetURL(LiveIslandSurfaces.tapURL(attributes, state))
             }
         } else {
             EmptyView()
