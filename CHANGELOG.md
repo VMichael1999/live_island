@@ -1,3 +1,7 @@
+## Unreleased
+
+* `dart run live_island_kit:setup` now raises the app's `Podfile` platform and the Xcode project's iOS deployment target to 15.0 (the plugin's minimum). On a new app made with Flutter 3.29 the template leaves `# platform :ios, '12.0'` commented, and the first `flutter run` failed with "requires a higher minimum iOS deployment version". A test covers the Podfile rewrite.
+
 ## 0.3.0
 
 Behavior changes to be aware of when upgrading:
