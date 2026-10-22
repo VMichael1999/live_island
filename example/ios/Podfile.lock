@@ -2,26 +2,26 @@ PODS:
   - Flutter (1.0.0)
   - integration_test (0.0.1):
     - Flutter
-  - live_island (0.1.0):
+  - live_island_kit (0.2.0):
     - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
-  - live_island (from `.symlinks/plugins/live_island/ios`)
+  - live_island_kit (from `.symlinks/plugins/live_island_kit/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   integration_test:
     :path: ".symlinks/plugins/integration_test/ios"
-  live_island:
-    :path: ".symlinks/plugins/live_island/ios"
+  live_island_kit:
+    :path: ".symlinks/plugins/live_island_kit/ios"
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
-  live_island: 8f23db15e43761725f16b0a58855c1b1a6d75947
+  live_island_kit: 6b6f13775812e35742c65ae61cd0bc6eb5c25f12
 
 PODFILE CHECKSUM: a541f804b5e4a4a91f1da645ca67edc95e1bc9c9
 

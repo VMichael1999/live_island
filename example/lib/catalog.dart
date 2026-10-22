@@ -63,13 +63,13 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'ride_arrival',
-    'Llegada · azul oscuro',
+    'Arrival · dark blue',
     (a, b) =>
         RideArrivalPreset(accent: _a(a, const RideArrivalPreset().accent)),
   ),
   CatalogEntry(
     'ride_trip',
-    'Viaje · detalle en morado',
+    'Trip · purple detail',
     (a, b) => RideTripPreset(
       accent: _a(a, const RideTripPreset().accent),
       driverPhoto: _runAvatar,
@@ -77,7 +77,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'ride_pin',
-    'Inicio de viaje · código PIN',
+    'Trip start · PIN code',
     (a, b) => RidePinPreset(
       accent: _a(a, const RidePinPreset().accent),
       driverPhoto: _runAvatar,
@@ -85,35 +85,35 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'ride_stop',
-    'Conductor con parada previa',
+    'Driver with a stop first',
     (a, b) => RideStopPreset(accent: _a(a, const RideStopPreset().accent)),
   ),
   CatalogEntry(
     'ride_destination',
-    'Rumbo al destino',
+    'Heading to the destination',
     (a, b) => RideDestinationPreset(
       accent: _a(a, const RideDestinationPreset().accent),
     ),
   ),
   CatalogEntry(
     'delivery_order',
-    'Pedido a domicilio · cuatro etapas',
+    'Delivery order · four stages',
     (a, b) =>
         DeliveryOrderPreset(accent: _a(a, const DeliveryOrderPreset().accent)),
   ),
   CatalogEntry(
     'charge',
-    'Carga · cable luminoso',
+    'Charge · glowing cable',
     (a, b) => ChargePreset(accent: _a(a, const ChargePreset().accent)),
   ),
   CatalogEntry(
     'fare',
-    'Tarifa · tramos de color',
+    'Fare · colored segments',
     (a, b) => FareSplitPreset(accent: _a(a, const FareSplitPreset().accent)),
   ),
   CatalogEntry(
     'store',
-    'Pedido en tienda',
+    'Store order',
     (a, b) =>
         StorePickupPreset(accent: _a(a, const StorePickupPreset().accent)),
   ),
@@ -124,17 +124,17 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'match',
-    'Marcador de partido',
+    'Match scoreboard',
     (a, b) => MatchPreset(accent: _a(a, const MatchPreset().accent)),
   ),
   CatalogEntry(
     'stock',
-    'Bolsa · gráfica',
+    'Stocks · chart',
     (a, b) => StockPreset(accent: _a(a, const StockPreset().accent)),
   ),
   CatalogEntry(
     'flightpath',
-    'Vuelo · ruta curva',
+    'Flight · curved route',
     (a, b) => FlightPathPreset(accent: _a(a, const FlightPathPreset().accent)),
   ),
   CatalogEntry(
@@ -145,7 +145,7 @@ final catalog = <CatalogEntry>[
   // Un preset de la galería con la barra reestilizada: así queda una línea de tren.
   CatalogEntry(
     'train_line',
-    'Tren · línea verde',
+    'Train · green line',
     (a, b) => TrainPreset(accent: _a(a, const TrainPreset().accent)),
   ),
 
@@ -160,7 +160,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'delivery',
-    'Delivery de comida',
+    'Food delivery',
     (a, b) => DeliveryPreset(
       accent: _a(a, const DeliveryPreset().accent),
       lockBackground: b ?? LiveBackground.system,
@@ -176,7 +176,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'pickup',
-    'Pedido para recoger',
+    'Order for pickup',
     (a, b) => PickupPreset(
       accent: _a(a, const PickupPreset().accent),
       lockBackground: b ?? LiveBackground.system,
@@ -184,7 +184,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'queue',
-    'Turno en banco',
+    'Bank queue',
     (a, b) => QueuePreset(
       accent: _a(a, const QueuePreset().accent),
       lockBackground: b ?? LiveBackground.system,
@@ -208,7 +208,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'ev',
-    'Carga de auto eléctrico',
+    'Electric car charging',
     (a, b) => EvChargingPreset(
       accent: _a(a, const EvChargingPreset().accent),
       lockBackground: b ?? LiveBackground.system,
@@ -224,7 +224,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'cooking',
-    'Temporizador de cocina',
+    'Kitchen timer',
     (a, b) => CookingTimerPreset(
       accent: _a(a, const CookingTimerPreset().accent),
       lockBackground: b ?? LiveBackground.system,
@@ -232,7 +232,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'upload',
-    'Subida de archivo',
+    'File upload',
     (a, b) => UploadPreset(
       accent: _a(a, const UploadPreset().accent),
       lockBackground: b ?? LiveBackground.system,
@@ -248,7 +248,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'transit',
-    'Transporte público',
+    'Public transport',
     (a, b) => TransitPreset(
       accent: _a(a, const TransitPreset().accent),
       lockBackground: b ?? LiveBackground.system,
@@ -264,7 +264,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'score',
-    'Marcador deportivo',
+    'Sports score',
     (a, b) => ScorePreset(
       accent: _a(a, const ScorePreset().accent),
       lockBackground: b ?? LiveBackground.system,

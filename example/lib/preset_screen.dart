@@ -45,23 +45,23 @@ class _PresetScreenState extends State<PresetScreen> {
                     sample = preset.sampleState();
                     model.start(widget.entry, layout, sample);
                   },
-                  child: const Text('Iniciar'),
+                  child: const Text('Start'),
                 ),
                 OutlinedButton(
                   onPressed: model.activity == null ? null : model.advance,
-                  child: const Text('Avanzar 10 %'),
+                  child: const Text('Advance 10 %'),
                 ),
                 OutlinedButton(
                   onPressed: model.activity == null ? null : model.end,
-                  child: const Text('Terminar'),
+                  child: const Text('End'),
                 ),
                 OutlinedButton(
                   onPressed: model.activity == null ? null : model.alert,
-                  child: const Text('Avisar'),
+                  child: const Text('Alert'),
                 ),
                 OutlinedButton(
                   onPressed: model.activity == null ? null : model.scheduleEnd,
-                  child: const Text('Programar fin (20 s)'),
+                  child: const Text('Schedule end (20 s)'),
                 ),
                 OutlinedButton(
                   onPressed:
@@ -70,11 +70,11 @@ class _PresetScreenState extends State<PresetScreen> {
                         layout,
                         preset.sampleState(),
                       ),
-                  child: const Text('Probar desactualizado'),
+                  child: const Text('Test stale'),
                 ),
                 OutlinedButton(
                   onPressed: model.endAll,
-                  child: const Text('Terminar todas'),
+                  child: const Text('End all'),
                 ),
               ],
             ),
@@ -100,7 +100,7 @@ class _PresetScreenState extends State<PresetScreen> {
                                     : e.value,
                         },
                       }),
-                  child: const Text('Push: iniciar'),
+                  child: const Text('Push: start'),
                 ),
                 OutlinedButton(
                   onPressed:
@@ -111,7 +111,7 @@ class _PresetScreenState extends State<PresetScreen> {
                             'id': model.activity!.id,
                             'state': {'progreso': 0.9},
                           }),
-                  child: const Text('Push: progreso 90 %'),
+                  child: const Text('Push: progress 90 %'),
                 ),
                 OutlinedButton(
                   onPressed:
@@ -122,7 +122,7 @@ class _PresetScreenState extends State<PresetScreen> {
                             'id': model.activity!.id,
                             'dismiss': 'immediate',
                           }),
-                  child: const Text('Push: terminar'),
+                  child: const Text('Push: end'),
                 ),
               ],
             ),
@@ -144,7 +144,7 @@ class _PresetScreenState extends State<PresetScreen> {
               androidPromotable: preset.androidPromotable,
             ),
             const SizedBox(height: 24),
-            Text('Validación', style: Theme.of(context).textTheme.titleMedium),
+            Text('Validation', style: Theme.of(context).textTheme.titleMedium),
             for (final c in report.items)
               ListTile(
                 dense: true,
@@ -191,7 +191,7 @@ class _MorphDemoState extends State<_MorphDemo> {
         ),
         TextButton(
           onPressed: () => setState(() => visible = !visible),
-          child: Text(visible ? 'Cerrar' : 'Mostrar animación'),
+          child: Text(visible ? 'Close' : 'Show animation'),
         ),
       ],
     ),

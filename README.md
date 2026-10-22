@@ -436,4 +436,4 @@ activity.follow(
 );
 ```
 
-Stage points are yours too: how many (`stages`, with or without text: `''`), their shape (`LiveProgressStyle(pointShape: LivePointShape.square)`) and size. For events (order confirmed, arrived) use the same `follow` or `actividad.update({...})`.
+Stage points are yours too: how many (`stages`, with or without text: `''`), their shape (`LiveProgressStyle(pointShape: LivePointShape.square)`) and size. For events (order confirmed, arrived) use the same `follow` or `activity.update({...})`.
