@@ -5,13 +5,15 @@
 #   - activa NSSupportsLiveActivities en la app.
 # Es idempotente: se puede ejecutar de nuevo para actualizar el renderer.
 #
-# Uso: ruby setup_ios.rb <ios_dir> <plantilla> <app_group|-> <nombre_extension> [push|-]
+# Uso: ruby setup_ios.rb <ios_dir> <plantilla> <app_group|-> <nombre_extension> [push|-] [esquema_url|-]
 require 'fileutils'
 require 'xcodeproj'
 require_relative 'podfile_platform'
+require_relative 'url_scheme'
 
-ios_dir, template_dir, group_arg, ext_name, push_arg = ARGV
+ios_dir, template_dir, group_arg, ext_name, push_arg, scheme_arg = ARGV
 with_push = push_arg == 'push'
+url_scheme = (scheme_arg && scheme_arg != '-') ? scheme_arg : nil
 abort 'Usage: setup_ios.rb <ios_dir> <template> <app_group|-> <extension>' unless ios_dir && template_dir && ext_name
 
 proj_path = File.join(ios_dir, 'Runner.xcodeproj')
@@ -104,6 +106,7 @@ info = Xcodeproj::Plist.read_from_path(runner_info_path)
 info['NSSupportsLiveActivities'] = true
 info['LiveIslandAppGroup'] = app_group
 info['NSSupportsLiveActivitiesFrequentUpdates'] = true if with_push
+added_scheme = url_scheme ? add_url_scheme!(info, url_scheme) : false
 Xcodeproj::Plist.write_to_path(info, runner_info_path)
 
 # --- 3. Proyecto de Xcode ---------------------------------------------------
@@ -216,6 +219,7 @@ project.save
 podfile = raise_podfile_platform(File.join(ios_dir, 'Podfile'), MIN_IOS)
 puts "  Podfile:    platform :ios, '#{MIN_IOS}'" if podfile == :raised
 
+puts "  URL scheme: #{url_scheme}://" if added_scheme
 puts "  Extension:  #{ext_name} (#{ext_bundle_id})"
 puts "  App Group:  #{app_group}"
 puts "  Target #{created ? 'created' : 'updated'}; renderer copied to #{ext_dir}"

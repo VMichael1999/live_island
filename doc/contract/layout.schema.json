@@ -71,7 +71,7 @@
     "binding": {
       "type": "string",
       "minLength": 1,
-      "description": "Nombre de un campo del estado. Lo elige el desarrollador. `$stale` está reservado: lo pone el sistema (iOS 16.2+) cuando pasa la fecha de `staleAfter` de la actividad."
+      "description": "Nombre de un campo del estado. Lo elige el desarrollador. `$url` está reservado: es a dónde lleva el toque en la actividad y manda sobre el `deepLink` del inicio. `$stale` está reservado: lo pone el sistema (iOS 16.2+) cuando pasa la fecha de `staleAfter` de la actividad."
     },
 
     "condition": {

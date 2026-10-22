@@ -23,11 +23,14 @@ export 'src/presets/presets.dart';
 export 'src/platform/live_island_platform.dart'
     show
         LiveActivityInfo,
+        LiveActivityState,
+        LiveActivityStateChange,
         LiveAlert,
         LiveDismiss,
         LiveImagePayload,
         LivePushEvent,
         LivePushStartedEvent,
+        LivePushStateEvent,
         LivePushToken,
         LivePushTokenEvent,
         LiveIslandException,

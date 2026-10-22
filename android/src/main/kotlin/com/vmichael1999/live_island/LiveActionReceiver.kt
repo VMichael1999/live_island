@@ -13,7 +13,12 @@ class LiveActionReceiver : BroadcastReceiver() {
         val activityId = intent.getStringExtra(EXTRA_ACTIVITY_ID) ?: return
         when (intent.action) {
             // Si el usuario cierra la notificación no se vuelve a publicar.
-            ACTION_DELETE -> LiveStore(context).markDismissed(activityId)
+            ACTION_DELETE -> {
+                val store = LiveStore(context)
+                val customId = store.load(activityId)?.customId
+                store.markDismissed(activityId)
+                LiveIslandPlugin.emitState(activityId, customId, "dismissed")
+            }
             ACTION_BUTTON -> intent.getStringExtra(EXTRA_BUTTON_ID)?.let { LiveIslandPlugin.deliverAction(context, it) }
         }
     }

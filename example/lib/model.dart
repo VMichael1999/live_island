@@ -17,6 +17,9 @@ class ExampleModel extends ChangeNotifier {
   final List<StreamSubscription<Object?>> _subs = [];
 
   /// Inicia el modelo: escucha botones, tokens y push, y registra los diseños.
+  /// El link con el que se abrió la app al tocar una actividad (o `null`).
+  String? openedFrom;
+
   void init() {
     // Un botón de la actividad (pantalla de bloqueo o notificación) llega aquí,
     // también si la app estaba cerrada.
@@ -36,12 +39,19 @@ class ExampleModel extends ChangeNotifier {
         notifyListeners();
       }),
     );
+    // El ciclo de vida de las actividades: active, stale, ended y dismissed.
+    _subs.add(
+      LiveIsland.stateChanges.listen((c) {
+        status = '${c.customId ?? c.id.substring(0, 8)}: ${c.state.name}';
+        notifyListeners();
+      }),
+    );
     // Recupera la actividad que siguió viva tras cerrar la app.
     LiveIsland.activeActivities().then((list) {
       if (list.isNotEmpty && activity == null) {
         activity = list.last;
         status =
-            'Recuperada (${list.last.customId ?? list.last.id.substring(0, 8)})';
+            'Recovered (${list.last.customId ?? list.last.id.substring(0, 8)})';
         notifyListeners();
       }
     });
@@ -99,7 +109,8 @@ class ExampleModel extends ChangeNotifier {
     final a = await LiveIsland.start(
       layout: layout,
       state: newState,
-      deepLink: 'liveisland://${entry.id}',
+      // Tocar la tarjeta abre la pantalla de este caso (ver `onGenerateRoute` en main.dart).
+      deepLink: 'liveisland://app/${entry.id}',
       // Iniciar el mismo caso otra vez actualiza la actividad en vez de crear otra.
       customId: 'demo-${entry.id}',
       // La que se acaba de iniciar es la que debe verse en la isla.
@@ -108,7 +119,7 @@ class ExampleModel extends ChangeNotifier {
     activity = a;
     activeEntry = entry;
     state = newState;
-    _setStatus('Activa (${a.id.substring(0, 8)}…)');
+    _setStatus('Active (${a.id.substring(0, 8)}…)');
   });
 
   /// Una actividad que se «desactualiza» sola: pasados [seconds] s el sistema
@@ -175,22 +186,29 @@ class ExampleModel extends ChangeNotifier {
     _setStatus('Alert sent');
   });
 
-  Future<void> update(Map<String, Object?> changes, {String? label}) =>
-      _guard('Actualizar', () async {
-        final a = activity ?? (await LiveIsland.activeActivities()).lastOrNull;
-        if (a == null) return;
-        activity = a;
-        await a.update(changes);
-        state = {...state, ...changes};
-        _setStatus(label ?? 'Actualizada: ${changes.keys.join(', ')}');
-      });
+  Future<void> update(
+    Map<String, Object?> changes, {
+    String? label,
+    String? deepLink,
+  }) => _guard('Update', () async {
+    final a = activity ?? (await LiveIsland.activeActivities()).lastOrNull;
+    if (a == null) return;
+    activity = a;
+    await a.update(changes, deepLink: deepLink);
+    state = {...state, ...changes};
+    _setStatus(label ?? 'Updated: ${changes.keys.join(', ')}');
+  });
 
   Future<void> advance() {
     final next =
         ((((state['progreso'] as num?) ?? 0) + 0.1).clamp(0.0, 1.0)).toDouble();
-    return update({
-      'progreso': next,
-    }, label: 'Progreso ${(next * 100).round()} %');
+    final percent = (next * 100).round();
+    return update(
+      {'progreso': next},
+      label: 'Progress $percent %',
+      // El toque ahora lleva a la misma pantalla con el avance (la clave \$url del estado).
+      deepLink: 'liveisland://app/${activeEntry?.id}?progress=$percent',
+    );
   }
 
   /// Termina todas las actividades de la app (por ejemplo al cerrar sesión).
@@ -203,7 +221,7 @@ class ExampleModel extends ChangeNotifier {
   Future<void> end() => _guard('End', () async {
     await activity?.end(dismiss: LiveDismiss.immediate);
     activity = null;
-    _setStatus('No activity');
+    // El estado lo dan los eventos de LiveIsland.stateChanges (ended, dismissed).
   });
 
   /// Qué hace cada botón de los ejemplos. El id es el de `LiveButton(id: ...)`.

@@ -123,10 +123,7 @@ final class TripPreset extends LivePreset {
         buttons ??
         [
           presetButton('Call', presetIcon('phone.fill', 'phone')),
-          presetButton(
-            'Share',
-            presetIcon('square.and.arrow.up', 'share2'),
-          ),
+          presetButton('Share', presetIcon('square.and.arrow.up', 'share2')),
         ],
     chip: chip ?? const LiveChip.countdown(LiveBind('llegaA')),
     sample: const PresetSample(
@@ -1191,8 +1188,7 @@ final class WaitingRoomPreset extends LivePreset {
     countdown: false,
     progress: PresetProgress.bar,
     tracker: !showTracker ? null : tracker ?? presetIcon('person.fill', 'user'),
-    buttons:
-        buttons ?? [presetButton('Leave queue', presetIcon('xmark', 'x'))],
+    buttons: buttons ?? [presetButton('Leave queue', presetIcon('xmark', 'x'))],
     chip: chip ?? const LiveChip.text('2 ahead'),
     sample: const PresetSample(
       title: 'Virtual waiting room',

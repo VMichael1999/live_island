@@ -285,6 +285,27 @@ void main() {
     expect(c.args['staleAfter'], const Duration(minutes: 5));
   });
 
+  test(
+    'update(deepLink:) cambia a dónde lleva el toque con la clave \$url',
+    () async {
+      final act = await LiveIsland.start(
+        layout: _plain,
+        state: {'a': 1},
+        deepLink: 'miapp://pedido/42',
+      );
+      await act.update({'progreso': 0.5}, deepLink: 'miapp://mapa/42');
+      expect(jsonDecode(platform.calls.last.args['state']! as String), {
+        'progreso': 0.5,
+        r'$url': 'miapp://mapa/42',
+      });
+      // Sin deepLink, el estado no lleva la clave y se conserva el anterior.
+      await act.update({'progreso': 0.6});
+      expect(jsonDecode(platform.calls.last.args['state']! as String), {
+        'progreso': 0.6,
+      });
+    },
+  );
+
   test('end admite estado final y política de cierre', () async {
     final act = await LiveIsland.start(layout: _plain, state: {'a': 1});
     await act.end(
@@ -379,6 +400,61 @@ void main() {
       await started.single.update({'progreso': 0.5});
       expect(platform.calls.last.name, 'update');
       expect(platform.calls.last.args['id'], 'push-9');
+      await sub.cancel();
+    });
+
+    test(
+      'stateChanges entrega el ciclo de vida de todas las actividades',
+      () async {
+        final got = <LiveActivityStateChange>[];
+        final sub = LiveIsland.stateChanges.listen(got.add);
+        platform.pushController
+          ..add(const LivePushStartedEvent('a1'))
+          ..add(
+            const LivePushStateEvent(
+              LiveActivityStateChange('a1', LiveActivityState.active),
+            ),
+          )
+          ..add(
+            const LivePushStateEvent(
+              LiveActivityStateChange(
+                'a2',
+                LiveActivityState.dismissed,
+                customId: 'viaje-42',
+              ),
+            ),
+          );
+        await Future<void>.delayed(Duration.zero);
+        expect(got.map((c) => (c.id, c.state, c.customId)), [
+          ('a1', LiveActivityState.active, null),
+          ('a2', LiveActivityState.dismissed, 'viaje-42'),
+        ]);
+        await sub.cancel();
+      },
+    );
+
+    test('LiveActivity.states solo trae los cambios de su actividad', () async {
+      final act = await LiveIsland.start(layout: _plain, state: {'a': 1});
+      final got = <LiveActivityState>[];
+      final sub = act.states.listen(got.add);
+      platform.pushController
+        ..add(
+          const LivePushStateEvent(
+            LiveActivityStateChange('otra', LiveActivityState.ended),
+          ),
+        )
+        ..add(
+          const LivePushStateEvent(
+            LiveActivityStateChange('activity-1', LiveActivityState.stale),
+          ),
+        )
+        ..add(
+          const LivePushStateEvent(
+            LiveActivityStateChange('activity-1', LiveActivityState.ended),
+          ),
+        );
+      await Future<void>.delayed(Duration.zero);
+      expect(got, [LiveActivityState.stale, LiveActivityState.ended]);
       await sub.cancel();
     });
 

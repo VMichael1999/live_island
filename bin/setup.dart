@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:live_island_kit/src/setup/android_min_sdk.dart';
+import 'package:live_island_kit/src/setup/android_url_scheme.dart';
 
 /// Configures a Flutter app to use live_island_kit:
 ///
@@ -15,6 +16,7 @@ Future<void> main(List<String> args) async {
   String? group;
   var extension = 'LiveIslandExtension';
   var push = false;
+  String? urlScheme;
   String project = '.';
   for (var i = 0; i < args.length; i++) {
     switch (args[i]) {
@@ -24,6 +26,8 @@ Future<void> main(List<String> args) async {
         extension = args[++i];
       case '--push':
         push = true;
+      case '--url-scheme':
+        urlScheme = args[++i];
       case '--project':
         project = args[++i];
       case '-h':
@@ -44,7 +48,7 @@ Future<void> main(List<String> args) async {
     exitCode = 66;
     return;
   }
-  _configureAndroid(project);
+  _configureAndroid(project, urlScheme);
 
   if (!Directory('${iosDir.path}/Runner.xcodeproj').existsSync()) {
     stdout.writeln('iOS: skipped (this app has no ios/ folder).');
@@ -76,6 +80,7 @@ Future<void> main(List<String> args) async {
     group ?? '-',
     extension,
     push ? 'push' : '-',
+    urlScheme ?? '-',
   ]);
   stdout.write(result.stdout);
   if (result.exitCode != 0) {
@@ -97,7 +102,7 @@ Then: flutter run''');
 }
 
 /// Raises `minSdk` in the app's `android/app/build.gradle(.kts)` to 26.
-void _configureAndroid(String project) {
+void _configureAndroid(String project, String? urlScheme) {
   for (final name in ['build.gradle.kts', 'build.gradle']) {
     final file = File('$project/android/app/$name');
     if (!file.existsSync()) continue;
@@ -106,7 +111,17 @@ void _configureAndroid(String project) {
       file.writeAsStringSync(updated);
       stdout.writeln('Android: minSdk raised to 26 in android/app/$name.');
     }
-    return;
+    break;
+  }
+  if (urlScheme == null) return;
+  final manifest = File('$project/android/app/src/main/AndroidManifest.xml');
+  if (!manifest.existsSync()) return;
+  final updated = addAndroidUrlScheme(manifest.readAsStringSync(), urlScheme);
+  if (updated != null) {
+    manifest.writeAsStringSync(updated);
+    stdout.writeln(
+      'Android: URL scheme $urlScheme:// added to AndroidManifest.xml.',
+    );
   }
 }
 
@@ -118,6 +133,9 @@ Usage: dart run live_island_kit:setup [options]
   --push               Adds the push permission (aps-environment) to update
                        or start activities through APNs; it needs a developer
                        account with the Push Notifications capability
+  --url-scheme <name>  URL scheme of your app (for example myapp): registers it
+                       on iOS and Android so that a tap on an activity started
+                       with deepLink: 'myapp://orders/42' opens the app
   --extension <name>   Name of the Widget Extension (LiveIslandExtension)
   --project <dir>      Folder of the Flutter app (default .)
 ''');

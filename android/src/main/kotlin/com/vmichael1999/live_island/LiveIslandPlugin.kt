@@ -214,6 +214,15 @@ class LiveIslandPlugin :
         internal fun emitStarted(activityId: String) {
             main.post { pushSink?.success(mapOf("type" to "started", "activityId" to activityId)) }
         }
+
+        /** Avisa a Dart de un cambio en la vida de la actividad: `active`, `ended` o `dismissed`. */
+        internal fun emitState(activityId: String, customId: String?, state: String) {
+            main.post {
+                pushSink?.success(
+                    mapOf("type" to "state", "activityId" to activityId, "customId" to (customId ?: ""), "state" to state),
+                )
+            }
+        }
     }
 }
 

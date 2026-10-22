@@ -32,6 +32,8 @@ Cabeceras: `apns-push-type: liveactivity`, `apns-topic: <bundle id>.push-type.li
 
 `"event": "end"` termina la actividad (con `"dismissal-date"` opcional). Solo viajan los campos que cambian; el límite es de 4 096 bytes.
 
+Para cambiar a dónde lleva el toque en la tarjeta, incluye la clave reservada `$url` en `values`: `"values": { "progreso": 0.8, "$url": "miapp://mapa/42" }`. Manda sobre el `deepLink` con que empezó la actividad.
+
 ### Iniciar (push-to-start)
 
 ```json

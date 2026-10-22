@@ -158,7 +158,9 @@ class LiveNotificationFactory(private val context: Context, private val store: L
     }
 
     private fun contentIntent(activity: StoredActivity): PendingIntent {
-        val intent = activity.deepLink?.let {
+        // El `$url` del estado (cambia con cada actualización) manda sobre el deepLink del inicio.
+        val link = LiveJson.text(activity.state["\$url"]).ifEmpty { null } ?: activity.deepLink
+        val intent = link?.let {
             Intent(Intent.ACTION_VIEW, Uri.parse(it)).setPackage(context.packageName)
         } ?: context.packageManager.getLaunchIntentForPackage(context.packageName)
         ?: Intent()

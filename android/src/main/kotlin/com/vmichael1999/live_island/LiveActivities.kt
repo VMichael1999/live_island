@@ -85,6 +85,7 @@ class LiveActivities(private val context: Context) {
         images.forEach { store.saveImage(id, it.id, it.bytes, it.maxWidth, it.maxHeight) }
         cleanup(id)
         post(store.load(id)!!)
+        LiveIslandPlugin.emitState(id, customId, "active")
         return id
     }
 
@@ -101,6 +102,7 @@ class LiveActivities(private val context: Context) {
         }
         cleanup(id)
         post(store.load(id)!!)
+        LiveIslandPlugin.emitState(id, customId, "active")
         return id
     }
 
@@ -142,7 +144,12 @@ class LiveActivities(private val context: Context) {
         store.saveEndAt(id, endAt)
         post(a.copy(state = state, endAtMillis = endAt))
         // Limpia lo guardado cuando la notificación ya se retiró.
-        Handler(Looper.getMainLooper()).postDelayed({ if (id !in activeIds()) store.delete(id) }, (afterSeconds * 1000).toLong() + 2000)
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (id !in activeIds()) {
+                store.delete(id)
+                LiveIslandPlugin.emitState(id, a.customId, "dismissed")
+            }
+        }, (afterSeconds * 1000).toLong() + 2000)
     }
 
     fun end(ref: String, changes: LiveState?, dismiss: String, afterSeconds: Double) {
@@ -154,10 +161,16 @@ class LiveActivities(private val context: Context) {
             val ms = (afterSeconds * 1000).toLong()
             store.saveState(id, state)
             post(a.copy(state = state), EndInfo(ms))
-            Handler(Looper.getMainLooper()).postDelayed({ store.delete(id) }, ms + 1000)
+            LiveIslandPlugin.emitState(id, a.customId, "ended")
+            Handler(Looper.getMainLooper()).postDelayed({
+                store.delete(id)
+                LiveIslandPlugin.emitState(id, a.customId, "dismissed")
+            }, ms + 1000)
         } else {
             nm.cancel(a.notificationId)
             store.delete(id)
+            LiveIslandPlugin.emitState(id, a.customId, "ended")
+            LiveIslandPlugin.emitState(id, a.customId, "dismissed")
         }
     }
 

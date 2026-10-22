@@ -7,6 +7,9 @@ import 'core/state.dart';
 import 'platform/image_loader.dart';
 import 'platform/live_island_platform.dart';
 
+/// The reserved state key that holds where a tap on the activity goes.
+const _deepLinkKey = r'$url';
+
 /// An activity in progress. It is obtained with [LiveIsland.start].
 class LiveActivity {
   LiveActivity._(this.id, this._platform, {this.customId});
@@ -24,13 +27,22 @@ class LiveActivity {
   /// [staleAfter] marks the content as out of date after that time
   /// (see [LiveBind.stale]). [alert] draws attention: it expands the island and
   /// plays a sound on iOS; on Android the notification sounds and shows as a heads-up.
+  ///
+  /// [deepLink] changes where a tap on the activity goes (the one given in
+  /// [LiveIsland.start] stays until then): the order screen first, the
+  /// delivery map once the courier is on the way. It travels in the reserved
+  /// state key `\$url` (a push can set it too).
   Future<void> update(
     Map<String, Object?> state, {
     Duration? staleAfter,
     LiveAlert? alert,
+    String? deepLink,
   }) => _platform.update(
     id,
-    jsonEncode(LiveState.normalize(state)),
+    jsonEncode({
+      ...LiveState.normalize(state),
+      if (deepLink != null) _deepLinkKey: deepLink,
+    }),
     staleAfter: staleAfter,
     alert: alert,
   );
@@ -100,6 +112,14 @@ class LiveActivity {
   Stream<String> get pushTokens => _platform.pushEvents
       .where((e) => e is LivePushTokenEvent && e.token.activityId == id)
       .map((e) => (e as LivePushTokenEvent).token.token);
+
+  /// Changes in this activity's life: [LiveActivityState.active],
+  /// [LiveActivityState.stale], [LiveActivityState.ended] and
+  /// [LiveActivityState.dismissed] (the user swiped it away or it was removed).
+  /// See [LiveIsland.stateChanges] for the details of what each platform reports.
+  Stream<LiveActivityState> get states => _platform.pushEvents
+      .where((e) => e is LivePushStateEvent && e.change.id == id)
+      .map((e) => (e as LivePushStateEvent).change.state);
 
   /// Schedules the activity to disappear at [at].
   ///
@@ -207,6 +227,22 @@ abstract final class LiveIsland {
   static Stream<LivePushToken> get pushTokens => _platform.pushEvents
       .where((e) => e is LivePushTokenEvent)
       .map((e) => (e as LivePushTokenEvent).token);
+
+  /// Every change in the life of the app's activities, with the id of the
+  /// activity: it started (`active`), its content went out of date (`stale`),
+  /// it ended (`ended`) or it left the screen (`dismissed`).
+  ///
+  /// - **iOS** reports all four, also for activities started by a push or
+  ///   before the app was opened (from the moment you listen).
+  /// - **Android** reports `active`, `ended` and `dismissed` (the user swiped
+  ///   the notification away, or it timed out); it has no `stale`.
+  ///
+  /// Events arrive only while someone listens; to know the current activities
+  /// use [activeActivities].
+  static Stream<LiveActivityStateChange> get stateChanges => _platform
+      .pushEvents
+      .where((e) => e is LivePushStateEvent)
+      .map((e) => (e as LivePushStateEvent).change);
 
   /// Activities that started from a push (push-to-start on iOS; [handlePush]
   /// with `event: start` on Android).
