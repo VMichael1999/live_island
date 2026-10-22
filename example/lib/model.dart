@@ -165,7 +165,7 @@ class ExampleModel extends ChangeNotifier {
       {'progreso': (((state['progreso'] as num?) ?? 0) + 0.1).clamp(0.0, 1.0)},
       alert: const LiveAlert(
         title: 'Tu conductor llegó',
-        body: 'Toyota Yaris gris · ABC-123',
+        body: 'Gray sedan · ABC-123',
       ),
     );
     state = {

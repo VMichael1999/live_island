@@ -5,7 +5,7 @@ import 'package:live_island_kit/live_island_kit.dart';
 LiveLayout _layout() => LiveLayout(
   theme: const LiveTheme(accent: Color(0xFF1F6FEB)),
   compactLeading: const LiveText.literal('c'),
-  android: const LiveAndroid(title: LiveText.literal('Viaje')),
+  android: const LiveAndroid(title: LiveText.literal('Trip')),
   expanded: LiveExpanded(
     center: LiveIf(
       LiveBind.stale.isTrue,
@@ -30,7 +30,7 @@ void main() {
   });
 
   test('el diseño con \$stale sigue siendo válido y sin avisos nuevos', () {
-    final r = LiveIsland.check(_layout(), const {'titulo': 'En camino'});
+    final r = LiveIsland.check(_layout(), const {'titulo': 'On the way'});
     expect(r.items.where((c) => c.severity == LiveSeverity.bad), isEmpty);
   });
 
@@ -45,18 +45,18 @@ void main() {
     Widget preview(bool stale) => _host(
       LiveIslandPreview(
         layout: _layout(),
-        state: const {'titulo': 'En camino'},
+        state: const {'titulo': 'On the way'},
         surfaces: const {LiveSurface.expanded},
         showLabels: false,
         stale: stale,
       ),
     );
     await tester.pumpWidget(preview(false));
-    expect(find.text('En camino'), findsOneWidget);
+    expect(find.text('On the way'), findsOneWidget);
     expect(find.text('Terminado'), findsNothing);
 
     await tester.pumpWidget(preview(true));
     expect(find.text('Terminado'), findsOneWidget);
-    expect(find.text('En camino'), findsNothing);
+    expect(find.text('On the way'), findsNothing);
   });
 }

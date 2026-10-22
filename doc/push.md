@@ -39,10 +39,10 @@ Cabeceras: `apns-push-type: liveactivity`, `apns-topic: <bundle id>.push-type.li
   "aps": {
     "timestamp": 1760000000,
     "event": "start",
-    "content-state": { "values": { "titulo": "Tu conductor está en camino", "progreso": 0.1, "llegaA": "2026-10-08T15:06:00Z" } },
+    "content-state": { "values": { "titulo": "Your driver is on the way", "progreso": 0.1, "llegaA": "2026-10-08T15:06:00Z" } },
     "attributes-type": "LiveIslandAttributes",
     "attributes": { "layoutId": "tpl_taxi", "deepLink": "miapp://viaje/1" },
-    "alert": { "title": "Tu viaje", "body": "Tu conductor está en camino" }
+    "alert": { "title": "Tu viaje", "body": "Your driver is on the way" }
   }
 }
 ```

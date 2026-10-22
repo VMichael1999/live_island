@@ -156,7 +156,7 @@ void main() {
     test('los botones se reemplazan', () {
       final l =
           TripPreset(
-            buttons: [LiveButton(id: 'cancelar', label: 'Cancelar')],
+            buttons: [LiveButton(id: 'cancelar', label: 'Cancel')],
           ).build();
       final ids = [
         for (final n in l.allNodes)
@@ -168,11 +168,11 @@ void main() {
     test('las etapas y los puntos se reemplazan', () {
       final l =
           const DeliveryPreset(
-            stages: ['Pedido', 'Cocina', 'Camino', 'Listo'],
+            stages: ['Order', 'Cocina', 'Camino', 'Ready'],
             showPoints: false,
           ).build();
       final seg = l.allNodes.whereType<LiveSegments>().single;
-      expect(seg.labels, ['Pedido', 'Cocina', 'Camino', 'Listo']);
+      expect(seg.labels, ['Order', 'Cocina', 'Camino', 'Ready']);
       expect(seg.points, isFalse);
     });
 

@@ -74,7 +74,7 @@ void main() {
       final bottom = (regions['expanded'] as Map)['bottom'] as Map;
       final seg = (bottom['c'] as List).first as Map;
       expect(seg['t'], 'segments');
-      expect(seg['labels'], ['Asignado', 'En camino', 'Llegó']);
+      expect(seg['labels'], ['Assigned', 'On the way', 'Arrived']);
       expect(seg['points'], true);
       final tracker = seg['tracker'] as Map;
       expect(tracker['height'], 24);
@@ -156,7 +156,7 @@ void main() {
 
     test('los botones exigen un id en minúsculas', () {
       expect(
-        () => LiveButton(id: 'Llamar', label: 'Llamar'),
+        () => LiveButton(id: 'Call', label: 'Call'),
         throwsArgumentError,
       );
       expect(
@@ -234,7 +234,7 @@ void main() {
       final nodes = <LiveNode>[
         LiveButton(
           id: 'llamar',
-          label: 'Llamar',
+          label: 'Call',
           icon: const LiveIcon.symbol('phone.fill'),
           action: const LiveAction.call('+51999'),
         ),

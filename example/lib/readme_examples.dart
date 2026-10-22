@@ -9,9 +9,9 @@ Future<void> nivel1() async {
   final actividad = await LiveIsland.start(
     layout: const ParkingPreset().build(),
     state: {
-      'titulo': 'Estacionamiento activo',
-      'subtitulo': 'Zona azul · Av. Larco 400',
-      'nombre': 'Placa ABC-123',
+      'titulo': 'Parking active',
+      'subtitulo': 'Blue zone · Av. Larco 400',
+      'nombre': 'Plate ABC-123',
       'llegaA': DateTime.now().add(const Duration(minutes: 45)),
       'progreso': 0.0,
     },
@@ -24,7 +24,7 @@ Future<void> nivel1() async {
 /// Nivel 2: un preset con sus parámetros y `.override` en una región.
 LiveLayout nivel2() => const TripPreset(
   accent: Color(0xFFD81B60),
-  stages: ['Pedido', 'En camino', 'Llegó'],
+  stages: ['Order', 'On the way', 'Arrived'],
 ).override(
   // La isla compacta muestra la placa en lugar de la cuenta regresiva.
   compactTrailing: LiveText.from(

@@ -77,13 +77,13 @@ void main() {
           visible: v,
           cardHeight: 90,
           onDismissed: () => dismissed++,
-          child: const Text('Tu conductor está en camino'),
+          child: const Text('Your driver is on the way'),
         ),
       );
       await tester.pumpWidget(w(true));
       Opacity op() => tester.widget<Opacity>(
         find.ancestor(
-          of: find.text('Tu conductor está en camino'),
+          of: find.text('Your driver is on the way'),
           matching: find.byType(Opacity),
         ),
       );

@@ -36,10 +36,10 @@ class CardLogicTest {
 
     @Test
     fun `el texto sale del campo, del literal o de la plantilla`() {
-        val state = mapOf("a" to "Leones", "n" to 3.0)
-        assertEquals("Leones", CardLogic.textOf(JSONObject("""{"t":"text","bind":"a"}"""), state))
+        val state = mapOf("a" to "Lions", "n" to 3.0)
+        assertEquals("Lions", CardLogic.textOf(JSONObject("""{"t":"text","bind":"a"}"""), state))
         assertEquals("Hola", CardLogic.textOf(JSONObject("""{"t":"text","text":"Hola"}"""), state))
-        assertEquals("Leones 3", CardLogic.textOf(JSONObject("""{"t":"text","fmt":"{a} {n}"}"""), state))
+        assertEquals("Lions 3", CardLogic.textOf(JSONObject("""{"t":"text","fmt":"{a} {n}"}"""), state))
     }
 
     @Test

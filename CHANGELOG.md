@@ -4,7 +4,7 @@
 * Cross-platform conformance: `doc/contract/conformance.json` holds 52 cases (`{field}` templates, conditions and the countdown) that Dart, Swift and Kotlin run with their real logic (`tool/conformidad.sh`). The rules are now written in the contract.
 * Differences the suite found are fixed: the preview wrote `5.0` where the device writes `5`; `eq` and the numeric operators treat a number and a numeric string the same on all three platforms; `truthy: false` inverts the condition; the text `"false"` is truthy; a boolean is not a number; and on iOS `{ x }` or `{}` no longer disappear from a template.
 * The messages the package shows developers are now in English: `LiveIsland.check()` warnings, errors thrown by the Dart API and the iOS and Android plugins, the labels of the preview, and the `dart run live_island_kit:setup` command and the files it generates. Runtime text meant for end users (for example the relative time "en 5 min") is unchanged.
-* The API documentation (every `///` comment, about 1,100 lines) is now in English, so pub.dev's API reference reads in English. The sample texts the presets show ("Tu conductor está en camino"…) are still Spanish.
+* The API documentation (every `///` comment, about 1,100 lines) is now in English, so pub.dev's API reference reads in English. The sample texts the presets show are in English too ("Your driver is on the way", "Pickup in 2 min"…); the README gallery images are regenerated with them.
 * The README is now in English (Spanish version: `README.es.md`), and so are the pub.dev description and screenshot captions.
 
 ## 0.2.0

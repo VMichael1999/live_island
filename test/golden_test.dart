@@ -200,7 +200,7 @@ void main() {
       ),
       // Tres puntos redondeados con texto.
       const DeliveryPreset(
-        stages: ['Recibido', 'En camino', 'Llegó'],
+        stages: ['Received', 'On the way', 'Arrived'],
         progressStyle: LiveProgressStyle(
           pointShape: LivePointShape.rounded,
           pointSize: 14,

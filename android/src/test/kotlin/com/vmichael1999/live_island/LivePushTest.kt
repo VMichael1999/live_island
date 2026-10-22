@@ -40,7 +40,7 @@ class LivePushTest {
         assertEquals(false, sin.alert)
         val bool = cmd("""{"event":"update","id":"a","state":{"x":1},"alert":true}""") as PushCommand.Update
         assertEquals(true, bool.alert)
-        val obj = cmd("""{"event":"update","id":"a","state":{"x":1},"alert":{"title":"Llegó","body":"Ya"}}""") as PushCommand.Update
+        val obj = cmd("""{"event":"update","id":"a","state":{"x":1},"alert":{"title":"Arrived","body":"Ya"}}""") as PushCommand.Update
         assertEquals(true, obj.alert)
         val flat = LivePush.parse(mapOf("event" to "update", "id" to "a", "state" to """{"x":1}""", "alert" to "true"))
             as PushCommand.Update
@@ -59,8 +59,8 @@ class LivePushTest {
 
     @Test
     fun `end admite estado final y politica de cierre`() {
-        val c = cmd("""{"event":"end","id":"abc","state":{"titulo":"Llegó"},"dismiss":"after","dismissAfter":300}""")
-        assertEquals(PushCommand.End("abc", mapOf("titulo" to "Llegó"), "after", 300.0), c)
+        val c = cmd("""{"event":"end","id":"abc","state":{"titulo":"Arrived"},"dismiss":"after","dismissAfter":300}""")
+        assertEquals(PushCommand.End("abc", mapOf("titulo" to "Arrived"), "after", 300.0), c)
         val d = cmd("""{"event":"end","id":"abc"}""") as PushCommand.End
         assertEquals("default", d.dismiss)
         assertNull(d.state)

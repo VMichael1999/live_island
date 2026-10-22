@@ -89,7 +89,7 @@ enum RideBar {
 /// the dark one [RideBar.line] (continuous, with an end marker); [bar] changes
 /// either. Data: `tiempo`, `titulo`, `subtitulo`, `placa`, `vehiculo`,
 /// `nombre`, `progreso`. On the dark one the title goes before the time
-/// ("Recogida en 2 min"); on the light one, after ("2 min para la recogida").
+/// ("Pickup in 2 min"); on the light one, after ("2 min until pickup").
 final class RidePickupPreset extends LivePreset {
   const RidePickupPreset({
     this.androidStyle = LiveAndroidStyle.card,
@@ -170,8 +170,8 @@ final class RidePickupPreset extends LivePreset {
     buttons: buttons ?? const [],
     chip: chip ?? const LiveChip.text('2 min'),
     sample: const PresetSample(
-      title: 'para la recogida',
-      subtitle: 'Andrés llega en breve',
+      title: 'until pickup',
+      subtitle: 'Andrés arrives shortly',
       name: 'Andrés',
       highlight: '2 min',
       progress: 0.34,
@@ -181,10 +181,10 @@ final class RidePickupPreset extends LivePreset {
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
     'tiempo': '2 min',
-    'titulo': dark ? 'Recogida en' : 'para la recogida',
-    'subtitulo': 'Andrés llega en breve',
+    'titulo': dark ? 'Pickup in' : 'until pickup',
+    'subtitulo': 'Andrés arrives shortly',
     'placa': 'A1B-234',
-    'vehiculo': 'Sedán plateado',
+    'vehiculo': 'Silver sedan',
     'nombre': 'Andrés',
     'progreso': 0.34,
   };
@@ -371,7 +371,7 @@ final class RidePickupPreset extends LivePreset {
       // Android añade el tiempo al título («Recogida · 2 min»).
       android: LiveAndroid(
         style: androidStyle,
-        title: const LiveText.literal('Recogida'),
+        title: const LiveText.literal('Pickup'),
         text: const LiveText.format('{subtitulo} · {placa}'),
         subText: const LiveBind('vehiculo'),
         largeIcon: driverPhoto,
@@ -393,7 +393,7 @@ final class StorePickupPreset extends LivePreset {
     this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFF1E3932),
     this.stepColor = const Color(0xFF00A862),
-    this.store = 'Recogida en tienda',
+    this.store = 'Store pickup',
     this.brandLogo,
     this.people,
     this.buttons,
@@ -432,20 +432,20 @@ final class StorePickupPreset extends LivePreset {
     countdown: false,
     progress: PresetProgress.none,
     buttons: buttons ?? const [],
-    chip: chip ?? const LiveChip.text('Preparando'),
+    chip: chip ?? const LiveChip.text('Preparing'),
     sample: const PresetSample(
-      title: 'Pedido en preparación',
-      subtitle: 'Estamos preparando tu pedido con cuidado',
-      name: 'Tienda',
+      title: 'Order being prepared',
+      subtitle: 'We are carefully preparing your order',
+      name: 'Store',
       progress: 0.5,
     ),
   );
 
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
-    'titulo': 'Pedido en preparación',
-    'subtitulo': 'Estamos preparando tu pedido con cuidado',
-    'corto': 'Preparando',
+    'titulo': 'Order being prepared',
+    'subtitulo': 'We are carefully preparing your order',
+    'corto': 'Preparing',
     'nombre': store,
     'etapa': 1,
     'progreso': 0.5,
@@ -535,11 +535,11 @@ final class StorePickupPreset extends LivePreset {
       // Android añade la palabra corta al título («Tu pedido · Preparando»).
       android: LiveAndroid(
         style: androidStyle,
-        title: const LiveText.literal('Tu pedido'),
+        title: const LiveText.literal('Your order'),
         text: const LiveBind('subtitulo'),
         subText: LiveText.literal(store),
         largeIcon: brandLogo,
-        chip: chip ?? const LiveChip.text('Preparando'),
+        chip: chip ?? const LiveChip.text('Preparing'),
       ),
     );
   }
@@ -552,8 +552,8 @@ final class RunPreset extends LivePreset {
   const RunPreset({
     this.androidStyle = LiveAndroidStyle.card,
     this.accent = const Color(0xFF45C8FF),
-    this.unit = 'Kilómetros',
-    this.timeLabel = 'Tiempo',
+    this.unit = 'Kilometers',
+    this.timeLabel = 'Time',
     this.brand = 'Sprint',
     this.buttons,
     this.chip,
@@ -591,8 +591,8 @@ final class RunPreset extends LivePreset {
     chip: chip ?? const LiveChip.text('4,72'),
     sample: const PresetSample(
       title: '4,72',
-      subtitle: 'Kilómetros',
-      name: 'Tiempo',
+      subtitle: 'Kilometers',
+      name: 'Time',
       highlight: '25:38',
       progress: 0.78,
     ),
@@ -658,7 +658,7 @@ final class RunPreset extends LivePreset {
     // Android añade la distancia al título («Carrera · 4,72»).
     android: LiveAndroid(
       style: androidStyle,
-      title: const LiveText.literal('Carrera'),
+      title: const LiveText.literal('Run'),
       text: LiveText.format('{distancia} $unit · {tiempo}'),
       chip: chip ?? const LiveChip.text('4,72'),
     ),
@@ -676,7 +676,7 @@ final class MatchPreset extends LivePreset {
     this.awayCrest,
     this.homeLabel = 'Local',
     this.awayLabel = 'Visitante',
-    this.link = 'Ver estadísticas',
+    this.link = 'View stats',
     this.androidStyle = LiveAndroidStyle.card,
     this.chip,
   });
@@ -716,21 +716,21 @@ final class MatchPreset extends LivePreset {
     androidPromotable: false,
     chip: chip ?? const LiveChip.text('3–1'),
     sample: const PresetSample(
-      title: 'Leones 3 – 1 Halcones',
-      subtitle: 'Copa del mundo',
-      name: 'Partido',
+      title: 'Lions 3 – 1 Hawks',
+      subtitle: 'World Cup',
+      name: 'Match',
       highlight: '6:15',
     ),
   );
 
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
-    'local': 'Leones',
-    'visitante': 'Halcones',
+    'local': 'Lions',
+    'visitante': 'Hawks',
     'golesLocal': '3',
     'golesVisitante': '1',
     'minuto': '6:15',
-    'torneo': 'Copa del mundo',
+    'torneo': 'World Cup',
     'progreso': 0.07,
   };
 
@@ -865,7 +865,7 @@ final class StockPreset extends LivePreset {
   @override
   LivePresetSpec get spec => LivePresetSpec(
     id: 'stock',
-    appName: 'Bolsa',
+    appName: 'Stocks',
     accent: accent,
     icon: presetIcon('chart.line.uptrend.xyaxis', 'landmark'),
     countdown: false,
@@ -874,8 +874,8 @@ final class StockPreset extends LivePreset {
     chip: chip ?? const LiveChip.text('+1.2%'),
     sample: const PresetSample(
       title: 'VOLT 219.40',
-      subtitle: 'Voltio S.A.',
-      name: 'Bolsa',
+      subtitle: 'Volt Inc.',
+      name: 'Stocks',
       highlight: '+1.24%',
     ),
   );
@@ -883,7 +883,7 @@ final class StockPreset extends LivePreset {
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
     'simbolo': 'VOLT',
-    'nombre': 'Voltio S.A.',
+    'nombre': 'Volt Inc.',
     'precio': '219.40',
     'cambio': '+1.24%',
     'tendencia': '▲',
@@ -998,7 +998,7 @@ final class FlightPathPreset extends LivePreset {
   @override
   LivePresetSpec get spec => LivePresetSpec(
     id: 'flightpath',
-    appName: 'Vuelo',
+    appName: 'Flight',
     accent: accent,
     icon: presetIcon('airplane', 'plane'),
     countdown: false,
@@ -1006,9 +1006,9 @@ final class FlightPathPreset extends LivePreset {
     chip: chip ?? const LiveChip.text('55 min'),
     sample: const PresetSample(
       title: 'LIM → MAD',
-      subtitle: 'Aterriza en 55 min',
+      subtitle: 'Lands in 55 min',
       name: 'RA234',
-      highlight: 'A tiempo',
+      highlight: 'On time',
       progress: 0.72,
     ),
   );
@@ -1016,10 +1016,10 @@ final class FlightPathPreset extends LivePreset {
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
     'vuelo': 'RA 234',
-    'estado': 'A tiempo',
+    'estado': 'On time',
     'origen': 'LIM',
     'destino': 'MAD',
-    'aterriza': 'Aterriza en 55 min',
+    'aterriza': 'Lands in 55 min',
     'progreso': 0.72,
   };
 
@@ -1119,7 +1119,7 @@ final class OrbitPreset extends LivePreset {
   @override
   LivePresetSpec get spec => LivePresetSpec(
     id: 'orbit',
-    appName: 'Órbita',
+    appName: 'Orbit',
     accent: accent,
     icon: presetIcon('globe.europe.africa.fill', 'upload'),
     countdown: false,
@@ -1127,8 +1127,8 @@ final class OrbitPreset extends LivePreset {
     chip: chip ?? const LiveChip.text('ISS'),
     sample: const PresetSample(
       title: 'ISS',
-      subtitle: 'Sobre el océano Pacífico',
-      name: 'Órbita',
+      subtitle: 'Over the Pacific Ocean',
+      name: 'Orbit',
       highlight: '27 600 km/h',
       progress: 0.38,
     ),
@@ -1137,7 +1137,7 @@ final class OrbitPreset extends LivePreset {
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
     'titulo': 'ISS',
-    'lugar': 'Sobre el océano Pacífico',
+    'lugar': 'Over the Pacific Ocean',
     'tiempo': '27 600 km/h',
     'progreso': 0.38,
   };
@@ -1193,7 +1193,7 @@ final class OrbitPreset extends LivePreset {
     ),
     android: LiveAndroid(
       style: androidStyle,
-      title: const LiveText.literal('Órbita'),
+      title: const LiveText.literal('Orbit'),
       text: const LiveText.format('{lugar} · {tiempo}'),
       chip: chip ?? const LiveChip.text('ISS'),
       progress: LiveGauge(
@@ -1237,7 +1237,7 @@ final class ChargePreset extends LivePreset {
   @override
   LivePresetSpec get spec => LivePresetSpec(
     id: 'charge_glow',
-    appName: 'Carga',
+    appName: 'Charge',
     accent: accent,
     icon: presetIcon('bolt.fill', 'zap'),
     countdown: false,
@@ -1245,8 +1245,8 @@ final class ChargePreset extends LivePreset {
     chip: chip ?? const LiveChip.text('72 %'),
     sample: const PresetSample(
       title: '72 %',
-      subtitle: 'Cargando · faltan 38 min',
-      name: 'Carga',
+      subtitle: 'Charging · 38 min left',
+      name: 'Charge',
       highlight: '48 kW',
       progress: 0.72,
     ),
@@ -1255,8 +1255,8 @@ final class ChargePreset extends LivePreset {
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
     'nivel': '72 %',
-    'estado': 'Cargando',
-    'restante': 'Faltan 38 min',
+    'estado': 'Charging',
+    'restante': '38 min left',
     'potencia': '48 kW',
     'progreso': 0.72,
   };
@@ -1373,16 +1373,16 @@ final class FareSplitPreset extends LivePreset {
     progress: PresetProgress.none,
     chip: chip ?? const LiveChip.text('S/21.50'),
     sample: const PresetSample(
-      title: 'Viaje terminado',
+      title: 'Trip finished',
       subtitle: 'Total S/ 21.50',
-      name: 'Viaje',
+      name: 'Trip',
       highlight: 'S/ 21.50',
     ),
   );
 
   @override
   Map<String, Object?> sampleState({DateTime? now}) => {
-    'titulo': 'Viaje terminado',
+    'titulo': 'Trip finished',
     'total': 'S/ 21.50',
     'base': 16,
     'servicio': 2.5,
