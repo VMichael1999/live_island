@@ -8,6 +8,7 @@
 # Uso: ruby setup_ios.rb <ios_dir> <plantilla> <app_group|-> <nombre_extension> [push|-]
 require 'fileutils'
 require 'xcodeproj'
+require_relative 'podfile_platform'
 
 ios_dir, template_dir, group_arg, ext_name, push_arg = ARGV
 with_push = push_arg == 'push'
@@ -199,7 +200,21 @@ if first_script && embed_idx && embed_idx > first_script
   phases.insert(first_script, embed)
 end
 
+# El plugin necesita iOS 15: si la app apunta a menos, `pod install` falla en el
+# primer `flutter run`. Se sube el Podfile y el destino del proyecto y de sus targets
+# (la extensión ya declara 16.1, que es mayor).
+MIN_IOS = '15.0'
+([project] + project.targets).each do |holder|
+  holder.build_configurations.each do |config|
+    have = config.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
+    config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = MIN_IOS if have && !version_at_least?(have.to_s, MIN_IOS)
+  end
+end
+
 project.save
+
+podfile = raise_podfile_platform(File.join(ios_dir, 'Podfile'), MIN_IOS)
+puts "  Podfile:    platform :ios, '#{MIN_IOS}'" if podfile == :raised
 
 puts "  Extension:  #{ext_name} (#{ext_bundle_id})"
 puts "  App Group:  #{app_group}"

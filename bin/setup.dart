@@ -1,13 +1,16 @@
 import 'dart:io';
 import 'dart:isolate';
 
-/// Configures a Flutter app to use live_island_kit on iOS:
+import 'package:live_island_kit/src/setup/android_min_sdk.dart';
+
+/// Configures a Flutter app to use live_island_kit:
 ///
 ///     dart run live_island_kit:setup [--app-group group.com.myapp] [--extension LiveIslandExtension]
 ///
-/// Adds the Widget Extension to the Xcode project, the App Group and
-/// `NSSupportsLiveActivities` (with `--push`, also the push permission). It can be
-/// run again to update the renderer.
+/// Android: raises the app's `minSdk` to 26, which the plugin needs.
+/// iOS: adds the Widget Extension to the Xcode project, the App Group and
+/// `NSSupportsLiveActivities` (with `--push`, also the push permission), and
+/// raises the Podfile to iOS 15. It can be run again to update the renderer.
 Future<void> main(List<String> args) async {
   String? group;
   var extension = 'LiveIslandExtension';
@@ -36,12 +39,15 @@ Future<void> main(List<String> args) async {
   }
 
   final iosDir = Directory('$project/ios');
-  if (!File('$project/pubspec.yaml').existsSync() ||
-      !Directory('${iosDir.path}/Runner.xcodeproj').existsSync()) {
-    stderr.writeln(
-      'Run this command at the root of a Flutter app with an ios/ folder.',
-    );
+  if (!File('$project/pubspec.yaml').existsSync()) {
+    stderr.writeln('Run this command at the root of a Flutter app.');
     exitCode = 66;
+    return;
+  }
+  _configureAndroid(project);
+
+  if (!Directory('${iosDir.path}/Runner.xcodeproj').existsSync()) {
+    stdout.writeln('iOS: skipped (this app has no ios/ folder).');
     return;
   }
 
@@ -88,6 +94,20 @@ Done. One thing is left, once, in Xcode (ios/Runner.xcworkspace):
   1. Select your development team on the Runner and $extension targets.
   2. On a real device, turn on Live Activities for the app (Settings).
 Then: flutter run''');
+}
+
+/// Raises `minSdk` in the app's `android/app/build.gradle(.kts)` to 26.
+void _configureAndroid(String project) {
+  for (final name in ['build.gradle.kts', 'build.gradle']) {
+    final file = File('$project/android/app/$name');
+    if (!file.existsSync()) continue;
+    final updated = raiseAndroidMinSdk(file.readAsStringSync());
+    if (updated != null) {
+      file.writeAsStringSync(updated);
+      stdout.writeln('Android: minSdk raised to 26 in android/app/$name.');
+    }
+    return;
+  }
 }
 
 void _usage() {
