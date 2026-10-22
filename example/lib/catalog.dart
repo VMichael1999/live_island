@@ -139,7 +139,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'orbit',
-    'Órbita · arco',
+    'Orbit · arc',
     (a, b) => OrbitPreset(accent: _a(a, const OrbitPreset().accent)),
   ),
   // Un preset de la galería con la barra reestilizada: así queda una línea de tren.
@@ -200,7 +200,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'parking',
-    'Estacionamiento',
+    'Parking',
     (a, b) => ParkingPreset(
       accent: _a(a, const ParkingPreset().accent),
       lockBackground: b ?? LiveBackground.system,
@@ -216,7 +216,7 @@ final catalog = <CatalogEntry>[
   ),
   CatalogEntry(
     'workout',
-    'Entrenamiento',
+    'Workout',
     (a, b) => WorkoutPreset(
       accent: _a(a, const WorkoutPreset().accent),
       lockBackground: b ?? LiveBackground.system,
