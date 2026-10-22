@@ -22,7 +22,7 @@ Se validan con JSON Schema 2020-12 (probado con `ajv`).
    - `gt`, `gte`, `lt`, `lte`: solo con números o textos numéricos; si el campo falta o no es numérico, la condición es falsa.
    - `truthy`: verdadero salvo nulo, `false`, `0` o texto vacío (el texto `"false"` es verdadero); `truthy: false` lo invierte.
    - **Plantillas `{campo}`:** solo un identificador (`[A-Za-z_][A-Za-z0-9_]*`) entre llaves es un campo; `{ x }`, `{}` o una llave sin cerrar se dejan tal cual. Un número entero se escribe sin decimales (`5.0` → `5`) y un campo que falta, vacío.
-   - Estas reglas las ejecutan los tres intérpretes con los mismos casos de [`conformance.json`](conformance.json) (`tool/conformidad.sh`).
+   - Estas reglas las ejecutan los tres intérpretes con los mismos casos de [`conformance.json`](conformance.json) (`tool/conformidad.sh`). Además, [`resolved_texts.json`](resolved_texts.json) guarda los textos que muestra cada preset con sus datos de ejemplo: Dart lo genera (`ACTUALIZAR_TEXTOS=1 flutter test test/textos_resueltos_test.dart`) y Swift y Kotlin deben resolver los mismos.
 7. **`lockScreen`** puede ser `{same:"expanded"}` (reutiliza la expandida) o un nodo propio.
 8. **Bloque `android`**: usa `title`, `text`, `chip`, `colorized`. `progress` y `actions` son opcionales; si faltan, el traductor Kotlin los toma de `expanded.bottom` (primer nodo de progreso y botones). Así el caso normal no duplica información.
 9. **Botones**: `id` obligatorio (`[a-z0-9_]+`). Con `action` ausente o `custom` llegan a `LiveIsland.onAction(id)`.

@@ -155,10 +155,7 @@ void main() {
     });
 
     test('los botones exigen un id en minúsculas', () {
-      expect(
-        () => LiveButton(id: 'Call', label: 'Call'),
-        throwsArgumentError,
-      );
+      expect(() => LiveButton(id: 'Call', label: 'Call'), throwsArgumentError);
       expect(
         () => LiveButton(id: 'ver codigo', label: 'x'),
         throwsArgumentError,

@@ -1,0 +1,6934 @@
+{
+ "presets": [
+  {
+   "name": "TripPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#1F6FEB",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "car.fill",
+     "android": "packages/live_island_kit/assets/icons/car.png"
+    },
+    "images": {
+     "asset_packages_live_island_kit_assets_presets_car_top_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_car_top_png.png",
+      "w": 212,
+      "h": 113
+     }
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "avatar",
+      "text": "CM"
+     },
+     "compactTrailing": {
+      "t": "countdown",
+      "bind": "llegaA",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "avatar",
+      "text": "CM"
+     },
+     "expanded": {
+      "leading": {
+       "t": "avatar",
+       "text": "CM"
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "countdown",
+         "bind": "llegaA",
+         "size": 22.0,
+         "w": 700,
+         "accent": true
+        },
+        {
+         "t": "text",
+         "bind": "nombre",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "align": "end"
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "segments",
+         "bind": "progreso",
+         "labels": [
+          "Assigned",
+          "On the way",
+          "Arrived"
+         ],
+         "points": true,
+         "tracker": {
+          "visual": {
+           "t": "image",
+           "img": "asset_packages_live_island_kit_assets_presets_car_top_png"
+          },
+          "height": 24.0,
+          "background": "none"
+         },
+         "end": {
+          "t": "icon",
+          "sf": "mappin",
+          "android": "packages/live_island_kit/assets/icons/mappin.png"
+         }
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "button",
+           "id": "call",
+           "label": "Call",
+           "icon": {
+            "t": "icon",
+            "sf": "phone.fill",
+            "android": "packages/live_island_kit/assets/icons/phone.png"
+           }
+          },
+          {
+           "t": "button",
+           "id": "share",
+           "label": "Share",
+           "icon": {
+            "t": "icon",
+            "sf": "square.and.arrow.up",
+            "android": "packages/live_island_kit/assets/icons/share2.png"
+           }
+          }
+         ]
+        }
+       ],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "countdown",
+      "bind": "llegaA"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Your driver is on the way",
+    "subtitulo": "Gray sedan · ABC-123",
+    "nombre": "Carlos M.",
+    "llegaA": "2026-10-04T15:06:00.000Z",
+    "progreso": 0.45
+   },
+   "texts": [
+    "Carlos M.",
+    "Gray sedan · ABC-123",
+    "Your driver is on the way"
+   ]
+  },
+  {
+   "name": "DeliveryPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#E4572E",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "fork.knife",
+     "android": "packages/live_island_kit/assets/icons/utensils.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "fork.knife",
+      "android": "packages/live_island_kit/assets/icons/utensils.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "countdown",
+      "bind": "llegaA",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "fork.knife",
+      "android": "packages/live_island_kit/assets/icons/utensils.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "box",
+       "child": {
+        "t": "icon",
+        "sf": "fork.knife",
+        "android": "packages/live_island_kit/assets/icons/utensils.png",
+        "accent": true
+       },
+       "size": 46.0,
+       "radius": 14.0,
+       "tint": 0.22
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "countdown",
+         "bind": "llegaA",
+         "size": 22.0,
+         "w": 700,
+         "accent": true
+        },
+        {
+         "t": "text",
+         "bind": "nombre",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "align": "end"
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "segments",
+         "bind": "progreso",
+         "labels": [
+          "Confirmed",
+          "Preparing",
+          "On the way",
+          "Delivered"
+         ],
+         "points": true,
+         "tracker": {
+          "visual": {
+           "t": "icon",
+           "sf": "bicycle",
+           "android": "packages/live_island_kit/assets/icons/bike.png"
+          },
+          "height": 24.0,
+          "background": "accentCircle"
+         },
+         "end": {
+          "t": "icon",
+          "sf": "house.fill",
+          "android": "packages/live_island_kit/assets/icons/house.png"
+         }
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "button",
+           "id": "call",
+           "label": "Call",
+           "icon": {
+            "t": "icon",
+            "sf": "phone.fill",
+            "android": "packages/live_island_kit/assets/icons/phone.png"
+           }
+          },
+          {
+           "t": "button",
+           "id": "view_map",
+           "label": "View map",
+           "icon": {
+            "t": "icon",
+            "sf": "mappin",
+            "android": "packages/live_island_kit/assets/icons/mappin.png"
+           }
+          }
+         ]
+        }
+       ],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "countdown",
+      "bind": "llegaA"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Your order is on the way",
+    "subtitulo": "La Brasa Chicken · 2 items",
+    "nombre": "Luis, courier",
+    "llegaA": "2026-10-04T15:12:00.000Z",
+    "progreso": 0.62
+   },
+   "texts": [
+    "La Brasa Chicken · 2 items",
+    "Luis, courier",
+    "Your order is on the way"
+   ]
+  },
+  {
+   "name": "CourierPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#6D4C41",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "shippingbox.fill",
+     "android": "packages/live_island_kit/assets/icons/package.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "shippingbox.fill",
+      "android": "packages/live_island_kit/assets/icons/package.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "destacado",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "shippingbox.fill",
+      "android": "packages/live_island_kit/assets/icons/package.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "box",
+       "child": {
+        "t": "icon",
+        "sf": "shippingbox.fill",
+        "android": "packages/live_island_kit/assets/icons/package.png",
+        "accent": true
+       },
+       "size": 46.0,
+       "radius": 14.0,
+       "tint": 0.22
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "destacado",
+         "size": 22.0,
+         "w": 700,
+         "accent": true
+        },
+        {
+         "t": "text",
+         "bind": "nombre",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "align": "end"
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "segments",
+         "bind": "progreso",
+         "labels": [
+          "Warehouse",
+          "In transit",
+          "Nearby",
+          "Delivered"
+         ],
+         "points": true,
+         "tracker": {
+          "visual": {
+           "t": "icon",
+           "sf": "truck.box.fill",
+           "android": "packages/live_island_kit/assets/icons/truck.png"
+          },
+          "height": 24.0,
+          "background": "accentCircle"
+         },
+         "end": {
+          "t": "icon",
+          "sf": "house.fill",
+          "android": "packages/live_island_kit/assets/icons/house.png"
+         }
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "button",
+           "id": "view_route",
+           "label": "View route",
+           "icon": {
+            "t": "icon",
+            "sf": "mappin",
+            "android": "packages/live_island_kit/assets/icons/mappin.png"
+           }
+          }
+         ]
+        }
+       ],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "3 more"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Your package arrives today",
+    "subtitulo": "3 stops before yours",
+    "nombre": "Route 14",
+    "destacado": "3 stops",
+    "progreso": 0.4
+   },
+   "texts": [
+    "3 more",
+    "3 stops",
+    "3 stops",
+    "3 stops before yours",
+    "Route 14",
+    "Your package arrives today"
+   ]
+  },
+  {
+   "name": "PickupPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#8D5B3A",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "cup.and.saucer.fill",
+     "android": "packages/live_island_kit/assets/icons/coffee.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "cup.and.saucer.fill",
+      "android": "packages/live_island_kit/assets/icons/coffee.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "destacado",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "cup.and.saucer.fill",
+      "android": "packages/live_island_kit/assets/icons/coffee.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "box",
+       "child": {
+        "t": "icon",
+        "sf": "cup.and.saucer.fill",
+        "android": "packages/live_island_kit/assets/icons/coffee.png",
+        "accent": true
+       },
+       "size": 46.0,
+       "radius": 14.0,
+       "tint": 0.22
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "destacado",
+         "size": 22.0,
+         "w": 700,
+         "accent": true
+        },
+        {
+         "t": "text",
+         "bind": "nombre",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "align": "end"
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "segments",
+         "bind": "progreso",
+         "labels": [
+          "Received",
+          "Preparing",
+          "Ready"
+         ],
+         "points": true
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "button",
+           "id": "show_code",
+           "label": "Show code",
+           "icon": {
+            "t": "icon",
+            "sf": "qrcode",
+            "android": "packages/live_island_kit/assets/icons/qrcode.png"
+           }
+          }
+         ]
+        }
+       ],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "#47"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Your order is almost ready",
+    "subtitulo": "Large latte · Pickup counter",
+    "nombre": "Code 47",
+    "destacado": "#47",
+    "progreso": 0.5
+   },
+   "texts": [
+    "#47",
+    "#47",
+    "#47",
+    "Code 47",
+    "Large latte · Pickup counter",
+    "Your order is almost ready"
+   ]
+  },
+  {
+   "name": "QueuePreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#00897B",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "building.columns.fill",
+     "android": "packages/live_island_kit/assets/icons/landmark.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "building.columns.fill",
+      "android": "packages/live_island_kit/assets/icons/landmark.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "destacado",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "building.columns.fill",
+      "android": "packages/live_island_kit/assets/icons/landmark.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "box",
+       "child": {
+        "t": "icon",
+        "sf": "building.columns.fill",
+        "android": "packages/live_island_kit/assets/icons/landmark.png",
+        "accent": true
+       },
+       "size": 46.0,
+       "radius": 14.0,
+       "tint": 0.22
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "destacado",
+         "size": 22.0,
+         "w": 700,
+         "accent": true
+        },
+        {
+         "t": "text",
+         "bind": "nombre",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "align": "end"
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "bar",
+         "bind": "progreso",
+         "tracker": {
+          "visual": {
+           "t": "icon",
+           "sf": "person.fill",
+           "android": "packages/live_island_kit/assets/icons/user.png"
+          },
+          "height": 24.0,
+          "background": "accentCircle"
+         }
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "button",
+           "id": "cancel_ticket",
+           "label": "Cancel ticket",
+           "icon": {
+            "t": "icon",
+            "sf": "xmark",
+            "android": "packages/live_island_kit/assets/icons/x.png"
+           }
+          }
+         ]
+        }
+       ],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "B-027"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Your turn is coming",
+    "subtitulo": "Miraflores branch · Platform",
+    "nombre": "Ticket B-027",
+    "destacado": "4 ahead",
+    "progreso": 0.7
+   },
+   "texts": [
+    "4 ahead",
+    "4 ahead",
+    "B-027",
+    "Miraflores branch · Platform",
+    "Ticket B-027",
+    "Your turn is coming"
+   ]
+  },
+  {
+   "name": "FlightPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#2D5BD7",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "airplane",
+     "android": "packages/live_island_kit/assets/icons/plane.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "airplane",
+      "android": "packages/live_island_kit/assets/icons/plane.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "countdown",
+      "bind": "llegaA",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "airplane",
+      "android": "packages/live_island_kit/assets/icons/plane.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "box",
+       "child": {
+        "t": "icon",
+        "sf": "airplane",
+        "android": "packages/live_island_kit/assets/icons/plane.png",
+        "accent": true
+       },
+       "size": 46.0,
+       "radius": 14.0,
+       "tint": 0.22
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "countdown",
+         "bind": "llegaA",
+         "size": 22.0,
+         "w": 700,
+         "accent": true
+        },
+        {
+         "t": "text",
+         "bind": "nombre",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "align": "end"
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "segments",
+         "bind": "progreso",
+         "labels": [
+          "Check-in",
+          "Boarding",
+          "Takeoff"
+         ],
+         "points": true,
+         "tracker": {
+          "visual": {
+           "t": "icon",
+           "sf": "airplane",
+           "android": "packages/live_island_kit/assets/icons/plane.png"
+          },
+          "height": 24.0,
+          "background": "accentCircle"
+         }
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "button",
+           "id": "boarding_pass",
+           "label": "Boarding pass",
+           "icon": {
+            "t": "icon",
+            "sf": "qrcode",
+            "android": "packages/live_island_kit/assets/icons/qrcode.png"
+           }
+          }
+         ]
+        }
+       ],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "countdown",
+      "bind": "llegaA"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Now boarding",
+    "subtitulo": "LIM → CUZ · Flight 2041",
+    "nombre": "Gate 18",
+    "llegaA": "2026-10-04T15:25:00.000Z",
+    "progreso": 0.35
+   },
+   "texts": [
+    "Gate 18",
+    "LIM → CUZ · Flight 2041",
+    "Now boarding"
+   ]
+  },
+  {
+   "name": "ParkingPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#0277BD",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "parkingsign.circle.fill",
+     "android": "packages/live_island_kit/assets/icons/squareparking.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "parkingsign.circle.fill",
+      "android": "packages/live_island_kit/assets/icons/squareparking.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "countdown",
+      "bind": "llegaA",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "ring",
+      "bind": "progreso",
+      "child": {
+       "t": "icon",
+       "sf": "parkingsign.circle.fill",
+       "android": "packages/live_island_kit/assets/icons/squareparking.png",
+       "accent": true
+      }
+     },
+     "expanded": {
+      "leading": {
+       "t": "box",
+       "child": {
+        "t": "icon",
+        "sf": "parkingsign.circle.fill",
+        "android": "packages/live_island_kit/assets/icons/squareparking.png",
+        "accent": true
+       },
+       "size": 46.0,
+       "radius": 14.0,
+       "tint": 0.22
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "ring",
+       "bind": "progreso",
+       "size": 46.0
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "spacer"
+          },
+          {
+           "t": "countdown",
+           "bind": "llegaA",
+           "size": 12.0,
+           "muted": true
+          },
+          {
+           "t": "text",
+           "text": "·",
+           "size": 12.0,
+           "muted": true
+          },
+          {
+           "t": "text",
+           "bind": "nombre",
+           "size": 12.0,
+           "muted": true
+          },
+          {
+           "t": "spacer"
+          }
+         ],
+         "gap": 4.0
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "button",
+           "id": "15_min",
+           "label": "+15 min",
+           "icon": {
+            "t": "icon",
+            "sf": "plus",
+            "android": "packages/live_island_kit/assets/icons/plus.png"
+           }
+          },
+          {
+           "t": "button",
+           "id": "end",
+           "label": "End",
+           "icon": {
+            "t": "icon",
+            "sf": "xmark",
+            "android": "packages/live_island_kit/assets/icons/x.png"
+           }
+          }
+         ]
+        }
+       ],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "countdown",
+      "bind": "llegaA"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Parking active",
+    "subtitulo": "Blue zone · Av. Larco 400",
+    "nombre": "Plate ABC-123",
+    "llegaA": "2026-10-04T15:45:00.000Z",
+    "progreso": 0.35
+   },
+   "texts": [
+    "Blue zone · Av. Larco 400",
+    "Parking active",
+    "Plate ABC-123",
+    "·"
+   ]
+  },
+  {
+   "name": "EvChargingPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#2E7D32",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "bolt.car.fill",
+     "android": "packages/live_island_kit/assets/icons/batterycharging.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "bolt.car.fill",
+      "android": "packages/live_island_kit/assets/icons/batterycharging.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "destacado",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "bolt.car.fill",
+      "android": "packages/live_island_kit/assets/icons/batterycharging.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "box",
+       "child": {
+        "t": "icon",
+        "sf": "bolt.car.fill",
+        "android": "packages/live_island_kit/assets/icons/batterycharging.png",
+        "accent": true
+       },
+       "size": 46.0,
+       "radius": 14.0,
+       "tint": 0.22
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "destacado",
+         "size": 22.0,
+         "w": 700,
+         "accent": true
+        },
+        {
+         "t": "text",
+         "bind": "nombre",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "align": "end"
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "bar",
+         "bind": "progreso",
+         "tracker": {
+          "visual": {
+           "t": "icon",
+           "sf": "bolt.fill",
+           "android": "packages/live_island_kit/assets/icons/zap.png"
+          },
+          "height": 24.0,
+          "background": "accentCircle"
+         }
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "button",
+           "id": "stop",
+           "label": "Stop",
+           "icon": {
+            "t": "icon",
+            "sf": "pause.fill",
+            "android": "packages/live_island_kit/assets/icons/pause.png"
+           }
+          }
+         ]
+        }
+       ],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "68 %"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Charging your car",
+    "subtitulo": "Station 3 · 50 kW",
+    "nombre": "Done 10:35",
+    "destacado": "68 %",
+    "progreso": 0.68
+   },
+   "texts": [
+    "68 %",
+    "68 %",
+    "68 %",
+    "Charging your car",
+    "Done 10:35",
+    "Station 3 · 50 kW"
+   ]
+  },
+  {
+   "name": "WorkoutPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#D81B60",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "dumbbell.fill",
+     "android": "packages/live_island_kit/assets/icons/dumbbell.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "dumbbell.fill",
+      "android": "packages/live_island_kit/assets/icons/dumbbell.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "countdown",
+      "bind": "llegaA",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "dumbbell.fill",
+      "android": "packages/live_island_kit/assets/icons/dumbbell.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "box",
+       "child": {
+        "t": "icon",
+        "sf": "dumbbell.fill",
+        "android": "packages/live_island_kit/assets/icons/dumbbell.png",
+        "accent": true
+       },
+       "size": 46.0,
+       "radius": 14.0,
+       "tint": 0.22
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "countdown",
+         "bind": "llegaA",
+         "size": 22.0,
+         "w": 700,
+         "accent": true
+        },
+        {
+         "t": "text",
+         "bind": "nombre",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "align": "end"
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "segments",
+         "bind": "progreso",
+         "labels": [
+          "1",
+          "2",
+          "3",
+          "4"
+         ],
+         "points": false
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "button",
+           "id": "30_s",
+           "label": "+30 s",
+           "icon": {
+            "t": "icon",
+            "sf": "plus",
+            "android": "packages/live_island_kit/assets/icons/plus.png"
+           }
+          },
+          {
+           "t": "button",
+           "id": "skip",
+           "label": "Skip",
+           "icon": {
+            "t": "icon",
+            "sf": "play.fill",
+            "android": "packages/live_island_kit/assets/icons/play.png"
+           }
+          }
+         ]
+        }
+       ],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "countdown",
+      "bind": "llegaA"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Rest",
+    "subtitulo": "Bench press · Set 3 of 4",
+    "nombre": "60 kg × 10",
+    "llegaA": "2026-10-04T15:01:30.000Z",
+    "progreso": 0.5
+   },
+   "texts": [
+    "60 kg × 10",
+    "Bench press · Set 3 of 4",
+    "Rest"
+   ]
+  },
+  {
+   "name": "CookingTimerPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#F57C00",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "frying.pan.fill",
+     "android": "packages/live_island_kit/assets/icons/cookingpot.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "frying.pan.fill",
+      "android": "packages/live_island_kit/assets/icons/cookingpot.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "countdown",
+      "bind": "llegaA",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "ring",
+      "bind": "progreso",
+      "child": {
+       "t": "icon",
+       "sf": "frying.pan.fill",
+       "android": "packages/live_island_kit/assets/icons/cookingpot.png",
+       "accent": true
+      }
+     },
+     "expanded": {
+      "leading": {
+       "t": "box",
+       "child": {
+        "t": "icon",
+        "sf": "frying.pan.fill",
+        "android": "packages/live_island_kit/assets/icons/cookingpot.png",
+        "accent": true
+       },
+       "size": 46.0,
+       "radius": 14.0,
+       "tint": 0.22
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "ring",
+       "bind": "progreso",
+       "size": 46.0
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "spacer"
+          },
+          {
+           "t": "countdown",
+           "bind": "llegaA",
+           "size": 12.0,
+           "muted": true
+          },
+          {
+           "t": "text",
+           "text": "·",
+           "size": 12.0,
+           "muted": true
+          },
+          {
+           "t": "text",
+           "bind": "nombre",
+           "size": 12.0,
+           "muted": true
+          },
+          {
+           "t": "spacer"
+          }
+         ],
+         "gap": 4.0
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "button",
+           "id": "pause",
+           "label": "Pause",
+           "icon": {
+            "t": "icon",
+            "sf": "pause.fill",
+            "android": "packages/live_island_kit/assets/icons/pause.png"
+           }
+          }
+         ]
+        }
+       ],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "countdown",
+      "bind": "llegaA"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Rice cooking",
+    "subtitulo": "Step 3 of 5 · Lower the heat",
+    "nombre": "Chicken rice",
+    "llegaA": "2026-10-04T15:15:00.000Z",
+    "progreso": 0.4
+   },
+   "texts": [
+    "Chicken rice",
+    "Rice cooking",
+    "Step 3 of 5 · Lower the heat",
+    "·"
+   ]
+  },
+  {
+   "name": "UploadPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#5E35B1",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "arrow.up.circle.fill",
+     "android": "packages/live_island_kit/assets/icons/upload.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "arrow.up.circle.fill",
+      "android": "packages/live_island_kit/assets/icons/upload.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "destacado",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "arrow.up.circle.fill",
+      "android": "packages/live_island_kit/assets/icons/upload.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "box",
+       "child": {
+        "t": "icon",
+        "sf": "arrow.up.circle.fill",
+        "android": "packages/live_island_kit/assets/icons/upload.png",
+        "accent": true
+       },
+       "size": 46.0,
+       "radius": 14.0,
+       "tint": 0.22
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "destacado",
+         "size": 22.0,
+         "w": 700,
+         "accent": true
+        },
+        {
+         "t": "text",
+         "bind": "nombre",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "align": "end"
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "bar",
+         "bind": "progreso"
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "button",
+           "id": "cancel",
+           "label": "Cancel",
+           "icon": {
+            "t": "icon",
+            "sf": "xmark",
+            "android": "packages/live_island_kit/assets/icons/x.png"
+           }
+          }
+         ]
+        }
+       ],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "42 %"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Uploading video",
+    "subtitulo": "holiday.mp4 · 420 MB",
+    "nombre": "3 min left",
+    "destacado": "42 %",
+    "progreso": 0.42
+   },
+   "texts": [
+    "3 min left",
+    "42 %",
+    "42 %",
+    "42 %",
+    "Uploading video",
+    "holiday.mp4 · 420 MB"
+   ]
+  },
+  {
+   "name": "TechnicianPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#00838F",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "wrench.and.screwdriver.fill",
+     "android": "packages/live_island_kit/assets/icons/wrench.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "avatar",
+      "text": "JR"
+     },
+     "compactTrailing": {
+      "t": "countdown",
+      "bind": "llegaA",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "avatar",
+      "text": "JR"
+     },
+     "expanded": {
+      "leading": {
+       "t": "avatar",
+       "text": "JR"
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "countdown",
+         "bind": "llegaA",
+         "size": 22.0,
+         "w": 700,
+         "accent": true
+        },
+        {
+         "t": "text",
+         "bind": "nombre",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "align": "end"
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "segments",
+         "bind": "progreso",
+         "labels": [
+          "Assigned",
+          "On the way",
+          "Working",
+          "Ready"
+         ],
+         "points": true,
+         "tracker": {
+          "visual": {
+           "t": "icon",
+           "sf": "car.fill",
+           "android": "packages/live_island_kit/assets/icons/car.png"
+          },
+          "height": 24.0,
+          "background": "accentCircle"
+         }
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "button",
+           "id": "call",
+           "label": "Call",
+           "icon": {
+            "t": "icon",
+            "sf": "phone.fill",
+            "android": "packages/live_island_kit/assets/icons/phone.png"
+           }
+          }
+         ]
+        }
+       ],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "countdown",
+      "bind": "llegaA"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Your technician is on the way",
+    "subtitulo": "Internet installation",
+    "nombre": "Jorge R.",
+    "llegaA": "2026-10-04T15:20:00.000Z",
+    "progreso": 0.3
+   },
+   "texts": [
+    "Internet installation",
+    "Jorge R.",
+    "Your technician is on the way"
+   ]
+  },
+  {
+   "name": "TransitPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#C62828",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "bus.fill",
+     "android": "packages/live_island_kit/assets/icons/bus.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "bus.fill",
+      "android": "packages/live_island_kit/assets/icons/bus.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "destacado",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "bus.fill",
+      "android": "packages/live_island_kit/assets/icons/bus.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "box",
+       "child": {
+        "t": "icon",
+        "sf": "bus.fill",
+        "android": "packages/live_island_kit/assets/icons/bus.png",
+        "accent": true
+       },
+       "size": 46.0,
+       "radius": 14.0,
+       "tint": 0.22
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "destacado",
+         "size": 22.0,
+         "w": 700,
+         "accent": true
+        },
+        {
+         "t": "text",
+         "bind": "nombre",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "align": "end"
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "segments",
+         "bind": "progreso",
+         "labels": [
+          "Boarded",
+          "2",
+          "3",
+          "4",
+          "Exit"
+         ],
+         "points": true,
+         "tracker": {
+          "visual": {
+           "t": "icon",
+           "sf": "bus.fill",
+           "android": "packages/live_island_kit/assets/icons/bus.png"
+          },
+          "height": 24.0,
+          "background": "accentCircle"
+         },
+         "end": {
+          "t": "icon",
+          "sf": "flag.checkered",
+          "android": "packages/live_island_kit/assets/icons/flag.png"
+         }
+        }
+       ],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "3 stops"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Get off in 3 stops",
+    "subtitulo": "Line 201 · Javier Prado",
+    "nombre": "Las Begonias stop",
+    "destacado": "3 stops",
+    "progreso": 0.55
+   },
+   "texts": [
+    "3 stops",
+    "3 stops",
+    "3 stops",
+    "Get off in 3 stops",
+    "Las Begonias stop",
+    "Line 201 · Javier Prado"
+   ]
+  },
+  {
+   "name": "WaitingRoomPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#00796B",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "stethoscope",
+     "android": "packages/live_island_kit/assets/icons/stethoscope.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "stethoscope",
+      "android": "packages/live_island_kit/assets/icons/stethoscope.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "destacado",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "stethoscope",
+      "android": "packages/live_island_kit/assets/icons/stethoscope.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "box",
+       "child": {
+        "t": "icon",
+        "sf": "stethoscope",
+        "android": "packages/live_island_kit/assets/icons/stethoscope.png",
+        "accent": true
+       },
+       "size": 46.0,
+       "radius": 14.0,
+       "tint": 0.22
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "destacado",
+         "size": 22.0,
+         "w": 700,
+         "accent": true
+        },
+        {
+         "t": "text",
+         "bind": "nombre",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "align": "end"
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "bar",
+         "bind": "progreso",
+         "tracker": {
+          "visual": {
+           "t": "icon",
+           "sf": "person.fill",
+           "android": "packages/live_island_kit/assets/icons/user.png"
+          },
+          "height": 24.0,
+          "background": "accentCircle"
+         }
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "button",
+           "id": "leave_queue",
+           "label": "Leave queue",
+           "icon": {
+            "t": "icon",
+            "sf": "xmark",
+            "android": "packages/live_island_kit/assets/icons/x.png"
+           }
+          }
+         ]
+        }
+       ],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "2 ahead"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Virtual waiting room",
+    "subtitulo": "Dr. Ríos · General medicine",
+    "nombre": "Calling you soon",
+    "destacado": "2 ahead",
+    "progreso": 0.8
+   },
+   "texts": [
+    "2 ahead",
+    "2 ahead",
+    "2 ahead",
+    "Calling you soon",
+    "Dr. Ríos · General medicine",
+    "Virtual waiting room"
+   ]
+  },
+  {
+   "name": "ScorePreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#1B5E20",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "trophy.fill",
+     "android": "packages/live_island_kit/assets/icons/trophy.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "trophy.fill",
+      "android": "packages/live_island_kit/assets/icons/trophy.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "destacado",
+      "size": 15.0,
+      "w": 600,
+      "accent": true
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "trophy.fill",
+      "android": "packages/live_island_kit/assets/icons/trophy.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "box",
+       "child": {
+        "t": "icon",
+        "sf": "trophy.fill",
+        "android": "packages/live_island_kit/assets/icons/trophy.png",
+        "accent": true
+       },
+       "size": 46.0,
+       "radius": 14.0,
+       "tint": 0.22
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 15.0,
+         "w": 600,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true
+        }
+       ]
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "destacado",
+         "size": 22.0,
+         "w": 700,
+         "accent": true
+        },
+        {
+         "t": "text",
+         "bind": "nombre",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "align": "end"
+      },
+      "bottom": {
+       "t": "col",
+       "c": [],
+       "gap": 12.0
+      }
+     },
+     "lockScreen": {
+      "same": "expanded"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "2–1"
+     },
+     "colorized": false
+    }
+   },
+   "state": {
+    "titulo": "Lima FC 2 – 1 Callao SC",
+    "subtitulo": "Second half · Lima FC goal",
+    "nombre": "Liga 1",
+    "destacado": "78'",
+    "progreso": 0.4
+   },
+   "texts": [
+    "2–1",
+    "78'",
+    "78'",
+    "Liga 1",
+    "Lima FC 2 – 1 Callao SC",
+    "Second half · Lima FC goal"
+   ]
+  },
+  {
+   "name": "RidePickupPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#1F5EFF",
+     "background": "light"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "car.fill",
+     "android": "packages/live_island_kit/assets/icons/car.png"
+    },
+    "images": {
+     "asset_packages_live_island_kit_assets_presets_car_top_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_car_top_png.png",
+      "w": 212,
+      "h": 113
+     },
+     "asset_packages_live_island_kit_assets_presets_car_side_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_car_side_png.png",
+      "w": 110,
+      "h": 46
+     }
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "color": "#1F5EFF"
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "tiempo",
+      "size": 15.0,
+      "w": 700,
+      "color": "#FFFFFF"
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "color": "#1F5EFF"
+     },
+     "expanded": {
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "box",
+           "child": {
+            "t": "text",
+            "text": "A",
+            "size": 19.36,
+            "w": 700,
+            "color": "#FFFFFF"
+           },
+           "size": 44.0,
+           "radius": 22.0,
+           "color": "#1F5EFF"
+          },
+          {
+           "t": "col",
+           "c": [
+            {
+             "t": "row",
+             "c": [
+              {
+               "t": "text",
+               "bind": "tiempo",
+               "size": 19.0,
+               "w": 700,
+               "color": "#1F5EFF"
+              },
+              {
+               "t": "text",
+               "bind": "titulo",
+               "size": 19.0,
+               "w": 700,
+               "color": "#FFFFFF",
+               "lines": 1
+              }
+             ],
+             "gap": 5.0
+            },
+            {
+             "t": "text",
+             "fmt": "{placa} · {vehiculo}",
+             "size": 14.0,
+             "color": "#B4B6BC",
+             "lines": 1
+            }
+           ],
+           "gap": 2.0
+          }
+         ],
+         "gap": 10.0
+        },
+        {
+         "t": "bar",
+         "bind": "progreso",
+         "style": {
+          "h": 4.0,
+          "color": "#FFFFFF",
+          "trackColor": "#6B6E75",
+          "pointSize": 18.0,
+          "pointShape": "ring",
+          "dashed": true,
+          "markers": [
+           0.62,
+           1.0
+          ]
+         },
+         "tracker": {
+          "visual": {
+           "t": "image",
+           "img": "asset_packages_live_island_kit_assets_presets_car_top_png",
+           "shape": "square"
+          },
+          "height": 24.0,
+          "background": "none"
+         }
+        }
+       ],
+       "gap": 10.0
+      }
+     },
+     "lockScreen": {
+      "t": "col",
+      "c": [
+       {
+        "t": "row",
+        "c": [
+         {
+          "t": "text",
+          "text": "Run",
+          "size": 22.0,
+          "w": 800,
+          "color": "#0B0B0D"
+         },
+         {
+          "t": "spacer"
+         },
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "box",
+            "child": {
+             "t": "text",
+             "text": "A",
+             "size": 14.96,
+             "w": 700,
+             "color": "#FFFFFF"
+            },
+            "size": 34.0,
+            "radius": 17.0,
+            "color": "#1F5EFF"
+           },
+           {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_car_side_png",
+            "shape": "square",
+            "size": 74.0
+           }
+          ],
+          "gap": 0.0
+         }
+        ]
+       },
+       {
+        "t": "col",
+        "c": [
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "text",
+            "bind": "tiempo",
+            "size": 21.0,
+            "w": 700,
+            "color": "#1F5EFF"
+           },
+           {
+            "t": "text",
+            "bind": "titulo",
+            "size": 21.0,
+            "w": 700,
+            "color": "#0B0B0D",
+            "lines": 1
+           }
+          ],
+          "gap": 6.0
+         },
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "text",
+            "bind": "subtitulo",
+            "size": 15.0,
+            "color": "#0B0B0D",
+            "lines": 1
+           },
+           {
+            "t": "spacer"
+           },
+           {
+            "t": "text",
+            "bind": "placa",
+            "size": 16.0,
+            "w": 700,
+            "color": "#0B0B0D"
+           }
+          ]
+         }
+        ],
+        "gap": 3.0
+       },
+       {
+        "t": "bar",
+        "bind": "progreso",
+        "style": {
+         "h": 4.0,
+         "color": "#1F5EFF",
+         "trackColor": "#B4B4B9",
+         "pointSize": 18.0,
+         "pointShape": "ring",
+         "dashed": true,
+         "markers": [
+          0.62,
+          1.0
+         ]
+        },
+        "tracker": {
+         "visual": {
+          "t": "image",
+          "img": "asset_packages_live_island_kit_assets_presets_car_top_png",
+          "shape": "square"
+         },
+         "height": 24.0,
+         "background": "none"
+        }
+       }
+      ],
+      "gap": 6.0
+     }
+    },
+    "android": {
+     "title": {
+      "text": "Pickup"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {placa}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "2 min"
+     },
+     "colorized": false,
+     "progress": {
+      "t": "bar",
+      "bind": "progreso",
+      "style": {
+       "h": 4.0,
+       "color": "#1F5EFF",
+       "trackColor": "#B4B4B9",
+       "pointSize": 18.0,
+       "pointShape": "ring",
+       "dashed": true,
+       "markers": [
+        0.62,
+        1.0
+       ]
+      },
+      "tracker": {
+       "visual": {
+        "t": "image",
+        "img": "asset_packages_live_island_kit_assets_presets_car_top_png",
+        "shape": "square"
+       },
+       "height": 24.0,
+       "background": "none"
+      }
+     },
+     "style": "card",
+     "subText": {
+      "bind": "vehiculo"
+     }
+    }
+   },
+   "state": {
+    "tiempo": "2 min",
+    "titulo": "until pickup",
+    "subtitulo": "Andrés arrives shortly",
+    "placa": "A1B-234",
+    "vehiculo": "Silver sedan",
+    "nombre": "Andrés",
+    "progreso": 0.34
+   },
+   "texts": [
+    "2 min",
+    "2 min",
+    "2 min",
+    "2 min",
+    "A",
+    "A",
+    "A1B-234",
+    "A1B-234 · Silver sedan",
+    "Andrés arrives shortly",
+    "Run",
+    "until pickup",
+    "until pickup"
+   ]
+  },
+  {
+   "name": "RidePickupPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#16181C",
+     "background": "accent"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "car.fill",
+     "android": "packages/live_island_kit/assets/icons/car.png"
+    },
+    "images": {
+     "asset_packages_live_island_kit_assets_presets_car_top_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_car_top_png.png",
+      "w": 212,
+      "h": 113
+     },
+     "asset_packages_live_island_kit_assets_presets_car_side_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_car_side_png.png",
+      "w": 110,
+      "h": 46
+     }
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "color": "#1F5EFF"
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "tiempo",
+      "size": 15.0,
+      "w": 700,
+      "color": "#FFFFFF"
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "color": "#1F5EFF"
+     },
+     "expanded": {
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "box",
+           "child": {
+            "t": "text",
+            "text": "A",
+            "size": 19.36,
+            "w": 700,
+            "color": "#FFFFFF"
+           },
+           "size": 44.0,
+           "radius": 22.0,
+           "color": "#1F5EFF"
+          },
+          {
+           "t": "col",
+           "c": [
+            {
+             "t": "row",
+             "c": [
+              {
+               "t": "text",
+               "bind": "titulo",
+               "size": 19.0,
+               "w": 700,
+               "color": "#FFFFFF",
+               "lines": 1
+              },
+              {
+               "t": "text",
+               "bind": "tiempo",
+               "size": 19.0,
+               "w": 700,
+               "color": "#FFFFFF"
+              }
+             ],
+             "gap": 5.0
+            },
+            {
+             "t": "text",
+             "fmt": "{placa} · {vehiculo}",
+             "size": 14.0,
+             "color": "#B4B6BC",
+             "lines": 1
+            }
+           ],
+           "gap": 2.0
+          }
+         ],
+         "gap": 10.0
+        },
+        {
+         "t": "bar",
+         "bind": "progreso",
+         "style": {
+          "h": 4.0,
+          "color": "#FFFFFF",
+          "trackColor": "#6B6E75",
+          "pointSize": 16.0,
+          "pointColor": "#D9DADF",
+          "endMarker": "target"
+         },
+         "tracker": {
+          "visual": {
+           "t": "image",
+           "img": "asset_packages_live_island_kit_assets_presets_car_top_png",
+           "shape": "square"
+          },
+          "height": 24.0,
+          "background": "none"
+         }
+        }
+       ],
+       "gap": 10.0
+      }
+     },
+     "lockScreen": {
+      "t": "col",
+      "c": [
+       {
+        "t": "row",
+        "c": [
+         {
+          "t": "text",
+          "text": "Run",
+          "size": 22.0,
+          "w": 800,
+          "color": "#FFFFFF"
+         },
+         {
+          "t": "spacer"
+         },
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "box",
+            "child": {
+             "t": "text",
+             "text": "A",
+             "size": 14.96,
+             "w": 700,
+             "color": "#FFFFFF"
+            },
+            "size": 34.0,
+            "radius": 17.0,
+            "color": "#1F5EFF"
+           },
+           {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_car_side_png",
+            "shape": "square",
+            "size": 74.0
+           }
+          ],
+          "gap": 0.0
+         }
+        ]
+       },
+       {
+        "t": "col",
+        "c": [
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "text",
+            "bind": "titulo",
+            "size": 24.0,
+            "w": 700,
+            "color": "#FFFFFF"
+           },
+           {
+            "t": "text",
+            "bind": "tiempo",
+            "size": 24.0,
+            "w": 700,
+            "color": "#FFFFFF"
+           }
+          ],
+          "gap": 6.0
+         },
+         {
+          "t": "text",
+          "fmt": "{placa} • {vehiculo}",
+          "size": 15.0,
+          "color": "#B4B6BC"
+         }
+        ],
+        "gap": 3.0
+       },
+       {
+        "t": "bar",
+        "bind": "progreso",
+        "style": {
+         "h": 4.0,
+         "color": "#FFFFFF",
+         "trackColor": "#6B6E75",
+         "pointSize": 16.0,
+         "pointColor": "#D9DADF",
+         "endMarker": "target"
+        },
+        "tracker": {
+         "visual": {
+          "t": "image",
+          "img": "asset_packages_live_island_kit_assets_presets_car_top_png",
+          "shape": "square"
+         },
+         "height": 24.0,
+         "background": "none"
+        }
+       }
+      ],
+      "gap": 6.0
+     }
+    },
+    "android": {
+     "title": {
+      "text": "Pickup"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {placa}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "2 min"
+     },
+     "colorized": false,
+     "progress": {
+      "t": "bar",
+      "bind": "progreso",
+      "style": {
+       "h": 4.0,
+       "color": "#1F5EFF",
+       "trackColor": "#B4B4B9",
+       "pointSize": 16.0,
+       "pointColor": "#D9DADF",
+       "endMarker": "target"
+      },
+      "tracker": {
+       "visual": {
+        "t": "image",
+        "img": "asset_packages_live_island_kit_assets_presets_car_top_png",
+        "shape": "square"
+       },
+       "height": 24.0,
+       "background": "none"
+      }
+     },
+     "style": "card",
+     "subText": {
+      "bind": "vehiculo"
+     }
+    }
+   },
+   "state": {
+    "tiempo": "2 min",
+    "titulo": "Pickup in",
+    "subtitulo": "Andrés arrives shortly",
+    "placa": "A1B-234",
+    "vehiculo": "Silver sedan",
+    "nombre": "Andrés",
+    "progreso": 0.34
+   },
+   "texts": [
+    "2 min",
+    "2 min",
+    "2 min",
+    "2 min",
+    "A",
+    "A",
+    "A1B-234 · Silver sedan",
+    "A1B-234 • Silver sedan",
+    "Pickup in",
+    "Pickup in",
+    "Run"
+   ]
+  },
+  {
+   "name": "RideArrivalPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#6FA8FF",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "car.fill",
+     "android": "packages/live_island_kit/assets/icons/car.png"
+    },
+    "images": {
+     "asset_packages_live_island_kit_assets_presets_car_plate_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_car_plate_png.png",
+      "w": 560,
+      "h": 258
+     }
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "pago",
+      "size": 15.0,
+      "w": 700,
+      "color": "#6FA8FF"
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "padding",
+       "child": {
+        "t": "text",
+        "text": "Run",
+        "size": 24.0,
+        "w": 800,
+        "color": "#FFFFFF"
+       },
+       "h": 6.0
+      },
+      "trailing": {
+       "t": "padding",
+       "child": {
+        "t": "image",
+        "img": "asset_packages_live_island_kit_assets_presets_car_plate_png",
+        "shape": "square",
+        "h": 54.0
+       },
+       "h": 6.0
+      },
+      "bottom": {
+       "t": "row",
+       "c": [
+        {
+         "t": "col",
+         "c": [
+          {
+           "t": "text",
+           "text": "Arriving around",
+           "size": 16.0,
+           "w": 600,
+           "color": "#FFFFFF",
+           "lines": 1
+          },
+          {
+           "t": "text",
+           "fmt": "at {hora}",
+           "size": 16.0,
+           "w": 600,
+           "color": "#FFFFFF",
+           "lines": 1
+          }
+         ],
+         "gap": 2.0
+        },
+        {
+         "t": "spacer"
+        },
+        {
+         "t": "col",
+         "c": [
+          {
+           "t": "text",
+           "text": "Fare",
+           "size": 18.0,
+           "w": 600,
+           "color": "#FFFFFF"
+          },
+          {
+           "t": "text",
+           "bind": "pago",
+           "size": 24.0,
+           "w": 800,
+           "color": "#6FA8FF",
+           "lines": 1
+          }
+         ],
+         "align": "end"
+        }
+       ],
+       "align": "end"
+      }
+     },
+     "lockScreen": {
+      "t": "box",
+      "child": {
+       "t": "padding",
+       "child": {
+        "t": "col",
+        "c": [
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "text",
+            "text": "Run",
+            "size": 24.0,
+            "w": 800,
+            "color": "#FFFFFF"
+           },
+           {
+            "t": "spacer"
+           },
+           {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_car_plate_png",
+            "shape": "square",
+            "h": 54.0
+           }
+          ]
+         },
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "col",
+            "c": [
+             {
+              "t": "text",
+              "text": "Arriving around",
+              "size": 16.0,
+              "w": 600,
+              "color": "#FFFFFF",
+              "lines": 1
+             },
+             {
+              "t": "text",
+              "fmt": "at {hora}",
+              "size": 16.0,
+              "w": 600,
+              "color": "#FFFFFF",
+              "lines": 1
+             }
+            ],
+            "gap": 2.0
+           },
+           {
+            "t": "spacer"
+           },
+           {
+            "t": "col",
+            "c": [
+             {
+              "t": "text",
+              "text": "Fare",
+              "size": 18.0,
+              "w": 600,
+              "color": "#FFFFFF"
+             },
+             {
+              "t": "text",
+              "bind": "pago",
+              "size": 24.0,
+              "w": 800,
+              "color": "#6FA8FF",
+              "lines": 1
+             }
+            ],
+            "align": "end"
+           }
+          ],
+          "align": "end"
+         }
+        ],
+        "gap": 6.0
+       },
+       "h": 16.0,
+       "v": 12.0
+      },
+      "radius": 22.0,
+      "color": "#000000"
+     }
+    },
+    "android": {
+     "title": {
+      "fmt": "Arriving at {hora}"
+     },
+     "text": {
+      "fmt": "Fare {pago} · {placa}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "S/14"
+     },
+     "colorized": false,
+     "style": "card"
+    }
+   },
+   "state": {
+    "hora": "11:36 AM",
+    "pago": "S/ 14",
+    "placa": "CSB488"
+   },
+   "texts": [
+    "Arriving around",
+    "Arriving around",
+    "Fare",
+    "Fare",
+    "Run",
+    "Run",
+    "S/ 14",
+    "S/ 14",
+    "S/ 14",
+    "S/14",
+    "at 11:36 AM",
+    "at 11:36 AM"
+   ]
+  },
+  {
+   "name": "RideTripPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#B794FF",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "car.fill",
+     "android": "packages/live_island_kit/assets/icons/car.png"
+    },
+    "images": {
+     "asset_packages_live_island_kit_assets_presets_car_top_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_car_top_png.png",
+      "w": 212,
+      "h": 113
+     }
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "hora",
+      "size": 14.0,
+      "w": 700,
+      "color": "#B794FF"
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "accent": true
+     },
+     "expanded": {
+      "center": {
+       "t": "box",
+       "child": {
+        "t": "padding",
+        "child": {
+         "t": "text",
+         "bind": "fase",
+         "size": 12.0,
+         "w": 700,
+         "color": "#B794FF",
+         "lines": 1
+        },
+        "h": 10.0,
+        "v": 4.0
+       },
+       "radius": 9.0,
+       "tint": 0.18
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "avatar",
+           "text": "A",
+           "size": 46.0
+          },
+          {
+           "t": "col",
+           "c": [
+            {
+             "t": "text",
+             "fmt": "Drop-off {hora}",
+             "size": 19.0,
+             "w": 700,
+             "color": "#FFFFFF",
+             "lines": 1
+            },
+            {
+             "t": "text",
+             "bind": "direccion",
+             "size": 13.0,
+             "color": "#B9BDD0",
+             "lines": 1
+            }
+           ],
+           "gap": 2.0
+          },
+          {
+           "t": "spacer"
+          },
+          {
+           "t": "col",
+           "c": [
+            {
+             "t": "text",
+             "bind": "categoria",
+             "size": 11.0,
+             "color": "#B9BDD0",
+             "lines": 1
+            },
+            {
+             "t": "text",
+             "bind": "pago",
+             "size": 20.0,
+             "w": 800,
+             "color": "#FFFFFF",
+             "lines": 1
+            }
+           ],
+           "gap": 2.0,
+           "align": "end"
+          }
+         ],
+         "gap": 10.0
+        },
+        {
+         "t": "bar",
+         "bind": "progreso",
+         "style": {
+          "h": 4.0,
+          "color": "#FFFFFF",
+          "trackColor": "#5A5470",
+          "pointSize": 16.0,
+          "pointColor": "#B794FF",
+          "endMarker": "targetSquare"
+         },
+         "tracker": {
+          "visual": {
+           "t": "image",
+           "img": "asset_packages_live_island_kit_assets_presets_car_top_png",
+           "shape": "square"
+          },
+          "height": 26.0,
+          "background": "none"
+         }
+        }
+       ],
+       "gap": 8.0
+      }
+     },
+     "lockScreen": {
+      "t": "box",
+      "child": {
+       "t": "padding",
+       "child": {
+        "t": "col",
+        "c": [
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "box",
+            "child": {
+             "t": "padding",
+             "child": {
+              "t": "text",
+              "bind": "fase",
+              "size": 12.0,
+              "w": 700,
+              "color": "#B794FF",
+              "lines": 1
+             },
+             "h": 10.0,
+             "v": 4.0
+            },
+            "radius": 9.0,
+            "tint": 0.18
+           },
+           {
+            "t": "spacer"
+           }
+          ]
+         },
+         {
+          "t": "col",
+          "c": [
+           {
+            "t": "row",
+            "c": [
+             {
+              "t": "avatar",
+              "text": "A",
+              "size": 46.0
+             },
+             {
+              "t": "col",
+              "c": [
+               {
+                "t": "text",
+                "fmt": "Drop-off {hora}",
+                "size": 19.0,
+                "w": 700,
+                "color": "#FFFFFF",
+                "lines": 1
+               },
+               {
+                "t": "text",
+                "bind": "direccion",
+                "size": 13.0,
+                "color": "#B9BDD0",
+                "lines": 1
+               }
+              ],
+              "gap": 2.0
+             },
+             {
+              "t": "spacer"
+             },
+             {
+              "t": "col",
+              "c": [
+               {
+                "t": "text",
+                "bind": "categoria",
+                "size": 11.0,
+                "color": "#B9BDD0",
+                "lines": 1
+               },
+               {
+                "t": "text",
+                "bind": "pago",
+                "size": 20.0,
+                "w": 800,
+                "color": "#FFFFFF",
+                "lines": 1
+               }
+              ],
+              "gap": 2.0,
+              "align": "end"
+             }
+            ],
+            "gap": 10.0
+           },
+           {
+            "t": "bar",
+            "bind": "progreso",
+            "style": {
+             "h": 4.0,
+             "color": "#FFFFFF",
+             "trackColor": "#5A5470",
+             "pointSize": 16.0,
+             "pointColor": "#B794FF",
+             "endMarker": "targetSquare"
+            },
+            "tracker": {
+             "visual": {
+              "t": "image",
+              "img": "asset_packages_live_island_kit_assets_presets_car_top_png",
+              "shape": "square"
+             },
+             "height": 26.0,
+             "background": "none"
+            }
+           }
+          ],
+          "gap": 8.0
+         }
+        ],
+        "gap": 10.0
+       },
+       "h": 16.0,
+       "v": 12.0
+      },
+      "radius": 22.0,
+      "color": "#000000"
+     }
+    },
+    "android": {
+     "title": {
+      "fmt": "Drop-off {hora}"
+     },
+     "text": {
+      "fmt": "{direccion}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "In transit"
+     },
+     "colorized": false,
+     "style": "card"
+    }
+   },
+   "state": {
+    "fase": "ON THE WAY TO DESTINATION",
+    "hora": "2:44 PM",
+    "direccion": "Av. Javier Prado Este, Santiago de Surco",
+    "categoria": "ECONOMY",
+    "pago": "S/ 13.60",
+    "progreso": 0.32
+   },
+   "texts": [
+    "2:44 PM",
+    "Av. Javier Prado Este, Santiago de Surco",
+    "Av. Javier Prado Este, Santiago de Surco",
+    "Drop-off 2:44 PM",
+    "Drop-off 2:44 PM",
+    "ECONOMY",
+    "ECONOMY",
+    "In transit",
+    "ON THE WAY TO DESTINATION",
+    "ON THE WAY TO DESTINATION",
+    "S/ 13.60",
+    "S/ 13.60"
+   ]
+  },
+  {
+   "name": "RidePinPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#3B6CFF",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "car.fill",
+     "android": "packages/live_island_kit/assets/icons/car.png"
+    },
+    "images": {
+     "asset_packages_live_island_kit_assets_presets_car_top_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_car_top_png.png",
+      "w": 212,
+      "h": 113
+     }
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "fmt": "{pin1}{pin2}{pin3}{pin4}",
+      "size": 14.0,
+      "w": 700,
+      "color": "#FFFFFF"
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "padding",
+       "child": {
+        "t": "text",
+        "text": "Run",
+        "size": 20.0,
+        "w": 800,
+        "color": "#FFFFFF"
+       },
+       "h": 6.0
+      },
+      "trailing": {
+       "t": "padding",
+       "child": {
+        "t": "row",
+        "c": [
+         {
+          "t": "box",
+          "child": {
+           "t": "text",
+           "bind": "pin1",
+           "size": 12.4,
+           "w": 700,
+           "color": "#FFFFFF"
+          },
+          "size": 20.0,
+          "radius": 5.2,
+          "color": "#3B6CFF"
+         },
+         {
+          "t": "box",
+          "child": {
+           "t": "text",
+           "bind": "pin2",
+           "size": 12.4,
+           "w": 700,
+           "color": "#FFFFFF"
+          },
+          "size": 20.0,
+          "radius": 5.2,
+          "color": "#3B6CFF"
+         },
+         {
+          "t": "box",
+          "child": {
+           "t": "text",
+           "bind": "pin3",
+           "size": 12.4,
+           "w": 700,
+           "color": "#FFFFFF"
+          },
+          "size": 20.0,
+          "radius": 5.2,
+          "color": "#3B6CFF"
+         },
+         {
+          "t": "box",
+          "child": {
+           "t": "text",
+           "bind": "pin4",
+           "size": 12.4,
+           "w": 700,
+           "color": "#FFFFFF"
+          },
+          "size": 20.0,
+          "radius": 5.2,
+          "color": "#3B6CFF"
+         }
+        ],
+        "gap": 2.8000000000000003
+       },
+       "h": 8.0,
+       "v": 3.0
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "col",
+           "c": [
+            {
+             "t": "text",
+             "fmt": "Trip starts in {minutos}",
+             "size": 18.0,
+             "w": 700,
+             "color": "#FFFFFF",
+             "lines": 1
+            },
+            {
+             "t": "row",
+             "c": [
+              {
+               "t": "icon",
+               "sf": "figure.walk",
+               "android": "packages/live_island_kit/assets/icons/user.png",
+               "size": 20.0,
+               "color": "#B9BDD0"
+              },
+              {
+               "t": "col",
+               "c": [
+                {
+                 "t": "text",
+                 "text": "Head out now to meet",
+                 "size": 13.0,
+                 "color": "#B9BDD0",
+                 "lines": 1
+                },
+                {
+                 "t": "text",
+                 "bind": "conductor",
+                 "size": 13.0,
+                 "color": "#B9BDD0",
+                 "lines": 1
+                }
+               ],
+               "gap": 0.0
+              }
+             ],
+             "gap": 8.0
+            }
+           ],
+           "gap": 4.0
+          },
+          {
+           "t": "spacer"
+          },
+          {
+           "t": "avatar",
+           "text": "M",
+           "size": 46.0
+          }
+         ]
+        },
+        {
+         "t": "bar",
+         "bind": "progreso",
+         "style": {
+          "h": 4.0,
+          "color": "#FFFFFF",
+          "trackColor": "#6B6E75",
+          "pointSize": 16.0,
+          "pointColor": "#D9DADF",
+          "endMarker": "target"
+         },
+         "tracker": {
+          "visual": {
+           "t": "image",
+           "img": "asset_packages_live_island_kit_assets_presets_car_top_png",
+           "shape": "square"
+          },
+          "height": 26.0,
+          "background": "none"
+         }
+        }
+       ],
+       "gap": 8.0
+      }
+     },
+     "lockScreen": {
+      "t": "box",
+      "child": {
+       "t": "padding",
+       "child": {
+        "t": "col",
+        "c": [
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "text",
+            "text": "Run",
+            "size": 22.0,
+            "w": 800,
+            "color": "#FFFFFF"
+           },
+           {
+            "t": "spacer"
+           },
+           {
+            "t": "row",
+            "c": [
+             {
+              "t": "box",
+              "child": {
+               "t": "text",
+               "bind": "pin1",
+               "size": 18.6,
+               "w": 700,
+               "color": "#FFFFFF"
+              },
+              "size": 30.0,
+              "radius": 7.800000000000001,
+              "color": "#3B6CFF"
+             },
+             {
+              "t": "box",
+              "child": {
+               "t": "text",
+               "bind": "pin2",
+               "size": 18.6,
+               "w": 700,
+               "color": "#FFFFFF"
+              },
+              "size": 30.0,
+              "radius": 7.800000000000001,
+              "color": "#3B6CFF"
+             },
+             {
+              "t": "box",
+              "child": {
+               "t": "text",
+               "bind": "pin3",
+               "size": 18.6,
+               "w": 700,
+               "color": "#FFFFFF"
+              },
+              "size": 30.0,
+              "radius": 7.800000000000001,
+              "color": "#3B6CFF"
+             },
+             {
+              "t": "box",
+              "child": {
+               "t": "text",
+               "bind": "pin4",
+               "size": 18.6,
+               "w": 700,
+               "color": "#FFFFFF"
+              },
+              "size": 30.0,
+              "radius": 7.800000000000001,
+              "color": "#3B6CFF"
+             }
+            ],
+            "gap": 4.2
+           }
+          ]
+         },
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "col",
+            "c": [
+             {
+              "t": "text",
+              "fmt": "Trip starts in {minutos}",
+              "size": 21.0,
+              "w": 700,
+              "color": "#FFFFFF",
+              "lines": 1
+             },
+             {
+              "t": "row",
+              "c": [
+               {
+                "t": "icon",
+                "sf": "figure.walk",
+                "android": "packages/live_island_kit/assets/icons/user.png",
+                "size": 20.0,
+                "color": "#B9BDD0"
+               },
+               {
+                "t": "col",
+                "c": [
+                 {
+                  "t": "text",
+                  "text": "Head out now to meet",
+                  "size": 13.0,
+                  "color": "#B9BDD0",
+                  "lines": 1
+                 },
+                 {
+                  "t": "text",
+                  "bind": "conductor",
+                  "size": 13.0,
+                  "color": "#B9BDD0",
+                  "lines": 1
+                 }
+                ],
+                "gap": 0.0
+               }
+              ],
+              "gap": 8.0
+             }
+            ],
+            "gap": 4.0
+           },
+           {
+            "t": "spacer"
+           },
+           {
+            "t": "avatar",
+            "text": "M",
+            "size": 52.0
+           }
+          ]
+         },
+         {
+          "t": "bar",
+          "bind": "progreso",
+          "style": {
+           "h": 4.0,
+           "color": "#FFFFFF",
+           "trackColor": "#6B6E75",
+           "pointSize": 16.0,
+           "pointColor": "#D9DADF",
+           "endMarker": "target"
+          },
+          "tracker": {
+           "visual": {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_car_top_png",
+            "shape": "square"
+           },
+           "height": 26.0,
+           "background": "none"
+          }
+         }
+        ],
+        "gap": 8.0
+       },
+       "h": 16.0,
+       "v": 12.0
+      },
+      "radius": 22.0,
+      "color": "#000000"
+     }
+    },
+    "android": {
+     "title": {
+      "fmt": "Trip starts in {minutos}"
+     },
+     "text": {
+      "fmt": "Your PIN: {pin1}{pin2}{pin3}{pin4}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "PIN"
+     },
+     "colorized": false,
+     "style": "card"
+    }
+   },
+   "state": {
+    "minutos": "1 min",
+    "conductor": "MARCO PAREDES",
+    "pin1": "0",
+    "pin2": "2",
+    "pin3": "4",
+    "pin4": "9",
+    "progreso": 0.86
+   },
+   "texts": [
+    "0",
+    "0",
+    "0249",
+    "2",
+    "2",
+    "4",
+    "4",
+    "9",
+    "9",
+    "Head out now to meet",
+    "Head out now to meet",
+    "MARCO PAREDES",
+    "MARCO PAREDES",
+    "PIN",
+    "Run",
+    "Run",
+    "Trip starts in 1 min",
+    "Trip starts in 1 min"
+   ]
+  },
+  {
+   "name": "RideStopPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#E6E6EA",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "car.fill",
+     "android": "packages/live_island_kit/assets/icons/car.png"
+    },
+    "images": {
+     "asset_packages_live_island_kit_assets_presets_car_plate_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_car_plate_png.png",
+      "w": 560,
+      "h": 258
+     },
+     "asset_packages_live_island_kit_assets_presets_car_top_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_car_top_png.png",
+      "w": 212,
+      "h": 113
+     }
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "minutos",
+      "size": 14.0,
+      "w": 700,
+      "color": "#FFFFFF"
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "padding",
+       "child": {
+        "t": "text",
+        "text": "Run",
+        "size": 22.0,
+        "w": 800,
+        "color": "#FFFFFF"
+       },
+       "h": 6.0
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "col",
+           "c": [
+            {
+             "t": "text",
+             "fmt": "{minutos} left",
+             "size": 22.0,
+             "w": 700,
+             "color": "#FFFFFF",
+             "lines": 1
+            },
+            {
+             "t": "text",
+             "bind": "vehiculo",
+             "size": 15.0,
+             "color": "#B9BDD0",
+             "lines": 1
+            }
+           ],
+           "gap": 2.0
+          },
+          {
+           "t": "spacer"
+          },
+          {
+           "t": "image",
+           "img": "asset_packages_live_island_kit_assets_presets_car_plate_png",
+           "shape": "square",
+           "h": 46.0
+          }
+         ]
+        },
+        {
+         "t": "bar",
+         "bind": "progreso",
+         "style": {
+          "h": 5.0,
+          "color": "#E6E6EA",
+          "trackColor": "#3A3A3F",
+          "pointSize": 22.0,
+          "pointColor": "#E6E6EA",
+          "pointShape": "circle",
+          "markers": [
+           0.82
+          ],
+          "endMarker": "target",
+          "markerLabels": [
+           "1"
+          ]
+         },
+         "tracker": {
+          "visual": {
+           "t": "image",
+           "img": "asset_packages_live_island_kit_assets_presets_car_top_png",
+           "shape": "square"
+          },
+          "height": 26.0,
+          "background": "none"
+         }
+        }
+       ],
+       "gap": 8.0
+      }
+     },
+     "lockScreen": {
+      "t": "box",
+      "child": {
+       "t": "padding",
+       "child": {
+        "t": "col",
+        "c": [
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "text",
+            "text": "Run",
+            "size": 22.0,
+            "w": 800,
+            "color": "#FFFFFF"
+           },
+           {
+            "t": "spacer"
+           }
+          ]
+         },
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "col",
+            "c": [
+             {
+              "t": "text",
+              "fmt": "{minutos} left",
+              "size": 22.0,
+              "w": 700,
+              "color": "#FFFFFF",
+              "lines": 1
+             },
+             {
+              "t": "text",
+              "bind": "vehiculo",
+              "size": 15.0,
+              "color": "#B9BDD0",
+              "lines": 1
+             }
+            ],
+            "gap": 2.0
+           },
+           {
+            "t": "spacer"
+           },
+           {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_car_plate_png",
+            "shape": "square",
+            "h": 52.0
+           }
+          ]
+         },
+         {
+          "t": "bar",
+          "bind": "progreso",
+          "style": {
+           "h": 5.0,
+           "color": "#E6E6EA",
+           "trackColor": "#3A3A3F",
+           "pointSize": 22.0,
+           "pointColor": "#E6E6EA",
+           "pointShape": "circle",
+           "markers": [
+            0.82
+           ],
+           "endMarker": "target",
+           "markerLabels": [
+            "1"
+           ]
+          },
+          "tracker": {
+           "visual": {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_car_top_png",
+            "shape": "square"
+           },
+           "height": 26.0,
+           "background": "none"
+          }
+         }
+        ],
+        "gap": 8.0
+       },
+       "h": 16.0,
+       "v": 12.0
+      },
+      "radius": 22.0,
+      "color": "#000000"
+     }
+    },
+    "android": {
+     "title": {
+      "fmt": "{minutos} left"
+     },
+     "text": {
+      "fmt": "{vehiculo} · {placa}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "In transit"
+     },
+     "colorized": false,
+     "style": "card"
+    }
+   },
+   "state": {
+    "minutos": "20 min",
+    "vehiculo": "Black sedan",
+    "placa": "PXR784",
+    "progreso": 0.18
+   },
+   "texts": [
+    "20 min",
+    "20 min left",
+    "20 min left",
+    "Black sedan",
+    "Black sedan",
+    "In transit",
+    "Run",
+    "Run"
+   ]
+  },
+  {
+   "name": "RideDestinationPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#FFFFFF",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "car.fill",
+     "android": "packages/live_island_kit/assets/icons/car.png"
+    },
+    "images": {
+     "asset_packages_live_island_kit_assets_presets_car_top_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_car_top_png.png",
+      "w": 212,
+      "h": 113
+     }
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "hora",
+      "size": 14.0,
+      "w": 700,
+      "color": "#FFFFFF"
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "padding",
+       "child": {
+        "t": "text",
+        "text": "Run",
+        "size": 22.0,
+        "w": 800,
+        "color": "#FFFFFF"
+       },
+       "h": 6.0
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "col",
+         "c": [
+          {
+           "t": "text",
+           "fmt": "Drop-off {hora}",
+           "size": 20.0,
+           "w": 700,
+           "color": "#FFFFFF",
+           "lines": 1
+          },
+          {
+           "t": "text",
+           "fmt": "Heading to {direccion}",
+           "size": 12.4,
+           "color": "#B9BDD0",
+           "lines": 1
+          }
+         ],
+         "gap": 3.0
+        },
+        {
+         "t": "bar",
+         "bind": "progreso",
+         "style": {
+          "h": 5.0,
+          "color": "#FFFFFF",
+          "trackColor": "#4A4A50",
+          "pointSize": 18.0,
+          "pointColor": "#8A8D94",
+          "endMarker": "targetSquare"
+         },
+         "tracker": {
+          "visual": {
+           "t": "image",
+           "img": "asset_packages_live_island_kit_assets_presets_car_top_png",
+           "shape": "square"
+          },
+          "height": 26.0,
+          "background": "none"
+         }
+        }
+       ],
+       "gap": 10.0
+      }
+     },
+     "lockScreen": {
+      "t": "box",
+      "child": {
+       "t": "padding",
+       "child": {
+        "t": "col",
+        "c": [
+         {
+          "t": "text",
+          "text": "Run",
+          "size": 22.0,
+          "w": 800,
+          "color": "#FFFFFF"
+         },
+         {
+          "t": "col",
+          "c": [
+           {
+            "t": "text",
+            "fmt": "Drop-off {hora}",
+            "size": 24.0,
+            "w": 700,
+            "color": "#FFFFFF",
+            "lines": 1
+           },
+           {
+            "t": "text",
+            "fmt": "Heading to {direccion}",
+            "size": 14.879999999999999,
+            "color": "#B9BDD0",
+            "lines": 1
+           }
+          ],
+          "gap": 3.0
+         },
+         {
+          "t": "bar",
+          "bind": "progreso",
+          "style": {
+           "h": 5.0,
+           "color": "#FFFFFF",
+           "trackColor": "#4A4A50",
+           "pointSize": 18.0,
+           "pointColor": "#8A8D94",
+           "endMarker": "targetSquare"
+          },
+          "tracker": {
+           "visual": {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_car_top_png",
+            "shape": "square"
+           },
+           "height": 26.0,
+           "background": "none"
+          }
+         }
+        ],
+        "gap": 10.0
+       },
+       "h": 16.0,
+       "v": 12.0
+      },
+      "radius": 22.0,
+      "color": "#000000"
+     }
+    },
+    "android": {
+     "title": {
+      "fmt": "Drop-off {hora}"
+     },
+     "text": {
+      "fmt": "Heading to {direccion}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "Drop-off"
+     },
+     "colorized": false,
+     "style": "card"
+    }
+   },
+   "state": {
+    "hora": "8:37 PM",
+    "direccion": "Av. Los Cedros 234",
+    "progreso": 0.1
+   },
+   "texts": [
+    "8:37 PM",
+    "Drop-off",
+    "Drop-off 8:37 PM",
+    "Drop-off 8:37 PM",
+    "Heading to Av. Los Cedros 234",
+    "Heading to Av. Los Cedros 234",
+    "Run",
+    "Run"
+   ]
+  },
+  {
+   "name": "TrainPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#A7F060",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "bus.fill",
+     "android": "packages/live_island_kit/assets/icons/bus.png"
+    },
+    "images": {
+     "asset_packages_live_island_kit_assets_presets_train_top_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_train_top_png.png",
+      "w": 360,
+      "h": 70
+     }
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "bus.fill",
+      "android": "packages/live_island_kit/assets/icons/bus.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "destacado",
+      "size": 14.0,
+      "w": 700,
+      "color": "#A7F060"
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "bus.fill",
+      "android": "packages/live_island_kit/assets/icons/bus.png",
+      "accent": true
+     },
+     "expanded": {
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "col",
+           "c": [
+            {
+             "t": "text",
+             "bind": "titulo",
+             "size": 18.0,
+             "w": 700,
+             "color": "#FFFFFF",
+             "lines": 1
+            },
+            {
+             "t": "text",
+             "bind": "subtitulo",
+             "size": 13.0,
+             "color": "#B9BDD0",
+             "lines": 1
+            }
+           ],
+           "gap": 2.0
+          },
+          {
+           "t": "spacer",
+           "size": 8.0
+          },
+          {
+           "t": "spacer"
+          },
+          {
+           "t": "text",
+           "bind": "destacado",
+           "size": 16.0,
+           "w": 800,
+           "color": "#A7F060",
+           "lines": 1
+          }
+         ]
+        },
+        {
+         "t": "segments",
+         "bind": "progreso",
+         "labels": [
+          "El Ángel",
+          "Miguel Grau",
+          "Gamarra"
+         ],
+         "points": true,
+         "style": {
+          "h": 14.0,
+          "color": "#A7F060",
+          "trackColor": "#2F6A12",
+          "gap": 0.0,
+          "pointSize": 12.0,
+          "pointColor": "#000000"
+         },
+         "tracker": {
+          "visual": {
+           "t": "image",
+           "img": "asset_packages_live_island_kit_assets_presets_train_top_png",
+           "shape": "square"
+          },
+          "height": 22.0,
+          "background": "none"
+         }
+        }
+       ],
+       "gap": 10.0
+      }
+     },
+     "lockScreen": {
+      "t": "box",
+      "child": {
+       "t": "padding",
+       "child": {
+        "t": "col",
+        "c": [
+         {
+          "t": "text",
+          "text": "Lima Transit",
+          "size": 20.0,
+          "w": 800,
+          "color": "#FFFFFF"
+         },
+         {
+          "t": "col",
+          "c": [
+           {
+            "t": "row",
+            "c": [
+             {
+              "t": "col",
+              "c": [
+               {
+                "t": "text",
+                "bind": "titulo",
+                "size": 18.0,
+                "w": 700,
+                "color": "#FFFFFF",
+                "lines": 1
+               },
+               {
+                "t": "text",
+                "bind": "subtitulo",
+                "size": 13.0,
+                "color": "#B9BDD0",
+                "lines": 1
+               }
+              ],
+              "gap": 2.0
+             },
+             {
+              "t": "spacer",
+              "size": 8.0
+             },
+             {
+              "t": "spacer"
+             },
+             {
+              "t": "text",
+              "bind": "destacado",
+              "size": 16.0,
+              "w": 800,
+              "color": "#A7F060",
+              "lines": 1
+             }
+            ]
+           },
+           {
+            "t": "segments",
+            "bind": "progreso",
+            "labels": [
+             "El Ángel",
+             "Miguel Grau",
+             "Gamarra"
+            ],
+            "points": true,
+            "style": {
+             "h": 14.0,
+             "color": "#A7F060",
+             "trackColor": "#2F6A12",
+             "gap": 0.0,
+             "pointSize": 12.0,
+             "pointColor": "#000000"
+            },
+            "tracker": {
+             "visual": {
+              "t": "image",
+              "img": "asset_packages_live_island_kit_assets_presets_train_top_png",
+              "shape": "square"
+             },
+             "height": 22.0,
+             "background": "none"
+            }
+           }
+          ],
+          "gap": 10.0
+         }
+        ],
+        "gap": 10.0
+       },
+       "h": 16.0,
+       "v": 12.0
+      },
+      "radius": 22.0,
+      "color": "#000000"
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "{subtitulo} · {nombre}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "3 stops"
+     },
+     "colorized": false,
+     "style": "card"
+    }
+   },
+   "state": {
+    "titulo": "Get off in 3 stops",
+    "subtitulo": "Line 201 · Javier Prado",
+    "nombre": "Las Begonias stop",
+    "destacado": "3 stops",
+    "progreso": 0.55
+   },
+   "texts": [
+    "3 stops",
+    "3 stops",
+    "3 stops",
+    "3 stops",
+    "Get off in 3 stops",
+    "Get off in 3 stops",
+    "Lima Transit",
+    "Line 201 · Javier Prado",
+    "Line 201 · Javier Prado"
+   ]
+  },
+  {
+   "name": "DeliveryOrderPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#FF8A1F",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "shippingbox.fill",
+     "android": "packages/live_island_kit/assets/icons/package.png"
+    },
+    "images": {
+     "asset_packages_live_island_kit_assets_presets_pedido_3_color_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_pedido_3_color_png.png",
+      "w": 144,
+      "h": 144
+     },
+     "asset_packages_live_island_kit_assets_presets_pedido_1_gris_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_pedido_1_gris_png.png",
+      "w": 144,
+      "h": 144
+     },
+     "asset_packages_live_island_kit_assets_presets_pedido_1_color_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_pedido_1_color_png.png",
+      "w": 144,
+      "h": 144
+     },
+     "asset_packages_live_island_kit_assets_presets_pedido_2_gris_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_pedido_2_gris_png.png",
+      "w": 144,
+      "h": 144
+     },
+     "asset_packages_live_island_kit_assets_presets_pedido_2_color_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_pedido_2_color_png.png",
+      "w": 144,
+      "h": 144
+     },
+     "asset_packages_live_island_kit_assets_presets_pedido_3_gris_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_pedido_3_gris_png.png",
+      "w": 144,
+      "h": 144
+     },
+     "asset_packages_live_island_kit_assets_presets_pedido_4_gris_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_pedido_4_gris_png.png",
+      "w": 144,
+      "h": 144
+     },
+     "asset_packages_live_island_kit_assets_presets_pedido_4_color_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_pedido_4_color_png.png",
+      "w": 144,
+      "h": 144
+     }
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "image",
+      "img": "asset_packages_live_island_kit_assets_presets_pedido_3_color_png",
+      "shape": "square",
+      "h": 20.0
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "hora",
+      "size": 14.0,
+      "w": 700,
+      "color": "#FF8A1F"
+     },
+     "minimal": {
+      "t": "image",
+      "img": "asset_packages_live_island_kit_assets_presets_pedido_3_color_png",
+      "shape": "square",
+      "h": 20.0
+     },
+     "expanded": {
+      "leading": {
+       "t": "padding",
+       "child": {
+        "t": "text",
+        "text": "Run",
+        "size": 20.0,
+        "w": 800,
+        "color": "#FFFFFF"
+       },
+       "h": 6.0
+      },
+      "trailing": {
+       "t": "padding",
+       "child": {
+        "t": "text",
+        "bind": "hora",
+        "size": 15.0,
+        "w": 700,
+        "color": "#FF8A1F",
+        "lines": 1
+       },
+       "h": 6.0
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 18.0,
+         "w": 700,
+         "color": "#FFFFFF",
+         "lines": 1
+        },
+        {
+         "t": "segments",
+         "bind": "progreso",
+         "labels": [
+          "Received",
+          "Preparing",
+          "On the way",
+          "Delivered"
+         ],
+         "points": true,
+         "showLabels": false,
+         "stageIcons": [
+          {
+           "pending": {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_pedido_1_gris_png",
+            "shape": "square",
+            "h": 40.0
+           },
+           "reached": {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_pedido_1_color_png",
+            "shape": "square",
+            "h": 40.0
+           }
+          },
+          {
+           "pending": {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_pedido_2_gris_png",
+            "shape": "square",
+            "h": 40.0
+           },
+           "reached": {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_pedido_2_color_png",
+            "shape": "square",
+            "h": 40.0
+           }
+          },
+          {
+           "pending": {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_pedido_3_gris_png",
+            "shape": "square",
+            "h": 40.0
+           },
+           "reached": {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_pedido_3_color_png",
+            "shape": "square",
+            "h": 40.0
+           }
+          },
+          {
+           "pending": {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_pedido_4_gris_png",
+            "shape": "square",
+            "h": 40.0
+           },
+           "reached": {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_pedido_4_color_png",
+            "shape": "square",
+            "h": 40.0
+           }
+          }
+         ],
+         "style": {
+          "h": 3.0,
+          "color": "#FF8A1F",
+          "trackColor": "#4A4A50",
+          "gap": 52.0,
+          "pointSize": 40.0
+         }
+        }
+       ],
+       "gap": 8.0
+      }
+     },
+     "lockScreen": {
+      "t": "box",
+      "child": {
+       "t": "padding",
+       "child": {
+        "t": "col",
+        "c": [
+         {
+          "t": "text",
+          "text": "Run",
+          "size": 20.0,
+          "w": 800,
+          "color": "#FFFFFF"
+         },
+         {
+          "t": "col",
+          "c": [
+           {
+            "t": "text",
+            "bind": "titulo",
+            "size": 22.0,
+            "w": 700,
+            "color": "#FFFFFF",
+            "lines": 1
+           },
+           {
+            "t": "text",
+            "fmt": "{hora} Estimated arrival",
+            "size": 14.0,
+            "color": "#B9BDD0",
+            "lines": 1
+           }
+          ],
+          "gap": 3.0
+         },
+         {
+          "t": "segments",
+          "bind": "progreso",
+          "labels": [
+           "Received",
+           "Preparing",
+           "On the way",
+           "Delivered"
+          ],
+          "points": true,
+          "showLabels": false,
+          "stageIcons": [
+           {
+            "pending": {
+             "t": "image",
+             "img": "asset_packages_live_island_kit_assets_presets_pedido_1_gris_png",
+             "shape": "square",
+             "h": 40.0
+            },
+            "reached": {
+             "t": "image",
+             "img": "asset_packages_live_island_kit_assets_presets_pedido_1_color_png",
+             "shape": "square",
+             "h": 40.0
+            }
+           },
+           {
+            "pending": {
+             "t": "image",
+             "img": "asset_packages_live_island_kit_assets_presets_pedido_2_gris_png",
+             "shape": "square",
+             "h": 40.0
+            },
+            "reached": {
+             "t": "image",
+             "img": "asset_packages_live_island_kit_assets_presets_pedido_2_color_png",
+             "shape": "square",
+             "h": 40.0
+            }
+           },
+           {
+            "pending": {
+             "t": "image",
+             "img": "asset_packages_live_island_kit_assets_presets_pedido_3_gris_png",
+             "shape": "square",
+             "h": 40.0
+            },
+            "reached": {
+             "t": "image",
+             "img": "asset_packages_live_island_kit_assets_presets_pedido_3_color_png",
+             "shape": "square",
+             "h": 40.0
+            }
+           },
+           {
+            "pending": {
+             "t": "image",
+             "img": "asset_packages_live_island_kit_assets_presets_pedido_4_gris_png",
+             "shape": "square",
+             "h": 40.0
+            },
+            "reached": {
+             "t": "image",
+             "img": "asset_packages_live_island_kit_assets_presets_pedido_4_color_png",
+             "shape": "square",
+             "h": 40.0
+            }
+           }
+          ],
+          "style": {
+           "h": 3.0,
+           "color": "#FF8A1F",
+           "trackColor": "#4A4A50",
+           "gap": 52.0,
+           "pointSize": 40.0
+          }
+         }
+        ],
+        "gap": 10.0
+       },
+       "h": 16.0,
+       "v": 12.0
+      },
+      "radius": 22.0,
+      "color": "#000000"
+     }
+    },
+    "android": {
+     "title": {
+      "fmt": "{titulo}"
+     },
+     "text": {
+      "fmt": "{hora} Estimated arrival"
+     },
+     "chip": {
+      "t": "text",
+      "text": "Order"
+     },
+     "colorized": false,
+     "style": "card"
+    }
+   },
+   "state": {
+    "titulo": "On the way to you",
+    "hora": "9:45 PM",
+    "progreso": 0.6666666666666666
+   },
+   "texts": [
+    "9:45 PM",
+    "9:45 PM",
+    "9:45 PM Estimated arrival",
+    "On the way to you",
+    "On the way to you",
+    "Order",
+    "Run",
+    "Run"
+   ]
+  },
+  {
+   "name": "StorePickupPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#1E3932",
+     "background": "accent"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "cup.and.saucer.fill",
+     "android": "packages/live_island_kit/assets/icons/coffee.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "cup.and.saucer.fill",
+      "android": "packages/live_island_kit/assets/icons/coffee.png"
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "corto",
+      "size": 13.0,
+      "w": 600,
+      "lines": 1
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "cup.and.saucer.fill",
+      "android": "packages/live_island_kit/assets/icons/coffee.png"
+     },
+     "expanded": {
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 18.0,
+         "w": 700,
+         "lines": 1
+        },
+        {
+         "t": "text",
+         "bind": "subtitulo",
+         "size": 13.0,
+         "muted": true,
+         "lines": 2
+        }
+       ],
+       "gap": 3.0,
+       "align": "center"
+      },
+      "bottom": {
+       "t": "row",
+       "c": [
+        {
+         "t": "spacer"
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "if",
+           "when": {
+            "bind": "etapa",
+            "eq": 0
+           },
+           "then": {
+            "t": "box",
+            "child": {
+             "t": "icon",
+             "sf": "location.fill",
+             "android": "packages/live_island_kit/assets/icons/mappin.png",
+             "color": "#1E3932"
+            },
+            "size": 40.0,
+            "radius": 20.0,
+            "color": "#FFFFFF"
+           },
+           "else": {
+            "t": "box",
+            "child": {
+             "t": "icon",
+             "sf": "location.fill",
+             "android": "packages/live_island_kit/assets/icons/mappin.png"
+            },
+            "size": 26.0,
+            "radius": 13.0,
+            "color": "#00A862"
+           }
+          },
+          {
+           "t": "if",
+           "when": {
+            "bind": "etapa",
+            "eq": 1
+           },
+           "then": {
+            "t": "box",
+            "child": {
+             "t": "icon",
+             "sf": "person.fill",
+             "android": "packages/live_island_kit/assets/icons/user.png",
+             "color": "#1E3932"
+            },
+            "size": 40.0,
+            "radius": 20.0,
+            "color": "#FFFFFF"
+           },
+           "else": {
+            "t": "box",
+            "child": {
+             "t": "icon",
+             "sf": "person.fill",
+             "android": "packages/live_island_kit/assets/icons/user.png"
+            },
+            "size": 26.0,
+            "radius": 13.0,
+            "color": "#00A862"
+           }
+          },
+          {
+           "t": "if",
+           "when": {
+            "bind": "etapa",
+            "eq": 2
+           },
+           "then": {
+            "t": "box",
+            "child": {
+             "t": "icon",
+             "sf": "cup.and.saucer.fill",
+             "android": "packages/live_island_kit/assets/icons/coffee.png",
+             "color": "#1E3932"
+            },
+            "size": 40.0,
+            "radius": 20.0,
+            "color": "#FFFFFF"
+           },
+           "else": {
+            "t": "box",
+            "child": {
+             "t": "icon",
+             "sf": "cup.and.saucer.fill",
+             "android": "packages/live_island_kit/assets/icons/coffee.png"
+            },
+            "size": 26.0,
+            "radius": 13.0,
+            "color": "#00A862"
+           }
+          }
+         ],
+         "gap": 12.0
+        },
+        {
+         "t": "spacer"
+        }
+       ]
+      }
+     },
+     "lockScreen": {
+      "t": "col",
+      "c": [
+       {
+        "t": "row",
+        "c": [
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "icon",
+            "sf": "cup.and.saucer.fill",
+            "android": "packages/live_island_kit/assets/icons/coffee.png"
+           },
+           {
+            "t": "text",
+            "text": "Store pickup",
+            "size": 14.0,
+            "color": "#FFFFFF"
+           }
+          ],
+          "gap": 8.0
+         },
+         {
+          "t": "spacer"
+         },
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "box",
+            "child": {
+             "t": "text",
+             "text": "S",
+             "size": 11.0,
+             "w": 700,
+             "color": "#FFFFFF"
+            },
+            "size": 24.0,
+            "radius": 12.0,
+            "color": "#00A862"
+           },
+           {
+            "t": "box",
+            "child": {
+             "t": "text",
+             "text": "D",
+             "size": 11.0,
+             "w": 700,
+             "color": "#FFFFFF"
+            },
+            "size": 24.0,
+            "radius": 12.0,
+            "color": "#00A862"
+           }
+          ],
+          "gap": 0.0
+         }
+        ]
+       },
+       {
+        "t": "col",
+        "c": [
+         {
+          "t": "text",
+          "bind": "titulo",
+          "size": 22.0,
+          "w": 700,
+          "color": "#FFFFFF"
+         },
+         {
+          "t": "text",
+          "bind": "subtitulo",
+          "size": 13.0,
+          "color": "#B7CBC4",
+          "lines": 1
+         }
+        ],
+        "gap": 2.0
+       },
+       {
+        "t": "row",
+        "c": [
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "if",
+            "when": {
+             "bind": "etapa",
+             "eq": 0
+            },
+            "then": {
+             "t": "box",
+             "child": {
+              "t": "icon",
+              "sf": "location.fill",
+              "android": "packages/live_island_kit/assets/icons/mappin.png",
+              "color": "#1E3932"
+             },
+             "size": 40.0,
+             "radius": 20.0,
+             "color": "#FFFFFF"
+            },
+            "else": {
+             "t": "box",
+             "child": {
+              "t": "icon",
+              "sf": "location.fill",
+              "android": "packages/live_island_kit/assets/icons/mappin.png"
+             },
+             "size": 26.0,
+             "radius": 13.0,
+             "color": "#00A862"
+            }
+           },
+           {
+            "t": "if",
+            "when": {
+             "bind": "etapa",
+             "eq": 1
+            },
+            "then": {
+             "t": "box",
+             "child": {
+              "t": "icon",
+              "sf": "person.fill",
+              "android": "packages/live_island_kit/assets/icons/user.png",
+              "color": "#1E3932"
+             },
+             "size": 40.0,
+             "radius": 20.0,
+             "color": "#FFFFFF"
+            },
+            "else": {
+             "t": "box",
+             "child": {
+              "t": "icon",
+              "sf": "person.fill",
+              "android": "packages/live_island_kit/assets/icons/user.png"
+             },
+             "size": 26.0,
+             "radius": 13.0,
+             "color": "#00A862"
+            }
+           },
+           {
+            "t": "if",
+            "when": {
+             "bind": "etapa",
+             "eq": 2
+            },
+            "then": {
+             "t": "box",
+             "child": {
+              "t": "icon",
+              "sf": "cup.and.saucer.fill",
+              "android": "packages/live_island_kit/assets/icons/coffee.png",
+              "color": "#1E3932"
+             },
+             "size": 40.0,
+             "radius": 20.0,
+             "color": "#FFFFFF"
+            },
+            "else": {
+             "t": "box",
+             "child": {
+              "t": "icon",
+              "sf": "cup.and.saucer.fill",
+              "android": "packages/live_island_kit/assets/icons/coffee.png"
+             },
+             "size": 26.0,
+             "radius": 13.0,
+             "color": "#00A862"
+            }
+           }
+          ],
+          "gap": 12.0
+         },
+         {
+          "t": "spacer"
+         }
+        ]
+       }
+      ],
+      "gap": 6.0
+     }
+    },
+    "android": {
+     "title": {
+      "text": "Your order"
+     },
+     "text": {
+      "bind": "subtitulo"
+     },
+     "chip": {
+      "t": "text",
+      "text": "Preparing"
+     },
+     "colorized": false,
+     "style": "card",
+     "subText": {
+      "text": "Store pickup"
+     }
+    }
+   },
+   "state": {
+    "titulo": "Order being prepared",
+    "subtitulo": "We are carefully preparing your order",
+    "corto": "Preparing",
+    "nombre": "Store pickup",
+    "etapa": 1,
+    "progreso": 0.5
+   },
+   "texts": [
+    "D",
+    "Order being prepared",
+    "Order being prepared",
+    "Preparing",
+    "Preparing",
+    "S",
+    "Store pickup",
+    "We are carefully preparing your order",
+    "We are carefully preparing your order"
+   ]
+  },
+  {
+   "name": "RunPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#45C8FF",
+     "background": "accent"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "figure.run",
+     "android": "packages/live_island_kit/assets/icons/flag.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "figure.run",
+      "android": "packages/live_island_kit/assets/icons/flag.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "distancia",
+      "size": 15.0,
+      "w": 700,
+      "accent": true
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "figure.run",
+      "android": "packages/live_island_kit/assets/icons/flag.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "icon",
+       "sf": "figure.run",
+       "android": "packages/live_island_kit/assets/icons/flag.png",
+       "accent": true
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "distancia",
+         "size": 34.0,
+         "w": 800,
+         "accent": true
+        },
+        {
+         "t": "text",
+         "text": "Kilometers",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "gap": 0.0
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "tiempo",
+         "size": 24.0,
+         "w": 500
+        },
+        {
+         "t": "text",
+         "text": "Time",
+         "size": 12.0,
+         "muted": true
+        }
+       ],
+       "gap": 0.0,
+       "align": "end"
+      },
+      "bottom": {
+       "t": "bar",
+       "bind": "progreso",
+       "style": {
+        "h": 6.0,
+        "color": "#45C8FF",
+        "trackColor": "#FFFFFF33"
+       }
+      }
+     },
+     "lockScreen": {
+      "t": "col",
+      "c": [
+       {
+        "t": "row",
+        "c": [
+         {
+          "t": "col",
+          "c": [
+           {
+            "t": "text",
+            "bind": "distancia",
+            "size": 52.0,
+            "w": 800,
+            "color": "#0B0B0D"
+           },
+           {
+            "t": "text",
+            "text": "Kilometers",
+            "size": 13.0,
+            "color": "#0B0B0D"
+           }
+          ],
+          "gap": 0.0
+         },
+         {
+          "t": "spacer"
+         },
+         {
+          "t": "col",
+          "c": [
+           {
+            "t": "text",
+            "text": "Sprint",
+            "size": 16.0,
+            "w": 800,
+            "color": "#0B0B0D"
+           },
+           {
+            "t": "text",
+            "bind": "tiempo",
+            "size": 30.0,
+            "w": 500,
+            "color": "#0B0B0D"
+           },
+           {
+            "t": "text",
+            "text": "Time",
+            "size": 13.0,
+            "color": "#0B0B0D"
+           }
+          ],
+          "gap": 0.0,
+          "align": "end"
+         }
+        ],
+        "align": "end"
+       },
+       {
+        "t": "bar",
+        "bind": "progreso",
+        "style": {
+         "h": 6.0,
+         "color": "#0B0B0D",
+         "trackColor": "#00000026"
+        }
+       }
+      ],
+      "gap": 8.0
+     }
+    },
+    "android": {
+     "title": {
+      "text": "Run"
+     },
+     "text": {
+      "fmt": "{distancia} Kilometers · {tiempo}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "4,72"
+     },
+     "colorized": false,
+     "style": "card"
+    }
+   },
+   "state": {
+    "distancia": "4,72",
+    "tiempo": "25:38",
+    "progreso": 0.78
+   },
+   "texts": [
+    "25:38",
+    "25:38",
+    "4,72",
+    "4,72",
+    "4,72",
+    "4,72",
+    "Kilometers",
+    "Kilometers",
+    "Sprint",
+    "Time",
+    "Time"
+   ]
+  },
+  {
+   "name": "MatchPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#1B5E20",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "trophy.fill",
+     "android": "packages/live_island_kit/assets/icons/trophy.png"
+    },
+    "images": {
+     "asset_packages_live_island_kit_assets_presets_crest_a_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_crest_a_png.png",
+      "w": 240,
+      "h": 280
+     },
+     "asset_packages_live_island_kit_assets_presets_crest_b_png": {
+      "file": "asset_packages_live_island_kit_assets_presets_crest_b_png.png",
+      "w": 240,
+      "h": 280
+     }
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "image",
+      "img": "asset_packages_live_island_kit_assets_presets_crest_a_png",
+      "shape": "square",
+      "size": 24.0
+     },
+     "compactTrailing": {
+      "t": "row",
+      "c": [
+       {
+        "t": "text",
+        "bind": "golesLocal",
+        "size": 15.0,
+        "w": 800,
+        "color": "#FFFFFF"
+       },
+       {
+        "t": "text",
+        "text": "–",
+        "size": 15.0,
+        "w": 800,
+        "color": "#FFFFFF"
+       },
+       {
+        "t": "text",
+        "bind": "golesVisitante",
+        "size": 15.0,
+        "w": 800,
+        "color": "#FFFFFF"
+       }
+      ],
+      "gap": 2.0
+     },
+     "minimal": {
+      "t": "image",
+      "img": "asset_packages_live_island_kit_assets_presets_crest_a_png",
+      "shape": "square",
+      "size": 22.0
+     },
+     "expanded": {
+      "leading": {
+       "t": "col",
+       "c": [
+        {
+         "t": "image",
+         "img": "asset_packages_live_island_kit_assets_presets_crest_a_png",
+         "shape": "square",
+         "size": 52.0
+        },
+        {
+         "t": "text",
+         "bind": "local",
+         "size": 17.0,
+         "w": 700,
+         "color": "#FFFFFF"
+        },
+        {
+         "t": "text",
+         "text": "Local",
+         "size": 13.0,
+         "w": 700,
+         "color": "#FFFFFF"
+        }
+       ],
+       "gap": 2.0,
+       "align": "center"
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "box",
+         "child": {
+          "t": "padding",
+          "child": {
+           "t": "row",
+           "c": [
+            {
+             "t": "text",
+             "bind": "golesLocal",
+             "size": 34.0,
+             "w": 800,
+             "color": "#FFFFFF"
+            },
+            {
+             "t": "text",
+             "text": ":",
+             "size": 34.0,
+             "w": 800,
+             "color": "#FFFFFF"
+            },
+            {
+             "t": "text",
+             "bind": "golesVisitante",
+             "size": 34.0,
+             "w": 800,
+             "color": "#FFFFFF"
+            }
+           ],
+           "gap": 6.0
+          },
+          "h": 10.0,
+          "v": 2.0
+         },
+         "radius": 12.0,
+         "color": "#202020"
+        },
+        {
+         "t": "text",
+         "bind": "minuto",
+         "size": 15.0,
+         "w": 600,
+         "color": "#FFFFFF"
+        },
+        {
+         "t": "text",
+         "bind": "torneo",
+         "size": 13.0,
+         "color": "#FFFFFF"
+        }
+       ],
+       "gap": 3.0,
+       "align": "center"
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "image",
+         "img": "asset_packages_live_island_kit_assets_presets_crest_b_png",
+         "shape": "square",
+         "size": 52.0
+        },
+        {
+         "t": "text",
+         "bind": "visitante",
+         "size": 17.0,
+         "w": 700,
+         "color": "#FFFFFF"
+        },
+        {
+         "t": "text",
+         "text": "Visitante",
+         "size": 13.0,
+         "w": 700,
+         "color": "#FFFFFF"
+        }
+       ],
+       "gap": 2.0,
+       "align": "center"
+      }
+     },
+     "lockScreen": {
+      "t": "box",
+      "child": {
+       "t": "padding",
+       "child": {
+        "t": "row",
+        "c": [
+         {
+          "t": "col",
+          "c": [
+           {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_crest_a_png",
+            "shape": "square",
+            "size": 56.0
+           },
+           {
+            "t": "text",
+            "bind": "local",
+            "size": 17.0,
+            "w": 700,
+            "color": "#FFFFFF"
+           },
+           {
+            "t": "text",
+            "text": "Local",
+            "size": 13.0,
+            "w": 700,
+            "color": "#FFFFFF"
+           }
+          ],
+          "gap": 2.0,
+          "align": "center"
+         },
+         {
+          "t": "spacer"
+         },
+         {
+          "t": "col",
+          "c": [
+           {
+            "t": "box",
+            "child": {
+             "t": "padding",
+             "child": {
+              "t": "row",
+              "c": [
+               {
+                "t": "text",
+                "bind": "golesLocal",
+                "size": 38.0,
+                "w": 800,
+                "color": "#FFFFFF"
+               },
+               {
+                "t": "text",
+                "text": ":",
+                "size": 38.0,
+                "w": 800,
+                "color": "#FFFFFF"
+               },
+               {
+                "t": "text",
+                "bind": "golesVisitante",
+                "size": 38.0,
+                "w": 800,
+                "color": "#FFFFFF"
+               }
+              ],
+              "gap": 6.0
+             },
+             "h": 10.0,
+             "v": 2.0
+            },
+            "radius": 12.0,
+            "color": "#202020"
+           },
+           {
+            "t": "text",
+            "bind": "minuto",
+            "size": 15.0,
+            "w": 600,
+            "color": "#FFFFFF"
+           },
+           {
+            "t": "text",
+            "text": "View stats",
+            "size": 14.0,
+            "color": "#FFFFFF"
+           },
+           {
+            "t": "text",
+            "bind": "torneo",
+            "size": 13.0,
+            "color": "#FFFFFF"
+           }
+          ],
+          "gap": 3.0,
+          "align": "center"
+         },
+         {
+          "t": "spacer"
+         },
+         {
+          "t": "col",
+          "c": [
+           {
+            "t": "image",
+            "img": "asset_packages_live_island_kit_assets_presets_crest_b_png",
+            "shape": "square",
+            "size": 56.0
+           },
+           {
+            "t": "text",
+            "bind": "visitante",
+            "size": 17.0,
+            "w": 700,
+            "color": "#FFFFFF"
+           },
+           {
+            "t": "text",
+            "text": "Visitante",
+            "size": 13.0,
+            "w": 700,
+            "color": "#FFFFFF"
+           }
+          ],
+          "gap": 2.0,
+          "align": "center"
+         }
+        ],
+        "align": "center"
+       },
+       "h": 16.0,
+       "v": 8.0
+      },
+      "radius": 28.0,
+      "color": "#000000"
+     }
+    },
+    "android": {
+     "title": {
+      "fmt": "{local} {golesLocal} – {golesVisitante} {visitante}"
+     },
+     "text": {
+      "bind": "torneo"
+     },
+     "chip": {
+      "t": "text",
+      "text": "3–1"
+     },
+     "colorized": false,
+     "largeIcon": {
+      "t": "image",
+      "img": "asset_packages_live_island_kit_assets_presets_crest_a_png",
+      "shape": "square",
+      "size": 44.0
+     },
+     "style": "card",
+     "subText": {
+      "bind": "minuto"
+     }
+    }
+   },
+   "state": {
+    "local": "Lions",
+    "visitante": "Hawks",
+    "golesLocal": "3",
+    "golesVisitante": "1",
+    "minuto": "6:15",
+    "torneo": "World Cup",
+    "progreso": 0.07
+   },
+   "texts": [
+    "1",
+    "1",
+    "1",
+    "3",
+    "3",
+    "3",
+    "3–1",
+    "6:15",
+    "6:15",
+    ":",
+    ":",
+    "Hawks",
+    "Hawks",
+    "Lions",
+    "Lions",
+    "Local",
+    "Local",
+    "View stats",
+    "Visitante",
+    "Visitante",
+    "World Cup",
+    "World Cup",
+    "–"
+   ]
+  },
+  {
+   "name": "StockPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#30D158",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "chart.line.uptrend.xyaxis",
+     "android": "packages/live_island_kit/assets/icons/landmark.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "chart.line.uptrend.xyaxis",
+      "android": "packages/live_island_kit/assets/icons/landmark.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "precio",
+      "size": 14.0,
+      "w": 700,
+      "color": "#30D158"
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "chart.line.uptrend.xyaxis",
+      "android": "packages/live_island_kit/assets/icons/landmark.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "col",
+       "c": [
+        {
+         "t": "icon",
+         "sf": "chart.line.uptrend.xyaxis",
+         "android": "packages/live_island_kit/assets/icons/landmark.png",
+         "accent": true
+        },
+        {
+         "t": "text",
+         "bind": "simbolo",
+         "size": 15.0,
+         "w": 700,
+         "color": "#FFFFFF"
+        }
+       ],
+       "gap": 4.0
+      },
+      "center": {
+       "t": "text",
+       "bind": "nombre",
+       "size": 13.0,
+       "muted": true
+      },
+      "trailing": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "precio",
+         "size": 24.0,
+         "w": 700,
+         "color": "#FFFFFF"
+        },
+        {
+         "t": "text",
+         "bind": "cambio",
+         "size": 14.0,
+         "w": 600,
+         "color": "#30D158"
+        }
+       ],
+       "gap": 0.0,
+       "align": "end"
+      },
+      "bottom": {
+       "t": "spark",
+       "bind": "serie",
+       "h": 44.0,
+       "color": "#30D158"
+      }
+     },
+     "lockScreen": {
+      "t": "box",
+      "child": {
+       "t": "padding",
+       "child": {
+        "t": "col",
+        "c": [
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "icon",
+            "sf": "chart.line.uptrend.xyaxis",
+            "android": "packages/live_island_kit/assets/icons/landmark.png",
+            "accent": true
+           },
+           {
+            "t": "col",
+            "c": [
+             {
+              "t": "text",
+              "bind": "simbolo",
+              "size": 17.0,
+              "w": 700,
+              "color": "#FFFFFF"
+             },
+             {
+              "t": "text",
+              "bind": "nombre",
+              "size": 13.0,
+              "muted": true
+             }
+            ],
+            "gap": 0.0
+           },
+           {
+            "t": "spacer"
+           },
+           {
+            "t": "col",
+            "c": [
+             {
+              "t": "text",
+              "bind": "precio",
+              "size": 26.0,
+              "w": 700,
+              "color": "#FFFFFF"
+             },
+             {
+              "t": "text",
+              "bind": "cambio",
+              "size": 14.0,
+              "w": 600,
+              "color": "#30D158"
+             }
+            ],
+            "gap": 0.0,
+            "align": "end"
+           }
+          ]
+         },
+         {
+          "t": "spark",
+          "bind": "serie",
+          "h": 44.0,
+          "color": "#30D158"
+         }
+        ],
+        "gap": 4.0
+       },
+       "h": 14.0,
+       "v": 8.0
+      },
+      "radius": 28.0,
+      "color": "#0B0B0D"
+     }
+    },
+    "android": {
+     "title": {
+      "fmt": "{simbolo}"
+     },
+     "text": {
+      "fmt": "{tendencia} {cambio} · {nombre}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "+1.2%"
+     },
+     "colorized": false,
+     "style": "card"
+    }
+   },
+   "state": {
+    "simbolo": "VOLT",
+    "nombre": "Volt Inc.",
+    "precio": "219.40",
+    "cambio": "+1.24%",
+    "tendencia": "▲",
+    "serie": "212,213.5,212.8,214.9,214.1,216.3,215.2,217.8,216.9,218.5,219.4"
+   },
+   "texts": [
+    "+1.2%",
+    "+1.24%",
+    "+1.24%",
+    "219.40",
+    "219.40",
+    "219.40",
+    "VOLT",
+    "VOLT",
+    "Volt Inc.",
+    "Volt Inc."
+   ]
+  },
+  {
+   "name": "FlightPathPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#30D158",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "airplane",
+     "android": "packages/live_island_kit/assets/icons/plane.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "airplane",
+      "android": "packages/live_island_kit/assets/icons/plane.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "destino",
+      "size": 14.0,
+      "w": 700,
+      "color": "#30D158"
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "airplane",
+      "android": "packages/live_island_kit/assets/icons/plane.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "text",
+       "bind": "origen",
+       "size": 26.0,
+       "w": 700,
+       "color": "#FFFFFF"
+      },
+      "center": {
+       "t": "text",
+       "bind": "aterriza",
+       "size": 13.0,
+       "color": "#30D158"
+      },
+      "trailing": {
+       "t": "text",
+       "bind": "destino",
+       "size": 26.0,
+       "w": 700,
+       "color": "#FFFFFF"
+      },
+      "bottom": {
+       "t": "path",
+       "bind": "progreso",
+       "h": 52.0,
+       "curve": 0.9,
+       "style": {
+        "h": 3.0,
+        "color": "#30D158",
+        "trackColor": "#FFFFFF4D",
+        "dashed": true,
+        "trackerSize": 26.0
+       },
+       "tracker": {
+        "visual": {
+         "t": "icon",
+         "sf": "airplane",
+         "android": "packages/live_island_kit/assets/icons/plane.png"
+        },
+        "height": 24.0,
+        "background": "accentCircle"
+       }
+      }
+     },
+     "lockScreen": {
+      "t": "box",
+      "child": {
+       "t": "padding",
+       "child": {
+        "t": "col",
+        "c": [
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "text",
+            "bind": "origen",
+            "size": 30.0,
+            "w": 700,
+            "color": "#FFFFFF"
+           },
+           {
+            "t": "spacer"
+           },
+           {
+            "t": "text",
+            "bind": "vuelo",
+            "size": 13.0,
+            "w": 600,
+            "muted": true
+           },
+           {
+            "t": "spacer"
+           },
+           {
+            "t": "text",
+            "bind": "destino",
+            "size": 30.0,
+            "w": 700,
+            "color": "#FFFFFF"
+           }
+          ]
+         },
+         {
+          "t": "path",
+          "bind": "progreso",
+          "h": 52.0,
+          "curve": 0.9,
+          "style": {
+           "h": 3.0,
+           "color": "#30D158",
+           "trackColor": "#FFFFFF4D",
+           "dashed": true,
+           "trackerSize": 26.0
+          },
+          "tracker": {
+           "visual": {
+            "t": "icon",
+            "sf": "airplane",
+            "android": "packages/live_island_kit/assets/icons/plane.png"
+           },
+           "height": 24.0,
+           "background": "accentCircle"
+          }
+         },
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "text",
+            "bind": "aterriza",
+            "size": 13.0,
+            "color": "#FFFFFF"
+           },
+           {
+            "t": "spacer"
+           },
+           {
+            "t": "text",
+            "bind": "estado",
+            "size": 13.0,
+            "w": 600,
+            "color": "#30D158"
+           }
+          ]
+         }
+        ],
+        "gap": 2.0
+       },
+       "h": 14.0,
+       "v": 6.0
+      },
+      "radius": 28.0,
+      "color": "#0B0B0D"
+     }
+    },
+    "android": {
+     "title": {
+      "fmt": "{vuelo}"
+     },
+     "text": {
+      "fmt": "{origen} → {destino} · {aterriza}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "55 min"
+     },
+     "colorized": false,
+     "progress": {
+      "t": "path",
+      "bind": "progreso",
+      "style": {
+       "color": "#30D158"
+      },
+      "tracker": {
+       "visual": {
+        "t": "icon",
+        "sf": "airplane",
+        "android": "packages/live_island_kit/assets/icons/plane.png"
+       },
+       "height": 24.0,
+       "background": "accentCircle"
+      }
+     },
+     "style": "card",
+     "subText": {
+      "bind": "estado"
+     }
+    }
+   },
+   "state": {
+    "vuelo": "RA 234",
+    "estado": "On time",
+    "origen": "LIM",
+    "destino": "MAD",
+    "aterriza": "Lands in 55 min",
+    "progreso": 0.72
+   },
+   "texts": [
+    "55 min",
+    "LIM",
+    "LIM",
+    "Lands in 55 min",
+    "Lands in 55 min",
+    "MAD",
+    "MAD",
+    "MAD",
+    "On time",
+    "RA 234"
+   ]
+  },
+  {
+   "name": "OrbitPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#64D2FF",
+     "background": "system"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "globe.europe.africa.fill",
+     "android": "packages/live_island_kit/assets/icons/upload.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "globe.europe.africa.fill",
+      "android": "packages/live_island_kit/assets/icons/upload.png",
+      "accent": true
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "titulo",
+      "size": 14.0,
+      "w": 700,
+      "color": "#64D2FF"
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "globe.europe.africa.fill",
+      "android": "packages/live_island_kit/assets/icons/upload.png",
+      "accent": true
+     },
+     "expanded": {
+      "leading": {
+       "t": "gauge",
+       "bind": "progreso",
+       "style": {
+        "h": 4.0,
+        "color": "#64D2FF",
+        "trackColor": "#FFFFFF40",
+        "dashed": true
+       },
+       "child": {
+        "t": "icon",
+        "sf": "globe.europe.africa.fill",
+        "android": "packages/live_island_kit/assets/icons/upload.png",
+        "accent": true
+       }
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "titulo",
+         "size": 20.0,
+         "w": 700,
+         "color": "#FFFFFF"
+        },
+        {
+         "t": "text",
+         "bind": "lugar",
+         "size": 13.0,
+         "muted": true,
+         "lines": 2
+        },
+        {
+         "t": "text",
+         "bind": "tiempo",
+         "size": 13.0,
+         "w": 600,
+         "color": "#64D2FF"
+        }
+       ],
+       "gap": 2.0
+      }
+     },
+     "lockScreen": {
+      "t": "box",
+      "child": {
+       "t": "padding",
+       "child": {
+        "t": "row",
+        "c": [
+         {
+          "t": "gauge",
+          "bind": "progreso",
+          "size": 120.0,
+          "style": {
+           "h": 4.0,
+           "color": "#64D2FF",
+           "trackColor": "#FFFFFF40",
+           "dashed": true
+          },
+          "child": {
+           "t": "icon",
+           "sf": "globe.europe.africa.fill",
+           "android": "packages/live_island_kit/assets/icons/upload.png",
+           "accent": true
+          }
+         },
+         {
+          "t": "col",
+          "c": [
+           {
+            "t": "text",
+            "bind": "titulo",
+            "size": 24.0,
+            "w": 700,
+            "color": "#FFFFFF"
+           },
+           {
+            "t": "text",
+            "bind": "lugar",
+            "size": 14.0,
+            "muted": true,
+            "lines": 2
+           },
+           {
+            "t": "text",
+            "bind": "tiempo",
+            "size": 14.0,
+            "w": 600,
+            "color": "#64D2FF"
+           }
+          ],
+          "gap": 2.0
+         }
+        ],
+        "gap": 16.0
+       },
+       "all": 14.0
+      },
+      "radius": 28.0,
+      "color": "#0B0B0D"
+     }
+    },
+    "android": {
+     "title": {
+      "text": "Orbit"
+     },
+     "text": {
+      "fmt": "{lugar} · {tiempo}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "ISS"
+     },
+     "colorized": false,
+     "progress": {
+      "t": "gauge",
+      "bind": "progreso",
+      "style": {
+       "color": "#64D2FF"
+      }
+     },
+     "style": "card"
+    }
+   },
+   "state": {
+    "titulo": "ISS",
+    "lugar": "Over the Pacific Ocean",
+    "tiempo": "27 600 km/h",
+    "progreso": 0.38
+   },
+   "texts": [
+    "27 600 km/h",
+    "27 600 km/h",
+    "ISS",
+    "ISS",
+    "ISS",
+    "ISS",
+    "Over the Pacific Ocean",
+    "Over the Pacific Ocean"
+   ]
+  },
+  {
+   "name": "ChargePreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#0B0B0D",
+     "background": "accent"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "bolt.fill",
+     "android": "packages/live_island_kit/assets/icons/zap.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "bolt.fill",
+      "android": "packages/live_island_kit/assets/icons/zap.png",
+      "color": "#30D158"
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "nivel",
+      "size": 15.0,
+      "w": 700,
+      "color": "#30D158"
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "bolt.fill",
+      "android": "packages/live_island_kit/assets/icons/zap.png",
+      "color": "#30D158"
+     },
+     "expanded": {
+      "leading": {
+       "t": "icon",
+       "sf": "bolt.fill",
+       "android": "packages/live_island_kit/assets/icons/zap.png",
+       "color": "#30D158"
+      },
+      "center": {
+       "t": "col",
+       "c": [
+        {
+         "t": "text",
+         "bind": "nivel",
+         "size": 30.0,
+         "w": 800,
+         "color": "#FFFFFF"
+        },
+        {
+         "t": "text",
+         "bind": "estado",
+         "size": 13.0,
+         "muted": true,
+         "lines": 1
+        }
+       ],
+       "gap": 0.0,
+       "align": "center"
+      },
+      "trailing": {
+       "t": "text",
+       "bind": "potencia",
+       "size": 15.0,
+       "w": 700,
+       "color": "#30D158"
+      },
+      "bottom": {
+       "t": "padding",
+       "child": {
+        "t": "bar",
+        "bind": "progreso",
+        "style": {
+         "h": 8.0,
+         "color": "#30D158",
+         "trackColor": "#2A2D33",
+         "glow": 10.0
+        }
+       },
+       "v": 4.0
+      }
+     },
+     "lockScreen": {
+      "t": "box",
+      "child": {
+       "t": "padding",
+       "child": {
+        "t": "col",
+        "c": [
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "icon",
+            "sf": "bolt.fill",
+            "android": "packages/live_island_kit/assets/icons/zap.png",
+            "color": "#30D158"
+           },
+           {
+            "t": "text",
+            "bind": "estado",
+            "size": 13.0,
+            "color": "#B4B6BC"
+           },
+           {
+            "t": "spacer"
+           },
+           {
+            "t": "text",
+            "bind": "potencia",
+            "size": 13.0,
+            "w": 700,
+            "color": "#30D158"
+           }
+          ],
+          "gap": 6.0
+         },
+         {
+          "t": "row",
+          "c": [
+           {
+            "t": "text",
+            "bind": "nivel",
+            "size": 40.0,
+            "w": 800,
+            "color": "#FFFFFF"
+           },
+           {
+            "t": "spacer"
+           },
+           {
+            "t": "text",
+            "bind": "restante",
+            "size": 14.0,
+            "color": "#FFFFFF"
+           }
+          ],
+          "align": "end"
+         },
+         {
+          "t": "bar",
+          "bind": "progreso",
+          "style": {
+           "h": 8.0,
+           "color": "#30D158",
+           "trackColor": "#2A2D33",
+           "glow": 10.0
+          }
+         }
+        ],
+        "gap": 6.0
+       },
+       "h": 14.0,
+       "v": 10.0
+      },
+      "radius": 22.0,
+      "color": "#0B0B0D",
+      "border": "#30D158",
+      "glow": 10.0
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "estado"
+     },
+     "text": {
+      "fmt": "{restante} · {potencia}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "72 %"
+     },
+     "colorized": false,
+     "style": "card"
+    }
+   },
+   "state": {
+    "nivel": "72 %",
+    "estado": "Charging",
+    "restante": "38 min left",
+    "potencia": "48 kW",
+    "progreso": 0.72
+   },
+   "texts": [
+    "38 min left",
+    "48 kW",
+    "48 kW",
+    "72 %",
+    "72 %",
+    "72 %",
+    "72 %",
+    "Charging",
+    "Charging"
+   ]
+  },
+  {
+   "name": "FareSplitPreset",
+   "layout": {
+    "v": 1,
+    "theme": {
+     "accent": "#0B0B0D",
+     "background": "accent"
+    },
+    "appLogo": {
+     "t": "icon",
+     "sf": "car.fill",
+     "android": "packages/live_island_kit/assets/icons/car.png"
+    },
+    "regions": {
+     "compactLeading": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "color": "#30D158"
+     },
+     "compactTrailing": {
+      "t": "text",
+      "bind": "total",
+      "size": 15.0,
+      "w": 700,
+      "color": "#FFFFFF"
+     },
+     "minimal": {
+      "t": "icon",
+      "sf": "car.fill",
+      "android": "packages/live_island_kit/assets/icons/car.png",
+      "color": "#30D158"
+     },
+     "expanded": {
+      "leading": {
+       "t": "text",
+       "text": "Run",
+       "size": 20.0,
+       "w": 800,
+       "i": true,
+       "color": "#FFFFFF"
+      },
+      "center": {
+       "t": "text",
+       "bind": "titulo",
+       "size": 14.0,
+       "muted": true,
+       "lines": 1
+      },
+      "trailing": {
+       "t": "text",
+       "bind": "total",
+       "size": 20.0,
+       "w": 800,
+       "color": "#FFFFFF"
+      },
+      "bottom": {
+       "t": "col",
+       "c": [
+        {
+         "t": "split",
+         "parts": [
+          {
+           "bind": "base",
+           "color": "#FFFFFF"
+          },
+          {
+           "bind": "servicio",
+           "color": "#6B6E75"
+          },
+          {
+           "bind": "propina",
+           "color": "#30D158"
+          }
+         ]
+        },
+        {
+         "t": "row",
+         "c": [
+          {
+           "t": "text",
+           "fmt": "Base {baseTxt}",
+           "size": 12.0,
+           "color": "#FFFFFF"
+          },
+          {
+           "t": "spacer"
+          },
+          {
+           "t": "text",
+           "fmt": "Propina {propinaTxt}",
+           "size": 12.0,
+           "color": "#30D158"
+          }
+         ]
+        }
+       ],
+       "gap": 6.0
+      }
+     },
+     "lockScreen": {
+      "t": "col",
+      "c": [
+       {
+        "t": "row",
+        "c": [
+         {
+          "t": "text",
+          "text": "Run",
+          "size": 20.0,
+          "w": 800,
+          "i": true,
+          "color": "#FFFFFF"
+         },
+         {
+          "t": "spacer"
+         },
+         {
+          "t": "text",
+          "bind": "titulo",
+          "size": 13.0,
+          "color": "#B4B6BC"
+         }
+        ]
+       },
+       {
+        "t": "row",
+        "c": [
+         {
+          "t": "text",
+          "bind": "total",
+          "size": 32.0,
+          "w": 800,
+          "color": "#FFFFFF"
+         },
+         {
+          "t": "spacer"
+         },
+         {
+          "t": "text",
+          "text": "Total",
+          "size": 13.0,
+          "color": "#B4B6BC"
+         }
+        ],
+        "align": "end"
+       },
+       {
+        "t": "split",
+        "parts": [
+         {
+          "bind": "base",
+          "color": "#FFFFFF"
+         },
+         {
+          "bind": "servicio",
+          "color": "#6B6E75"
+         },
+         {
+          "bind": "propina",
+          "color": "#30D158"
+         }
+        ]
+       },
+       {
+        "t": "row",
+        "c": [
+         {
+          "t": "text",
+          "fmt": "Base {baseTxt}",
+          "size": 12.0,
+          "color": "#FFFFFF"
+         },
+         {
+          "t": "spacer"
+         },
+         {
+          "t": "text",
+          "fmt": "Servicio {servicioTxt}",
+          "size": 12.0,
+          "color": "#B4B6BC"
+         },
+         {
+          "t": "spacer"
+         },
+         {
+          "t": "text",
+          "fmt": "Propina {propinaTxt}",
+          "size": 12.0,
+          "color": "#30D158"
+         }
+        ]
+       }
+      ],
+      "gap": 6.0
+     }
+    },
+    "android": {
+     "title": {
+      "bind": "titulo"
+     },
+     "text": {
+      "fmt": "Base {baseTxt} · Servicio {servicioTxt} · Propina {propinaTxt}"
+     },
+     "chip": {
+      "t": "text",
+      "text": "S/21.50"
+     },
+     "colorized": false,
+     "progress": {
+      "t": "split",
+      "parts": [
+       {
+        "bind": "base",
+        "color": "#5F6368"
+       },
+       {
+        "bind": "servicio",
+        "color": "#B4B6BC"
+       },
+       {
+        "bind": "propina",
+        "color": "#30D158"
+       }
+      ]
+     },
+     "style": "card"
+    }
+   },
+   "state": {
+    "titulo": "Trip finished",
+    "total": "S/ 21.50",
+    "base": 16,
+    "servicio": 2.5,
+    "propina": 3,
+    "baseTxt": "S/ 16.00",
+    "servicioTxt": "S/ 2.50",
+    "propinaTxt": "S/ 3.00"
+   },
+   "texts": [
+    "Base S/ 16.00",
+    "Base S/ 16.00",
+    "Propina S/ 3.00",
+    "Propina S/ 3.00",
+    "Run",
+    "Run",
+    "S/ 21.50",
+    "S/ 21.50",
+    "S/ 21.50",
+    "S/21.50",
+    "Servicio S/ 2.50",
+    "Total",
+    "Trip finished",
+    "Trip finished"
+   ]
+  }
+ ]
+}
