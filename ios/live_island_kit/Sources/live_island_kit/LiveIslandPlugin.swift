@@ -229,7 +229,7 @@ enum LiveActivities {
     static func start(_ args: [String: Any], _ result: @escaping FlutterResult, push: PushStream) {
         #if canImport(ActivityKit)
         guard #available(iOS 16.1, *) else {
-            return fail(result, "unsupported", "Las Live Activities requieren iOS 16.1 o superior.")
+            return fail(result, "unsupported", "Live Activities require iOS 16.1 or later.")
         }
         guard LiveStorage.appGroup != nil else {
             return fail(result, "not_configured",

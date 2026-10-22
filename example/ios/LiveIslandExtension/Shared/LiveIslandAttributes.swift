@@ -93,5 +93,8 @@ struct LiveIslandAttributes: ActivityAttributes {
 
     var layoutId: String
     var deepLink: String?
+    /// Id propio de la app (`LiveIsland.start(customId:)`). Opcional: las
+    /// actividades creadas por un push o por versiones anteriores no lo traen.
+    var customId: String? = nil
 }
 #endif

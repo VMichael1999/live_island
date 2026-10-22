@@ -165,7 +165,7 @@ class LiveIslandPlugin :
             context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
         val act = activity
         if (granted || act == null) return result.success(nm.areNotificationsEnabled())
-        pendingPermission?.error("superseded", "Otra solicitud de permiso reemplazó a esta.", null)
+        pendingPermission?.error("superseded", "Another permission request replaced this one.", null)
         pendingPermission = result
         act.requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_NOTIFICATIONS)
     }

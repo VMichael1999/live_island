@@ -35,10 +35,10 @@ enum LiveIslandActions {
 /// sin abrirla, y entrega el `id` del botón a Dart (`LiveIsland.onAction`).
 @available(iOS 17.0, *)
 struct LiveIslandActionIntent: LiveActivityIntent {
-    static var title: LocalizedStringResource = "Acción de live_island"
+    static var title: LocalizedStringResource = "live_island action"
     static var isDiscoverable: Bool = false
 
-    @Parameter(title: "Botón")
+    @Parameter(title: "Button")
     var buttonId: String
 
     init() { buttonId = "" }
