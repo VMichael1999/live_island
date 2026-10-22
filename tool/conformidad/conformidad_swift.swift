@@ -33,6 +33,45 @@ for c in casos["condition"] as? [[String: Any]] ?? [] {
     if got != esperado { fallos.append("condition · \(c["nombre"] ?? ""): esperaba \(esperado) y dio \(got)") }
 }
 
+// Los textos que cada preset muestra con sus datos de ejemplo
+// (doc/contract/resolved_texts.json, generado por Dart): se recorre el mismo
+// JSON con la lógica de iOS y debe dar la misma lista.
+func recorrer(_ n: Any?, _ ctx: LiveCtx, _ out: inout [String]) {
+    if let a = n as? [Any] {
+        for e in a { recorrer(e, ctx, &out) }
+    } else if let d = n as? [String: Any] {
+        let node = LNode(d: d)
+        if node.t == "if" {
+            let ok = ctx.evaluate(LNode(d: d["when"] as? [String: Any] ?? [:]))
+            recorrer(ok ? d["then"] : d["else"], ctx, &out)
+            return
+        }
+        if node.t == "text" {
+            if let f = node.string("fmt") { out.append(ctx.format(f)) }
+            else if let t = node.string("text") { out.append(t) }
+            else if let b = node.string("bind") { out.append(ctx.text(of: b)) }
+            else { out.append("") }
+        }
+        for (k, v) in d where k != "when" { recorrer(v, ctx, &out) }
+    }
+}
+
+if CommandLine.arguments.count > 2,
+   let data = FileManager.default.contents(atPath: CommandLine.arguments[2]),
+   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+   let presets = json["presets"] as? [[String: Any]] {
+    for p in presets {
+        total += 1
+        let ctx = contexto(p["state"] as? [String: Any] ?? [:])
+        var got: [String] = []
+        recorrer(p["layout"], ctx, &got)
+        got.sort()
+        let want = (p["texts"] as? [String] ?? [])
+        if got != want { fallos.append("preset \(p["name"] ?? ""): esperaba \(want) y dio \(got)") }
+    }
+}
+
+
 if fallos.isEmpty {
     print("Swift: \(total) casos de conformidad, todos bien.")
 } else {

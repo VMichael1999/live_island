@@ -2,47 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:live_island_kit/live_island_kit.dart';
+
+import 'fixtures/todos_los_presets.dart';
 
 /// Los tres intérpretes del JSON (Flutter, SwiftUI y la tarjeta de Android)
 /// deben conocer cada tipo de nodo que emiten los presets: si Dart agrega uno
 /// y una plataforma no lo dibuja, esta prueba falla antes de que lo vea un
 /// usuario.
 void main() {
-  final presets = <LivePreset>[
-    const TripPreset(),
-    const DeliveryPreset(),
-    const CourierPreset(),
-    const PickupPreset(),
-    const QueuePreset(),
-    const FlightPreset(),
-    const ParkingPreset(),
-    const EvChargingPreset(),
-    const WorkoutPreset(),
-    const CookingTimerPreset(),
-    const UploadPreset(),
-    const TechnicianPreset(),
-    const TransitPreset(),
-    const WaitingRoomPreset(),
-    const ScorePreset(),
-    const RidePickupPreset(),
-    const RidePickupPreset(dark: true),
-    const RideArrivalPreset(),
-    const RideTripPreset(),
-    const RidePinPreset(),
-    const RideStopPreset(),
-    const RideDestinationPreset(),
-    const TrainPreset(),
-    const DeliveryOrderPreset(),
-    const StorePickupPreset(),
-    const RunPreset(),
-    const MatchPreset(),
-    const StockPreset(),
-    const FlightPathPreset(),
-    const OrbitPreset(),
-    const ChargePreset(),
-    const FareSplitPreset(),
-  ];
+  final presets = todosLosPresets;
 
   void recoger(Object? v, Set<String> tipos) {
     if (v is Map) {
