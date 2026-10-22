@@ -383,6 +383,61 @@ void main() {
     });
 
     test(
+      'stateChanges entrega el ciclo de vida de todas las actividades',
+      () async {
+        final got = <LiveActivityStateChange>[];
+        final sub = LiveIsland.stateChanges.listen(got.add);
+        platform.pushController
+          ..add(const LivePushStartedEvent('a1'))
+          ..add(
+            const LivePushStateEvent(
+              LiveActivityStateChange('a1', LiveActivityState.active),
+            ),
+          )
+          ..add(
+            const LivePushStateEvent(
+              LiveActivityStateChange(
+                'a2',
+                LiveActivityState.dismissed,
+                customId: 'viaje-42',
+              ),
+            ),
+          );
+        await Future<void>.delayed(Duration.zero);
+        expect(got.map((c) => (c.id, c.state, c.customId)), [
+          ('a1', LiveActivityState.active, null),
+          ('a2', LiveActivityState.dismissed, 'viaje-42'),
+        ]);
+        await sub.cancel();
+      },
+    );
+
+    test('LiveActivity.states solo trae los cambios de su actividad', () async {
+      final act = await LiveIsland.start(layout: _plain, state: {'a': 1});
+      final got = <LiveActivityState>[];
+      final sub = act.states.listen(got.add);
+      platform.pushController
+        ..add(
+          const LivePushStateEvent(
+            LiveActivityStateChange('otra', LiveActivityState.ended),
+          ),
+        )
+        ..add(
+          const LivePushStateEvent(
+            LiveActivityStateChange('activity-1', LiveActivityState.stale),
+          ),
+        )
+        ..add(
+          const LivePushStateEvent(
+            LiveActivityStateChange('activity-1', LiveActivityState.ended),
+          ),
+        );
+      await Future<void>.delayed(Duration.zero);
+      expect(got, [LiveActivityState.stale, LiveActivityState.ended]);
+      await sub.cancel();
+    });
+
+    test(
       'registerLayout guarda el diseño con su nombre y sus imágenes',
       () async {
         final p = fx.presets.firstWhere((p) => p.id == 'taxi');

@@ -59,6 +59,55 @@ class LivePushStartedEvent extends LivePushEvent {
   final String activityId;
 }
 
+/// Where an activity is in its life.
+enum LiveActivityState {
+  /// Showing and accepting updates.
+  active,
+
+  /// Its content is out of date: `staleAfter` passed without an update (iOS).
+  stale,
+
+  /// The app (or the server) ended it. It can still be on screen, with its
+  /// last state, until it is dismissed.
+  ended,
+
+  /// It left the screen: the user swiped it away, or the system or the
+  /// dismissal time removed it.
+  dismissed,
+}
+
+/// An activity changed [state]. See [LiveIsland.stateChanges].
+class LiveActivityStateChange {
+  const LiveActivityStateChange(this.id, this.state, {this.customId});
+
+  /// Platform id of the activity.
+  final String id;
+
+  /// The id the app gave it when starting it, if any.
+  final String? customId;
+
+  final LiveActivityState state;
+
+  @override
+  bool operator ==(Object other) =>
+      other is LiveActivityStateChange &&
+      other.id == id &&
+      other.customId == customId &&
+      other.state == state;
+
+  @override
+  int get hashCode => Object.hash(id, customId, state);
+
+  @override
+  String toString() => 'LiveActivityStateChange($id, $state)';
+}
+
+/// An activity changed state (see [LiveActivityState]).
+class LivePushStateEvent extends LivePushEvent {
+  const LivePushStateEvent(this.change);
+  final LiveActivityStateChange change;
+}
+
 /// An alert that accompanies an update: on iOS the island expands for a
 /// moment (or a banner appears on the lock screen) with [title] and
 /// [body], and plays a sound; on Android the notification sounds and shows as
@@ -294,6 +343,17 @@ class MethodChannelLiveIslandPlatform implements LiveIslandPlatform {
         final m = Map<String, Object?>.from(e as Map);
         return switch (m['type']) {
           'started' => LivePushStartedEvent(m['activityId']! as String),
+          'state' => LivePushStateEvent(
+            LiveActivityStateChange(
+              m['activityId']! as String,
+              LiveActivityState.values.asNameMap()[m['state']] ??
+                  LiveActivityState.active,
+              customId:
+                  (m['customId'] as String?)?.isEmpty ?? true
+                      ? null
+                      : m['customId'] as String?,
+            ),
+          ),
           _ => LivePushTokenEvent(
             LivePushToken(
               token: m['token']! as String,

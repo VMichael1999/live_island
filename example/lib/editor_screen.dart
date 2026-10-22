@@ -361,10 +361,7 @@ class _EditorScreenState extends State<EditorScreen> {
           const SizedBox(height: 16),
           Row(
             children: [
-              Text(
-                'Dart code',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              Text('Dart code', style: Theme.of(context).textTheme.titleMedium),
               const Spacer(),
               TextButton(
                 onPressed: () => Clipboard.setData(ClipboardData(text: code)),

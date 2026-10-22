@@ -1,5 +1,6 @@
 ## Unreleased
 
+* Activity life cycle: `LiveIsland.stateChanges` and `LiveActivity.states` report `active`, `stale`, `ended` and `dismissed` (new `LiveActivityState` and `LiveActivityStateChange`). iOS reports the four through ActivityKit, also when the user swipes the card away; Android reports `active`, `ended` and `dismissed` (swiped away or timed out).
 * Three messages that were still in Spanish are now in English: the iOS error for versions earlier than 16.1, the Android error when a permission request is replaced, and the titles of the button App Intent ("live_island action", "Button") that Shortcuts shows.
 * `dart run live_island_kit:setup` now also raises the Android app's `minSdk` to 26 in `android/app/build.gradle(.kts)` (it never lowers a bigger value or Flutter's own). A new app uses `flutter.minSdkVersion` (24), and the first Android build failed with "minSdkVersion 24 cannot be smaller than version 26". Apps without an `ios/` folder are configured for Android only.
 * New "Troubleshooting" section in the README (English and Spanish) with the checks for a card that does not show, the build errors above and the `LiveIslandException` codes.

@@ -130,18 +130,41 @@ final class PushStream: NSObject, FlutterStreamHandler {
     }
 
     @available(iOS 16.2, *)
-    func watch(_ activity: Activity<LiveIslandAttributes>, announce: Bool) {
+    func watch(_ activity: Activity<LiveIslandAttributes>, announce: Bool, tokens: Bool = true) {
         lock.lock()
         let isNew = watching.insert(activity.id).inserted
         lock.unlock()
         if !isNew { return }
         if announce { send(["type": "started", "activityId": activity.id]) }
-        let task = Task {
-            for await token in activity.pushTokenUpdates {
-                self.send(["type": "token", "activityId": activity.id, "token": Self.hex(token)])
-            }
+        var watchers: [Task<Void, Never>] = []
+        // Los tokens solo existen si la actividad se pidió con push.
+        if tokens {
+            watchers.append(Task {
+                for await token in activity.pushTokenUpdates {
+                    self.send(["type": "token", "activityId": activity.id, "token": Self.hex(token)])
+                }
+            })
         }
-        lock.lock(); tasks.append(task); lock.unlock()
+        // El ciclo de vida: active, stale, ended y dismissed (también cuando el usuario la descarta).
+        let customId = activity.attributes.customId ?? ""
+        watchers.append(Task {
+            for await state in activity.activityStateUpdates {
+                self.send(["type": "state", "activityId": activity.id, "customId": customId,
+                           "state": Self.name(of: state)])
+            }
+        })
+        lock.lock(); tasks.append(contentsOf: watchers); lock.unlock()
+    }
+
+    @available(iOS 16.2, *)
+    private static func name(of state: ActivityState) -> String {
+        switch state {
+        case .active: return "active"
+        case .stale: return "stale"
+        case .ended: return "ended"
+        case .dismissed: return "dismissed"
+        @unknown default: return "active"
+        }
     }
     #endif
 }
@@ -277,7 +300,7 @@ enum LiveActivities {
                     attributes: attributes,
                     content: .init(state: content, staleDate: stale, relevanceScore: relevance),
                     pushType: wantsPush ? .token : nil)
-                if wantsPush { push.watch(activity, announce: false) }
+                push.watch(activity, announce: false, tokens: wantsPush)
             } else {
                 activity = try Activity.request(attributes: attributes, contentState: content,
                                                 pushType: wantsPush ? .token : nil)

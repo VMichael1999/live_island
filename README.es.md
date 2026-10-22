@@ -207,6 +207,28 @@ Cambia según la plataforma, porque ActivityKit no puede «terminar más tarde»
 
 Si `at` ya pasó, termina de inmediato.
 
+### Saber qué pasó con una actividad
+
+`LiveIsland.stateChanges` avisa de cada cambio en la vida de tus actividades, y `activity.states` los de una sola actividad:
+
+```dart
+LiveIsland.stateChanges.listen((c) {
+  // c.id, c.customId, c.state
+  if (c.state == LiveActivityState.dismissed) {
+    // El usuario descartó la tarjeta (o se retiró): deja de seguir al conductor.
+  }
+});
+```
+
+| Estado | Significa | iOS | Android |
+| --- | --- | --- | --- |
+| `active` | Se muestra y acepta actualizaciones | Sí | Sí |
+| `stale` | Pasó `staleAfter` sin una actualización | Sí | No |
+| `ended` | La app o el servidor la terminó (puede seguir en pantalla con su último estado) | Sí | Sí |
+| `dismissed` | Salió de la pantalla: el usuario la descartó, o la retiró el sistema o el plazo de cierre | Sí | Sí |
+
+Los eventos llegan mientras escuchas, también de actividades iniciadas por un push o antes de abrir la app (iOS); para saber cuáles siguen vivas ahora usa `LiveIsland.activeActivities()`.
+
 ### Avisos y estado desactualizado
 
 ```dart

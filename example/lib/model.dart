@@ -36,12 +36,19 @@ class ExampleModel extends ChangeNotifier {
         notifyListeners();
       }),
     );
+    // El ciclo de vida de las actividades: active, stale, ended y dismissed.
+    _subs.add(
+      LiveIsland.stateChanges.listen((c) {
+        status = '${c.customId ?? c.id.substring(0, 8)}: ${c.state.name}';
+        notifyListeners();
+      }),
+    );
     // Recupera la actividad que siguió viva tras cerrar la app.
     LiveIsland.activeActivities().then((list) {
       if (list.isNotEmpty && activity == null) {
         activity = list.last;
         status =
-            'Recuperada (${list.last.customId ?? list.last.id.substring(0, 8)})';
+            'Recovered (${list.last.customId ?? list.last.id.substring(0, 8)})';
         notifyListeners();
       }
     });
@@ -190,7 +197,7 @@ class ExampleModel extends ChangeNotifier {
         ((((state['progreso'] as num?) ?? 0) + 0.1).clamp(0.0, 1.0)).toDouble();
     return update({
       'progreso': next,
-    }, label: 'Progreso ${(next * 100).round()} %');
+    }, label: 'Progress ${(next * 100).round()} %');
   }
 
   /// Termina todas las actividades de la app (por ejemplo al cerrar sesión).
@@ -203,7 +210,7 @@ class ExampleModel extends ChangeNotifier {
   Future<void> end() => _guard('End', () async {
     await activity?.end(dismiss: LiveDismiss.immediate);
     activity = null;
-    _setStatus('No activity');
+    // El estado lo dan los eventos de LiveIsland.stateChanges (ended, dismissed).
   });
 
   /// Qué hace cada botón de los ejemplos. El id es el de `LiveButton(id: ...)`.

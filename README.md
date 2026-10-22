@@ -207,6 +207,28 @@ It differs per platform, because ActivityKit cannot «end later» a live activit
 
 If `at` is in the past it ends immediately.
 
+### Know what happened to an activity
+
+`LiveIsland.stateChanges` reports every change in the life of your activities, and `activity.states` the ones of a single activity:
+
+```dart
+LiveIsland.stateChanges.listen((c) {
+  // c.id, c.customId, c.state
+  if (c.state == LiveActivityState.dismissed) {
+    // The user swiped the card away (or it was removed): stop following the driver.
+  }
+});
+```
+
+| State | Meaning | iOS | Android |
+| --- | --- | --- | --- |
+| `active` | Showing and accepting updates | Yes | Yes |
+| `stale` | `staleAfter` passed without an update | Yes | No |
+| `ended` | The app or the server ended it (it may still be on screen with its last state) | Yes | Yes |
+| `dismissed` | It left the screen: the user swiped it away, or the system or the dismissal time removed it | Yes | Yes |
+
+Events arrive while you listen, also for activities started by a push or before the app opened (iOS); to know which ones are alive right now use `LiveIsland.activeActivities()`.
+
 ### Alerts and stale state
 
 ```dart

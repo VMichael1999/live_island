@@ -101,6 +101,14 @@ class LiveActivity {
       .where((e) => e is LivePushTokenEvent && e.token.activityId == id)
       .map((e) => (e as LivePushTokenEvent).token.token);
 
+  /// Changes in this activity's life: [LiveActivityState.active],
+  /// [LiveActivityState.stale], [LiveActivityState.ended] and
+  /// [LiveActivityState.dismissed] (the user swiped it away or it was removed).
+  /// See [LiveIsland.stateChanges] for the details of what each platform reports.
+  Stream<LiveActivityState> get states => _platform.pushEvents
+      .where((e) => e is LivePushStateEvent && e.change.id == id)
+      .map((e) => (e as LivePushStateEvent).change.state);
+
   /// Schedules the activity to disappear at [at].
   ///
   /// The behavior depends on the platform, because ActivityKit has no
@@ -207,6 +215,22 @@ abstract final class LiveIsland {
   static Stream<LivePushToken> get pushTokens => _platform.pushEvents
       .where((e) => e is LivePushTokenEvent)
       .map((e) => (e as LivePushTokenEvent).token);
+
+  /// Every change in the life of the app's activities, with the id of the
+  /// activity: it started (`active`), its content went out of date (`stale`),
+  /// it ended (`ended`) or it left the screen (`dismissed`).
+  ///
+  /// - **iOS** reports all four, also for activities started by a push or
+  ///   before the app was opened (from the moment you listen).
+  /// - **Android** reports `active`, `ended` and `dismissed` (the user swiped
+  ///   the notification away, or it timed out); it has no `stale`.
+  ///
+  /// Events arrive only while someone listens; to know the current activities
+  /// use [activeActivities].
+  static Stream<LiveActivityStateChange> get stateChanges => _platform
+      .pushEvents
+      .where((e) => e is LivePushStateEvent)
+      .map((e) => (e as LivePushStateEvent).change);
 
   /// Activities that started from a push (push-to-start on iOS; [handlePush]
   /// with `event: start` on Android).
